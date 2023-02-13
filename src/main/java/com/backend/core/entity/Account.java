@@ -9,13 +9,14 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "login_accounts")
 @DynamicInsert
 @DynamicUpdate
-@Data
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,90 +42,37 @@ public class Account {
     Customer customer;
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @Valid
     Staff staff;
 
 
     public Account() {}
 
-    public Account(String name, String password) {
-        this.userName = name;
-        this.password = password;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return id == account.id && userName.equals(account.userName) && password.equals(account.password) && role.equals(account.role) && status.equals(account.status) && Objects.equals(customer, account.customer) && Objects.equals(staff, account.staff);
     }
 
-    public Account(int id, String name, String pass, String role) {
-        this.id = id;
-        this.userName = name;
-        this.password = pass;
-        this.role = role;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userName, password, role, status, customer, staff);
     }
 
-    public Account(String userName, String password, Customer customer) {
-        this.userName = userName;
-        this.password = password;
-        this.customer = customer;
-    }
-
-    public Account(String name, String pass, String role) {
-        this.userName = name;
-        this.password = pass;
-        this.role = role;
-    }
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Staff getStaff() {
-        return staff;
-    }
-
-    public void setStaff(Staff staff) {
-        this.staff = staff;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                ", status='" + status + '\'' +
+                ", customer=" + customer +
+                ", staff=" + staff +
+                '}';
     }
 }
 

@@ -33,10 +33,12 @@ public class Comment {
     @Column(name = "ID", unique = true)
     int id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id")
     Customer customer;

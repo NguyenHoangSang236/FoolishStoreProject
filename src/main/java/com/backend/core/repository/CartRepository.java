@@ -11,7 +11,7 @@ import com.backend.core.entity.Cart;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Integer>{
-    @Query(value = "select * from cart c join products p on p.id = c.product_id where customer_id = :idVal and buying_status = 0 order by p.name", nativeQuery = true)
+    @Query(value = "select * from cart where+ customer_id = :idVal and buying_status = 0", nativeQuery = true)
     List<Cart> getCurrentCartByCustomerId(@Param("idVal") int id);
     
     

@@ -32,7 +32,7 @@ public class ShopPage {
         }
         catch (Exception e) {
             status = "failed";
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         return new ApiResponse(status, allProductsList);
@@ -51,7 +51,7 @@ public class ShopPage {
         }
         catch (Exception e) {
             status = "failed";
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         return new ApiResponse(status, product);

@@ -1,16 +1,12 @@
 package com.backend.core.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -28,50 +24,27 @@ public class Cart {
     @Column(name = "Buying_Status")
     int buyingStatus;
 
-    @Column(name = "select_status")
-    int selectStatus;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id")
     Customer customer;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    Product product;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_management_id")
+    ProductManagement productManagement;
 
 
     public Cart() {}
 
-    public Cart(int id, int quantity, int buyingStatus, int selectStatus, Customer customer, Product product) {
-        super();
-        this.id = id;
-        this.quantity = quantity;
-        this.buyingStatus = buyingStatus;
-        this.selectStatus = selectStatus;
-        this.customer = customer;
-        this.product = product;
+    public double totalPrice() {
+        double result = 0;
+
+        int quantity = this.quantity;
+        double productPrice = this.productManagement.getProduct().getSellingPrice();
+        result += quantity * productPrice;
+
+        return result;
     }
-
-    public Cart(int id, int quantity, int buyingStatus, int selectStatus) {
-        super();
-        this.id = id;
-        this.quantity = quantity;
-        this.buyingStatus = buyingStatus;
-        this.selectStatus = selectStatus;
-    }
-
-
-
-
-//    public double totalPrice() {
-//        double result = 0;
-//
-//        int quantity = this.quantity;
-//        double productPrice = this.product.getPrice();
-//        result += quantity * productPrice;
-//
-//        return result;
-//    }
 
 //    public String formatedTotalPrice() {
 //        return ValueRender.formatDoubleNumber(this.totalPrice());
@@ -82,51 +55,27 @@ public class Cart {
 //    }
 
 
-    public int getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cart cart = (Cart) o;
+        return id == cart.id && quantity == cart.quantity && buyingStatus == cart.buyingStatus && customer.equals(cart.customer) && productManagement.equals(cart.productManagement);
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, quantity, buyingStatus, customer, productManagement);
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public int getBuyingStatus() {
-        return buyingStatus;
-    }
-
-    public void setBuyingStatus(int buyingStatus) {
-        this.buyingStatus = buyingStatus;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public int getSelectStatus() {
-        return selectStatus;
-    }
-
-    public void setSelectStatus(int selectStatus) {
-        this.selectStatus = selectStatus;
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", buyingStatus=" + buyingStatus +
+                ", customer=" + customer +
+                ", productManagement=" + productManagement +
+                '}';
     }
 }

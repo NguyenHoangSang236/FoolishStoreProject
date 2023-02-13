@@ -74,10 +74,6 @@ public class Product implements Serializable {
 
     @OneToMany(mappedBy = "product")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<Cart> carts;
-
-    @OneToMany(mappedBy = "product")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "product")
@@ -95,12 +91,12 @@ public class Product implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return id == product.id && Double.compare(product.sellingPrice, sellingPrice) == 0 && Double.compare(product.originalPrice, originalPrice) == 0 && Double.compare(product.discount, discount) == 0 && Objects.equals(name, product.name) && Objects.equals(brand, product.brand) && Objects.equals(description, product.description) && Objects.equals(invoicesWithProducts, product.invoicesWithProducts) && Objects.equals(catalogs, product.catalogs) && Objects.equals(carts, product.carts) && Objects.equals(comments, product.comments) && Objects.equals(productManagements, product.productManagements) && Objects.equals(productImagesManagement, product.productImagesManagement);
+        return id == product.id && Double.compare(product.sellingPrice, sellingPrice) == 0 && Double.compare(product.originalPrice, originalPrice) == 0 && Double.compare(product.discount, discount) == 0 && name.equals(product.name) && brand.equals(product.brand) && description.equals(product.description) && invoicesWithProducts.equals(product.invoicesWithProducts) && catalogs.equals(product.catalogs) && comments.equals(product.comments) && productManagements.equals(product.productManagements) && productImagesManagement.equals(product.productImagesManagement);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, sellingPrice, originalPrice, discount, brand, description, invoicesWithProducts, catalogs, carts, comments, productManagements, productImagesManagement);
+        return Objects.hash(id, name, sellingPrice, originalPrice, discount, brand, description, invoicesWithProducts, catalogs, comments, productManagements, productImagesManagement);
     }
 
     @Override
@@ -115,7 +111,6 @@ public class Product implements Serializable {
                 ", description='" + description + '\'' +
                 ", invoicesWithProducts=" + invoicesWithProducts +
                 ", catalogs=" + catalogs +
-                ", carts=" + carts +
                 ", comments=" + comments +
                 ", productManagements=" + productManagements +
                 ", productImagesManagement=" + productImagesManagement +

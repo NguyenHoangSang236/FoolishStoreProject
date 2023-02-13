@@ -1,6 +1,7 @@
 package com.backend.core.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
@@ -16,6 +17,7 @@ import java.util.Date;
 @Entity
 @DynamicInsert
 @DynamicUpdate
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 public class ProductImportManagement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

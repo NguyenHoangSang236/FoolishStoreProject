@@ -28,21 +28,12 @@ public class LoginPage {
             loginAcc = loginService.getAccountByUsernameAndPassword(accountFromUI.getUserName(), accountFromUI.getPassword());
 
             if(loginAcc.getUserName() != null) {
-                Staff staff = loginService.getStaffByUserAccount(loginAcc);
-                Customer customer = loginService.getCustomerByUserAccount(loginAcc);
-
-                if(staff != null) {
-                    session.setAttribute("currentUser", staff);
-                    status = "success";
-                }
-                else {
-                    session.setAttribute("currentUser", customer);
-                    status = "success";
-                }
+                session.setAttribute("currentUser", loginAcc);
+                status = "success";
             }
         }
         catch (Exception e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
 
         return new ApiResponse(status, loginAcc);

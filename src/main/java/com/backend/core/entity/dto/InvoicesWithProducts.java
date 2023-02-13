@@ -30,16 +30,11 @@ public class InvoicesWithProducts {
     @Column(name = "quantity")
     int quantity;
 
+    @Column(name = "product_discount")
+    double discount;
+
 
     public InvoicesWithProducts() {}
-
-    public InvoicesWithProducts(InvoicesWithProductsPrimaryKeys id, Product product, Invoice invoice, int quantity) {
-        super();
-        this.id = id;
-        this.product = product;
-        this.invoice = invoice;
-        this.quantity = quantity;
-    }
 
 
 //    public String formattedProductTotalPrice() {

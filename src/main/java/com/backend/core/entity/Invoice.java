@@ -3,6 +3,7 @@ package com.backend.core.entity;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -78,6 +79,7 @@ public class Invoice {
     @OneToMany(mappedBy = "invoice", cascade={CascadeType.ALL})
     List<InvoicesWithProducts> invoicesWithProducts;
 
+    @JsonIgnore
     @ManyToOne
     @MapsId("customer_id")
     private Customer customer;

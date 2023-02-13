@@ -2,7 +2,9 @@ package com.backend.core.entity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -24,6 +26,7 @@ import lombok.Setter;
 @Entity
 @DynamicInsert
 @DynamicUpdate
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 public class ProductManagement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,13 +65,17 @@ public class ProductManagement {
     @JoinColumn(name = "product_id")
     Product product;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "productManagement", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Cart> carts;
+
     @OneToMany(mappedBy = "productManagement")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ProductImportManagement> productImportManagements;
 
 
     public ProductManagement() {}
-
 
 
     public int getTotalRatingNumber() {
@@ -95,5 +102,38 @@ public class ProductManagement {
 
     public void addQuantity(int quant) {
         this.availableQuantity += quant;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductManagement that = (ProductManagement) o;
+        return id == that.id && availableQuantity == that.availableQuantity && soldQuantity == that.soldQuantity && oneStarQuantity == that.oneStarQuantity && twoStarQuantity == that.twoStarQuantity && threeStarQuantity == that.threeStarQuantity && fourStarQuantity == that.fourStarQuantity && fiveStarQuantity == that.fiveStarQuantity && color.equals(that.color) && size.equals(that.size) && product.equals(that.product) && Objects.equals(carts, that.carts) && productImportManagements.equals(that.productImportManagements);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, color, size, availableQuantity, soldQuantity, oneStarQuantity, twoStarQuantity, threeStarQuantity, fourStarQuantity, fiveStarQuantity, product, carts, productImportManagements);
+    }
+
+    @Override
+    public String toString() {
+        return "ProductManagement{" +
+                "id=" + id +
+                ", color='" + color + '\'' +
+                ", size='" + size + '\'' +
+                ", availableQuantity=" + availableQuantity +
+                ", soldQuantity=" + soldQuantity +
+                ", oneStarQuantity=" + oneStarQuantity +
+                ", twoStarQuantity=" + twoStarQuantity +
+                ", threeStarQuantity=" + threeStarQuantity +
+                ", fourStarQuantity=" + fourStarQuantity +
+                ", fiveStarQuantity=" + fiveStarQuantity +
+                ", product=" + product +
+                ", carts=" + carts +
+                ", productImportManagements=" + productImportManagements +
+                '}';
     }
 }

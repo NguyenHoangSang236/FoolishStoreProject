@@ -3,6 +3,7 @@ package com.backend.core.entity;
 import com.backend.core.entity.Product;
 import com.backend.core.entity.ProductManagement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "product_images_management")
 @DynamicInsert
 @DynamicUpdate
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 public class ProductImagesManagement {
     @Id
     @Column(name = "product_id")

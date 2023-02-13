@@ -1,5 +1,8 @@
 package com.backend.core.util;
 
+import com.backend.core.entity.Account;
+import jakarta.servlet.http.HttpSession;
+
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -146,5 +149,23 @@ public class ValueRenderUtils {
             s = String.format("%.2f", tb) + " TB";
         }
         return s;
+    }
+
+    //get customer id from HttpSession
+    public static int getCustomerIdByHttpSession(HttpSession session) {
+        try {
+            Account currentUser = (Account) session.getAttribute("currentUser");
+
+            if(currentUser.getCustomer() != null) {
+                return currentUser.getCustomer().getId();
+            } else if (currentUser.getStaff() != null) {
+                return currentUser.getStaff().getId();
+            }
+            return 0;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }

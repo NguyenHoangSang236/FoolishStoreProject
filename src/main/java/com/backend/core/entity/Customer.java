@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -31,9 +32,8 @@ public class Customer {
     @NotEmpty(message = "Customer's phone number can not be empty")
     String phoneNumber;
 
-    @Lob
     @Column(name = "Avatar")
-    byte[] image;
+    String image;
 
     @Column(name = "Country")
     String country;
@@ -61,133 +61,35 @@ public class Customer {
 
     public Customer() {}
 
-    public Customer(int id, String name, String email, String phoneNumber, byte[] image, Account account,
-                    List<Invoice> invoices, List<Cart> carts, List<Comment> comments) {
-        super();
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.image = image;
-        this.account = account;
-        this.invoices = invoices;
-        this.carts = carts;
-        this.comments = comments;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return id == customer.id && name.equals(customer.name) && email.equals(customer.email) && phoneNumber.equals(customer.phoneNumber) && image.equals(customer.image) && Objects.equals(country, customer.country) && Objects.equals(address, customer.address) && Objects.equals(city, customer.city) && account.equals(customer.account) && Objects.equals(invoices, customer.invoices) && Objects.equals(carts, customer.carts) && Objects.equals(comments, customer.comments);
     }
 
-    public Customer(String name, String email, String phoneNumber, byte[] image, Account account) {
-        super();
-        this.name = name;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.image = image;
-        this.account = account;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email, phoneNumber, image, country, address, city, account, invoices, carts, comments);
     }
 
-
-//    public String convertByteImamgeToBase64String() {
-//        return "data:image/jpeg;base64," + ValueRender.convertByteToString(this.image);
-//    }
-
-    public String getFullAddress() {
-        return this.address + ", " + this.city + ", " + this.country;
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", image='" + image + '\'' +
+                ", country='" + country + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", account=" + account +
+                ", invoices=" + invoices +
+                ", carts=" + carts +
+                ", comments=" + comments +
+                '}';
     }
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
-    public List<Invoice> getInvoices() {
-        return invoices;
-    }
-
-    public void setInvoices(List<Invoice> invoices) {
-        this.invoices = invoices;
-    }
-
-    public List<Cart> getCarts() {
-        return carts;
-    }
-
-    public void setCarts(List<Cart> carts) {
-        this.carts = carts;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
 }
