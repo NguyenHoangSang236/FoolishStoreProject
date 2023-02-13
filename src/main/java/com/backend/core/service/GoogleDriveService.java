@@ -52,7 +52,7 @@ public class GoogleDriveService {
     }
 
 
-    public void uploadFile(MultipartFile file, String filePath, boolean isPublic) {
+    public String uploadFile(MultipartFile file, String filePath, boolean isPublic) {
         String type = "";
         String role = "";
         if (isPublic) {
@@ -64,7 +64,7 @@ public class GoogleDriveService {
             type = "private";
             role = "private";
         }
-        googleFileManager.uploadFile(file, filePath, type, role);
+        return googleFileManager.uploadFile(file, filePath, type, role);
     }
 
 

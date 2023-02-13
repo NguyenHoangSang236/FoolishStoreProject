@@ -42,7 +42,7 @@ public class Product implements Serializable {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
 
     @Column(name = "selling_price")

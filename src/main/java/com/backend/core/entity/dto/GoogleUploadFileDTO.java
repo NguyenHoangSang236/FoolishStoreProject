@@ -1,5 +1,8 @@
 package com.backend.core.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,15 +10,26 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 
-@EqualsAndHashCode(callSuper = false)
 @Getter
 @Setter
+@Data
 public class GoogleUploadFileDTO {
     private MultipartFile multipartFile;
 
     private String path;
 
     private boolean isShared;
+
+    @JsonCreator
+    public GoogleUploadFileDTO(@JsonProperty("multipartFile") MultipartFile multipartFile,
+                               @JsonProperty("path") String path,
+                               @JsonProperty("isShared") boolean isShared) {
+        this.multipartFile = multipartFile;
+        this.path = path;
+        this.isShared = isShared;
+    }
+
+    public GoogleUploadFileDTO() {}
 
     @Override
     public boolean equals(Object o) {

@@ -49,8 +49,7 @@ public class GoogleFileManager {
     // Download file by id
     public void downloadFile(String id, OutputStream outputStream) throws IOException, GeneralSecurityException {
         if (id != null) {
-            googleDriveConfig.getInstance().files()
-                    .get(id).executeMediaAndDownloadTo(outputStream);
+            googleDriveConfig.getInstance().files().get(id).executeMediaAndDownloadTo(outputStream);
         }
     }
 
@@ -89,7 +88,6 @@ public class GoogleFileManager {
                     // Call Set Permission drive
                     googleDriveConfig.getInstance().permissions().create(uploadFile.getId(), setPermission(type, role)).execute();
                 }
-
                 return uploadFile.getId();
             }
         } catch (Exception e) {

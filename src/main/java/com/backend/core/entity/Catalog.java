@@ -2,6 +2,7 @@ package com.backend.core.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,11 +39,12 @@ public class Catalog {
     @Column(name = "Name")
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
-            name = "catalog_with_products",
-            joinColumns = @JoinColumn(name = "Catalog_ID"),
-            inverseJoinColumns = @JoinColumn(name = "Product_Name"))
+            name = "catalogs_with_products",
+            joinColumns = @JoinColumn(name = "catalog_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> products;
 
 
