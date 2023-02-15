@@ -156,12 +156,14 @@ public class ValueRenderUtils {
         try {
             Account currentUser = (Account) session.getAttribute("currentUser");
 
-            if(currentUser.getCustomer() != null) {
-                return currentUser.getCustomer().getId();
-            } else if (currentUser.getStaff() != null) {
-                return currentUser.getStaff().getId();
+            if(currentUser != null) {
+                if(currentUser.getCustomer() != null) {
+                    return currentUser.getCustomer().getId();
+                } else {
+                    return currentUser.getStaff().getId();
+                }
             }
-            return 0;
+            else return 0;
         }
         catch (Exception e) {
             e.printStackTrace();

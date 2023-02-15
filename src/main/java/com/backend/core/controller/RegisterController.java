@@ -4,18 +4,14 @@ import com.backend.core.entity.Account;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.service.GoogleDriveService;
 import com.backend.core.service.RegisterService;
-import com.backend.core.util.ExceptionHandlerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/register")
-public class RegisterPage {
+public class RegisterController {
     @Autowired
     RegisterService registerService;
 

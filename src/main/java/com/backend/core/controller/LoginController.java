@@ -1,8 +1,6 @@
 package com.backend.core.controller;
 
 import com.backend.core.entity.Account;
-import com.backend.core.entity.Customer;
-import com.backend.core.entity.Staff;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.service.LoginService;
 import jakarta.servlet.http.HttpSession;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
-public class LoginPage {
+public class LoginController {
     @Autowired
     LoginService loginService;
 

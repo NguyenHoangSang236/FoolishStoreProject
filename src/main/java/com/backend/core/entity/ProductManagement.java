@@ -104,6 +104,10 @@ public class ProductManagement {
         this.availableQuantity += quant;
     }
 
+    public void subtractQuantity(int quant) {
+        this.availableQuantity -= quant;
+    }
+
 
     @Override
     public boolean equals(Object o) {

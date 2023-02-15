@@ -2,7 +2,6 @@ package com.backend.core.controller;
 
 import com.backend.core.entity.Product;
 import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.repository.ProductRepository;
 import com.backend.core.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/shop")
-public class ShopPage {
+public class ShopController {
     @Autowired
     private ProductService productService;
 

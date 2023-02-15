@@ -36,6 +36,13 @@ public class Cart {
 
     public Cart() {}
 
+    public Cart(Customer customer, ProductManagement productManagement, int quantity, int buyingStatus) {
+        this.quantity = quantity;
+        this.buyingStatus = buyingStatus;
+        this.customer = customer;
+        this.productManagement = productManagement;
+    }
+
     public double totalPrice() {
         double result = 0;
 
@@ -44,6 +51,10 @@ public class Cart {
         result += quantity * productPrice;
 
         return result;
+    }
+
+    public void addQuantity(int quant) {
+        this.quantity += quant;
     }
 
 //    public String formatedTotalPrice() {
