@@ -34,8 +34,8 @@ public class RegisterService {
                 return ExceptionHandlerUtils.getHandleBindException(new BindException(bindingResult));
             }
             //check valid username and password
-            else if(!CheckUtils.checkValidStringType(accountFromUI.getUserName(), EnumsList.HAS_NO_SPACE)
-                    || !CheckUtils.checkValidStringType(accountFromUI.getPassword(), EnumsList.HAS_NO_SPACE)) {
+            else if(!CheckUtils.checkValidStringType(accountFromUI.getUserName(), EnumsList.HAS_NO_SPACE) ||
+                    !CheckUtils.checkValidStringType(accountFromUI.getPassword(), EnumsList.HAS_NO_SPACE)) {
                 return "Please remove all spaces in Username and Password !!";
             }
             //check for existed username
