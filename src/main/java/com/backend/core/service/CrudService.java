@@ -4,13 +4,26 @@ import com.backend.core.entity.dto.ApiResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public interface CrudService {
-    ApiResponse createResponse(Object obj, HttpSession session);
-    ApiResponse removeResponse(Object obj, HttpSession session);
-    ApiResponse updateResponse(Object obj, HttpSession session);
-    ApiResponse readSingleResponse(Object obj, HttpSession session);
-    ApiResponse readListReponse(List<Object> objList, HttpSession session);
+    // generate post response for creation
+    ApiResponse creationalResponse(Object paramObj, HttpSession session);
+
+    // generate post response for removal
+    ApiResponse removingResponse(Object paramObj, HttpSession session);
+
+    // generate post response for update
+    ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session);
+
+    // generate post response for reading a single object by posting method
+    ApiResponse readingSinglePostingResponse(Object paramObj, HttpSession session);
+
+    // generate post response for reading a list of objects by posting method
+    ApiResponse readingListPostingReponse(List<Object> paramObjList, HttpSession session);
+
+    // generate post response for reading a list of objects by posting method
+    ApiResponse readingListGettingReponse(HttpSession session);
 }

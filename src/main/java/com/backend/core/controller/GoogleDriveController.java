@@ -45,10 +45,9 @@ public class GoogleDriveController {
 //    }
 
 //     Upload file to public
-    @PostMapping(
-            value = "/uploadFile",
-            consumes = {"*/*"},
-            produces = {MediaType.APPLICATION_JSON_VALUE} )
+    @PostMapping(value = "/uploadFile",
+                 consumes = {"*/*"},
+                 produces = {MediaType.APPLICATION_JSON_VALUE} )
     public ApiResponse uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload,
                                   @RequestParam("filePath") String pathFile,
                                   @RequestParam("shared") String shared) {

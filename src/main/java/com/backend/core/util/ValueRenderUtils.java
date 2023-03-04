@@ -1,7 +1,11 @@
 package com.backend.core.util;
 
 import com.backend.core.entity.Account;
+import com.backend.core.entity.Cart;
+import com.backend.core.entity.dto.CartItemDTO;
+import com.backend.core.repository.CartRepository;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -10,6 +14,10 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class ValueRenderUtils {
+    @Autowired
+    CartRepository cartRepo;
+
+
     //format person's full name (trim, remove unnecessary spaces and capitalize fist letters)
     public static String formattedPersonFullName(String name) {
         name = CheckUtils.trimmedInputString(name);

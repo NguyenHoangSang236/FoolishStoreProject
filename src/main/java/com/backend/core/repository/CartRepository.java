@@ -2,6 +2,7 @@ package com.backend.core.repository;
 
 import java.util.List;
 
+import com.backend.core.entity.renderdto.CartRenderInfoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,11 +18,7 @@ public interface CartRepository extends JpaRepository<Cart, Integer>{
     
     @Query(value = "select * from cart where id = :idVal", nativeQuery = true)
     Cart getCartById(@Param("idVal") int id);
-    
-    
-    @Query(value = "select c.id from cart c join products p on p.id = c.product_id where customer_id = :idVal and buying_status = 0", nativeQuery = true)
-    int[] getFullCartIdListByCustomerId(@Param("idVal") int id);
-    
+
     
     @Query(value = "select c.quantity from cart c join products p on p.id = c.product_id where customer_id = :idVal and buying_status = 0 order by p.name", nativeQuery = true)
     int[] getFullCartQuantityListByCustomerId(@Param("idVal") int id);
