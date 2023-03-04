@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `fashionstorewebsite` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `fashionstorewebsite`;
--- MySQL dump 10.13  Distrib 8.0.29, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: localhost    Database: fashionstorewebsite
 -- ------------------------------------------------------
--- Server version	8.0.32-0ubuntu0.22.04.2
+-- Server version	8.0.32
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -35,7 +35,7 @@ CREATE TABLE `cart` (
   KEY `FK_Product_Cart_idx` (`product_management_id`),
   CONSTRAINT `FK_Customer_Cart` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
   CONSTRAINT `FK_Product_Cart` FOREIGN KEY (`product_management_id`) REFERENCES `products_management` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,9 +44,33 @@ CREATE TABLE `cart` (
 
 LOCK TABLES `cart` WRITE;
 /*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-INSERT INTO `cart` VALUES (1,1,6,1,0),(2,1,3,2,0),(3,1,2,4,0),(4,1,16,4,0),(5,1,9,4,0);
+INSERT INTO `cart` VALUES (1,1,5,2,0),(2,1,1,1,0),(3,1,11,2,0);
 /*!40000 ALTER TABLE `cart` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `cartiteminfoforui`
+--
+
+DROP TABLE IF EXISTS `cartiteminfoforui`;
+/*!50001 DROP VIEW IF EXISTS `cartiteminfoforui`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `cartiteminfoforui` AS SELECT 
+ 1 AS `id`,
+ 1 AS `customer_id`,
+ 1 AS `product_management_id`,
+ 1 AS `quantity`,
+ 1 AS `buying_status`,
+ 1 AS `product_id`,
+ 1 AS `color`,
+ 1 AS `size`,
+ 1 AS `name`,
+ 1 AS `brand`,
+ 1 AS `selling_price`,
+ 1 AS `discount`,
+ 1 AS `image_1`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `catalog`
@@ -158,7 +182,7 @@ CREATE TABLE `customers` (
 
 LOCK TABLES `customers` WRITE;
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
-INSERT INTO `customers` VALUES (1,'Pham Hoang Phuc','phuclateo@gmail.com','0123456987',2,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(2,'Nguyen Quynh Nhu','nnhu7721@gmail.com','0213654798',3,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(3,'Nguyen Hoang Sang','19110120@student.hcmute.edu.vn','0977815809',7,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(4,'Nguyen Thi Hoang Trang','pbeltranster@gmail.com','0321654987',9,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(6,'qweqwe','qwe@we','1234567890',11,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(7,'Nguyen Quoc Heng','nqh130901@gmail.com','1234567890',12,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(8,'Duc Ngu Vcl','ducngu@gmail.com','0321654987',13,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(11,'Pham Le Hung Manh','manhpham1910@gmail.com','0977815809',43,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU');
+INSERT INTO `customers` VALUES (1,'Pham Hoang Phuc','phuclateo@gmail.com','0123456987',2,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(2,'Nguyen Quynh Nhu','nnhu7721@gmail.com','0213654798',3,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(3,'Nguyen Hoang Sang','19110120@student.hcmute.edu.vn','0977815809',7,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(4,'Nguyen Thi Hoang Trang','pbeltranster@gmail.com','0321654987',9,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(6,'qweqwe','qwe@we','1234567890',11,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(7,'Nguyen Quoc Heng','nqh130901@gmail.com','1234567890',12,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(8,'Duc Ngu Vcl','ducngu@gmail.com','0321654987',13,NULL,NULL,NULL,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU');
 /*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -275,7 +299,7 @@ CREATE TABLE `login_accounts` (
   `status` varchar(10) NOT NULL DEFAULT 'allowed',
   PRIMARY KEY (`id`),
   UNIQUE KEY `User_Name` (`user_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -284,7 +308,7 @@ CREATE TABLE `login_accounts` (
 
 LOCK TABLES `login_accounts` WRITE;
 /*!40000 ALTER TABLE `login_accounts` DISABLE KEYS */;
-INSERT INTO `login_accounts` VALUES (1,'admin','123','admin','allowed'),(2,'user','123','user','allowed'),(3,'nhu0707','123','user','allowed'),(7,'sang236','123','user','banned'),(8,'shipper','123','shipper','allowed'),(9,'tester','123','user','allowed'),(11,'qweqwe','qweqwe','user','allowed'),(12,'quochoang','123','user','allowed'),(13,'ducngu','123','user','allowed'),(43,'manhngu','123','user','allowed');
+INSERT INTO `login_accounts` VALUES (1,'admin','123','admin','allowed'),(2,'user','123','user','allowed'),(3,'nhu0707','123','user','allowed'),(7,'sang236','123','user','banned'),(8,'shipper','123','shipper','allowed'),(9,'tester','123','user','allowed'),(11,'qweqwe','qweqwe','user','allowed'),(12,'quochoang','123','user','allowed'),(13,'ducngu','123','user','allowed'),(44,'manhngu','123','user','allowed');
 /*!40000 ALTER TABLE `login_accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -408,7 +432,7 @@ CREATE TABLE `products_management` (
 
 LOCK TABLES `products_management` WRITE;
 /*!40000 ALTER TABLE `products_management` DISABLE KEYS */;
-INSERT INTO `products_management` VALUES (1,1,'red','s',10,1,0,0,0,0,0),(2,1,'red','m',10,2,0,0,0,1,0),(3,1,'red','l',10,1,0,0,0,0,1),(4,1,'white','s',15,0,0,0,0,0,0),(5,1,'white','m',15,3,0,0,0,0,1),(6,1,'white','l',15,2,0,0,0,0,0),(7,2,'pink','none',10,1,0,0,0,1,0),(8,2,'black','none',10,4,0,0,0,0,0),(9,3,'none','s',13,4,0,0,0,1,2),(11,3,'none','l',5,3,0,0,0,0,3),(12,4,'none','40',10,4,0,0,0,0,1),(13,4,'none','40.5',12,3,0,0,0,0,1),(14,4,'none','41',12,5,0,0,0,2,1),(16,4,'none','43',5,1,0,0,0,0,1),(17,5,'none','36',8,3,0,0,0,0,1),(18,5,'none','38',8,3,0,0,0,0,1),(19,5,'none','40',8,3,0,0,0,0,1),(20,5,'none','42',8,3,0,0,0,0,1);
+INSERT INTO `products_management` VALUES (1,1,'red','s',10,1,0,0,0,0,0),(3,1,'red','l',10,1,0,0,0,0,1),(4,1,'white','s',15,0,0,0,0,0,0),(5,1,'white','m',15,3,0,0,0,0,1),(6,1,'white','l',15,2,0,0,0,0,0),(7,2,'pink','none',10,1,0,0,0,1,0),(8,2,'black','none',10,4,0,0,0,0,0),(11,3,'none','l',3,3,0,0,0,0,3),(12,4,'none','40',10,4,0,0,0,0,1),(13,4,'none','40.5',12,3,0,0,0,0,1),(14,4,'none','41',12,5,0,0,0,2,1),(17,5,'none','36',8,3,0,0,0,0,1),(18,5,'none','38',8,3,0,0,0,0,1),(19,5,'none','40',8,3,0,0,0,0,1),(20,5,'none','42',8,3,0,0,0,0,1);
 /*!40000 ALTER TABLE `products_management` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -446,8 +470,22 @@ INSERT INTO `staffs` VALUES (1,'Nguyen Hoang Sang','hcm','staff','2001-06-23','n
 UNLOCK TABLES;
 
 --
--- Dumping routines for database 'fashionstorewebsite'
+-- Final view structure for view `cartiteminfoforui`
 --
+
+/*!50001 DROP VIEW IF EXISTS `cartiteminfoforui`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `cartiteminfoforui` AS select `c`.`id` AS `id`,`c`.`customer_id` AS `customer_id`,`c`.`product_management_id` AS `product_management_id`,`c`.`quantity` AS `quantity`,`c`.`buying_status` AS `buying_status`,`pm`.`product_id` AS `product_id`,`pm`.`color` AS `color`,`pm`.`size` AS `size`,`p`.`name` AS `name`,`p`.`brand` AS `brand`,`p`.`selling_price` AS `selling_price`,`p`.`discount` AS `discount`,`pim`.`image_1` AS `image_1` from (((`cart` `c` join `products_management` `pm` on((`pm`.`id` = `c`.`product_management_id`))) join `products` `p` on((`pm`.`product_id` = `p`.`id`))) join `product_images_management` `pim` on((`pim`.`product_id` = `p`.`id`))) where ((`c`.`buying_status` = 0) and (`pim`.`color` = `pm`.`color`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -458,4 +496,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-01  9:25:51
+-- Dump completed on 2023-03-04 23:53:51
