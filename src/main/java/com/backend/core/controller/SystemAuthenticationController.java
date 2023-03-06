@@ -30,6 +30,7 @@ public class SystemAuthenticationController extends com.backend.core.abstractcla
         return authenticationService.logoutFromSystem(session);
     }
 
+
     @PostMapping("/register")
     @Override
     public ApiResponse registerNewAccount(@Validated @RequestBody  Account account, BindingResult bindingResult) {

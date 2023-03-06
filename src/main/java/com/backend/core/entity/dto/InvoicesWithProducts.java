@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @Data
 @Getter
@@ -30,14 +32,33 @@ public class InvoicesWithProducts {
     @Column(name = "quantity")
     int quantity;
 
-    @Column(name = "product_discount")
-    double discount;
-
 
     public InvoicesWithProducts() {}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InvoicesWithProducts that = (InvoicesWithProducts) o;
+        return quantity == that.quantity && id.equals(that.id) && product.equals(that.product) && invoice.equals(that.invoice);
+    }
 
-//    public String formattedProductTotalPrice() {
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, product, invoice, quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "InvoicesWithProducts{" +
+                "id=" + id +
+                ", product=" + product +
+                ", invoice=" + invoice +
+                ", quantity=" + quantity +
+                '}';
+    }
+
+    //    public String formattedProductTotalPrice() {
 //        return ValueRender.formatDoubleNumber(this.quantity * (this.product.getPrice() * ((100 - this.product.getDiscount()) / 100)));
 //    }`
 }

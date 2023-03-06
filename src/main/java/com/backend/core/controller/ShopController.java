@@ -2,6 +2,7 @@ package com.backend.core.controller;
 
 import com.backend.core.entity.Product;
 import com.backend.core.entity.dto.ApiResponse;
+import com.backend.core.service.CalculationService;
 import com.backend.core.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,10 @@ public class ShopController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private CalculationService calculationService;
+
+
     @GetMapping("/allproducts")
     public ApiResponse getAllProducts() {
         List<Product> allProductsList = new ArrayList<Product>();
@@ -26,6 +31,7 @@ public class ShopController {
         try {
             allProductsList = productService.getAllProducts();
             if(allProductsList != null) {
+                System.out.println(allProductsList.get(0).calculation(calculationService));
                 status = "success";
             }
         }

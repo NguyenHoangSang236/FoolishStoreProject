@@ -8,7 +8,7 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "cartItemInfoForUI")
+@Table(name = "cart_item_info_for_ui")
 @Getter
 @Setter
 public class CartRenderInfoDTO {

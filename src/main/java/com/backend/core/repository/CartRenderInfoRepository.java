@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface CartRenderInfoRepository extends JpaRepository<CartRenderInfoDTO, Integer> {
-    @Query(value = "select * from cartItemInfoForUI where customer_id = :idVal", nativeQuery = true)
+    @Query(value = "select * from cart_item_info_for_ui where customer_id = :idVal", nativeQuery = true)
     List<CartRenderInfoDTO> getFullCartListByCustomerId(@Param("idVal") int id);
 }

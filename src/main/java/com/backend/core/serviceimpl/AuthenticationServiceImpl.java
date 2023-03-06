@@ -3,9 +3,9 @@ package com.backend.core.serviceimpl;
 import com.backend.core.entity.Account;
 import com.backend.core.entity.Customer;
 import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.repository.AccountRepository;
-import com.backend.core.repository.CustomerRepository;
-import com.backend.core.repository.StaffRepository;
+import com.backend.core.entity.renderdto.CustomerRenderInfoDTO;
+import com.backend.core.entity.renderdto.StaffRenderInfoDTO;
+import com.backend.core.repository.*;
 import com.backend.core.service.AuthenticationService;
 import com.backend.core.util.CheckUtils;
 import com.backend.core.util.EnumsList;
@@ -28,20 +28,36 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     AccountRepository accountRepo;
 
+    @Autowired
+    StaffRenderInfoRepository staffRenderInfoRepo;
+
+    @Autowired
+    CustomerRenderInfoRepository customerRenderInfoRepo;
+
+
 
     @Override
     public ApiResponse loginIntoSystem(Account account, HttpSession session) {
         Account loginAcc = new Account();
+        StaffRenderInfoDTO staffInfo = new StaffRenderInfoDTO();
+        CustomerRenderInfoDTO customerInfo = new CustomerRenderInfoDTO();
 
         try{
             loginAcc = accountRepo.getAccountByUserNameAndPassword(account.getUserName(), account.getPassword());
 
-            if(loginAcc.getUserName() != null) {
+            if(loginAcc != null) {
                 session.setAttribute("currentUser", loginAcc);
-                return new ApiResponse("success", loginAcc);
-            }
 
-            return new ApiResponse("failed", "This account is not existed");
+                if(loginAcc.getRole().equals(EnumsList.ADMIN.name()) || loginAcc.getRole().equals(EnumsList.SHIPPER.name())) {
+                    staffInfo = staffRenderInfoRepo.getStaffInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
+                    return new ApiResponse("success", staffInfo);
+                }
+                else {
+                    customerInfo = customerRenderInfoRepo.getCustomerInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
+                    return new ApiResponse("success", customerInfo);
+                }
+            }
+            else return new ApiResponse("failed", "This account is not existed");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -49,10 +65,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+
     @Override
     public ApiResponse forgotPassword(Account account) {
         return null;
     }
+
 
     @Override
     public ApiResponse logoutFromSystem(HttpSession session) {
@@ -66,9 +84,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+
     @Override
     public ApiResponse registerNewAccount(Account accountFromUI, BindingResult bindingResult) {
-        accountFromUI.setRole("user");
+        accountFromUI.setRole("CUSTOMER");
         Customer customer = accountFromUI.getCustomer();
 
         try{

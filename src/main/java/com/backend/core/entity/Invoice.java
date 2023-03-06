@@ -3,6 +3,8 @@ package com.backend.core.entity;
 import java.util.Date;
 import java.util.List;
 
+import com.backend.core.entity.interfaces.PurchaseCalculation;
+import com.backend.core.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -30,7 +32,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "invoice")
-public class Invoice {
+public class Invoice implements PurchaseCalculation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)
@@ -295,5 +297,10 @@ public class Invoice {
 
     public void setOnlinePaymentAccount(String onlinePaymentAccount) {
         this.onlinePaymentAccount = onlinePaymentAccount;
+    }
+
+    @Override
+    public double calculation(CalculationService calculationService) {
+        return calculationService.getTotalPriceFromProductsList(this, this.invoicesWithProducts);
     }
 }
