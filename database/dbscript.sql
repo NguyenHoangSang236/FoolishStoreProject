@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `fashionstorewebsite` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `fashionstorewebsite`;
--- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.29, for Linux (x86_64)
 --
 -- Host: localhost    Database: fashionstorewebsite
 -- ------------------------------------------------------
--- Server version	8.0.32
+-- Server version	8.0.32-0ubuntu0.22.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -49,14 +49,48 @@ INSERT INTO `cart` VALUES (1,1,5,2,0),(2,1,1,1,0),(3,1,11,2,0);
 UNLOCK TABLES;
 
 --
--- Temporary view structure for view `cartiteminfoforui`
+-- Table structure for table `cartItemInfoForUI`
 --
 
-DROP TABLE IF EXISTS `cartiteminfoforui`;
-/*!50001 DROP VIEW IF EXISTS `cartiteminfoforui`*/;
+DROP TABLE IF EXISTS `cartItemInfoForUI`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cartItemInfoForUI` (
+  `id` int NOT NULL,
+  `brand` varchar(255) DEFAULT NULL,
+  `buying_status` int DEFAULT NULL,
+  `color` varchar(255) DEFAULT NULL,
+  `customer_id` int DEFAULT NULL,
+  `discount` double DEFAULT NULL,
+  `image_1` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `product_id` int DEFAULT NULL,
+  `product_management_id` int DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
+  `selling_price` double DEFAULT NULL,
+  `size` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cartItemInfoForUI`
+--
+
+LOCK TABLES `cartItemInfoForUI` WRITE;
+/*!40000 ALTER TABLE `cartItemInfoForUI` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cartItemInfoForUI` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `cart_item_info_for_ui`
+--
+
+DROP TABLE IF EXISTS `cart_item_info_for_ui`;
+/*!50001 DROP VIEW IF EXISTS `cart_item_info_for_ui`*/;
 SET @saved_cs_client     = @@character_set_client;
 /*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `cartiteminfoforui` AS SELECT 
+/*!50001 CREATE VIEW `cart_item_info_for_ui` AS SELECT 
  1 AS `id`,
  1 AS `customer_id`,
  1 AS `product_management_id`,
@@ -152,6 +186,29 @@ LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `customer_info_for_ui`
+--
+
+DROP TABLE IF EXISTS `customer_info_for_ui`;
+/*!50001 DROP VIEW IF EXISTS `customer_info_for_ui`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `customer_info_for_ui` AS SELECT 
+ 1 AS `id`,
+ 1 AS `account_id`,
+ 1 AS `user_name`,
+ 1 AS `password`,
+ 1 AS `status`,
+ 1 AS `name`,
+ 1 AS `email`,
+ 1 AS `phone_number`,
+ 1 AS `address`,
+ 1 AS `city`,
+ 1 AS `country`,
+ 1 AS `avatar`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `customers`
@@ -267,7 +324,6 @@ CREATE TABLE `invoices_with_products` (
   `Invoice_ID` bigint NOT NULL,
   `Product_ID` bigint NOT NULL,
   `Quantity` int NOT NULL,
-  `Product_Discount` double NOT NULL DEFAULT '0',
   PRIMARY KEY (`Invoice_ID`,`Product_ID`),
   KEY `FK_from_products` (`Product_ID`),
   CONSTRAINT `FK_from_invoice` FOREIGN KEY (`Invoice_ID`) REFERENCES `invoice` (`ID`),
@@ -308,7 +364,7 @@ CREATE TABLE `login_accounts` (
 
 LOCK TABLES `login_accounts` WRITE;
 /*!40000 ALTER TABLE `login_accounts` DISABLE KEYS */;
-INSERT INTO `login_accounts` VALUES (1,'admin','123','admin','allowed'),(2,'user','123','user','allowed'),(3,'nhu0707','123','user','allowed'),(7,'sang236','123','user','banned'),(8,'shipper','123','shipper','allowed'),(9,'tester','123','user','allowed'),(11,'qweqwe','qweqwe','user','allowed'),(12,'quochoang','123','user','allowed'),(13,'ducngu','123','user','allowed'),(44,'manhngu','123','user','allowed');
+INSERT INTO `login_accounts` VALUES (1,'admin','123','ADMIN','allowed'),(2,'user','123','CUSTOMER','allowed'),(3,'nhu0707','123','CUSTOMER','allowed'),(7,'sang236','123','CUSTOMER','banned'),(8,'shipper','123','SHIPPER','allowed'),(9,'tester','123','CUSTOMER','allowed'),(11,'qweqwe','qweqwe','CUSTOMER','allowed'),(12,'quochoang','123','CUSTOMER','allowed'),(13,'ducngu','123','CUSTOMER','allowed'),(44,'manhngu','123','CUSTOMER','allowed');
 /*!40000 ALTER TABLE `login_accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -397,7 +453,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (1,'Manchester United 22/23 Home Jersey',950,650,'addidas',0,'A supporter jersey made with recycled materials.\n\nTurned up or pressed down, the humble polo collar has played a starring role in many of Manchester United\'s biggest moments. Making a comeback on this adidas football jersey, it joins a shield-style badge and engineered pinstripe graphic to produce an eye-catching look. Moisture-absorbing AEROREADY and mesh panels make it a comfortable choice for passionate supporters.\n\nMade with 100% recycled materials, this product represents just one of our solutions to help end plastic waste.'),(2,'Gucci Blondie shoulder bag',3600,2500,'gucci',0,'\n\nVintage elements are paired with archival details as an ode to the glamour that permeates Gucci\'s latest collections. This shoulder bag pairs a delicate chain strap with soft leather to infuse the accessory with a timeless feel. Reintroduced in honor of the collection, the rounded silhouette is completed by a historical, rounded iteration of Guccio Gucci\'s monogram.'),(3,'Striped jacquard wool knit sweater',2600,1400,'gucci',0,'\n\nThe Cruise 2023 Gucci Cosmogonie collection was presented against the backdrop of the historic Castel del Monte in Italy. The show brought together aesthetics from distant eras and geographies and linked elements from the past with the present. This multicolor striped jacquard wool sweater has the image of the jester paired with the Interlocking G on the front.'),(4,'Nike Air Max 90 SE',2750,1600,'nike',0,'What moves you? Find out in the Air Max 90 SE. Hemp accents, durable textile and playful \"NIKE MOVING CO.\" details celebrate getting going. Snail-trail deco stitching across the mudguard adds a fun take to the outdoorsy aesthetic. And its Waffle outsole and exposed Air cushioning keep the tried-and-tested feel under your feet. So, where next?'),(5,'Jersey midi dress with sequins',2065,1300,'dolce&gabbana',0,'Dolce&Gabbana has always loved contrasts and thinks of strong contemporary women with a lot of personality. Garments with enveloping silhouettes, such as this sheath dress with fusible rhinestone embellishment, come in future-looking materials that will highlight all your feminine sensuality. ');
+INSERT INTO `products` VALUES (1,'Manchester United 22/23 Home Jersey',950,650,'addidas',10,'A supporter jersey made with recycled materials.\n\nTurned up or pressed down, the humble polo collar has played a starring role in many of Manchester United\'s biggest moments. Making a comeback on this adidas football jersey, it joins a shield-style badge and engineered pinstripe graphic to produce an eye-catching look. Moisture-absorbing AEROREADY and mesh panels make it a comfortable choice for passionate supporters.\n\nMade with 100% recycled materials, this product represents just one of our solutions to help end plastic waste.'),(2,'Gucci Blondie shoulder bag',3600,2500,'gucci',0,'\n\nVintage elements are paired with archival details as an ode to the glamour that permeates Gucci\'s latest collections. This shoulder bag pairs a delicate chain strap with soft leather to infuse the accessory with a timeless feel. Reintroduced in honor of the collection, the rounded silhouette is completed by a historical, rounded iteration of Guccio Gucci\'s monogram.'),(3,'Striped jacquard wool knit sweater',2600,1400,'gucci',0,'\n\nThe Cruise 2023 Gucci Cosmogonie collection was presented against the backdrop of the historic Castel del Monte in Italy. The show brought together aesthetics from distant eras and geographies and linked elements from the past with the present. This multicolor striped jacquard wool sweater has the image of the jester paired with the Interlocking G on the front.'),(4,'Nike Air Max 90 SE',2750,1600,'nike',15,'What moves you? Find out in the Air Max 90 SE. Hemp accents, durable textile and playful \"NIKE MOVING CO.\" details celebrate getting going. Snail-trail deco stitching across the mudguard adds a fun take to the outdoorsy aesthetic. And its Waffle outsole and exposed Air cushioning keep the tried-and-tested feel under your feet. So, where next?'),(5,'Jersey midi dress with sequins',2065,1300,'dolce&gabbana',0,'Dolce&Gabbana has always loved contrasts and thinks of strong contemporary women with a lot of personality. Garments with enveloping silhouettes, such as this sheath dress with fusible rhinestone embellishment, come in future-looking materials that will highlight all your feminine sensuality. ');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -437,6 +493,27 @@ INSERT INTO `products_management` VALUES (1,1,'red','s',10,1,0,0,0,0,0),(3,1,'re
 UNLOCK TABLES;
 
 --
+-- Temporary view structure for view `staff_info_for_ui`
+--
+
+DROP TABLE IF EXISTS `staff_info_for_ui`;
+/*!50001 DROP VIEW IF EXISTS `staff_info_for_ui`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `staff_info_for_ui` AS SELECT 
+ 1 AS `id`,
+ 1 AS `account_id`,
+ 1 AS `user_name`,
+ 1 AS `password`,
+ 1 AS `status`,
+ 1 AS `name`,
+ 1 AS `email`,
+ 1 AS `phone_number`,
+ 1 AS `position`,
+ 1 AS `avatar`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `staffs`
 --
 
@@ -465,15 +542,15 @@ CREATE TABLE `staffs` (
 
 LOCK TABLES `staffs` WRITE;
 /*!40000 ALTER TABLE `staffs` DISABLE KEYS */;
-INSERT INTO `staffs` VALUES (1,'Nguyen Hoang Sang','hcm','staff','2001-06-23','nguyenhoangsang236@gmail.com','0123456987',1,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(2,'Nguyen Anh Duc','hcm','shipper','2001-02-02','ducnguvcl@gmail.com','0321654987',8,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU');
+INSERT INTO `staffs` VALUES (1,'Nguyen Hoang Sang','hcm','admin','2001-06-23','nguyenhoangsang236@gmail.com','0123456987',1,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(2,'Nguyen Anh Duc','hcm','shipper','2001-02-02','ducnguvcl@gmail.com','0321654987',8,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU');
 /*!40000 ALTER TABLE `staffs` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Final view structure for view `cartiteminfoforui`
+-- Final view structure for view `cart_item_info_for_ui`
 --
 
-/*!50001 DROP VIEW IF EXISTS `cartiteminfoforui`*/;
+/*!50001 DROP VIEW IF EXISTS `cart_item_info_for_ui`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
 /*!50001 SET @saved_cs_results         = @@character_set_results */;
 /*!50001 SET @saved_col_connection     = @@collation_connection */;
@@ -482,7 +559,43 @@ UNLOCK TABLES;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `cartiteminfoforui` AS select `c`.`id` AS `id`,`c`.`customer_id` AS `customer_id`,`c`.`product_management_id` AS `product_management_id`,`c`.`quantity` AS `quantity`,`c`.`buying_status` AS `buying_status`,`pm`.`product_id` AS `product_id`,`pm`.`color` AS `color`,`pm`.`size` AS `size`,`p`.`name` AS `name`,`p`.`brand` AS `brand`,`p`.`selling_price` AS `selling_price`,`p`.`discount` AS `discount`,`pim`.`image_1` AS `image_1` from (((`cart` `c` join `products_management` `pm` on((`pm`.`id` = `c`.`product_management_id`))) join `products` `p` on((`pm`.`product_id` = `p`.`id`))) join `product_images_management` `pim` on((`pim`.`product_id` = `p`.`id`))) where ((`c`.`buying_status` = 0) and (`pim`.`color` = `pm`.`color`)) */;
+/*!50001 VIEW `cart_item_info_for_ui` AS select `c`.`id` AS `id`,`c`.`customer_id` AS `customer_id`,`c`.`product_management_id` AS `product_management_id`,`c`.`quantity` AS `quantity`,`c`.`buying_status` AS `buying_status`,`pm`.`product_id` AS `product_id`,`pm`.`color` AS `color`,`pm`.`size` AS `size`,`p`.`name` AS `name`,`p`.`brand` AS `brand`,`p`.`selling_price` AS `selling_price`,`p`.`discount` AS `discount`,`pim`.`image_1` AS `image_1` from (((`cart` `c` join `products_management` `pm` on((`pm`.`id` = `c`.`product_management_id`))) join `products` `p` on((`pm`.`product_id` = `p`.`id`))) join `product_images_management` `pim` on((`pim`.`product_id` = `p`.`id`))) where ((`c`.`buying_status` = 0) and (`pim`.`color` = `pm`.`color`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `customer_info_for_ui`
+--
+
+/*!50001 DROP VIEW IF EXISTS `customer_info_for_ui`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `customer_info_for_ui` AS select `c`.`id` AS `id`,`c`.`account_id` AS `account_id`,`la`.`user_name` AS `user_name`,`la`.`password` AS `password`,`la`.`status` AS `status`,`c`.`name` AS `name`,`c`.`email` AS `email`,`c`.`phone_number` AS `phone_number`,`c`.`address` AS `address`,`c`.`city` AS `city`,`c`.`country` AS `country`,`c`.`avatar` AS `avatar` from (`login_accounts` `la` join `customers` `c` on((`la`.`id` = `c`.`account_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `staff_info_for_ui`
+--
+
+/*!50001 DROP VIEW IF EXISTS `staff_info_for_ui`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `staff_info_for_ui` AS select `c`.`id` AS `id`,`c`.`account_id` AS `account_id`,`la`.`user_name` AS `user_name`,`la`.`password` AS `password`,`la`.`status` AS `status`,`c`.`name` AS `name`,`c`.`email` AS `email`,`c`.`phone_number` AS `phone_number`,`c`.`position` AS `position`,`c`.`avatar` AS `avatar` from (`login_accounts` `la` join `staffs` `c` on((`la`.`id` = `c`.`account_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -496,4 +609,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-04 23:53:51
+-- Dump completed on 2023-03-06 23:24:47
