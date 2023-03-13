@@ -52,10 +52,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     staffInfo = staffRenderInfoRepo.getStaffInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
                     return new ApiResponse("success", staffInfo);
                 }
-                else {
+                else if(loginAcc.getRole().equals(EnumsList.CUSTOMER.name())) {
                     customerInfo = customerRenderInfoRepo.getCustomerInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
                     return new ApiResponse("success", customerInfo);
                 }
+                else return new ApiResponse("failed", "This role is not existed");
             }
             else return new ApiResponse("failed", "This account is not existed");
         }

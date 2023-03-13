@@ -6,5 +6,10 @@ public enum EnumsList {
     ADMIN,
     SHIPPER,
     CUSTOMER,
-
+    SHIPPED,
+    SHIPPING,
+    NOT_SHIPPED,
+    CANCEL,
+    ACCEPTANCE_WAITING,
+    PACKING,
 }
