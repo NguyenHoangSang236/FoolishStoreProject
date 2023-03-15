@@ -1,4 +1,4 @@
-package com.backend.core.entity;
+package com.backend.core.entity.tableentity;
 
 import java.util.Date;
 

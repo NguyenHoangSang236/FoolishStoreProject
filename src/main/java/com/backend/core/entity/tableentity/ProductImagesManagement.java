@@ -1,7 +1,6 @@
-package com.backend.core.entity;
+package com.backend.core.entity.tableentity;
 
-import com.backend.core.entity.Product;
-import com.backend.core.entity.ProductManagement;
+import com.backend.core.entity.tableentity.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;

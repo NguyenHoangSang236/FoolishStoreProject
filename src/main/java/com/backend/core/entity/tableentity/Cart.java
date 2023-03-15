@@ -1,4 +1,4 @@
-package com.backend.core.entity;
+package com.backend.core.entity.tableentity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -22,7 +22,7 @@ public class Cart {
     int quantity;
 
     @Column(name = "Buying_Status")
-    int buyingStatus;
+    String buyingStatus;
 
     @JsonIgnore
     @ManyToOne
@@ -36,9 +36,15 @@ public class Cart {
 
     public Cart() {}
 
-    public Cart(Customer customer, ProductManagement productManagement, int quantity, int buyingStatus) {
+    public Cart(Customer customer, ProductManagement productManagement, int quantity, String buyingStatus) {
         this.quantity = quantity;
         this.buyingStatus = buyingStatus;
+        this.customer = customer;
+        this.productManagement = productManagement;
+    }
+
+    public Cart(Customer customer, ProductManagement productManagement, int quantity) {
+        this.quantity = quantity;
         this.customer = customer;
         this.productManagement = productManagement;
     }

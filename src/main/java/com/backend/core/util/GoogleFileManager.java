@@ -6,6 +6,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.Permission;
+import com.google.auth.oauth2.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,8 +23,13 @@ public class GoogleFileManager {
     @Autowired
     private GoogleDriveConfig googleDriveConfig;
 
+    @Autowired
+    private GoogleAuthenTokenManager googleAuthenTokenManager;
+
+
     // Get all file
     public List<File> listEverything() throws IOException, GeneralSecurityException {
+        googleDriveConfig = GoogleDriveConfig.getGgDriveConfigInstance();
         // Print the names and IDs for up to 10 files.
         FileList result = googleDriveConfig.getInstance().files().list()
                 .setPageSize(1000)
@@ -32,31 +38,44 @@ public class GoogleFileManager {
         return result.getFiles();
     }
 
+
     // Get all folder
     public List<File> listFolderContent(String parentId) throws IOException, GeneralSecurityException {
+        googleDriveConfig = GoogleDriveConfig.getGgDriveConfigInstance();
+
         if (parentId == null) {
             parentId = "root";
         }
+
         String query = "'" + parentId + "' in parents";
+
         FileList result = googleDriveConfig.getInstance().files().list()
                 .setQ(query)
                 .setPageSize(10)
                 .setFields("nextPageToken, files(id, name)") // get field of google drive folder
                 .execute();
+
         return result.getFiles();
     }
+
 
     // Download file by id
     public void downloadFile(String id, OutputStream outputStream) throws IOException, GeneralSecurityException {
         if (id != null) {
+            googleDriveConfig = GoogleDriveConfig.getGgDriveConfigInstance();
+
             googleDriveConfig.getInstance().files().get(id).executeMediaAndDownloadTo(outputStream);
         }
     }
 
+
     // Delete file by id
     public void deleteFileOrFolder(String fileId) throws Exception {
+        googleDriveConfig = GoogleDriveConfig.getGgDriveConfigInstance();
+
         googleDriveConfig.getInstance().files().delete(fileId).execute();
     }
+
 
     // Set permission drive file
     private Permission setPermission(String type, String role){
@@ -96,10 +115,13 @@ public class GoogleFileManager {
         return null;
     }
 
+
     // get id folder google drive
     public String getFolderId(String folderName) throws Exception {
         String parentId = null;
         String[] folderNames = folderName.split("/");
+
+        googleDriveConfig = GoogleDriveConfig.getGgDriveConfigInstance();
 
         Drive driveInstance = googleDriveConfig.getInstance();
         for (String name : folderNames) {
@@ -107,6 +129,7 @@ public class GoogleFileManager {
         }
         return parentId;
     }
+
 
     private String findOrCreateFolder(String parentId, String folderName, Drive driveInstance) throws Exception {
         String folderId = searchFolderId(parentId, folderName, driveInstance);
@@ -127,6 +150,7 @@ public class GoogleFileManager {
                 .execute()
                 .getId();
     }
+
 
     private String searchFolderId(String parentId, String folderName, Drive service) throws Exception {
         String folderId = null;
@@ -160,5 +184,13 @@ public class GoogleFileManager {
 
         return folderId;
     }
+
+    public boolean checkExpiredAccessToken() {
+        return (GoogleDriveConfig.getGgDriveConfigInstance().ggDriveCredential.getAccessToken() != null && GoogleDriveConfig.getGgDriveConfigInstance().ggDriveCredential.getExpirationTimeMilliseconds() < System.currentTimeMillis());
+    }
+
+//    public AccessToken getGgAuthenToken() {
+//        googleAuthenTokenManager = new GoogleAuthenTokenManager(googleDriveConfig.getCredentials)
+//    }
 }
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/")
-public class IndexPageController {
+public class PagesController {
     @GetMapping("/")
     public String indexPage() {
         return "";

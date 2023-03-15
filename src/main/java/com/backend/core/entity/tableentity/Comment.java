@@ -1,4 +1,4 @@
-package com.backend.core.entity;
+package com.backend.core.entity.tableentity;
 
 import java.util.Date;
 
@@ -15,9 +15,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

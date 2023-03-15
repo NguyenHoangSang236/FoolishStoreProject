@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.backend.core.entity.Invoice;
+import com.backend.core.entity.tableentity.Invoice;
 
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {

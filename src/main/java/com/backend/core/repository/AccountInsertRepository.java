@@ -6,7 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.backend.core.entity.Account;
+import com.backend.core.entity.tableentity.Account;
 
 @Repository
 public class AccountInsertRepository {

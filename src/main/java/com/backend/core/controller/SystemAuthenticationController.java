@@ -1,6 +1,6 @@
 package com.backend.core.controller;
 
-import com.backend.core.entity.Account;
+import com.backend.core.entity.tableentity.Account;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.service.AuthenticationService;
 import jakarta.servlet.http.HttpSession;

@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.backend.core.entity.Product;
+import com.backend.core.entity.tableentity.Product;
 
 @Repository
 public interface ProductRemoveRepository extends JpaRepository<Product, Integer>{

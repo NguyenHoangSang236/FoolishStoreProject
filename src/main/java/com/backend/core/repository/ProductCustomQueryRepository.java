@@ -5,12 +5,8 @@ import java.util.List;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.backend.core.entity.Product;
-import com.backend.core.util.EntityManagerEntity;
 
 @Repository
 public class ProductCustomQueryRepository {

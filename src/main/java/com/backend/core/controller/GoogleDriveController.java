@@ -52,11 +52,10 @@ public class GoogleDriveController {
                                   @RequestParam("filePath") String pathFile,
                                   @RequestParam("shared") String shared) {
 
-//        System.out.println(pathFile);
         if (pathFile.equals("")){
             pathFile = "Root"; // Save to default folder if the user does not select a folder to save - you can change it
         }
-//        System.out.println(pathFile);
+
         try {
             String fileId = googleDriveService.uploadFile(fileUpload, pathFile, Boolean.parseBoolean(shared));
             return new ApiResponse("success", fileId);

@@ -1,14 +1,15 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entity.Account;
-import com.backend.core.entity.Customer;
+import com.backend.core.entity.tableentity.Account;
+import com.backend.core.entity.tableentity.Customer;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.renderdto.CustomerRenderInfoDTO;
 import com.backend.core.entity.renderdto.StaffRenderInfoDTO;
+import com.backend.core.enums.StringTypeEnum;
 import com.backend.core.repository.*;
 import com.backend.core.service.AuthenticationService;
 import com.backend.core.util.CheckUtils;
-import com.backend.core.util.EnumsList;
+import com.backend.core.enums.RoleEnum;
 import com.backend.core.util.ExceptionHandlerUtils;
 import com.backend.core.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpSession;
@@ -48,11 +49,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if(loginAcc != null) {
                 session.setAttribute("currentUser", loginAcc);
 
-                if(loginAcc.getRole().equals(EnumsList.ADMIN.name()) || loginAcc.getRole().equals(EnumsList.SHIPPER.name())) {
+                if(loginAcc.getRole().equals(RoleEnum.ADMIN.name()) || loginAcc.getRole().equals(RoleEnum.SHIPPER.name())) {
                     staffInfo = staffRenderInfoRepo.getStaffInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
                     return new ApiResponse("success", staffInfo);
                 }
-                else if(loginAcc.getRole().equals(EnumsList.CUSTOMER.name())) {
+                else if(loginAcc.getRole().equals(RoleEnum.CUSTOMER.name())) {
                     customerInfo = customerRenderInfoRepo.getCustomerInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
                     return new ApiResponse("success", customerInfo);
                 }
@@ -97,8 +98,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 return new ApiResponse("failed", ExceptionHandlerUtils.getHandleBindException(new BindException(bindingResult)));
             }
             //check valid username and password
-            else if(!CheckUtils.checkValidStringType(accountFromUI.getUserName(), EnumsList.HAS_NO_SPACE) ||
-                    !CheckUtils.checkValidStringType(accountFromUI.getPassword(), EnumsList.HAS_NO_SPACE)) {
+            else if(!CheckUtils.checkValidStringType(accountFromUI.getUserName(), StringTypeEnum.HAS_NO_SPACE) ||
+                    !CheckUtils.checkValidStringType(accountFromUI.getPassword(), StringTypeEnum.HAS_NO_SPACE)) {
                 return new ApiResponse("failed", "Please remove all spaces in Username and Password !!");
             }
             //check for existed username

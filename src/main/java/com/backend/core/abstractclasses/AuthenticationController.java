@@ -1,10 +1,9 @@
 package com.backend.core.abstractclasses;
 
-import com.backend.core.entity.Account;
+import com.backend.core.entity.tableentity.Account;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.service.AuthenticationService;
 import jakarta.servlet.http.HttpSession;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;

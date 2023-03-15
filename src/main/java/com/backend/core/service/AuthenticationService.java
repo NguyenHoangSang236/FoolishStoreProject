@@ -1,6 +1,6 @@
 package com.backend.core.service;
 
-import com.backend.core.entity.Account;
+import com.backend.core.entity.tableentity.Account;
 import com.backend.core.entity.dto.ApiResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;

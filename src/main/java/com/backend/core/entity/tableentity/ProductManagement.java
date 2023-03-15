@@ -1,6 +1,5 @@
-package com.backend.core.entity;
+package com.backend.core.entity.tableentity;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,12 +10,9 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

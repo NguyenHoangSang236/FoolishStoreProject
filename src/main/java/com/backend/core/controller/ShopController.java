@@ -1,6 +1,6 @@
 package com.backend.core.controller;
 
-import com.backend.core.entity.Product;
+import com.backend.core.entity.tableentity.Product;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.service.CalculationService;
 import com.backend.core.service.ProductService;

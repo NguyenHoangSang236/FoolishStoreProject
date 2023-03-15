@@ -31,6 +31,25 @@ public class GoogleDriveConfig {
     private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
     private static final String CREDENTIALS_FILE_PATH = "/home/mr/JAVA/FoolishStoreProject/src/main/resources/client-secret.json"; // path file Google Drive Service
 
+    private static GoogleDriveConfig ggDriveConfigInstance;
+
+    public Credential ggDriveCredential;
+
+
+    public GoogleDriveConfig() {}
+
+
+    public static GoogleDriveConfig getGgDriveConfigInstance() {
+        if(ggDriveConfigInstance == null){
+            synchronized(GoogleDriveConfig.class){
+                if(ggDriveConfigInstance == null){
+                    ggDriveConfigInstance = new GoogleDriveConfig();
+                }
+            }
+        }
+        return ggDriveConfigInstance;
+    }
+
 
     public Drive getInstance() throws GeneralSecurityException, IOException {
         // Build a new authorized API client service.
@@ -64,7 +83,10 @@ public class GoogleDriveConfig {
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8081).build(); // PORT URI OF GOOGLE SERVICE
 
-        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+        this.ggDriveCredential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+
+        return this.ggDriveCredential;
     }
+
 
 }

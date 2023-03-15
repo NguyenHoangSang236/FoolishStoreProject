@@ -1,6 +1,6 @@
 package com.backend.core.service;
 
-import com.backend.core.entity.Product;
+import com.backend.core.entity.tableentity.Product;
 import com.backend.core.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

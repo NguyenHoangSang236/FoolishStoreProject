@@ -1,7 +1,7 @@
 package com.backend.core.entity.dto;
 
-import com.backend.core.entity.Invoice;
-import com.backend.core.entity.Product;
+import com.backend.core.entity.tableentity.Invoice;
+import com.backend.core.entity.tableentity.Product;
 import com.backend.core.entity.embededkey.InvoicesWithProductsPrimaryKeys;
 import jakarta.persistence.*;
 import lombok.Data;

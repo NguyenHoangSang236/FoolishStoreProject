@@ -7,8 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.backend.core.entity.Customer;
-import com.backend.core.entity.Staff;
+import com.backend.core.entity.tableentity.Staff;
 
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, Integer>{

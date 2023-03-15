@@ -1,4 +1,4 @@
-package com.backend.core.entity;
+package com.backend.core.entity.tableentity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

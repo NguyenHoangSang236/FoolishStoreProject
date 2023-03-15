@@ -1,5 +1,7 @@
 package com.backend.core.util;
 
+import com.backend.core.enums.RoleEnum;
+import com.backend.core.enums.StringTypeEnum;
 import com.backend.core.repository.CustomerRepository;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -13,11 +15,11 @@ public class CheckUtils {
 
 
     //check String has space or not
-    public static boolean checkValidStringType(String content, EnumsList type) {
-        if(type == EnumsList.HAS_NO_SPACE) {
+    public static boolean checkValidStringType(String content, StringTypeEnum type) {
+        if(type == StringTypeEnum.HAS_NO_SPACE) {
             return !isStringWithSpace(content);
         }
-        else if (type == EnumsList.HAS_SPACE) {
+        else if (type == StringTypeEnum.HAS_SPACE) {
             return isStringWithSpace(content);
         }
 

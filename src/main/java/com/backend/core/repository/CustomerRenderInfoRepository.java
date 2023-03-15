@@ -1,14 +1,10 @@
 package com.backend.core.repository;
 
-import com.backend.core.entity.Account;
-import com.backend.core.entity.renderdto.CartRenderInfoDTO;
 import com.backend.core.entity.renderdto.CustomerRenderInfoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface CustomerRenderInfoRepository extends JpaRepository<CustomerRenderInfoDTO, Integer> {

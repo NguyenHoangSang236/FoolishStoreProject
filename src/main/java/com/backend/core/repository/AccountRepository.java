@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.backend.core.entity.Account;
+import com.backend.core.entity.tableentity.Account;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {

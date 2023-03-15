@@ -1,9 +1,11 @@
-package com.backend.core.entity;
+package com.backend.core.entity.tableentity;
 
 import java.util.Date;
 import java.util.List;
 
 import com.backend.core.entity.interfaces.PurchaseCalculation;
+import com.backend.core.entity.tableentity.Customer;
+import com.backend.core.entity.tableentity.Delivery;
 import com.backend.core.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;

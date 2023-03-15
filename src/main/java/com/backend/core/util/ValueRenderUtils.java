@@ -1,16 +1,12 @@
 package com.backend.core.util;
 
-import com.backend.core.entity.Account;
-import com.backend.core.entity.Cart;
-import com.backend.core.entity.dto.CartItemDTO;
+import com.backend.core.entity.tableentity.Account;
 import com.backend.core.repository.CartRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 public class ValueRenderUtils {

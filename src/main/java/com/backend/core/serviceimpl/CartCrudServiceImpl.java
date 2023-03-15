@@ -1,10 +1,11 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entity.Cart;
-import com.backend.core.entity.ProductManagement;
+import com.backend.core.entity.tableentity.Cart;
+import com.backend.core.entity.tableentity.ProductManagement;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.CartItemDTO;
 import com.backend.core.entity.renderdto.CartRenderInfoDTO;
+import com.backend.core.enums.CartBuyingStatusEnum;
 import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.ValueRenderUtils;
@@ -13,7 +14,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,8 +66,7 @@ public class CartCrudServiceImpl implements CrudService {
                         newCartItem = new Cart(
                                 customerRepo.getCustomerById(customerId),
                                 productManagement,
-                                cartItemDTO.getQuantity(),
-                                0
+                                cartItemDTO.getQuantity()
                         );
                         cartRepo.save(newCartItem);
 
@@ -102,7 +101,7 @@ public class CartCrudServiceImpl implements CrudService {
                     for (int id: selectedCartIdArr) {
                         Cart cart = cartRepo.getCartById(id);
 
-                        if(cart.getCustomer().getId() == customerId && cart.getBuyingStatus() == 0) {
+                        if(cart.getCustomer().getId() == customerId && cart.getBuyingStatus().equals(CartBuyingStatusEnum.NOT_BOUGHT_YET.name())) {
                             cartRepo.deleteById(id);
                         }
                         else return new ApiResponse("failed", "This cart item is not yours");
