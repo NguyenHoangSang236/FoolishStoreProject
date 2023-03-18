@@ -29,7 +29,7 @@ CREATE TABLE `cart` (
   `customer_id` bigint NOT NULL,
   `product_management_id` bigint NOT NULL,
   `quantity` int NOT NULL,
-  `buying_status` tinyint NOT NULL,
+  `buying_status` varchar(20) NOT NULL DEFAULT 'NOT_BOUGHT_YET',
   PRIMARY KEY (`id`),
   KEY `FK_Customer_Cart` (`customer_id`),
   KEY `FK_Product_Cart_idx` (`product_management_id`),
@@ -44,42 +44,8 @@ CREATE TABLE `cart` (
 
 LOCK TABLES `cart` WRITE;
 /*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-INSERT INTO `cart` VALUES (1,1,5,2,0),(2,1,1,1,0),(3,1,11,2,0);
+INSERT INTO `cart` VALUES (1,1,5,2,'NOT_BOUGHT_YET'),(2,1,1,1,'NOT_BOUGHT_YET'),(3,1,11,2,'NOT_BOUGHT_YET'),(4,1,3,2,'BOUGHT'),(5,1,4,6,'BOUGHT');
 /*!40000 ALTER TABLE `cart` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `cartItemInfoForUI`
---
-
-DROP TABLE IF EXISTS `cartItemInfoForUI`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cartItemInfoForUI` (
-  `id` int NOT NULL,
-  `brand` varchar(255) DEFAULT NULL,
-  `buying_status` int DEFAULT NULL,
-  `color` varchar(255) DEFAULT NULL,
-  `customer_id` int DEFAULT NULL,
-  `discount` double DEFAULT NULL,
-  `image_1` varchar(255) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `product_id` int DEFAULT NULL,
-  `product_management_id` int DEFAULT NULL,
-  `quantity` int DEFAULT NULL,
-  `selling_price` double DEFAULT NULL,
-  `size` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `cartItemInfoForUI`
---
-
-LOCK TABLES `cartItemInfoForUI` WRITE;
-/*!40000 ALTER TABLE `cartItemInfoForUI` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cartItemInfoForUI` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -309,7 +275,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice` VALUES (1,1,'2022-11-10',1,'shipped',0,NULL,'vnd','paypal',NULL,NULL,'accepted',0,'sb-2437s98400372@personal.example.com'),(2,1,'2022-11-02',1,'cancel',100,'admin\'s reasons are written herer ...','vnd ','vnpay',NULL,'akdgfg','accepted',0,NULL),(3,1,'2022-12-04',0,'acceptance waiting',0,NULL,'vnd','cod','alo alo',NULL,'waiting',0,NULL),(4,1,'2022-12-04',0,'cancel',0,'The shop caught fire !!','vnd','cod','alo alo',NULL,'refused',0,NULL),(5,2,'2022-12-07',0,'acceptance waiting',0,NULL,'vnd','cod','nguyen quynh nhu',NULL,'waiting',0,NULL),(6,1,'2022-12-11',1,'cancel',0,'shipper comments are written here...','vnd','paypal','alo alo','hhhhhhhhhhhhhhhhhh','accepted',0,'sb-2437s98400372@personal.example.com'),(7,1,'2022-12-21',0,'packing',0,NULL,'vnd','cod','alo alo','hhhhhhhhhhhhhhhhhh','accepted',0,NULL),(8,2,'2022-12-22',0,'shipping',0,NULL,'vnd','cod','huhuhuhuu','kakakakak','accepted',0,NULL),(9,2,'2022-12-22',0,'not shipped',0,'customer canceled order before admin accept','vnd','cod','huhuhuhuu','kakakakak','waiting',0,''),(10,1,'2022-12-22',0,'packing',0,'','vnd','cod','alo alo','hhhhhhhhhhhhhhhhhh','accepted',0,''),(11,2,'2022-12-22',1,'shipping',0,'','vnd','paypal','duc ngu','phuc ngu','accepted',0,'sb-2437s98400372@personal.example.com');
+INSERT INTO `invoice` VALUES (1,1,'2023-03-10',1,'SHIPPED',0,NULL,'vnd','paypal',NULL,NULL,'accepted',0,'sb-2437s98400372@personal.example.com'),(2,1,'2023-03-10',1,'CANCEL',100,'admin\'s reasons are written herer ...','vnd ','vnpay',NULL,'akdgfg','accepted',0,NULL),(3,1,'2023-03-10',0,'ACCEPTANCE_WAITING',0,NULL,'vnd','cod','alo alo',NULL,'waiting',0,NULL),(4,1,'2023-03-10',0,'CANCEL',0,'The shop caught fire !!','vnd','cod','alo alo',NULL,'refused',0,NULL),(5,2,'2023-03-10',0,'ACCEPTANCE_WAITING',0,NULL,'vnd','cod','nguyen quynh nhu',NULL,'waiting',0,NULL),(6,1,'2023-03-10',1,'CANCEL',0,'shipper comments are written here...','vnd','paypal','alo alo','hhhhhhhhhhhhhhhhhh','accepted',0,'sb-2437s98400372@personal.example.com'),(7,1,'2023-03-10',0,'PACKING',0,NULL,'vnd','cod','alo alo','hhhhhhhhhhhhhhhhhh','accepted',0,NULL),(8,2,'2023-03-10',0,'SHIPPING',0,NULL,'vnd','cod','huhuhuhuu','kakakakak','accepted',0,NULL),(9,2,'2023-03-10',0,'NOT_SHIPPED',0,'customer canceled order before admin accept','vnd','cod','huhuhuhuu','kakakakak','waiting',0,''),(10,1,'2023-03-17',0,'PACKING',0,'','vnd','cod','alo alo','hhhhhhhhhhhhhhhhhh','accepted',0,''),(11,2,'2023-03-17',1,'SHIPPING',0,'','vnd','paypal','duc ngu','phuc ngu','accepted',0,'sb-2437s98400372@personal.example.com');
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -322,12 +288,12 @@ DROP TABLE IF EXISTS `invoices_with_products`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `invoices_with_products` (
   `Invoice_ID` bigint NOT NULL,
-  `Product_ID` bigint NOT NULL,
+  `Product_Management_ID` bigint NOT NULL,
   `Quantity` int NOT NULL,
-  PRIMARY KEY (`Invoice_ID`,`Product_ID`),
-  KEY `FK_from_products` (`Product_ID`),
+  PRIMARY KEY (`Invoice_ID`,`Product_Management_ID`),
+  KEY `FK_from_products_management_idx` (`Product_Management_ID`),
   CONSTRAINT `FK_from_invoice` FOREIGN KEY (`Invoice_ID`) REFERENCES `invoice` (`ID`),
-  CONSTRAINT `FK_from_products` FOREIGN KEY (`Product_ID`) REFERENCES `products` (`id`)
+  CONSTRAINT `FK_from_products_management` FOREIGN KEY (`Product_Management_ID`) REFERENCES `products_management` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -337,6 +303,7 @@ CREATE TABLE `invoices_with_products` (
 
 LOCK TABLES `invoices_with_products` WRITE;
 /*!40000 ALTER TABLE `invoices_with_products` DISABLE KEYS */;
+INSERT INTO `invoices_with_products` VALUES (1,3,4),(1,4,1),(1,11,5),(2,1,1),(2,3,4),(3,11,3),(3,12,3),(4,1,1),(5,4,4),(6,18,1),(7,12,1),(7,20,13),(8,1,3),(9,1,3),(10,20,5),(11,13,1),(11,17,1),(11,19,5),(11,20,5);
 /*!40000 ALTER TABLE `invoices_with_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -425,6 +392,28 @@ LOCK TABLES `product_import_management` WRITE;
 INSERT INTO `product_import_management` VALUES (1,1,'2022-12-01 00:00:00',10,NULL);
 /*!40000 ALTER TABLE `product_import_management` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `product_info_for_ui`
+--
+
+DROP TABLE IF EXISTS `product_info_for_ui`;
+/*!50001 DROP VIEW IF EXISTS `product_info_for_ui`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `product_info_for_ui` AS SELECT 
+ 1 AS `id`,
+ 1 AS `name`,
+ 1 AS `selling_price`,
+ 1 AS `discount`,
+ 1 AS `brand`,
+ 1 AS `color`,
+ 1 AS `available_quantity`,
+ 1 AS `image_1`,
+ 1 AS `image_2`,
+ 1 AS `image_3`,
+ 1 AS `image_4`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `products`
@@ -547,6 +536,28 @@ INSERT INTO `staffs` VALUES (1,'Nguyen Hoang Sang','hcm','admin','2001-06-23','n
 UNLOCK TABLES;
 
 --
+-- Temporary view structure for view `top_8_best_sell_products`
+--
+
+DROP TABLE IF EXISTS `top_8_best_sell_products`;
+/*!50001 DROP VIEW IF EXISTS `top_8_best_sell_products`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `top_8_best_sell_products` AS SELECT 
+ 1 AS `id`,
+ 1 AS `name`,
+ 1 AS `selling_price`,
+ 1 AS `discount`,
+ 1 AS `brand`,
+ 1 AS `color`,
+ 1 AS `available_quantity`,
+ 1 AS `image_1`,
+ 1 AS `image_2`,
+ 1 AS `image_3`,
+ 1 AS `image_4`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Final view structure for view `cart_item_info_for_ui`
 --
 
@@ -583,6 +594,24 @@ UNLOCK TABLES;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `product_info_for_ui`
+--
+
+/*!50001 DROP VIEW IF EXISTS `product_info_for_ui`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `product_info_for_ui` AS select `p`.`id` AS `id`,`p`.`name` AS `name`,`p`.`selling_price` AS `selling_price`,`p`.`discount` AS `discount`,`p`.`brand` AS `brand`,`pim`.`color` AS `color`,`pm`.`available_quantity` AS `available_quantity`,`pim`.`image_1` AS `image_1`,`pim`.`image_2` AS `image_2`,`pim`.`image_3` AS `image_3`,`pim`.`image_4` AS `image_4` from ((((`products` `p` join `product_images_management` `pim` on((`p`.`id` = `pim`.`product_id`))) join `products_management` `pm` on((`pm`.`product_id` = `p`.`id`))) join `catalogs_with_products` `cwp` on((`cwp`.`product_id` = `p`.`id`))) join `catalog` `c` on((`c`.`id` = `cwp`.`catalog_id`))) group by `pim`.`color`,`p`.`id` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `staff_info_for_ui`
 --
 
@@ -599,6 +628,24 @@ UNLOCK TABLES;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `top_8_best_sell_products`
+--
+
+/*!50001 DROP VIEW IF EXISTS `top_8_best_sell_products`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `top_8_best_sell_products` AS select `pm`.`id` AS `id`,`p`.`name` AS `name`,`p`.`selling_price` AS `selling_price`,`p`.`discount` AS `discount`,`p`.`brand` AS `brand`,`pm`.`color` AS `color`,`pm`.`available_quantity` AS `available_quantity`,`pim`.`image_1` AS `image_1`,`pim`.`image_2` AS `image_2`,`pim`.`image_3` AS `image_3`,`pim`.`image_4` AS `image_4` from ((((`products_management` `pm` join `invoices_with_products` `iwp` on((`pm`.`id` = `iwp`.`Product_Management_ID`))) join `invoice` `i` on((`iwp`.`Invoice_ID` = `i`.`ID`))) join `products` `p` on((`p`.`id` = `pm`.`product_id`))) join `product_images_management` `pim` on((`pim`.`product_id` = `p`.`id`))) where ((`i`.`Invoice_Date` <= cast(now() as date)) and (`i`.`Invoice_Date` >= cast((now() - interval 30 day) as date))) group by `pm`.`id` order by (select sum(`invoices_with_products`.`Quantity`) from ((`invoices_with_products` join `products_management` `pm` on((`pm`.`id` = `invoices_with_products`.`Product_Management_ID`))) join `products` `p` on((`p`.`id` = `pm`.`product_id`))) where (`p`.`name` = `p`.`name`)) desc limit 8 */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -609,4 +656,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-06 23:24:47
+-- Dump completed on 2023-03-18 13:50:53

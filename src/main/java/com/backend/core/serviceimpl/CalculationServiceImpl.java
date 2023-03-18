@@ -32,7 +32,7 @@ public class CalculationServiceImpl implements CalculationService {
         double result = 0;
 
         for(InvoicesWithProducts itm: invoiceProductsList) {
-            result += itm.getProduct().calculation(calculationService) * itm.getQuantity();
+            result += itm.getProductManagement().calculation(calculationService) * itm.getQuantity();
         }
 
         return result;

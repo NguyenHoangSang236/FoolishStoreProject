@@ -65,9 +65,6 @@ public class Product implements Serializable, PurchaseCalculation {
 //    @ManyToMany(mappedBy = "products")
 //    private List<Invoice> invoice;
 
-    @OneToMany(mappedBy = "product")
-    List<InvoicesWithProducts> invoicesWithProducts;
-
 
     @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -92,12 +89,12 @@ public class Product implements Serializable, PurchaseCalculation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return id == product.id && Double.compare(product.sellingPrice, sellingPrice) == 0 && Double.compare(product.originalPrice, originalPrice) == 0 && Double.compare(product.discount, discount) == 0 && name.equals(product.name) && brand.equals(product.brand) && description.equals(product.description) && invoicesWithProducts.equals(product.invoicesWithProducts) && catalogs.equals(product.catalogs) && comments.equals(product.comments) && productManagements.equals(product.productManagements) && productImagesManagement.equals(product.productImagesManagement);
+        return id == product.id && Double.compare(product.sellingPrice, sellingPrice) == 0 && Double.compare(product.originalPrice, originalPrice) == 0 && Double.compare(product.discount, discount) == 0 && name.equals(product.name) && brand.equals(product.brand) && description.equals(product.description) && catalogs.equals(product.catalogs) && comments.equals(product.comments) && productManagements.equals(product.productManagements) && productImagesManagement.equals(product.productImagesManagement);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, sellingPrice, originalPrice, discount, brand, description, invoicesWithProducts, catalogs, comments, productManagements, productImagesManagement);
+        return Objects.hash(id, name, sellingPrice, originalPrice, discount, brand, description, catalogs, comments, productManagements, productImagesManagement);
     }
 
     @Override
@@ -110,7 +107,6 @@ public class Product implements Serializable, PurchaseCalculation {
                 ", discount=" + discount +
                 ", brand='" + brand + '\'' +
                 ", description='" + description + '\'' +
-                ", invoicesWithProducts=" + invoicesWithProducts +
                 ", catalogs=" + catalogs +
                 ", comments=" + comments +
                 ", productManagements=" + productManagements +

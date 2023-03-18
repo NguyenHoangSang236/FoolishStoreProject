@@ -20,10 +20,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	List<Product> getAllProducts();
 	
 	
-	@Query(value = "select * from products", nativeQuery = true)
-    List<Product> getAllProductsWithColorsAndSizes();
-	
-	
 	@Query(value = "select p from Product p where p.name like %:nameVal% group by name")
 	List<Product> getProductsByName(@Param("nameVal") String productName);
 	
@@ -67,15 +63,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	
 	
 	@Query(value = "select p.* "
-				 + "from products p join invoices_with_products iwp on p.id = iwp.Product_ID join invoice i on iwp.Invoice_ID = i.id "
-		  		 + "where Invoice_Date <= DATE(NOW()) and Invoice_Date >= DATE(NOW() - INTERVAL 30 DAY) "
-				 + "group by id "
-				 + "order by (select sum(Quantity) from invoices_with_products join products on products.id = invoices_with_products.Product_ID where name = p.name) "
-				 + "desc limit 8", nativeQuery = true)
-	List<Product> get8BestSellerProducts();
-	
-	
-	@Query(value = "select p.* "
     	         + "from products p join catalog_with_products cwp on p.name = cwp.product_name "
     	         + "                join catalog c on c.id = cwp.catalog_id "
     	         + "where c.name = :catalogName "
@@ -89,14 +76,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	
 	@Query(value = "select brand from products group by brand", nativeQuery = true)
 	List<String> getAllProductBrands();
-	
-	
-	@Query(value = "select * from products group by name order by id desc limit 8", nativeQuery = true)
-	List<Product> get8NewArrivalProducts();
-	
-	
-	@Query(value = "select * from products where discount > 0 group by name order by discount desc limit 8", nativeQuery = true)
-	List<Product> get8HotDiscountProducts();
 	
 	
 	@Query(value = "select sum(sold_quantity) from products where name = :nameVal", nativeQuery = true)

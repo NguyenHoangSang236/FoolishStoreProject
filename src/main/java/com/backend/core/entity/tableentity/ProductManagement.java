@@ -1,8 +1,12 @@
 package com.backend.core.entity.tableentity;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import com.backend.core.entity.dto.InvoicesWithProducts;
+import com.backend.core.entity.interfaces.PurchaseCalculation;
+import com.backend.core.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
@@ -23,7 +27,7 @@ import lombok.Setter;
 @DynamicInsert
 @DynamicUpdate
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
-public class ProductManagement {
+public class ProductManagement implements Serializable, PurchaseCalculation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -60,6 +64,10 @@ public class ProductManagement {
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "productManagement")
+    List<InvoicesWithProducts> invoicesWithProducts;
 
     @JsonIgnore
     @OneToMany(mappedBy = "productManagement", cascade = CascadeType.ALL)
@@ -102,6 +110,11 @@ public class ProductManagement {
 
     public void subtractQuantity(int quant) {
         this.availableQuantity -= quant;
+    }
+
+    @Override
+    public double calculation(CalculationService calculationService) {
+        return calculationService.getTotalPriceOfSingleProduct(this, this.product.getSellingPrice(), this.product.getDiscount());
     }
 
 

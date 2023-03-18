@@ -52,7 +52,7 @@ public class GoogleDriveService {
     }
 
 
-    public String uploadFile(MultipartFile file, String filePath, boolean isPublic) {
+    public String uploadFile(MultipartFile file, String filePath, boolean isPublic) throws Exception {
         String type = "";
         String role = "";
         if (isPublic) {

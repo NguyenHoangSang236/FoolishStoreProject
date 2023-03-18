@@ -1,6 +1,7 @@
 package com.backend.core.util;
 
 import com.backend.core.configuration.GoogleDriveConfig;
+import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
@@ -22,9 +23,6 @@ import java.util.List;
 public class GoogleFileManager {
     @Autowired
     private GoogleDriveConfig googleDriveConfig;
-
-    @Autowired
-    private GoogleAuthenTokenManager googleAuthenTokenManager;
 
 
     // Get all file
@@ -87,11 +85,10 @@ public class GoogleFileManager {
 
 
     // Upload file
-    public String uploadFile(MultipartFile file, String folderName, String type, String role) {
+    public String uploadFile(MultipartFile file, String folderName, String type, String role) throws Exception {
+        String folderId = getFolderId(folderName);
         try {
-            String folderId = getFolderId(folderName);
-            if (null != file) {
-
+            if (file != null) {
                 File fileMetadata = new File();
                 fileMetadata.setParents(Collections.singletonList(folderId));
                 fileMetadata.setName(file.getOriginalFilename());
@@ -109,7 +106,29 @@ public class GoogleFileManager {
                 }
                 return uploadFile.getId();
             }
-        } catch (Exception e) {
+        }
+        catch (TokenResponseException e) {
+            if (e.getDetails().getError().equals("invalid_grant")) {
+                googleDriveConfig.ggDriveCredential.refreshToken();
+                File fileMetadata = new File();
+                fileMetadata.setParents(Collections.singletonList(folderId));
+                fileMetadata.setName(file.getOriginalFilename());
+                File uploadFile = googleDriveConfig.getInstance()
+                        .files()
+                        .create(fileMetadata, new InputStreamContent(
+                                file.getContentType(),
+                                new ByteArrayInputStream(file.getBytes()))
+                        )
+                        .setFields("id").execute();
+
+                if (!type.equals("private") && !role.equals("private")){
+                    // Call Set Permission drive
+                    googleDriveConfig.getInstance().permissions().create(uploadFile.getId(), setPermission(type, role)).execute();
+                }
+                return uploadFile.getId();
+            }
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return null;

@@ -1,0 +1,229 @@
+/* BUILD FRAME */
+html,
+body {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    height: 100%;
+}
+
+#header {
+    height: 5rem;
+    background-color: #111111;
+}
+
+#menuleft {
+    display: none;
+    position: sticky;
+}
+
+#footer {
+    border-top: 1px solid #90909080;
+}
+
+#navbar {
+    position: fixed;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+
+    background: #111111b3;
+    color: #ffffff;
+
+    font-size: 1.5rem;
+    height: inherit;
+    width: 100%;
+
+    padding-left: 2rem;
+    padding-right: 2rem;
+    transition: all 0.7s ease-in-out;
+}
+
+#navbar div.navbar-child {
+    margin-block: auto;
+}
+
+#navbar div.nav-bar-left-part {
+    width: 10%;
+}
+
+#navbar div.nav-bar-right-part {
+    width: 10%;
+    justify-content: right;
+}
+
+.button-hover-white {
+    color: #ffffff80;
+    font-size: 1rem;
+
+    transition: all 0.4s ease-in-out;
+}
+
+.hover-white:hover {
+    color: #ffffff;
+}
+
+#loginButton {
+    transition: all 0.4s ease-in-out;
+}
+
+#loginButton:hover {
+    box-shadow: 0 0 5px 0 #e3e3e3 inset, 0 0 10px 2px #e3e3e3;
+    border: 3px solid #e3e3e3;
+
+    background: #000000;
+    color: #ffffff;
+}
+
+/* BUILD WIDTH ATTRIBUTES */
+.has-width-2rem {
+    width: 2rem;
+}
+
+.has-width-3rem {
+    width: 3rem;
+}
+
+.has-width-4rem {
+    width: 4rem;
+}
+
+.has-width-5rem {
+    width: 5rem;
+}
+
+.has-width-10rem {
+    width: 10rem;
+}
+
+.has-width-15rem {
+    width: 15rem;
+}
+
+.has-width-20rem {
+    width: 20rem;
+}
+
+.has-width-30rem {
+    width: 30rem;
+}
+
+.has-width-50rem {
+    width: 50rem;
+}
+
+/* BUILD MARGIN ATTRIBUTES */
+.m-block-auto {
+    margin-block: auto;
+}
+
+/* BUILD BASIC ATTRIBUTES */
+.is-hidden {
+    display: none;
+}
+
+.button-is-transparent {
+    transition: all 0.4s ease-in-out;
+    color: #ffffffda;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.button-is-transparent:hover {
+    color: #ffffff;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+/* OTHERS CSS */
+.modal-background.is-white {
+    background-color: #63626250;
+}
+
+/* WAVIY */
+.waviy {
+    position: relative;
+    -webkit-box-reflect: below -20px linear-gradient(transparent, rgba(0, 0, 0, .2));
+}
+
+.waviy span {
+    position: relative;
+    display: inline-block;
+    animation: waviy 3s infinite;
+    animation-delay: calc(.1s * var(--i));
+}
+
+@keyframes waviy {
+
+    0%,
+    40%,
+    100% {
+        transform: translateY(0)
+    }
+
+    20% {
+        transform: translateY(-20px)
+    }
+
+    80% {
+        transform: translateY(0)
+    }
+}
+
+/* SLOGAN TEXT */
+#sloganBody {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#sloganBody .text-container {
+    font-family: "Montserrat Medium";
+    padding: 1rem;
+    max-width: 50rem;
+    text-align: center;
+    transform: scale(0.94);
+    animation: scale 3s forwards cubic-bezier(0.5, 1, 0.89, 1);
+}
+
+@keyframes scale {
+    100% {
+        transform: scale(1);
+    }
+}
+
+#sloganBody .text-container span {
+    display: inline-block;
+    color: #ffffff;
+    font-size: 1.25rem;
+
+    opacity: 0;
+    filter: blur(4px);
+    /* animation: fade-in 0.8s calc(var(--i)/10) forwards cubic-bezier(0.11, 0, 0.5, 0); */
+}
+
+#sloganBody .text-container span:nth-child(1) {
+    animation: fade-in 0.8s 0.1s forwards cubic-bezier(0.11, 0, 0.5, 0);
+}
+
+#sloganBody .text-container span:nth-child(2) {
+    animation: fade-in 0.8s 0.2s forwards cubic-bezier(0.11, 0, 0.5, 0);
+}
+
+#sloganBody .text-container span:nth-child(3) {
+    animation: fade-in 0.8s 0.3s forwards cubic-bezier(0.11, 0, 0.5, 0);
+}
+
+#sloganBody .text-container span:nth-child(4) {
+    animation: fade-in 0.8s 0.4s forwards cubic-bezier(0.11, 0, 0.5, 0);
+}
+
+#sloganBody .text-container span:nth-child(5) {
+    animation: fade-in 0.8s 0.5s forwards cubic-bezier(0.11, 0, 0.5, 0);
+}
+
+@keyframes fade-in {
+    100% {
+        opacity: 1;
+        filter: blur(0);
+    }
+}

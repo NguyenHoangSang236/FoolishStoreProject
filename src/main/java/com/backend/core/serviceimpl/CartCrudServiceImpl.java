@@ -6,17 +6,21 @@ import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.CartItemDTO;
 import com.backend.core.entity.renderdto.CartRenderInfoDTO;
 import com.backend.core.enums.CartBuyingStatusEnum;
+import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.ValueRenderUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Qualifier("CartCrudServiceImpl")
 public class CartCrudServiceImpl implements CrudService {
     @Autowired
     CartRepository cartRepo;
@@ -33,6 +37,8 @@ public class CartCrudServiceImpl implements CrudService {
     @Autowired
     ProductManagementRepository productManagementRepo;
 
+
+    public CartCrudServiceImpl() {}
 
     @Override
     public ApiResponse creationalResponse(Object paramObj, HttpSession session) {
@@ -159,30 +165,39 @@ public class CartCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse readingSinglePostingResponse(Object paramObj, HttpSession session) {
+    public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session) {
 
         return null;
     }
 
 
     @Override
-    public ApiResponse readingListPostingReponse(List<Object> paramObjList, HttpSession session) {
+    public ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session) {
 
         return null;
     }
 
 
     @Override
-    public ApiResponse readingListGettingReponse(HttpSession session) {
+    public ApiResponse readingResponse(HttpSession session, RenderTypeEnum renderType) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         if(customerId == 0) {
             return new ApiResponse("failed", "Login first");
         }
         else {
-            List<CartRenderInfoDTO> cartList = cartRenderInfoRepo.getFullCartListByCustomerId(customerId);
+            if(renderType == RenderTypeEnum.ALL_CART_ITEMS) {
+                List<CartRenderInfoDTO> cartList = cartRenderInfoRepo.getFullCartListByCustomerId(customerId);
 
-            return new ApiResponse("success", cartList);
+                return new ApiResponse("success", cartList);
+            }
         }
+        return new ApiResponse("failed", "Wrong RenderType");
+    }
+
+
+    @Override
+    public ApiResponse readingById(int id, HttpSession session) {
+        return null;
     }
 }

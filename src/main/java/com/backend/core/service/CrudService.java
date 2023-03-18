@@ -1,6 +1,7 @@
 package com.backend.core.service;
 
 import com.backend.core.entity.dto.ApiResponse;
+import com.backend.core.enums.RenderTypeEnum;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +20,14 @@ public interface CrudService {
     ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session);
 
     // generate post response for reading a single object by posting method
-    ApiResponse readingSinglePostingResponse(Object paramObj, HttpSession session);
+    ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session);
 
     // generate post response for reading a list of objects by posting method
-    ApiResponse readingListPostingReponse(List<Object> paramObjList, HttpSession session);
+    ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session);
 
     // generate post response for reading a list of objects by posting method
-    ApiResponse readingListGettingReponse(HttpSession session);
+    ApiResponse readingResponse(HttpSession session, RenderTypeEnum renderType);
+
+    // generate post response for reading using object's id
+    ApiResponse readingById(int id, HttpSession session);
 }
