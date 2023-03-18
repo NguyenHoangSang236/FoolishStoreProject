@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/systemAuthentication")
+@RequestMapping(value = "/systemAuthentication", consumes = {"*/*"})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class SystemAuthenticationController extends com.backend.core.abstractclasses.AuthenticationController {
     public SystemAuthenticationController(AuthenticationService authenticationService) {

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ProductRenderInfoRepository extends JpaRepository<ProductRenderInfoDTO, Integer> {
-    @Query(value = "select * from product_info_for_ui", nativeQuery = true)
+    @Query(value = "select distinct * from product_info_for_ui", nativeQuery = true)
     List<ProductRenderInfoDTO> getAllProducts();
 
     @Query(value = "select * from top_8_best_sell_products", nativeQuery = true)

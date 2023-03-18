@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/shop")
+@RequestMapping(value = "/shop", consumes = {"*/*"})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ShopController extends CrudController {
     @Autowired

@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/cart")
+@RequestMapping(value = "/cart", consumes = {"*/*"})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CartController extends CrudController {
     @Autowired
