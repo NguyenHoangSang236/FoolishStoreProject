@@ -4,12 +4,13 @@ import com.backend.core.entity.tableentity.Account;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.service.AuthenticationService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/systemAuthentication", consumes = {"*/*"})
+@RequestMapping(value = "/systemAuthentication", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class SystemAuthenticationController extends com.backend.core.abstractclasses.AuthenticationController {
     public SystemAuthenticationController(AuthenticationService authenticationService) {

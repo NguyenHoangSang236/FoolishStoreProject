@@ -9,12 +9,13 @@ import com.backend.core.service.CrudService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
 @RestController
-@RequestMapping(value = "/shop", consumes = {"*/*"})
+@RequestMapping(value = "/shop", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ShopController extends CrudController {
     @Autowired
