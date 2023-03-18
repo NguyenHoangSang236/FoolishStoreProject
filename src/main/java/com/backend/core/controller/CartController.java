@@ -22,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cart")
+@CrossOrigin(origins = "http://localhost:8080")
 public class CartController extends CrudController {
     @Autowired
     CartRepository cartRepo;

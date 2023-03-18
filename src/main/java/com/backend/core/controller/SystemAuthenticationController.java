@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/systemAuthentication")
+@CrossOrigin(origins = "http://localhost:8080")
 public class SystemAuthenticationController extends com.backend.core.abstractclasses.AuthenticationController {
     public SystemAuthenticationController(AuthenticationService authenticationService) {
         super(authenticationService);

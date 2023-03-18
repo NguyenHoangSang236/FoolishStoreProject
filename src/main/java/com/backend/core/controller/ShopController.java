@@ -15,6 +15,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/shop")
+@CrossOrigin(origins = "http://localhost:8080")
 public class ShopController extends CrudController {
     @Autowired
     private CalculationService calculationService;
