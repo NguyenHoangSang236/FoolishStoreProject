@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cart")
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CartController extends CrudController {
     @Autowired
     CartRepository cartRepo;

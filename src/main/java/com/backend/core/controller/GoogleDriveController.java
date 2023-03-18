@@ -28,7 +28,7 @@ import java.util.List;
 @RequestMapping(value = "/googleDrive",
         consumes = {"*/*"},
         produces = {MediaType.APPLICATION_JSON_VALUE} )
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class GoogleDriveController {
     @Autowired
     GoogleDriveService googleDriveService;
