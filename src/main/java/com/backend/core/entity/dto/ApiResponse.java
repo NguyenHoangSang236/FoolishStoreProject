@@ -1,27 +1,16 @@
 package com.backend.core.entity.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ApiResponse {
-    private String status;
-    private Object result;
+    private String result;
+    private Object content;
 
-    public ApiResponse(String status, Object result) {
-        this.status = status;
+    public ApiResponse(String result, Object content) {
         this.result = result;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public Object getResult() {
-        return result;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setResult(Object result) {
-        this.result = result;
+        this.content = content;
     }
 }
