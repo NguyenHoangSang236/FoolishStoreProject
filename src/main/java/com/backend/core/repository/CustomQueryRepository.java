@@ -2,6 +2,7 @@ package com.backend.core.repository;
 
 import java.util.List;
 
+import com.backend.core.entity.renderdto.ProductRenderInfoDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -9,13 +10,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public class ProductCustomQueryRepository {
+public class CustomQueryRepository {
 	@PersistenceContext
     private EntityManager entityManager;
     
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> getFilteredProducts(String query) {
+	public List<Object[]> getBindingFilteredList(String query) {
         return this.entityManager.createNativeQuery(query).getResultList();
     }
 	

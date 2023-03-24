@@ -1,12 +1,19 @@
 package com.backend.core.entity.dto;
 
 import com.backend.core.entity.interfaces.FilterRequest;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
+
+import java.util.LinkedHashMap;
 
 @Component
 public class ProductFilterRequestDTO implements FilterRequest {
+    @JsonProperty("filter")
     ProductFilterDTO filter;
 
+    @JsonProperty("key")
     String key;
 
 
@@ -28,8 +35,10 @@ public class ProductFilterRequestDTO implements FilterRequest {
     }
 
     @Override
-    public void setFilter(Object filter) {
-        this.filter = (ProductFilterDTO) filter;
+    public void setFilter(Object filter) throws JsonProcessingException {
+        LinkedHashMap<String, Object> filterMap = (LinkedHashMap<String, Object>) filter;
+        ObjectMapper objectMapper = new ObjectMapper();
+        this.filter = objectMapper.convertValue(filterMap, ProductFilterDTO.class);;
     }
 
     @Override

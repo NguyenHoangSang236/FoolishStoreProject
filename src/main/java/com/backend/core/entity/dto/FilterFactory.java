@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class FilterFactory {
     public static final FilterRequest getFilterRequest(FilterTypeEnum filterType) {
         switch (filterType) {
-            case PRODUCT -> new ProductFilterDTO();
+            case PRODUCT : return new ProductFilterRequestDTO();
         }
 
         return null;

@@ -33,6 +33,9 @@ public class ProductRenderInfoDTO {
     @Column(name = "brand")
     private String brand;
 
+    @Column(name = "size")
+    private String size;
+
     @Column(name = "color")
     private String color;
 
@@ -52,10 +55,11 @@ public class ProductRenderInfoDTO {
     private String image4;
 
 
-    public ProductRenderInfoDTO(int id, int productId, String name, double sellingPrice, double discount, String brand, String color, int availableQuantity, String image1, String image2, String image3, String image4) {
+    public ProductRenderInfoDTO(int id, int productId, String name, String size, double sellingPrice, double discount, String brand, String color, int availableQuantity, String image1, String image2, String image3, String image4) {
         this.id = id;
         this.productId = productId;
         this.name = name;
+        this.size = size;
         this.sellingPrice = sellingPrice;
         this.discount = discount;
         this.brand = brand;
@@ -75,12 +79,12 @@ public class ProductRenderInfoDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductRenderInfoDTO that = (ProductRenderInfoDTO) o;
-        return id == that.id && productId == that.productId && Double.compare(that.sellingPrice, sellingPrice) == 0 && Double.compare(that.discount, discount) == 0 && availableQuantity == that.availableQuantity && name.equals(that.name) && brand.equals(that.brand) && color.equals(that.color) && Objects.equals(image1, that.image1) && Objects.equals(image2, that.image2) && Objects.equals(image3, that.image3) && Objects.equals(image4, that.image4);
+        return id == that.id && productId == that.productId && Double.compare(that.sellingPrice, sellingPrice) == 0 && Double.compare(that.discount, discount) == 0 && availableQuantity == that.availableQuantity && name.equals(that.name) && brand.equals(that.brand) && size.equals(that.size) && color.equals(that.color) && Objects.equals(image1, that.image1) && Objects.equals(image2, that.image2) && Objects.equals(image3, that.image3) && Objects.equals(image4, that.image4);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, productId, name, sellingPrice, discount, brand, color, availableQuantity, image1, image2, image3, image4);
+        return Objects.hash(id, productId, name, sellingPrice, discount, brand, size, color, availableQuantity, image1, image2, image3, image4);
     }
 
     @Override
@@ -92,6 +96,7 @@ public class ProductRenderInfoDTO {
                 ", sellingPrice=" + sellingPrice +
                 ", discount=" + discount +
                 ", brand='" + brand + '\'' +
+                ", size='" + size + '\'' +
                 ", color='" + color + '\'' +
                 ", availableQuantity=" + availableQuantity +
                 ", image1='" + image1 + '\'' +

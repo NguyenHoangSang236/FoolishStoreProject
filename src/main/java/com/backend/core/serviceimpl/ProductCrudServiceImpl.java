@@ -1,14 +1,21 @@
 package com.backend.core.serviceimpl;
 
 import com.backend.core.entity.dto.ApiResponse;
+import com.backend.core.entity.dto.FilterFactory;
+import com.backend.core.entity.dto.ProductFilterDTO;
+import com.backend.core.entity.dto.ProductFilterRequestDTO;
 import com.backend.core.entity.interfaces.FilterRequest;
 import com.backend.core.entity.renderdto.ProductRenderInfoDTO;
 import com.backend.core.entity.tableentity.Product;
+import com.backend.core.enums.FilterTypeEnum;
 import com.backend.core.enums.RenderTypeEnum;
+import com.backend.core.repository.CustomQueryRepository;
 import com.backend.core.repository.ProductRenderInfoRepository;
 import com.backend.core.repository.ProductRepository;
 import com.backend.core.service.CalculationService;
 import com.backend.core.service.CrudService;
+import com.backend.core.util.ValueRenderUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Qualifier("ProductCrudServiceImpl")
@@ -28,6 +36,9 @@ public class ProductCrudServiceImpl implements CrudService {
 
     @Autowired
     ProductRenderInfoRepository productRenderInfoRepo;
+
+    @Autowired
+    CustomQueryRepository customQueryRepo;
 
 
 
@@ -55,11 +66,54 @@ public class ProductCrudServiceImpl implements CrudService {
 
     @Override
     public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session) {
-        FilterRequest filterRequest = (FilterRequest) paramObj;
+        List<ProductRenderInfoDTO> productRenderList = null;
 
+        try {
+            FilterRequest productFilterRequest = FilterFactory.getFilterRequest(FilterTypeEnum.PRODUCT);
+            productFilterRequest = (ProductFilterRequestDTO) paramObj;
 
+            ProductFilterDTO productFilter = (ProductFilterDTO) productFilterRequest.getFilter();
 
-        return null;
+            String filterQuery = ValueRenderUtils.createQueryForProductFilter(
+                    productFilter.getCategories(),
+                    productFilter.getBrand(),
+                    productFilter.getMinPrice(),
+                    productFilter.getMaxPrice()
+            );
+
+            // get object[] list from query
+            List<Object[]> objectList = customQueryRepo.getBindingFilteredList(filterQuery);
+
+            // convert object[] list to ProductRenderInfoDTO list
+            productRenderList = objectList.stream()
+                    .map(
+                            obj -> new ProductRenderInfoDTO(
+                                    obj[0] instanceof Long ? ((Long) obj[0]).intValue() : (int) obj[0],
+                                    obj[1] instanceof Long ? ((Long) obj[1]).intValue() : (int) obj[1],
+                                    (String) obj[2],
+                                    (String) obj[3],
+                                    (double) obj[4],
+                                    (double) obj[5],
+                                    (String) obj[6],
+                                    (String) obj[7],
+                                    obj[8] instanceof Long ? ((Long) obj[8]).intValue() : (int) obj[8],
+                                    (String) obj[9],
+                                    (String) obj[10],
+                                    (String) obj[11],
+                                    (String) obj[12]
+                            )
+                    ).toList();
+        } catch (StringIndexOutOfBoundsException e) {
+            e.printStackTrace();
+
+            return new ApiResponse("failed", "No data for filter, please select data!");
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return new ApiResponse("failed", e.toString());
+        }
+
+        return new ApiResponse("success", productRenderList);
     }
 
 

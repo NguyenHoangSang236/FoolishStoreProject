@@ -18,11 +18,12 @@ public abstract class CrudController {
     public abstract ApiResponse addNewItem(@RequestBody String json, HttpSession session) throws IOException;
 
     public abstract ApiResponse updateItem(@RequestBody String json, HttpSession session) throws IOException;
-//    public abstract ApiResponse deleteSelectedItemById(int id);
-//
-//    public abstract ApiResponse updateSelectedItemById(int id);
-//
+
+    public abstract ApiResponse deleteSelectedItemById(int id, HttpSession session) throws IOException;
+
+    public abstract ApiResponse updateSelectedItemById(int id, HttpSession session) throws IOException;
+
     public abstract ApiResponse getListOfItems(@RequestBody String json, HttpSession session) throws IOException;
 
-//    public abstract ApiResponse getItem();
+    public abstract ApiResponse getListOfItemsFromFilter(@RequestBody String json, HttpSession session) throws IOException;
 }

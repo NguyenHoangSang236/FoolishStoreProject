@@ -133,6 +133,7 @@ public class ValueRenderUtils {
         return new String(input, StandardCharsets.UTF_8);
     }
 
+
     //convert byte[] to KB, MB, GB, TB
     public static String getConvertedDataSize(long size) {
         long n = 1024;
@@ -155,6 +156,7 @@ public class ValueRenderUtils {
         return s;
     }
 
+
     //get customer id from HttpSession
     public static int getCustomerIdByHttpSession(HttpSession session) {
         try {
@@ -174,4 +176,41 @@ public class ValueRenderUtils {
             return 0;
         }
     }
+
+
+    //create a query for products binding filter
+    public static String createQueryForProductFilter(String[] catalogs, String brand, double price1, double price2) {
+        String result = "SELECT piu.*\n" +
+                        "FROM product_info_for_ui piu JOIN products p on piu.product_id = p.id" +
+                        "                             JOIN catalogs_with_products cwp ON p.id = cwp.product_id\n" +
+                        "                             JOIN catalog c ON c.id = cwp.catalog_id\n" +
+                        "                             JOIN products_management pm ON p.id = pm.product_id\n" +
+                        "                             JOIN product_images_management pim ON pim.product_id = p.id\n" +
+                        "WHERE ";
+        String dynamicConditions = "";
+        int catalogsLength;
+
+        if(catalogs == null) {
+            catalogsLength = 0;
+        }
+        else catalogsLength = catalogs.length;
+
+        if(brand != null) {
+            dynamicConditions += ("and piu.brand = '" + brand + "' ");
+        }
+
+        for(int i = 0; i < catalogsLength; i++) {
+            dynamicConditions += ("and c.name = '" + catalogs[i] + "' ");
+        }
+
+        if(price1 >= 0 && price2 > 0) {
+            dynamicConditions += ("and piu.selling_price >= " + price1 + " and piu.selling_price <= " + price2 );
+        }
+
+        dynamicConditions = dynamicConditions.substring(4);
+        result += dynamicConditions + " GROUP BY p.name, pm.color ORDER BY p.id asc";
+
+        return result;
+    }
+
 }

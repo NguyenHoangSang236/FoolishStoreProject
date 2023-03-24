@@ -42,9 +42,9 @@ public class CartController extends CrudController {
 
 
 
-    public CartController(@Autowired @Qualifier("CartCrudServiceImpl") CrudService crudService) {
-        super(crudService);
-        super.crudService = crudService;
+    public CartController(@Autowired @Qualifier("CartCrudServiceImpl") CrudService cartCrudServiceImpl) {
+        super(cartCrudServiceImpl);
+        super.crudService = cartCrudServiceImpl;
     }
 
 
@@ -59,7 +59,7 @@ public class CartController extends CrudController {
     @Override
     public ApiResponse addNewItem(@RequestBody String json, HttpSession session) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        CartItemDTO cartItemDTO = objectMapper.readValue(json, CartItemDTO.class);;
+        CartItemDTO cartItemDTO = objectMapper.readValue(json, CartItemDTO.class);
 
         return crudService.creationalResponse(cartItemDTO, session);
     }
@@ -74,10 +74,25 @@ public class CartController extends CrudController {
         return crudService.updatingResponse(objectList, session);
     }
 
+    @Override
+    public ApiResponse deleteSelectedItemById(int id, HttpSession session) throws IOException {
+        return null;
+    }
+
+    @Override
+    public ApiResponse updateSelectedItemById(int id, HttpSession session) throws IOException {
+        return null;
+    }
+
 
     @GetMapping("/showFullCart")
     @Override
     public ApiResponse getListOfItems(String json, HttpSession session) throws IOException {
         return crudService.readingResponse(session, RenderTypeEnum.ALL_CART_ITEMS);
+    }
+
+    @Override
+    public ApiResponse getListOfItemsFromFilter(String json, HttpSession session) throws IOException {
+        return null;
     }
 }
