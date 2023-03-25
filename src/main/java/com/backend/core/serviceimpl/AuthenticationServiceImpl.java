@@ -12,8 +12,11 @@ import com.backend.core.util.CheckUtils;
 import com.backend.core.enums.RoleEnum;
 import com.backend.core.util.ExceptionHandlerUtils;
 import com.backend.core.util.ValueRenderUtils;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -34,6 +37,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     CustomerRenderInfoRepository customerRenderInfoRepo;
+
+    @Autowired
+    JavaMailSender mailSender;
+
 
 
 
@@ -69,8 +76,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public ApiResponse forgotPassword(Account account) {
-        return null;
+    public ApiResponse forgotPassword(String username, String email) {
+        try {
+            Account currentAccount = accountRepo.getAccountByUserName(username);
+
+            if(currentAccount != null) {
+                if(currentAccount.getCustomer().getEmail().equals(email)) {
+                    String newPassword = getNewTemporaryRandomPasswordMail(username, email);
+
+                    currentAccount.setPassword(newPassword);
+                    accountRepo.save(currentAccount);
+                }
+                else return new ApiResponse("failed", "This email does not belong to this account !!");
+            }
+            else return new ApiResponse("failed", "This account is not existed !!");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ApiResponse("failed", e.toString());
+        }
+
+        return new ApiResponse("success", "Change password successfully");
     }
 
 
@@ -96,6 +122,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             //check for null information
             if(bindingResult.hasErrors()) {
                 return new ApiResponse("failed", ExceptionHandlerUtils.getHandleBindException(new BindException(bindingResult)));
+            }
+            //check for null password
+            else if(accountFromUI.getPassword().isEmpty() || accountFromUI.getPassword().isBlank()) {
+                return new ApiResponse("failed", "Password can not be null !!");
             }
             //check valid username and password
             else if(!CheckUtils.checkValidStringType(accountFromUI.getUserName(), StringTypeEnum.HAS_NO_SPACE) ||
@@ -138,5 +168,37 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             e.printStackTrace();
             return new ApiResponse("failed", e.toString());
         }
+    }
+
+
+    public String getNewTemporaryRandomPasswordMail(String userName, String email) {
+        String fromAddress = "nguyenhoangsang236@gmail.com";
+        String senderName = "Fool!st Fashion Store";
+        String subject = "Your new temporary password";
+        String newTempPassoword = ValueRenderUtils.randomTemporaryPassword(userName);
+        String content = "Dear [[name]],<br>"
+                + "Your new temporary password is " + newTempPassoword + "<br>"
+                + "Please rememder to change a new password for your new account because this temporary password will be changed after you close the website !!<br><br>"
+                + "Thank you,<br>"
+                + "Fool!st Fashion Store";
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        try {
+            helper.setFrom(fromAddress, senderName);helper.setTo(email);
+            helper.setSubject(subject);
+
+            content = content.replace("[[name]]", userName);
+
+            helper.setText(content, true);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mailSender.send(message);
+
+        return newTempPassoword;
     }
 }

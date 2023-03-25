@@ -28,7 +28,6 @@ public class Account {
     String userName;
 
     @Column(name = "Password")
-    @NotEmpty(message = "Password can not be null")
     String password;
 
     @Column(name = "Role")

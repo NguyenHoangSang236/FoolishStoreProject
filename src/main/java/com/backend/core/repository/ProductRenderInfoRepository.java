@@ -3,6 +3,7 @@ package com.backend.core.repository;
 import com.backend.core.entity.renderdto.ProductRenderInfoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -18,4 +19,7 @@ public interface ProductRenderInfoRepository extends JpaRepository<ProductRender
 
     @Query(value = "select * from product_info_for_ui where discount > 0 group by name order by discount desc limit 8", nativeQuery = true)
     List<ProductRenderInfoDTO> get8HotDiscountProducts();
+
+    @Query(value = "select * from product_info_for_ui where name like %:nameVal% group by name order by product_id", nativeQuery = true)
+    List<ProductRenderInfoDTO> getProductsByName(@Param("nameVal") String productName);
 }

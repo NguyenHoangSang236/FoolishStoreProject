@@ -74,35 +74,41 @@ public class ProductCrudServiceImpl implements CrudService {
 
             ProductFilterDTO productFilter = (ProductFilterDTO) productFilterRequest.getFilter();
 
-            String filterQuery = ValueRenderUtils.createQueryForProductFilter(
-                    productFilter.getCategories(),
-                    productFilter.getBrand(),
-                    productFilter.getMinPrice(),
-                    productFilter.getMaxPrice()
-            );
+            // product filter does not have Name filed -> binding filter
+            if(productFilter.getName().isEmpty() || productFilter.getName().isBlank()) {
+                String filterQuery = ValueRenderUtils.createQueryForProductFilter(
+                        productFilter.getCategories(),
+                        productFilter.getBrand(),
+                        productFilter.getMinPrice(),
+                        productFilter.getMaxPrice()
+                );
 
-            // get object[] list from query
-            List<Object[]> objectList = customQueryRepo.getBindingFilteredList(filterQuery);
+                // get object[] list from query
+                List<Object[]> objectList = customQueryRepo.getBindingFilteredList(filterQuery);
 
-            // convert object[] list to ProductRenderInfoDTO list
-            productRenderList = objectList.stream()
-                    .map(
-                            obj -> new ProductRenderInfoDTO(
-                                    obj[0] instanceof Long ? ((Long) obj[0]).intValue() : (int) obj[0],
-                                    obj[1] instanceof Long ? ((Long) obj[1]).intValue() : (int) obj[1],
-                                    (String) obj[2],
-                                    (String) obj[3],
-                                    (double) obj[4],
-                                    (double) obj[5],
-                                    (String) obj[6],
-                                    (String) obj[7],
-                                    obj[8] instanceof Long ? ((Long) obj[8]).intValue() : (int) obj[8],
-                                    (String) obj[9],
-                                    (String) obj[10],
-                                    (String) obj[11],
-                                    (String) obj[12]
-                            )
-                    ).toList();
+                // convert object[] list to ProductRenderInfoDTO list
+                productRenderList = objectList.stream()
+                        .map(
+                                obj -> new ProductRenderInfoDTO(
+                                        obj[0] instanceof Long ? ((Long) obj[0]).intValue() : (int) obj[0],
+                                        obj[1] instanceof Long ? ((Long) obj[1]).intValue() : (int) obj[1],
+                                        (String) obj[2],
+                                        (String) obj[3],
+                                        (double) obj[4],
+                                        (double) obj[5],
+                                        (String) obj[6],
+                                        (String) obj[7],
+                                        obj[8] instanceof Long ? ((Long) obj[8]).intValue() : (int) obj[8],
+                                        (String) obj[9],
+                                        (String) obj[10],
+                                        (String) obj[11],
+                                        (String) obj[12]
+                                )
+                        ).toList();
+            }
+            else {
+                productRenderList = productRenderInfoRepo.getProductsByName(productFilter.getName());
+            }
         } catch (StringIndexOutOfBoundsException e) {
             e.printStackTrace();
 

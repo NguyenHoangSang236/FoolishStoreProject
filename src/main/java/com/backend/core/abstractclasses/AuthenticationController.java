@@ -3,6 +3,7 @@ package com.backend.core.abstractclasses;
 import com.backend.core.entity.tableentity.Account;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.service.AuthenticationService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -20,4 +21,6 @@ public abstract class AuthenticationController {
     public abstract ApiResponse logoutFromSystem(HttpSession session);
 
     public abstract ApiResponse registerNewAccount(@Validated @RequestBody Account account, BindingResult bindingResult);
+
+    public abstract ApiResponse forgotPassword(@Validated @RequestBody String accountInfoJson, BindingResult bindingResult) throws JsonProcessingException;
 }

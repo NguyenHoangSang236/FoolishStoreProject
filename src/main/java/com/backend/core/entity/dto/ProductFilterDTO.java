@@ -19,12 +19,19 @@ public class ProductFilterDTO {
     @JsonProperty("brand")
     String brand;
 
+    @JsonProperty("name")
+    String name;
+
 
     public ProductFilterDTO(String[] categories, double minPrice, double maxPrice, String brand) {
         this.categories = categories;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.brand = brand;
+    }
+
+    public ProductFilterDTO(String name) {
+        this.name = name;
     }
 
     public ProductFilterDTO() {}

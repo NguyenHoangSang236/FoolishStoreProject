@@ -10,7 +10,7 @@ import org.springframework.validation.BindingResult;
 public interface AuthenticationService {
     public ApiResponse loginIntoSystem(Account account, HttpSession session);
 
-    public ApiResponse forgotPassword(Account account);
+    public ApiResponse forgotPassword(String username, String email);
 
     public ApiResponse logoutFromSystem(HttpSession session);
 

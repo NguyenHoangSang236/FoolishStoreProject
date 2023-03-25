@@ -96,10 +96,4 @@ public class ShopController extends CrudController {
     public ApiResponse getProductById(@PathVariable(value = "productId") int productId, HttpSession session) {
         return crudService.readingById(productId, session);
     }
-
-
-    @PostMapping("/searchProductByName")
-    public ApiResponse getProductByName() {
-        return new ApiResponse("status", "product");
-    }
 }
