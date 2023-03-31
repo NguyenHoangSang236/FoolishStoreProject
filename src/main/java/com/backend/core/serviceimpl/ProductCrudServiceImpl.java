@@ -116,7 +116,7 @@ public class ProductCrudServiceImpl implements CrudService {
         } catch (Exception e) {
             e.printStackTrace();
 
-            return new ApiResponse("failed", e.toString());
+            return new ApiResponse("failed", "Technical error");
         }
 
         return new ApiResponse("success", productRenderList);
@@ -130,17 +130,17 @@ public class ProductCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse readingResponse(HttpSession session, RenderTypeEnum renderType) {
+    public ApiResponse readingResponse(HttpSession session, String renderType) {
         List<ProductRenderInfoDTO> allProductsList = new ArrayList<ProductRenderInfoDTO>();
         String status = "failed";
 
         try {
             switch (renderType) {
-                case ALL_PRODUCTS -> allProductsList = productRenderInfoRepo.getAllProducts();
-                case NEW_ARRIVAL_PRODUCTS -> allProductsList = productRenderInfoRepo.get8NewArrivalProducts();
-                case HOT_DISCOUNT_PRODUCTS -> allProductsList = productRenderInfoRepo.get8HotDiscountProducts();
-                case TOP_8_BEST_SELL_PRODUCTS -> allProductsList = productRenderInfoRepo.getTop8BestSellProducts();
-                default -> new ApiResponse("failed", "Wrong RenderType");
+                case "ALL_PRODUCTS" -> allProductsList = productRenderInfoRepo.getAllProducts();
+                case "NEW_ARRIVAL_PRODUCTS" -> allProductsList = productRenderInfoRepo.get8NewArrivalProducts();
+                case "HOT_DISCOUNT_PRODUCTS" -> allProductsList = productRenderInfoRepo.get8HotDiscountProducts();
+                case "TOP_8_BEST_SELL_PRODUCTS" -> allProductsList = productRenderInfoRepo.getTop8BestSellProducts();
+                default -> new ApiResponse("failed", "Wrong render type");
             }
             if(allProductsList != null) {
 //                System.out.println(allProductsList.get(0).calculation(calculationService));
@@ -157,12 +157,12 @@ public class ProductCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse readingById(int id, HttpSession session) {
+    public ApiResponse readingById(int productId, HttpSession session) {
         Product product = new Product();
         String status = "failed";
 
         try {
-            product = productRepo.getProductById(id);
+            product = productRepo.getProductById(productId);
 
             if(product.getName() != null) {
                 status = "success";

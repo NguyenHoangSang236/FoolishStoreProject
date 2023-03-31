@@ -62,7 +62,7 @@ public class GoogleDriveController {
             return new ApiResponse("success", fileId);
         }
         catch (Exception e) {
-            return new ApiResponse("failed", e.toString());
+            return new ApiResponse("failed", "Technical error");
         }
     }
 //

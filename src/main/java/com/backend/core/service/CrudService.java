@@ -26,7 +26,7 @@ public interface CrudService {
     ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session);
 
     // generate post response for reading a list of objects by posting method
-    ApiResponse readingResponse(HttpSession session, RenderTypeEnum renderType);
+    ApiResponse readingResponse(HttpSession session, String renderType);
 
     // generate post response for reading using object's id
     ApiResponse readingById(int id, HttpSession session);

@@ -49,6 +49,13 @@ public class ShopController extends CrudController {
     }
 
     @Override
+    @GetMapping("/product_id={productId}")
+    public ApiResponse readSelectedItemById(@PathVariable(value = "productId") int productId, HttpSession session) throws IOException {
+        return crudService.readingById(productId, session);
+    }
+
+
+    @Override
     public ApiResponse deleteSelectedItemById(int id, HttpSession session) throws IOException {
         return null;
     }
@@ -62,7 +69,7 @@ public class ShopController extends CrudController {
     @Override
     @GetMapping("/allProducts")
     public ApiResponse getListOfItems(String json, HttpSession session) throws IOException {
-        return crudService.readingResponse(session, RenderTypeEnum.ALL_PRODUCTS);
+        return crudService.readingResponse(session, RenderTypeEnum.ALL_PRODUCTS.name());
     }
 
     @Override
@@ -76,24 +83,18 @@ public class ShopController extends CrudController {
 
     @GetMapping("/top8BestSellers")
     public ApiResponse getTop8BestSellers(String json, HttpSession session) throws IOException {
-        return crudService.readingResponse(session, RenderTypeEnum.TOP_8_BEST_SELL_PRODUCTS);
+        return crudService.readingResponse(session, RenderTypeEnum.TOP_8_BEST_SELL_PRODUCTS.name());
     }
 
 
     @GetMapping("/newArrivalProducts")
     public ApiResponse getNewArrivalProducts(String json, HttpSession session) throws IOException {
-        return crudService.readingResponse(session, RenderTypeEnum.NEW_ARRIVAL_PRODUCTS);
+        return crudService.readingResponse(session, RenderTypeEnum.NEW_ARRIVAL_PRODUCTS.name());
     }
 
 
     @GetMapping("/hotDiscountProducts")
     public ApiResponse getHotDiscountProducts(String json, HttpSession session) throws IOException {
-        return crudService.readingResponse(session, RenderTypeEnum.HOT_DISCOUNT_PRODUCTS);
-    }
-
-
-    @GetMapping("/product_id={productId}")
-    public ApiResponse getProductById(@PathVariable(value = "productId") int productId, HttpSession session) {
-        return crudService.readingById(productId, session);
+        return crudService.readingResponse(session, RenderTypeEnum.HOT_DISCOUNT_PRODUCTS.name());
     }
 }

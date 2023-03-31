@@ -75,9 +75,16 @@ public class CartController extends CrudController {
     }
 
     @Override
+    public ApiResponse readSelectedItemById(int id, HttpSession session) throws IOException {
+        return null;
+    }
+
+
+    @Override
     public ApiResponse deleteSelectedItemById(int id, HttpSession session) throws IOException {
         return null;
     }
+
 
     @Override
     public ApiResponse updateSelectedItemById(int id, HttpSession session) throws IOException {
@@ -88,8 +95,9 @@ public class CartController extends CrudController {
     @GetMapping("/showFullCart")
     @Override
     public ApiResponse getListOfItems(String json, HttpSession session) throws IOException {
-        return crudService.readingResponse(session, RenderTypeEnum.ALL_CART_ITEMS);
+        return crudService.readingResponse(session, RenderTypeEnum.ALL_CART_ITEMS.name());
     }
+
 
     @Override
     public ApiResponse getListOfItemsFromFilter(String json, HttpSession session) throws IOException {

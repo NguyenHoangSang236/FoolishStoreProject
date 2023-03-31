@@ -70,7 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ApiResponse("failed", e.toString());
+            return new ApiResponse("failed", "Technical error");
         }
     }
 
@@ -93,7 +93,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ApiResponse("failed", e.toString());
+            return new ApiResponse("failed", "Technical error");
         }
 
         return new ApiResponse("success", "Change password successfully");
@@ -108,7 +108,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ApiResponse("failed", e.toString());
+            return new ApiResponse("failed", "Technical error");
         }
     }
 
@@ -136,7 +136,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             else if (accountRepo.getAccountByUserName(accountFromUI.getUserName()) != null) {
                 return new ApiResponse("failed", "This username has already been existed");
             }
-            //check valid phone number
+//            //check valid phone number
 //            else if (!CheckUtils.isValidPhoneNumber(customer.getPhoneNumber())) {
 //                return "This is not a phone number !!";
 //            }
@@ -166,7 +166,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ApiResponse("failed", e.toString());
+            return new ApiResponse("failed", "Technical error");
         }
     }
 
@@ -176,11 +176,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String senderName = "Fool!st Fashion Store";
         String subject = "Your new temporary password";
         String newTempPassoword = ValueRenderUtils.randomTemporaryPassword(userName);
-        String content = "Dear [[name]],<br>"
-                + "Your new temporary password is " + newTempPassoword + "<br>"
-                + "Please rememder to change a new password for your new account because this temporary password will be changed after you close the website !!<br><br>"
-                + "Thank you,<br>"
-                + "Fool!st Fashion Store";
+        String content =  "Dear [[name]],<br>"
+                        + "Your new temporary password is " + newTempPassoword + "<br>"
+                        + "Please rememder to change a new password for your new account because this temporary password will be changed after you close the website !!<br><br>"
+                        + "Thank you,<br>"
+                        + "Fool!st Fashion Store";
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);

@@ -26,7 +26,7 @@ public class CartRenderInfoDTO {
     int quantity;
 
     @Column(name = "buying_status")
-    int buyingStatus;
+    String buyingStatus;
 
     @Column(name = "product_id")
     int productId;
@@ -55,7 +55,7 @@ public class CartRenderInfoDTO {
 
     public CartRenderInfoDTO() {}
 
-    public CartRenderInfoDTO(int id, int customerId, int productManagementId, int quantity, int buyingStatus, int productId, String color, String size, String name, String brand, double sellingPrice, double discount, String image1) {
+    public CartRenderInfoDTO(int id, int customerId, int productManagementId, int quantity, String buyingStatus, int productId, String color, String size, String name, String brand, double sellingPrice, double discount, String image1) {
         this.id = id;
         this.customerId = customerId;
         this.productManagementId = productManagementId;

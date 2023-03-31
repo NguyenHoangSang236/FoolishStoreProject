@@ -19,8 +19,16 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 	int getLastestInvoiceId();
 	
 	
-	@Query(value = "select * from invoice", nativeQuery = true)
-	List<Invoice> getAllInvoices();
+	@Query(value = "select * from invoice i join customers c on i.customer_id = c.id where i.customer_id = :idVal and payment_status = 0", nativeQuery = true)
+	List<Invoice> getAllCurrentInvoicesByCustomerId(@Param("idVal") int customerId);
+
+
+	@Query(value = "select * from invoice i join customers c on i.customer_id = c.id where i.customer_id = :idVal", nativeQuery = true)
+	List<Invoice> getAllInvoicesByCustomerId(@Param("idVal") int customerId);
+
+
+	@Query(value = "select count(*) from invoice i join customers c on i.customer_id = c.id where i.customer_id = :invoiceIdVal and c.id = :customerIdVal", nativeQuery = true)
+	int getInvoiceCountByInvoiceIdAndCustomerId(@Param("invoiceIdVal") int invoiceId, @Param("customerIdVal") int customerId);
 	
 	
 	@Query(value = "select * from invoice where id = :idVal", nativeQuery = true)

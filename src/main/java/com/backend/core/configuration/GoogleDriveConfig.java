@@ -21,7 +21,7 @@ import java.util.List;
 
 @Component
 public class GoogleDriveConfig {
-    private static final String APPLICATION_NAME = "FashionStore"; // Application name
+    private static final String APPLICATION_NAME = "FoolishStore"; // Application name
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     /**

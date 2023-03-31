@@ -19,6 +19,8 @@ public abstract class CrudController {
 
     public abstract ApiResponse updateItem(@RequestBody String json, HttpSession session) throws IOException;
 
+    public abstract ApiResponse readSelectedItemById(int id, HttpSession session) throws IOException;
+
     public abstract ApiResponse deleteSelectedItemById(int id, HttpSession session) throws IOException;
 
     public abstract ApiResponse updateSelectedItemById(int id, HttpSession session) throws IOException;

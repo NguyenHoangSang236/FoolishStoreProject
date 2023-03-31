@@ -86,7 +86,7 @@ public class CartCrudServiceImpl implements CrudService {
             }
             catch (Exception e) {
                 e.printStackTrace();
-                return new ApiResponse("failed", e.toString());
+                return new ApiResponse("failed", "Technical error");
             }
         }
     }
@@ -118,7 +118,7 @@ public class CartCrudServiceImpl implements CrudService {
             }
             catch (Exception e) {
                 e.printStackTrace();
-                return new ApiResponse("failed", e.toString());
+                return new ApiResponse("failed", "Technical error");
             }
         }
     }
@@ -135,8 +135,6 @@ public class CartCrudServiceImpl implements CrudService {
             try {
                 if(paramObj.size() > 0) {
                     for(Object obj: paramObj) {
-                        System.out.println(obj);
-
                         CartItemDTO cartItemDTO = new ObjectMapper().convertValue(obj, CartItemDTO.class);
 
                         //update cart by cartDTO
@@ -158,7 +156,7 @@ public class CartCrudServiceImpl implements CrudService {
                 else return new ApiResponse("failed", "Please select items in cart to update");
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ApiResponse("failed", e.toString());
+                return new ApiResponse("failed", "Technical error");
             }
         }
     }
@@ -179,20 +177,20 @@ public class CartCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse readingResponse(HttpSession session, RenderTypeEnum renderType) {
+    public ApiResponse readingResponse(HttpSession session, String renderType) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         if(customerId == 0) {
             return new ApiResponse("failed", "Login first");
         }
         else {
-            if(renderType == RenderTypeEnum.ALL_CART_ITEMS) {
+            if(renderType == "ALL_CART_ITEMS") {
                 List<CartRenderInfoDTO> cartList = cartRenderInfoRepo.getFullCartListByCustomerId(customerId);
 
                 return new ApiResponse("success", cartList);
             }
         }
-        return new ApiResponse("failed", "Wrong RenderType");
+        return new ApiResponse("failed", "Wrong render type");
     }
 
 

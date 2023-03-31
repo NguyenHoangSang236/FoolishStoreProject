@@ -80,6 +80,7 @@ public class Invoice implements PurchaseCalculation {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Delivery delivery;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "invoice", cascade={CascadeType.ALL})
     List<InvoicesWithProducts> invoicesWithProducts;
 
