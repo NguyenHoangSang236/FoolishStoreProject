@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class FilterFactory {
     public static final FilterRequest getFilterRequest(FilterTypeEnum filterType) {
-        switch (filterType) {
-            case PRODUCT : return new ProductFilterRequestDTO();
-        }
-
-        return null;
+        return switch (filterType) {
+            case PRODUCT -> new ProductFilterRequestDTO();
+            case INVOICE -> new InvoiceFilterRequestDTO();
+            default -> null;
+        };
     }
 }

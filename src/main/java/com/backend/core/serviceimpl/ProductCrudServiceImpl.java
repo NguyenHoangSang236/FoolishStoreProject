@@ -7,6 +7,7 @@ import com.backend.core.entity.dto.ProductFilterRequestDTO;
 import com.backend.core.entity.interfaces.FilterRequest;
 import com.backend.core.entity.renderdto.ProductRenderInfoDTO;
 import com.backend.core.entity.tableentity.Product;
+import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.CustomQueryRepository;
@@ -69,16 +70,20 @@ public class ProductCrudServiceImpl implements CrudService {
         List<ProductRenderInfoDTO> productRenderList = null;
 
         try {
+            // determine filter type
             FilterRequest productFilterRequest = FilterFactory.getFilterRequest(FilterTypeEnum.PRODUCT);
+
+            // convert paramObj
             productFilterRequest = (ProductFilterRequestDTO) paramObj;
 
             ProductFilterDTO productFilter = (ProductFilterDTO) productFilterRequest.getFilter();
 
             // product filter does not have Name filed -> binding filter
-            if(productFilter.getName().isEmpty() || productFilter.getName().isBlank()) {
-                String filterQuery = ValueRenderUtils.createQueryForProductFilter(
+            if(productFilter.getName() == null || productFilter.getName().isBlank()) {
+                // get filter query
+                String filterQuery = ValueRenderUtils.productFilterQuery(
                         productFilter.getCategories(),
-                        productFilter.getBrand(),
+                        productFilter.getBrand().toLowerCase(),
                         productFilter.getMinPrice(),
                         productFilter.getMaxPrice()
                 );
@@ -87,8 +92,7 @@ public class ProductCrudServiceImpl implements CrudService {
                 List<Object[]> objectList = customQueryRepo.getBindingFilteredList(filterQuery);
 
                 // convert object[] list to ProductRenderInfoDTO list
-                productRenderList = objectList.stream()
-                        .map(
+                productRenderList = objectList.stream().map(
                                 obj -> new ProductRenderInfoDTO(
                                         obj[0] instanceof Long ? ((Long) obj[0]).intValue() : (int) obj[0],
                                         obj[1] instanceof Long ? ((Long) obj[1]).intValue() : (int) obj[1],
@@ -109,14 +113,14 @@ public class ProductCrudServiceImpl implements CrudService {
             else {
                 productRenderList = productRenderInfoRepo.getProductsByName(productFilter.getName());
             }
-        } catch (StringIndexOutOfBoundsException e) {
+        }
+        catch (StringIndexOutOfBoundsException e) {
             e.printStackTrace();
-
-            return new ApiResponse("failed", "No data for filter, please select data!");
-        } catch (Exception e) {
+            return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
+        }
+        catch (Exception e) {
             e.printStackTrace();
-
-            return new ApiResponse("failed", "Technical error");
+            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
 
         return new ApiResponse("success", productRenderList);

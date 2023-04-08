@@ -3,6 +3,7 @@ package com.backend.core.controller;
 import com.backend.core.configuration.GoogleDriveConfig;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.GoogleDriveFoldersDTO;
+import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.service.GoogleDriveService;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.FileContent;
@@ -62,7 +63,7 @@ public class GoogleDriveController {
             return new ApiResponse("success", fileId);
         }
         catch (Exception e) {
-            return new ApiResponse("failed", "Technical error");
+            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
     }
 //

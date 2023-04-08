@@ -5,6 +5,7 @@ import com.backend.core.entity.tableentity.Customer;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.renderdto.CustomerRenderInfoDTO;
 import com.backend.core.entity.renderdto.StaffRenderInfoDTO;
+import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.StringTypeEnum;
 import com.backend.core.repository.*;
 import com.backend.core.service.AuthenticationService;
@@ -70,7 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ApiResponse("failed", "Technical error");
+            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
     }
 
@@ -93,7 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ApiResponse("failed", "Technical error");
+            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
 
         return new ApiResponse("success", "Change password successfully");
@@ -108,7 +109,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ApiResponse("failed", "Technical error");
+            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
     }
 
@@ -166,7 +167,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ApiResponse("failed", "Technical error");
+            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
     }
 

@@ -2,9 +2,12 @@ package com.backend.core.controller;
 
 import com.backend.core.abstractclasses.CrudController;
 import com.backend.core.entity.dto.ApiResponse;
+import com.backend.core.entity.dto.InvoiceFilterRequestDTO;
+import com.backend.core.entity.dto.ProductFilterRequestDTO;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.InvoiceRepository;
 import com.backend.core.service.CrudService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -71,7 +74,11 @@ public class InvoiceCustomerController extends CrudController {
 
 
     @Override
-    public ApiResponse getListOfItemsFromFilter(String json, HttpSession session) throws IOException {
-        return null;
+    @PostMapping("/filterOrders")
+    public ApiResponse getListOfItemsFromFilter(@RequestBody String json, HttpSession session) throws IOException {
+        System.out.println(json);
+        ObjectMapper objectMapper = new ObjectMapper();
+        InvoiceFilterRequestDTO invoiceFilterRequestDTO = objectMapper.readValue(json, InvoiceFilterRequestDTO.class);
+        return crudService.readingFromSingleRequest(invoiceFilterRequestDTO, session);
     }
 }

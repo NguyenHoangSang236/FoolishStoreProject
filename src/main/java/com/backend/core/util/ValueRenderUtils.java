@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class ValueRenderUtils {
     @Autowired
@@ -116,8 +117,8 @@ public class ValueRenderUtils {
 
 
     //format DateTime
-    public static String formatDateDMY(Date date) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    public static String formatDateToString(Date date, String pattern) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         return simpleDateFormat.format(date);
     }
 
@@ -178,10 +179,40 @@ public class ValueRenderUtils {
     }
 
 
+    //create a query for invoice binding filter
+    public static String invoiceFilterQuery(int customerId, String adminAcceptance, int paymentStatus, String deliveryStatus, Date startInvoiceDate, Date endInvoiceDate, String paymentMethod) {
+        String result = "select * from invoice where Customer_ID = " + customerId + " and Payment_Status = " + paymentStatus;
+
+        if(adminAcceptance != null) {
+            result += " and Admin_Acceptance = '" + adminAcceptance + "' ";
+        }
+
+        if(deliveryStatus != null) {
+            result += " and Delivery_Status = '" + deliveryStatus + "' ";
+        }
+
+        if(paymentMethod != null) {
+            result += " and Payment_Method = '" + paymentMethod + "' ";
+        }
+
+        if(startInvoiceDate != null) {
+            result += " and Invoice_Date >= '" + formatDateToString(startInvoiceDate, "yyyy-MM-dd") + "' ";
+        }
+
+        if(endInvoiceDate != null) {
+            result += " and Invoice_Date <= '" + formatDateToString(endInvoiceDate, "yyyy-MM-dd") + "' ";
+        }
+
+        System.out.println(result);
+
+        return result + ';';
+    }
+
+
     //create a query for products binding filter
-    public static String createQueryForProductFilter(String[] catalogs, String brand, double price1, double price2) {
+    public static String productFilterQuery(String[] catalogs, String brand, double price1, double price2) {
         String result = "SELECT piu.*\n" +
-                        "FROM product_info_for_ui piu JOIN products p on piu.product_id = p.id" +
+                        "FROM product_info_for_ui piu JOIN products p on piu.product_id = p.id\n" +
                         "                             JOIN catalogs_with_products cwp ON p.id = cwp.product_id\n" +
                         "                             JOIN catalog c ON c.id = cwp.catalog_id\n" +
                         "                             JOIN products_management pm ON p.id = pm.product_id\n" +
@@ -200,11 +231,14 @@ public class ValueRenderUtils {
         }
 
         for(int i = 0; i < catalogsLength; i++) {
-            dynamicConditions += ("and c.name = '" + catalogs[i] + "' ");
+            if(i == 0) {
+                dynamicConditions += ("and (c.name = '" + catalogs[i] + "'");
+            }
+            else dynamicConditions += ("or c.name = '" + catalogs[i] + "' ");
         }
 
         if(price1 >= 0 && price2 > 0) {
-            dynamicConditions += ("and piu.selling_price >= " + price1 + " and piu.selling_price <= " + price2 );
+            dynamicConditions += (") and piu.selling_price >= " + price1 + " and piu.selling_price <= " + price2 );
         }
 
         dynamicConditions = dynamicConditions.substring(4);

@@ -135,9 +135,23 @@ public class Invoice implements PurchaseCalculation {
         this.adminAcceptance = adminAcceptance;
     }
 
+    public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency, String intent, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount, String adminAcceptance) {
+        this.id = id;
+        this.invoiceDate = invoiceDate;
+        this.deliveryStatus = deliveryStatus;
+        this.paymentStatus = paymentStatus;
+        this.paymentMethod = paymentMethod;
+        this.currency = currency;
+        this.intent = intent;
+        this.description = description;
+        this.refundPercentage = refundPercentage;
+        this.totalPrice = totalPrice;
+        this.reason = reason;
+        this.onlinePaymentAccount = onlinePaymentAccount;
+        this.adminAcceptance = adminAcceptance;
+    }
 
-
-//    public String formattedTotalPrice() {
+    //    public String formattedTotalPrice() {
 //        return ValueRender.formatDoubleNumber(this.totalPrice);
 //    }
 

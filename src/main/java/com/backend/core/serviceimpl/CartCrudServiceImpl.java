@@ -6,6 +6,7 @@ import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.CartItemDTO;
 import com.backend.core.entity.renderdto.CartRenderInfoDTO;
 import com.backend.core.enums.CartBuyingStatusEnum;
+import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
@@ -86,7 +87,7 @@ public class CartCrudServiceImpl implements CrudService {
             }
             catch (Exception e) {
                 e.printStackTrace();
-                return new ApiResponse("failed", "Technical error");
+                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
         }
     }
@@ -118,7 +119,7 @@ public class CartCrudServiceImpl implements CrudService {
             }
             catch (Exception e) {
                 e.printStackTrace();
-                return new ApiResponse("failed", "Technical error");
+                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
         }
     }
@@ -156,7 +157,7 @@ public class CartCrudServiceImpl implements CrudService {
                 else return new ApiResponse("failed", "Please select items in cart to update");
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ApiResponse("failed", "Technical error");
+                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
         }
     }

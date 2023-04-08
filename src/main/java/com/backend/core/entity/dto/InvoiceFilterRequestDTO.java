@@ -9,20 +9,21 @@ import org.springframework.stereotype.Component;
 import java.util.LinkedHashMap;
 
 @Component
-public class ProductFilterRequestDTO implements FilterRequest {
+public class InvoiceFilterRequestDTO implements FilterRequest {
     @JsonProperty("filter")
-    ProductFilterDTO filter;
+    InvoiceFilterDTO filter;
 
     @JsonProperty("key")
     String key;
 
 
-    public ProductFilterRequestDTO(ProductFilterDTO filter, String key) {
+    public InvoiceFilterRequestDTO(InvoiceFilterDTO filter, String key) {
         this.filter = filter;
         this.key = key;
     }
 
-    public ProductFilterRequestDTO() {}
+    public InvoiceFilterRequestDTO() {}
+
 
     @Override
     public Object getFilter() {
@@ -38,7 +39,7 @@ public class ProductFilterRequestDTO implements FilterRequest {
     public void setFilter(Object filter) throws JsonProcessingException {
         LinkedHashMap<String, Object> filterMap = (LinkedHashMap<String, Object>) filter;
         ObjectMapper objectMapper = new ObjectMapper();
-        this.filter = objectMapper.convertValue(filterMap, ProductFilterDTO.class);
+        this.filter = objectMapper.convertValue(filterMap, InvoiceFilterDTO.class);
     }
 
     @Override
