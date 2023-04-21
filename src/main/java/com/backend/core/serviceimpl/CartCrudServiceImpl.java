@@ -1,21 +1,22 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entity.tableentity.Cart;
-import com.backend.core.entity.tableentity.ProductManagement;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.CartItemDTO;
 import com.backend.core.entity.renderdto.CartRenderInfoDTO;
+import com.backend.core.entity.tableentity.Cart;
+import com.backend.core.entity.tableentity.ProductManagement;
 import com.backend.core.enums.CartBuyingStatusEnum;
 import com.backend.core.enums.ErrorTypeEnum;
-import com.backend.core.enums.RenderTypeEnum;
-import com.backend.core.repository.*;
+import com.backend.core.repository.CartRenderInfoRepository;
+import com.backend.core.repository.CartRepository;
+import com.backend.core.repository.CustomerRepository;
+import com.backend.core.repository.ProductManagementRepository;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.ValueRenderUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class CartCrudServiceImpl implements CrudService {
     public CartCrudServiceImpl() {}
 
     @Override
-    public ApiResponse creationalResponse(Object paramObj, HttpSession session) {
+    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session) {
         CartItemDTO cartItemDTO = (CartItemDTO) paramObj;
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
         Cart newCartItem;
@@ -90,6 +91,11 @@ public class CartCrudServiceImpl implements CrudService {
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
         }
+    }
+
+    @Override
+    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session) {
+        return null;
     }
 
 

@@ -36,6 +36,13 @@ public class InvoicesWithProducts {
 
     public InvoicesWithProducts() {}
 
+    public InvoicesWithProducts(InvoicesWithProductsPrimaryKeys id, ProductManagement productManagement, Invoice invoice, int quantity) {
+        this.id = id;
+        this.productManagement = productManagement;
+        this.invoice = invoice;
+        this.quantity = quantity;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

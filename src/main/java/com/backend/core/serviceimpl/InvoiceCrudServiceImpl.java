@@ -1,27 +1,25 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.entity.dto.FilterFactory;
-import com.backend.core.entity.dto.InvoiceFilterDTO;
-import com.backend.core.entity.dto.InvoiceFilterRequestDTO;
+import com.backend.core.entity.dto.*;
+import com.backend.core.entity.embededkey.InvoicesWithProductsPrimaryKeys;
 import com.backend.core.entity.interfaces.FilterRequest;
 import com.backend.core.entity.renderdto.InvoiceDetailRenderInfoDTO;
 import com.backend.core.entity.renderdto.InvoiceRenderInfoDTO;
-import com.backend.core.entity.renderdto.ProductRenderInfoDTO;
+import com.backend.core.entity.tableentity.Customer;
 import com.backend.core.entity.tableentity.Invoice;
-import com.backend.core.enums.ErrorTypeEnum;
-import com.backend.core.enums.FilterTypeEnum;
-import com.backend.core.repository.CustomQueryRepository;
-import com.backend.core.repository.InvoiceDetailsRenderInfoRepository;
-import com.backend.core.repository.InvoiceRepository;
+import com.backend.core.entity.tableentity.ProductManagement;
+import com.backend.core.enums.*;
+import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.ValueRenderUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -36,6 +34,17 @@ public class InvoiceCrudServiceImpl implements CrudService {
     @Autowired
     CustomQueryRepository customQueryRepo;
 
+    @Autowired
+    ProductManagementRepository productManagementRepo;
+
+    @Autowired
+    CustomerRepository customerRepo;
+
+    @Autowired
+    InvoiceInsertRepository invoiceInsertRepo;
+
+    @Autowired
+    CartRepository cartRepo;
 
 
     public InvoiceCrudServiceImpl() {}
@@ -43,8 +52,80 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse creationalResponse(Object paramObj, HttpSession session) {
+    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session) {
         return null;
+    }
+
+    @Override
+    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session) {
+        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+
+        List<CartItemDTO> cartItemList;
+
+        // check if logged in or not
+        if(customerId == 0) {
+            return new ApiResponse("failed", "Login first");
+        }
+        else {
+            List<InvoicesWithProducts> invoicesWithProductsList = new ArrayList<InvoicesWithProducts>();
+            int newInvoiceId = invoiceRepo.getLastestInvoiceId() + 1;
+
+            Invoice newInvoice = new Invoice(
+                    newInvoiceId,
+                    new Date(),
+                    DeliveryTypeEnum.ACCEPTANCE_WAITING.name(),
+                    0,
+                    PaymentMethodEnum.COD.name(),
+                    CurrencyEnum.USD.name(),
+                    "",
+                    "",
+                    0,
+                    0,
+                    "",
+                    "",
+                    AdminAcceptanceEnum.WAITING.name(),
+                    null,
+                    null,
+                    customerRepo.getCustomerById(customerId)
+            );
+
+            try {
+                invoiceRepo.save(newInvoice);
+
+                if(objList.size() > 0) {
+                    for(Object elem : objList) {
+                        CartItemDTO item = new ObjectMapper().convertValue(elem, CartItemDTO.class);
+
+                        if(cartRepo.getCartById(item.getCartId()).getCustomer().getId() != customerId ||
+                           cartRepo.getCartById(item.getCartId()).getBuyingStatus() == CartBuyingStatusEnum.NOT_BOUGHT_YET.name()) {
+                            return new ApiResponse("failed", "This item is not in your cart");
+                        }
+
+                        ProductManagement pm = productManagementRepo.getPrductsManagementByProductIDAndColorAndSize(
+                                item.getProductId(),
+                                item.getColor(),
+                                item.getSize()
+                        );
+
+                        InvoicesWithProducts invoicesWithProducts = new InvoicesWithProducts(
+                                new InvoicesWithProductsPrimaryKeys(pm.getId(), newInvoice.getId()),
+                                pm,
+                                newInvoice,
+                                item.getQuantity()
+                        );
+
+                        invoiceInsertRepo.insertInvoicesWithProducts(invoicesWithProducts);
+                    }
+
+                    return new ApiResponse("success", "Add new order successfully");
+                }
+                else return new ApiResponse("failed", "There is no item");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+            }
+        }
     }
 
 

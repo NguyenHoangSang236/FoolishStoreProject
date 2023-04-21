@@ -11,7 +11,10 @@ import java.util.List;
 @Service
 public interface CrudService {
     // generate post response for creation
-    ApiResponse creationalResponse(Object paramObj, HttpSession session);
+    ApiResponse singleCreationalResponse(Object paramObj, HttpSession session);
+
+    // generate post response for creation with a List
+    ApiResponse listCreationalResponse(List<Object> objList, HttpSession session);
 
     // generate post response for removal
     ApiResponse removingResponse(Object paramObj, HttpSession session);

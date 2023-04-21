@@ -9,14 +9,12 @@ import com.backend.core.entity.renderdto.ProductRenderInfoDTO;
 import com.backend.core.entity.tableentity.Product;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
-import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.CustomQueryRepository;
 import com.backend.core.repository.ProductRenderInfoRepository;
 import com.backend.core.repository.ProductRepository;
 import com.backend.core.service.CalculationService;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.ValueRenderUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Qualifier("ProductCrudServiceImpl")
@@ -48,7 +45,12 @@ public class ProductCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse creationalResponse(Object paramObj, HttpSession session) {
+    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session) {
         return null;
     }
 

@@ -17,7 +17,7 @@ public class CalculationServiceImpl implements CalculationService {
 
     // calculate total price of a product after discount
     @Override
-    public double getTotalPriceOfSingleProduct(PurchaseCalculation productItem, double price, double discount) {
+    public double  getTotalPriceOfSingleProduct(PurchaseCalculation productItem, double price, double discount) {
         BigDecimal priceDec = new BigDecimal(price);
         BigDecimal discountDec = new BigDecimal(discount);
         BigDecimal result  = priceDec.multiply(discountDec.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));

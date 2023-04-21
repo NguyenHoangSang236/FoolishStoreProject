@@ -8,17 +8,7 @@ import com.backend.core.entity.tableentity.Customer;
 import com.backend.core.entity.tableentity.Delivery;
 import com.backend.core.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -36,7 +26,7 @@ import lombok.Setter;
 @Table(name = "invoice")
 public class Invoice implements PurchaseCalculation {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)
     int id;
 
@@ -86,7 +76,7 @@ public class Invoice implements PurchaseCalculation {
 
     @JsonIgnore
     @ManyToOne
-    @MapsId("customer_id")
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
 
@@ -119,7 +109,28 @@ public class Invoice implements PurchaseCalculation {
         this.adminAcceptance = adminAcceptance;
     }
 
-    public Invoice(int id,Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency,
+    public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency,
+                   String intent, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount,
+                   String adminAcceptance, Delivery delivery, List<InvoicesWithProducts> invoicesWithProducts, Customer customer) {
+        this.id = id;
+        this.invoiceDate = invoiceDate;
+        this.deliveryStatus = deliveryStatus;
+        this.paymentStatus = paymentStatus;
+        this.paymentMethod = paymentMethod;
+        this.currency = currency;
+        this.intent = intent;
+        this.description = description;
+        this.refundPercentage = refundPercentage;
+        this.totalPrice = totalPrice;
+        this.reason = reason;
+        this.onlinePaymentAccount = onlinePaymentAccount;
+        this.adminAcceptance = adminAcceptance;
+        this.delivery = delivery;
+        this.invoicesWithProducts = invoicesWithProducts;
+        this.customer = customer;
+    }
+
+    public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency,
                    String intent, String description, Customer customer, double totalPrice, String adminAcceptance) {
         super();
         this.id = id;
@@ -135,7 +146,8 @@ public class Invoice implements PurchaseCalculation {
         this.adminAcceptance = adminAcceptance;
     }
 
-    public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency, String intent, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount, String adminAcceptance) {
+    public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency,
+                   String intent, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount, String adminAcceptance) {
         this.id = id;
         this.invoiceDate = invoiceDate;
         this.deliveryStatus = deliveryStatus;
@@ -150,6 +162,8 @@ public class Invoice implements PurchaseCalculation {
         this.onlinePaymentAccount = onlinePaymentAccount;
         this.adminAcceptance = adminAcceptance;
     }
+
+
 
     //    public String formattedTotalPrice() {
 //        return ValueRender.formatDoubleNumber(this.totalPrice);

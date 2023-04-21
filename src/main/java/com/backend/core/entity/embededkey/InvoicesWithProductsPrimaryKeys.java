@@ -12,8 +12,8 @@ public class InvoicesWithProductsPrimaryKeys implements Serializable {
      */
     private static final long serialVersionUID = -3919178711820914812L;
 
-    @Column(name = "product_id", nullable = false)
-    int productId;
+    @Column(name = "product_management_id", nullable = false)
+    int productManagementId;
 
     @Column(name = "invoice_id", nullable = false)
     int invoiceId;
@@ -21,19 +21,19 @@ public class InvoicesWithProductsPrimaryKeys implements Serializable {
 
     public InvoicesWithProductsPrimaryKeys() {}
 
-    public InvoicesWithProductsPrimaryKeys(int productId, int invoiceId) {
+    public InvoicesWithProductsPrimaryKeys(int productManagementId, int invoiceId) {
         super();
-        this.productId = productId;
+        this.productManagementId = productManagementId;
         this.invoiceId = invoiceId;
     }
 
 
-    public int getProductId() {
-        return productId;
+    public int getProductManagementId() {
+        return productManagementId;
     }
 
-    public void setProductId(int productId) {
-        this.productId = productId;
+    public void setProductManagementId(int productManagementId) {
+        this.productManagementId = productManagementId;
     }
 
     public int getInvoiceId() {

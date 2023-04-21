@@ -36,9 +36,9 @@ public class InvoiceInsertRepository {
 	
 	@Transactional
 	public void insertInvoicesWithProducts(InvoicesWithProducts invoicesWithProducts) {
-		 entityManager.createNativeQuery("INSERT INTO invoices_with_products (invoice_id, product_id, quantity) VALUES (?,?,?)")
+		 entityManager.createNativeQuery("INSERT INTO invoices_with_products (invoice_id, product_management_id, quantity) VALUES (?,?,?)")
 	      .setParameter(1, invoicesWithProducts.getId().getInvoiceId())
-	      .setParameter(2, invoicesWithProducts.getId().getProductId())
+	      .setParameter(2, invoicesWithProducts.getId().getProductManagementId())
 	      .setParameter(3, invoicesWithProducts.getQuantity())
 	      .executeUpdate();
 	}

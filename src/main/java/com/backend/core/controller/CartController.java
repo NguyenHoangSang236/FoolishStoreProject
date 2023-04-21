@@ -61,7 +61,7 @@ public class CartController extends CrudController {
         ObjectMapper objectMapper = new ObjectMapper();
         CartItemDTO cartItemDTO = objectMapper.readValue(json, CartItemDTO.class);
 
-        return crudService.creationalResponse(cartItemDTO, session);
+        return crudService.singleCreationalResponse(cartItemDTO, session);
     }
 
 

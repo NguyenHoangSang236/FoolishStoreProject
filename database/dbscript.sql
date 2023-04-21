@@ -253,20 +253,20 @@ CREATE TABLE `invoice` (
   `Customer_ID` bigint DEFAULT NULL,
   `Invoice_Date` date NOT NULL,
   `Payment_Status` tinyint NOT NULL DEFAULT '0',
-  `Delivery_Status` varchar(20) NOT NULL DEFAULT 'packing',
+  `Delivery_Status` varchar(20) NOT NULL DEFAULT 'WAITING_ACCEPTANCE',
   `Refund_Percentage` double DEFAULT '0',
   `Reason` text,
-  `Currency` varchar(10) NOT NULL DEFAULT 'vnd',
-  `Payment_Method` varchar(10) NOT NULL DEFAULT 'paypal',
+  `Currency` varchar(10) NOT NULL DEFAULT 'USD',
+  `Payment_Method` varchar(10) NOT NULL DEFAULT 'COD',
   `Description` text,
   `Intent` text,
-  `admin_acceptance` varchar(20) NOT NULL DEFAULT 'waiting',
+  `admin_acceptance` varchar(20) NOT NULL DEFAULT 'WAITING',
   `total_price` double DEFAULT '0',
   `online_payment_account` text,
   PRIMARY KEY (`ID`),
   KEY `FK_customer_invoice` (`Customer_ID`),
   CONSTRAINT `FK_customer_invoice` FOREIGN KEY (`Customer_ID`) REFERENCES `customers` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -699,4 +699,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-01  1:07:01
+-- Dump completed on 2023-04-22  0:23:59
