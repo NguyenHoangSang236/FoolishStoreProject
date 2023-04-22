@@ -104,13 +104,20 @@ public class ProductManagement implements Serializable, PurchaseCalculation {
         return total;
     }
 
-    public void addQuantity(int quant) {
-        this.availableQuantity += quant;
+    public void addQuantity(String type, int quant) {
+        switch (type) {
+            case "AVAILABLE_QUANTITY" -> this.availableQuantity += quant;
+            case "SOLD_QUANTITY" -> this.soldQuantity += quant;
+        }
     }
 
-    public void subtractQuantity(int quant) {
-        this.availableQuantity -= quant;
+    public void subtractQuantity(String type, int quant) {
+        switch (type) {
+            case "AVAILABLE_QUANTITY" -> this.availableQuantity -= quant;
+            case "SOLD_QUANTITY" -> this.soldQuantity -= quant;
+        }
     }
+
 
     @Override
     public double calculation(CalculationService calculationService) {

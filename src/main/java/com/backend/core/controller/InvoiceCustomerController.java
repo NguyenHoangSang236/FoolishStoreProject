@@ -74,6 +74,7 @@ public class InvoiceCustomerController extends CrudController {
         return crudService.readingResponse(session, RenderTypeEnum.CUSTOMER_ALL_CURRENT_INVOICES.name());
     }
 
+
     @GetMapping("/showPurchaseHistory")
     public ApiResponse getPurchaseHistory(String json, HttpSession session) throws IOException {
         return crudService.readingResponse(session, RenderTypeEnum.CUSTOMER_PURCHASE_HISTORY.name());

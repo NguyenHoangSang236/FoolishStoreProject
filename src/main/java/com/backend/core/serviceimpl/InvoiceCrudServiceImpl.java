@@ -5,8 +5,8 @@ import com.backend.core.entity.embededkey.InvoicesWithProductsPrimaryKeys;
 import com.backend.core.entity.interfaces.FilterRequest;
 import com.backend.core.entity.renderdto.InvoiceDetailRenderInfoDTO;
 import com.backend.core.entity.renderdto.InvoiceRenderInfoDTO;
-import com.backend.core.entity.tableentity.Customer;
 import com.backend.core.entity.tableentity.Invoice;
+import com.backend.core.entity.tableentity.Cart;
 import com.backend.core.entity.tableentity.ProductManagement;
 import com.backend.core.enums.*;
 import com.backend.core.repository.*;
@@ -41,7 +41,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
     CustomerRepository customerRepo;
 
     @Autowired
-    InvoiceInsertRepository invoiceInsertRepo;
+    InvoicesWithProductsRepository invoicesWithProductsRepo;
 
     @Autowired
     CartRepository cartRepo;
@@ -56,18 +56,19 @@ public class InvoiceCrudServiceImpl implements CrudService {
         return null;
     }
 
+
+
     @Override
     public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
-        List<CartItemDTO> cartItemList;
+        List<CartItemDTO> cartItemList = new ArrayList<CartItemDTO>();
 
         // check if logged in or not
         if(customerId == 0) {
             return new ApiResponse("failed", "Login first");
         }
         else {
-            List<InvoicesWithProducts> invoicesWithProductsList = new ArrayList<InvoicesWithProducts>();
             int newInvoiceId = invoiceRepo.getLastestInvoiceId() + 1;
 
             Invoice newInvoice = new Invoice(
@@ -90,22 +91,45 @@ public class InvoiceCrudServiceImpl implements CrudService {
             );
 
             try {
-                invoiceRepo.save(newInvoice);
-
                 if(objList.size() > 0) {
+                    // check if all cart items meet the requirements or not
                     for(Object elem : objList) {
                         CartItemDTO item = new ObjectMapper().convertValue(elem, CartItemDTO.class);
+                        cartItemList.add(item);
 
-                        if(cartRepo.getCartById(item.getCartId()).getCustomer().getId() != customerId ||
-                           cartRepo.getCartById(item.getCartId()).getBuyingStatus() == CartBuyingStatusEnum.NOT_BOUGHT_YET.name()) {
+                        Cart cartItem = cartRepo.getCartById(item.getCartId());
+
+                        // check if this cart item is in your cart or not
+                        if(cartItem.getCustomer().getId() != customerId ||
+                           cartItem.getBuyingStatus().equals(CartBuyingStatusEnum.NOT_BOUGHT_YET.name())) {
                             return new ApiResponse("failed", "This item is not in your cart");
                         }
 
+                        // check if this cart item's quantity is higher than available quantity or not
+                        if(cartItem.getProductManagement().getAvailableQuantity() < item.getQuantity()) {
+                            return new ApiResponse("failed", "The available quantity of " + cartItem.getProductManagement().getProduct().getName() + " is only " + cartItem.getProductManagement().getAvailableQuantity() + " left");
+                        }
+                    }
+
+                    // save new invoice first to take its ID as the foreign key for InvoicesWithProducts to progress
+                    invoiceRepo.save(newInvoice);
+
+                    // insert data to tables
+                    for(CartItemDTO item : cartItemList) {
+                        Cart cartItem = cartRepo.getCartById(item.getCartId());
+
+                        // get ProductManagement by id, color and size
                         ProductManagement pm = productManagementRepo.getPrductsManagementByProductIDAndColorAndSize(
                                 item.getProductId(),
                                 item.getColor(),
                                 item.getSize()
                         );
+
+                        // subtract available quantity
+                        pm.subtractQuantity(ProductManagementQuantityTypeEnum.AVAILABLE_QUANTITY.name(), cartItem.getQuantity());
+                        // add sold quantity
+                        pm.addQuantity(ProductManagementQuantityTypeEnum.SOLD_QUANTITY.name(), cartItem.getQuantity());
+                        productManagementRepo.save(pm);
 
                         InvoicesWithProducts invoicesWithProducts = new InvoicesWithProducts(
                                 new InvoicesWithProductsPrimaryKeys(pm.getId(), newInvoice.getId()),
@@ -114,7 +138,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                                 item.getQuantity()
                         );
 
-                        invoiceInsertRepo.insertInvoicesWithProducts(invoicesWithProducts);
+                        // insert to InvoicesWithProducts table
+                        invoicesWithProductsRepo.insertInvoicesWithProducts(invoicesWithProducts);
                     }
 
                     return new ApiResponse("success", "Add new order successfully");

@@ -263,4 +263,7 @@ public class ValueRenderUtils {
         return sb.toString();
     }
 
+    public static String googleDriveUrlFromFileId(String fileId) {
+        return "https://drive.google.com/file/d/" + fileId + "/view?usp=sharing";
+    }
 }

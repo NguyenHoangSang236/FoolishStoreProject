@@ -21,7 +21,7 @@ import java.util.List;
 
 @Component
 public class GoogleDriveConfig {
-    private static final String APPLICATION_NAME = "FoolishStore"; // Application name
+    private static final String APPLICATION_NAME = "FoolishFashionStore"; // Application name
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     /**
@@ -29,7 +29,7 @@ public class GoogleDriveConfig {
      * If modifying these scopes, delete your previously saved tokens/ folder.
      */
     private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
-    private static final String CREDENTIALS_FILE_PATH = "/home/mr/JAVA/FoolishStoreProject/src/main/resources/client-secret.json"; // path file Google Drive Service
+    private static final String CREDENTIALS_FILE_PATH = "/home/mr/JAVA/FoolishStoreProject/src/main/resources/client_secret.json"; // path file Google Drive Service
 
     private static GoogleDriveConfig ggDriveConfigInstance;
 

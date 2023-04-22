@@ -33,6 +33,7 @@ public class GoogleFileManager {
                 .setPageSize(1000)
                 .setFields("nextPageToken, files(id, name, size, thumbnailLink, shared)") // get field of google drive file
                 .execute();
+
         return result.getFiles();
     }
 

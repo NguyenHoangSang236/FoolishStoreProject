@@ -5,6 +5,7 @@ import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.GoogleDriveFoldersDTO;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.service.GoogleDriveService;
+import com.backend.core.util.ValueRenderUtils;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -27,8 +28,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/googleDrive",
-        consumes = {"*/*"},
-        produces = {MediaType.APPLICATION_JSON_VALUE} )
+                consumes = {"*/*"},
+                produces = {MediaType.APPLICATION_JSON_VALUE})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class GoogleDriveController {
     @Autowired
@@ -60,7 +61,8 @@ public class GoogleDriveController {
 
         try {
             String fileId = googleDriveService.uploadFile(fileUpload, pathFile, Boolean.parseBoolean(shared));
-            return new ApiResponse("success", fileId);
+
+            return new ApiResponse("success", ValueRenderUtils.googleDriveUrlFromFileId(fileId));
         }
         catch (Exception e) {
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());

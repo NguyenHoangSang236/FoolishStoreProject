@@ -78,8 +78,8 @@ public class CartCrudServiceImpl implements CrudService {
                         );
                         cartRepo.save(newCartItem);
 
-                        productManagement.subtractQuantity(cartItemDTO.getQuantity());
-                        productManagementRepo.save(productManagement);
+//                        productManagement.subtractQuantity(cartItemDTO.getQuantity());
+//                        productManagementRepo.save(productManagement);
                     }
                     return new ApiResponse("success", "Add successfully");
                 } else {
