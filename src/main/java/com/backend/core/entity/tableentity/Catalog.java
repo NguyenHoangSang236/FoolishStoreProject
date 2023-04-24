@@ -36,6 +36,9 @@ public class Catalog {
     @Column(name = "Name")
     private String name;
 
+    @Column(name = "Image")
+    private String image;
+
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
@@ -58,39 +61,14 @@ public class Catalog {
         this.name = name;
     }
 
-
-//    public String catalogNameToString() {
-//        return ValueRender.linkToString(this.name);
-//    }
-
-
-
-    public int getId() {
-        return id;
-    }
-
-
-    public void setId(int id) {
+    public Catalog(int id, String name, String image, List<Product> products) {
         this.id = id;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-
-    public void setProducts(List<Product> products) {
+        this.image = image;
         this.products = products;
     }
+
+    //    public String catalogNameToString() {
+//        return ValueRender.linkToString(this.name);
+//    }
 }
