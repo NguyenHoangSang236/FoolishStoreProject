@@ -12,7 +12,8 @@ import java.util.List;
 
 @Service
 public class CalculationServiceImpl implements CalculationService {
-    @Autowired CalculationService calculationService;
+    @Autowired
+    CalculationService calculationService;
 
 
     // calculate total price of a product after discount

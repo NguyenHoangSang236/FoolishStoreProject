@@ -82,6 +82,7 @@ DROP TABLE IF EXISTS `catalog`;
 CREATE TABLE `catalog` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
+  `image` varchar(500) NOT NULL DEFAULT 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pexels.com%2Fsearch%2Fclothing%2F&psig=AOvVaw1Gkld9bmnAEiYd1gp8RxX3&ust=1682415727269000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCOjHi5adwv4CFQAAAAAdAAAAABAD',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -92,7 +93,7 @@ CREATE TABLE `catalog` (
 
 LOCK TABLES `catalog` WRITE;
 /*!40000 ALTER TABLE `catalog` DISABLE KEYS */;
-INSERT INTO `catalog` VALUES (1,'Jackets'),(2,'Glasses'),(3,'Shoes'),(4,'Male'),(5,'Female'),(6,'Accessories'),(7,'Bags and Purses'),(8,'Sport');
+INSERT INTO `catalog` VALUES (1,'Jackets','1SJd_q9XgP6t3IcZyr9yge-YWpB7m4r6p'),(2,'Glasses','1sxJBW8O5FurTGUE39cIxdRcRycLg6pnK'),(3,'Shoes','1C22R6MlFTiMwbewDPkzpX1wb_GnNGu08'),(4,'Male','17X-b4LDq0VoHV1QOJE5fMvVhIoejq_2u'),(5,'Female','128ptt1MwwaDE1B-Qd0PYt-z0mooOBU9L'),(6,'Accessories','1vu0bQvTF38IAsJtLBH_rFQHNJAqY1IgM'),(7,'Purses','1GKehSvAvHwZ9dVe82dDoGBzXe1rbw1vz'),(8,'Sport','14Ap5-CSmhnR5wAxbLsJ0XKkbi45vya6X'),(9,'Backpackes','1rdb1BgNCVRL2A5FAVqvRcV0azUd1nBlw');
 /*!40000 ALTER TABLE `catalog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -699,4 +700,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-22  0:23:59
+-- Dump completed on 2023-04-29 16:45:23
