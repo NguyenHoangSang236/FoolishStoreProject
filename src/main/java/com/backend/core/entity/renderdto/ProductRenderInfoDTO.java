@@ -54,6 +54,9 @@ public class ProductRenderInfoDTO {
     @Column(name = "image_4")
     private String image4;
 
+    @Column(name = "overall_rating")
+    private double overallRating;
+
 
     public ProductRenderInfoDTO(int id, int productId, String name, String size, double sellingPrice, double discount, String brand, String color, int availableQuantity, String image1, String image2, String image3, String image4) {
         this.id = id;
@@ -71,6 +74,23 @@ public class ProductRenderInfoDTO {
         this.image4 = image4;
     }
 
+    public ProductRenderInfoDTO(int id, int productId, String name, double sellingPrice, double discount, String brand, String size, String color, int availableQuantity, String image1, String image2, String image3, String image4, double overallRating) {
+        this.id = id;
+        this.productId = productId;
+        this.name = name;
+        this.sellingPrice = sellingPrice;
+        this.discount = discount;
+        this.brand = brand;
+        this.size = size;
+        this.color = color;
+        this.availableQuantity = availableQuantity;
+        this.image1 = image1;
+        this.image2 = image2;
+        this.image3 = image3;
+        this.image4 = image4;
+        this.overallRating = overallRating;
+    }
+
     public ProductRenderInfoDTO() {}
 
 
@@ -79,12 +99,12 @@ public class ProductRenderInfoDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductRenderInfoDTO that = (ProductRenderInfoDTO) o;
-        return id == that.id && productId == that.productId && Double.compare(that.sellingPrice, sellingPrice) == 0 && Double.compare(that.discount, discount) == 0 && availableQuantity == that.availableQuantity && name.equals(that.name) && brand.equals(that.brand) && size.equals(that.size) && color.equals(that.color) && Objects.equals(image1, that.image1) && Objects.equals(image2, that.image2) && Objects.equals(image3, that.image3) && Objects.equals(image4, that.image4);
+        return id == that.id && productId == that.productId && Double.compare(that.sellingPrice, sellingPrice) == 0 && Double.compare(that.discount, discount) == 0 && availableQuantity == that.availableQuantity && Double.compare(that.overallRating, overallRating) == 0 && Objects.equals(name, that.name) && Objects.equals(brand, that.brand) && Objects.equals(size, that.size) && Objects.equals(color, that.color) && Objects.equals(image1, that.image1) && Objects.equals(image2, that.image2) && Objects.equals(image3, that.image3) && Objects.equals(image4, that.image4);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, productId, name, sellingPrice, discount, brand, size, color, availableQuantity, image1, image2, image3, image4);
+        return Objects.hash(id, productId, name, sellingPrice, discount, brand, size, color, availableQuantity, image1, image2, image3, image4, overallRating);
     }
 
     @Override
@@ -103,6 +123,7 @@ public class ProductRenderInfoDTO {
                 ", image2='" + image2 + '\'' +
                 ", image3='" + image3 + '\'' +
                 ", image4='" + image4 + '\'' +
+                ", overallRating=" + overallRating +
                 '}';
     }
 }
