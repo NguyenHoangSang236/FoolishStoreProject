@@ -36,8 +36,8 @@ public class StaffRenderInfoDTO {
     @Column(name = "email")
     String email;
 
-    @Column(name = "phone_number")
-    String phone_number;
+    @Column(name = "phoneNumber")
+    String phoneNumber;
 
     @Column(name = "position")
     String position;
@@ -47,7 +47,7 @@ public class StaffRenderInfoDTO {
 
 
 
-    public StaffRenderInfoDTO(int id, int accountId, String userName, String password, String status, String name, String email, String phone_number, String position, String avatar) {
+    public StaffRenderInfoDTO(int id, int accountId, String userName, String password, String status, String name, String email, String phoneNumber, String position, String avatar) {
         this.id = id;
         this.accountId = accountId;
         this.userName = userName;
@@ -55,7 +55,7 @@ public class StaffRenderInfoDTO {
         this.status = status;
         this.name = name;
         this.email = email;
-        this.phone_number = phone_number;
+        this.phoneNumber = phoneNumber;
         this.position = position;
         this.avatar = avatar;
     }
@@ -70,12 +70,12 @@ public class StaffRenderInfoDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StaffRenderInfoDTO that = (StaffRenderInfoDTO) o;
-        return id == that.id && accountId == that.accountId && userName.equals(that.userName) && password.equals(that.password) && status.equals(that.status) && name.equals(that.name) && email.equals(that.email) && phone_number.equals(that.phone_number) && position.equals(that.position) && avatar.equals(that.avatar);
+        return id == that.id && accountId == that.accountId && userName.equals(that.userName) && password.equals(that.password) && status.equals(that.status) && name.equals(that.name) && email.equals(that.email) && phoneNumber.equals(that.phoneNumber) && position.equals(that.position) && avatar.equals(that.avatar);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, accountId, userName, password, status, name, email, phone_number, position, avatar);
+        return Objects.hash(id, accountId, userName, password, status, name, email, phoneNumber, position, avatar);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class StaffRenderInfoDTO {
                 ", status='" + status + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", phone_number='" + phone_number + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", position='" + position + '\'' +
                 ", avatar='" + avatar + '\'' +
                 '}';

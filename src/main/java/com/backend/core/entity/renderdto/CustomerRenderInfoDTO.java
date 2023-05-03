@@ -36,8 +36,8 @@ public class CustomerRenderInfoDTO {
     @Column(name = "email")
     String email;
 
-    @Column(name = "phone_number")
-    String phone_number;
+    @Column(name = "phoneNumber")
+    String phoneNumber;
 
     @Column(name = "address")
     String address;
@@ -52,7 +52,7 @@ public class CustomerRenderInfoDTO {
     String avatar;
 
 
-    public CustomerRenderInfoDTO(int id, int accountId, String userName, String password, String status, String name, String email, String phone_number, String address, String city, String country, String avatar) {
+    public CustomerRenderInfoDTO(int id, int accountId, String userName, String password, String status, String name, String email, String phoneNumber, String address, String city, String country, String avatar) {
         this.id = id;
         this.accountId = accountId;
         this.userName = userName;
@@ -60,7 +60,7 @@ public class CustomerRenderInfoDTO {
         this.status = status;
         this.name = name;
         this.email = email;
-        this.phone_number = phone_number;
+        this.phoneNumber = phoneNumber;
         this.address = address;
         this.city = city;
         this.country = country;
@@ -74,12 +74,12 @@ public class CustomerRenderInfoDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CustomerRenderInfoDTO that = (CustomerRenderInfoDTO) o;
-        return id == that.id && accountId == that.accountId && userName.equals(that.userName) && password.equals(that.password) && status.equals(that.status) && name.equals(that.name) && email.equals(that.email) && phone_number.equals(that.phone_number) && Objects.equals(address, that.address) && Objects.equals(city, that.city) && Objects.equals(country, that.country) && Objects.equals(avatar, that.avatar);
+        return id == that.id && accountId == that.accountId && userName.equals(that.userName) && password.equals(that.password) && status.equals(that.status) && name.equals(that.name) && email.equals(that.email) && phoneNumber.equals(that.phoneNumber) && Objects.equals(address, that.address) && Objects.equals(city, that.city) && Objects.equals(country, that.country) && Objects.equals(avatar, that.avatar);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, accountId, userName, password, status, name, email, phone_number, address, city, country, avatar);
+        return Objects.hash(id, accountId, userName, password, status, name, email, phoneNumber, address, city, country, avatar);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class CustomerRenderInfoDTO {
                 ", status='" + status + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", phone_number='" + phone_number + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
                 ", city='" + city + '\'' +
                 ", country='" + country + '\'' +
