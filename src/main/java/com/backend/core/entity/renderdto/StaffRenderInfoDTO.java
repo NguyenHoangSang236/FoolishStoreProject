@@ -36,7 +36,7 @@ public class StaffRenderInfoDTO {
     @Column(name = "email")
     String email;
 
-    @Column(name = "phoneNumber")
+    @Column(name = "phone_number")
     String phoneNumber;
 
     @Column(name = "position")
