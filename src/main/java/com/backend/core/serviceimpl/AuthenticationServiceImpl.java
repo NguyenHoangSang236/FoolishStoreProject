@@ -141,6 +141,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 //            else if (!CheckUtils.isValidPhoneNumber(customer.getPhoneNumber())) {
 //                return "This is not a phone number !!";
 //            }
+            //check valid VN phone number
+            else if (customer.getPhoneNumber().length() != 10) {
+                return new ApiResponse("failed", "Phone number must be 10-digit !!");
+            }
             //check valid email
             else if (!CheckUtils.isValidEmail(customer.getEmail())) {
                 return new ApiResponse("failed", "This is not an email, please input again !!");
