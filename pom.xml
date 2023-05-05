@@ -161,8 +161,14 @@
             <artifactId>spring-web</artifactId>
             <version>6.0.3</version>
         </dependency>
+		<dependency>
+			<groupId>com.google.mlkit</groupId>
+			<artifactId>translate</artifactId>
+			<version>16.1.0</version>
+		</dependency>
 
-        <!--		<dependency>-->
+
+		<!--		<dependency>-->
 <!--			<groupId>org.hibernate</groupId>-->
 <!--			<artifactId>hibernate-entitymanager</artifactId>-->
 <!--			<version>5.4.10.Final</version>-->
