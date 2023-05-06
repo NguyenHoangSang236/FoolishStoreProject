@@ -1,10 +1,7 @@
 package com.backend.core.controller;
 
 import com.backend.core.abstractclasses.CrudController;
-import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.entity.dto.CartItemDTO;
-import com.backend.core.entity.dto.InvoiceFilterRequestDTO;
-import com.backend.core.entity.dto.ProductFilterRequestDTO;
+import com.backend.core.entity.dto.*;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.InvoiceRepository;
 import com.backend.core.service.CrudService;
@@ -20,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/invoice", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(value = "/invoice/customer", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class InvoiceCustomerController extends CrudController {
     @Autowired
@@ -69,22 +66,25 @@ public class InvoiceCustomerController extends CrudController {
 
 
     @Override
-    @GetMapping("/showAllCurrentInvoices")
-    public ApiResponse getListOfItems(String json, HttpSession session) throws IOException {
-        return crudService.readingResponse(session, RenderTypeEnum.CUSTOMER_ALL_CURRENT_INVOICES.name());
+    @PostMapping("/showAllCurrentInvoices")
+    public ApiResponse getListOfItems(@RequestBody String json, HttpSession session) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        PaginationDTO pagination = objectMapper.readValue(json, PaginationDTO.class);
+        return crudService.readingFromSingleRequest(pagination, session);
     }
 
 
     @GetMapping("/showPurchaseHistory")
     public ApiResponse getPurchaseHistory(String json, HttpSession session) throws IOException {
-        return crudService.readingResponse(session, RenderTypeEnum.CUSTOMER_PURCHASE_HISTORY.name());
+        ObjectMapper objectMapper = new ObjectMapper();
+        PaginationDTO pagination = objectMapper.readValue(json, PaginationDTO.class);
+        return crudService.readingFromSingleRequest(pagination, session);
     }
 
 
     @Override
     @PostMapping("/filterOrders")
     public ApiResponse getListOfItemsFromFilter(@RequestBody String json, HttpSession session) throws IOException {
-        System.out.println(json);
         ObjectMapper objectMapper = new ObjectMapper();
         InvoiceFilterRequestDTO invoiceFilterRequestDTO = objectMapper.readValue(json, InvoiceFilterRequestDTO.class);
         return crudService.readingFromSingleRequest(invoiceFilterRequestDTO, session);

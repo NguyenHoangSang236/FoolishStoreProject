@@ -13,13 +13,13 @@ public class InvoiceFilterRequestDTO implements FilterRequest {
     @JsonProperty("filter")
     InvoiceFilterDTO filter;
 
-    @JsonProperty("key")
-    String key;
+    @JsonProperty("pagination")
+    PaginationDTO pagination;
 
 
-    public InvoiceFilterRequestDTO(InvoiceFilterDTO filter, String key) {
+    public InvoiceFilterRequestDTO(InvoiceFilterDTO filter, PaginationDTO pagination) {
         this.filter = filter;
-        this.key = key;
+        this.pagination = pagination;
     }
 
     public InvoiceFilterRequestDTO() {}
@@ -31,8 +31,8 @@ public class InvoiceFilterRequestDTO implements FilterRequest {
     }
 
     @Override
-    public String getKey() {
-        return this.key;
+    public PaginationDTO getPagination() {
+        return this.pagination;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class InvoiceFilterRequestDTO implements FilterRequest {
     }
 
     @Override
-    public void setKey(String key) {
-        this.key = key;
+    public void setPagination(PaginationDTO pagination) {
+        this.pagination = pagination;
     }
 }

@@ -22,13 +22,13 @@ public interface CrudService {
     // generate post response for update
     ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session);
 
-    // generate post response for reading a single object by posting method
+    // generate post response for reading a single object by post method
     ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session);
 
-    // generate post response for reading a list of objects by posting method
+    // generate post response for reading by a list request by post method
     ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session);
 
-    // generate post response for reading a list of objects by posting method
+    // generate post response for reading a list of objects by get method
     ApiResponse readingResponse(HttpSession session, String renderType);
 
     // generate post response for reading using object's id

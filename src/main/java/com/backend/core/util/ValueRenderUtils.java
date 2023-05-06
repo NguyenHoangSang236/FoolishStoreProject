@@ -180,7 +180,7 @@ public class ValueRenderUtils {
 
 
     //create a query for invoice binding filter
-    public static String invoiceFilterQuery(int customerId, String adminAcceptance, int paymentStatus, String deliveryStatus, Date startInvoiceDate, Date endInvoiceDate, String paymentMethod) {
+    public static String invoiceFilterQuery(int customerId, String adminAcceptance, int paymentStatus, String deliveryStatus, Date startInvoiceDate, Date endInvoiceDate, String paymentMethod, int page, int limit) {
         String result = "select * from invoice where Customer_ID = " + customerId + " and Payment_Status = " + paymentStatus;
 
         if(adminAcceptance != null) {
@@ -203,14 +203,14 @@ public class ValueRenderUtils {
             result += " and Invoice_Date <= '" + formatDateToString(endInvoiceDate, "yyyy-MM-dd") + "' ";
         }
 
-        System.out.println(result);
+        result += "limit " + (limit * (page-1)) + ", " + limit;
 
         return result + ';';
     }
 
 
     //create a query for products binding filter
-    public static String productFilterQuery(String[] catalogs, String brand, double price1, double price2) {
+    public static String productFilterQuery(String[] catalogs, String brand, double price1, double price2, int page, int limit) {
         String result = "SELECT piu.*\n" +
                         "FROM product_info_for_ui piu JOIN products p on piu.product_id = p.id\n" +
                         "                             JOIN catalogs_with_products cwp ON p.id = cwp.product_id\n" +
@@ -242,7 +242,7 @@ public class ValueRenderUtils {
         }
 
         dynamicConditions = dynamicConditions.substring(4);
-        result += dynamicConditions + " GROUP BY p.name, pm.color ORDER BY p.id asc";
+        result += dynamicConditions + " GROUP BY p.name, pm.color ORDER BY p.id asc LIMIT " + (limit * (page-1)) + ", " + limit;
 
         return result;
     }
@@ -263,7 +263,7 @@ public class ValueRenderUtils {
         return sb.toString();
     }
 
-    public static String googleDriveUrlFromFileId(String fileId) {
+    public static String getGoogleDriveUrlFromFileId(String fileId) {
         return "https://drive.google.com/file/d/" + fileId + "/view?usp=sharing";
     }
 }

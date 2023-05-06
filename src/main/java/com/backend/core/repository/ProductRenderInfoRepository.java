@@ -8,8 +8,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ProductRenderInfoRepository extends JpaRepository<ProductRenderInfoDTO, Integer> {
-    @Query(value = "select distinct * from product_info_for_ui", nativeQuery = true)
-    List<ProductRenderInfoDTO> getAllProducts();
+    @Query(value = "select distinct * from product_info_for_ui limit :limit offset :startLine", nativeQuery = true)
+    List<ProductRenderInfoDTO> getAllProducts(@Param("startLine") int startLine, @Param("limit") int limit);;
 
     @Query(value = "select * from top_8_best_sell_products", nativeQuery = true)
     List<ProductRenderInfoDTO> getTop8BestSellProducts();
@@ -20,6 +20,6 @@ public interface ProductRenderInfoRepository extends JpaRepository<ProductRender
     @Query(value = "select * from product_info_for_ui where discount > 0 group by name order by discount desc limit 8", nativeQuery = true)
     List<ProductRenderInfoDTO> get8HotDiscountProducts();
 
-    @Query(value = "select * from product_info_for_ui where name like %:nameVal% group by name order by product_id", nativeQuery = true)
-    List<ProductRenderInfoDTO> getProductsByName(@Param("nameVal") String productName);
+    @Query(value = "select * from product_info_for_ui where name like %:nameVal% group by name order by product_id limit :limit offset :startLine", nativeQuery = true)
+    List<ProductRenderInfoDTO> getProductsByName(@Param("nameVal") String productName, @Param("startLine") int startLine, @Param("limit") int limit);
 }

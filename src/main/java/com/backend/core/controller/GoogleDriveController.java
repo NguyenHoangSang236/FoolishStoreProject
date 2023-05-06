@@ -62,7 +62,7 @@ public class GoogleDriveController {
         try {
             String fileId = googleDriveService.uploadFile(fileUpload, pathFile, Boolean.parseBoolean(shared));
 
-            return new ApiResponse("success", ValueRenderUtils.googleDriveUrlFromFileId(fileId));
+            return new ApiResponse("success", ValueRenderUtils.getGoogleDriveUrlFromFileId(fileId));
         }
         catch (Exception e) {
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());

@@ -19,12 +19,12 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 	int getLastestInvoiceId();
 	
 	
-	@Query(value = "select * from invoice i join customers c on i.customer_id = c.id where i.customer_id = :idVal and payment_status = 0", nativeQuery = true)
-	List<Invoice> getAllCurrentInvoicesByCustomerId(@Param("idVal") int customerId);
+	@Query(value = "select * from invoice i join customers c on i.customer_id = c.id where i.customer_id = :idVal and payment_status = 0 limit :limit offset :startLine", nativeQuery = true)
+	List<Invoice> getAllCurrentInvoicesByCustomerId(@Param("idVal") int customerId, @Param("startLine") int startLine, @Param("limit") int limit);
 
 
-	@Query(value = "select * from invoice i join customers c on i.customer_id = c.id where i.customer_id = :idVal", nativeQuery = true)
-	List<Invoice> getAllInvoicesByCustomerId(@Param("idVal") int customerId);
+	@Query(value = "select * from invoice i join customers c on i.customer_id = c.id where i.customer_id = :idVal limit :limit offset :startLine", nativeQuery = true)
+	List<Invoice> getAllInvoicesByCustomerId(@Param("idVal") int customerId, @Param("startLine") int startLine, @Param("limit") int limit);
 
 
 	@Query(value = "select count(*) from invoice i join customers c on i.customer_id = c.id where i.customer_id = :invoiceIdVal and c.id = :customerIdVal", nativeQuery = true)

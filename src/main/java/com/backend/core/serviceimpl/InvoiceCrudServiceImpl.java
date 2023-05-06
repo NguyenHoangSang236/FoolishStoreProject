@@ -171,67 +171,101 @@ public class InvoiceCrudServiceImpl implements CrudService {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         List<InvoiceRenderInfoDTO> invoiceRenderList = new ArrayList<>();
+        List<Invoice> invoiceList = new ArrayList<>();
 
         // check if logged in or not
         if(customerId == 0) {
             return new ApiResponse("failed", "Login first");
         }
         else {
-            try {
-                // determine filter type
-                FilterRequest invoiceFilterRequest = FilterFactory.getFilterRequest(FilterTypeEnum.INVOICE);
+            if(paramObj instanceof InvoiceFilterRequestDTO) {
+                try {
+                    // determine filter type
+                    FilterRequest invoiceFilterRequest = FilterFactory.getFilterRequest(FilterTypeEnum.INVOICE);
 
-                // convert paramObj
-                invoiceFilterRequest = (InvoiceFilterRequestDTO) paramObj;
+                    // convert paramObj
+                    invoiceFilterRequest = (InvoiceFilterRequestDTO) paramObj;
 
-                InvoiceFilterDTO invoiceFilter = (InvoiceFilterDTO) invoiceFilterRequest.getFilter();
+                    InvoiceFilterDTO invoiceFilter = (InvoiceFilterDTO) invoiceFilterRequest.getFilter();
 
-                // create query for filter
-                String query = ValueRenderUtils.invoiceFilterQuery(
-                        customerId,
-                        invoiceFilter.getAdminAcceptance(),
-                        invoiceFilter.getPaymentStatus(),
-                        invoiceFilter.getDeliveryStatus(),
-                        invoiceFilter.getStartInvoiceDate(),
-                        invoiceFilter.getEndInvoiceDate(),
-                        invoiceFilter.getPaymentMethod()
-                );
+                    // create query for filter
+                    String query = ValueRenderUtils.invoiceFilterQuery(
+                            customerId,
+                            invoiceFilter.getAdminAcceptance(),
+                            invoiceFilter.getPaymentStatus(),
+                            invoiceFilter.getDeliveryStatus(),
+                            invoiceFilter.getStartInvoiceDate(),
+                            invoiceFilter.getEndInvoiceDate(),
+                            invoiceFilter.getPaymentMethod(),
+                            invoiceFilterRequest.getPagination().getPage(),
+                            invoiceFilterRequest.getPagination().getLimit()
+                    );
 
-                // get object[] list from query
-                List<Object[]> objList = customQueryRepo.getBindingFilteredList(query);
+                    // get object[] list from query
+                    List<Object[]> objList = customQueryRepo.getBindingFilteredList(query);
 
-                // convert object[] list to ProductRenderInfoDTO list
-                invoiceRenderList = objList.stream().map(
-                        obj -> new InvoiceRenderInfoDTO(
-                                obj[0] instanceof Long ? ((Long) obj[0]).intValue() : (int) obj[0],
-                                obj[1] instanceof Long ? ((Long) obj[1]).intValue() : (int) obj[1],
-                                (java.util.Date) obj[2],
-                                (Byte) obj[3],
-                                (String) obj[4],
-                                (double) obj[5],
-                                (String) obj[6],
-                                (String) obj[7],
-                                (String) obj[8],
-                                (String) obj[9],
-                                (String) obj[10],
-                                (String) obj[11],
-                                (double) obj[12],
-                                (String) obj[13]
-                        )
-                ).toList();
+                    // convert object[] list to InvoiceRenderInfoDTO list
+                    invoiceRenderList = objList.stream().map(
+                            obj -> new InvoiceRenderInfoDTO(
+                                    obj[0] instanceof Long ? ((Long) obj[0]).intValue() : (int) obj[0],
+                                    obj[1] instanceof Long ? ((Long) obj[1]).intValue() : (int) obj[1],
+                                    (java.util.Date) obj[2],
+                                    (Byte) obj[3],
+                                    (String) obj[4],
+                                    (double) obj[5],
+                                    (String) obj[6],
+                                    (String) obj[7],
+                                    (String) obj[8],
+                                    (String) obj[9],
+                                    (String) obj[10],
+                                    (String) obj[11],
+                                    (double) obj[12],
+                                    (String) obj[13]
+                            )
+                    ).toList();
 
+                    return new ApiResponse("success", invoiceRenderList);
+                }
+                catch (StringIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                    return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+                }
             }
-            catch (StringIndexOutOfBoundsException e) {
-                e.printStackTrace();
-                return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+            else if(paramObj instanceof PaginationDTO) {
+                try {
+                    PaginationDTO pagination = (PaginationDTO) paramObj;
+
+                    switch (pagination.getType()) {
+                        case "ALL_CURRENT_INVOICES" -> {
+                            invoiceList = invoiceRepo.getAllCurrentInvoicesByCustomerId(
+                                    customerId,
+                                    (pagination.getPage() - 1) * pagination.getLimit(),
+                                    pagination.getLimit()
+                            );
+                        }
+                        case "INVOICE_PURCHASE_HISTORY" -> {
+                            invoiceList = invoiceRepo.getAllInvoicesByCustomerId(
+                                    customerId,
+                                    (pagination.getPage() - 1) * pagination.getLimit(),
+                                    pagination.getLimit()
+                            );
+                        }
+                    }
+
+                    return new ApiResponse("success", invoiceList);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+                }
             }
         }
 
-        return new ApiResponse("success", invoiceRenderList);
+        return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
     }
 
 
@@ -243,34 +277,35 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Override
     public ApiResponse readingResponse(HttpSession session, String renderType) {
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
-
-        // check if logged in or not
-        if(customerId == 0) {
-            return new ApiResponse("failed", "Login first");
-        }
-        else {
-            try {
-                List<Invoice> invoiceList = new ArrayList<>();
-
-                switch (renderType) {
-                    case "CUSTOMER_ALL_CURRENT_INVOICES": {
-                        invoiceList = invoiceRepo.getAllCurrentInvoicesByCustomerId(customerId);
-                        break;
-                    }
-                    case "CUSTOMER_PURCHASE_HISTORY": {
-                        invoiceList = invoiceRepo.getAllInvoicesByCustomerId(customerId);
-                        break;
-                    }
-                }
-
-                return new ApiResponse("success", invoiceList);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
-            }
-        }
+//        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+//
+//        // check if logged in or not
+//        if(customerId == 0) {
+//            return new ApiResponse("failed", "Login first");
+//        }
+//        else {
+//            try {
+//                List<Invoice> invoiceList = new ArrayList<>();
+//
+//                switch (renderType) {
+//                    case "CUSTOMER_ALL_CURRENT_INVOICES": {
+//                        invoiceList = invoiceRepo.getAllCurrentInvoicesByCustomerId(customerId);
+//                        break;
+//                    }
+//                    case "CUSTOMER_PURCHASE_HISTORY": {
+//                        invoiceList = invoiceRepo.getAllInvoicesByCustomerId(customerId);
+//                        break;
+//                    }
+//                }
+//
+//                return new ApiResponse("success", invoiceList);
+//            }
+//            catch (Exception e) {
+//                e.printStackTrace();
+//                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+//            }
+//        }
+        return null;
     }
 
 

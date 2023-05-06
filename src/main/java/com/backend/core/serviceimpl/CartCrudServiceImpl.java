@@ -2,6 +2,7 @@ package com.backend.core.serviceimpl;
 
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.CartItemDTO;
+import com.backend.core.entity.dto.PaginationDTO;
 import com.backend.core.entity.renderdto.CartRenderInfoDTO;
 import com.backend.core.entity.tableentity.Cart;
 import com.backend.core.entity.tableentity.ProductManagement;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -171,8 +173,31 @@ public class CartCrudServiceImpl implements CrudService {
 
     @Override
     public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session) {
+        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        List<CartRenderInfoDTO> cartItemList = new ArrayList<>();
 
-        return null;
+        if(customerId == 0) {
+            return new ApiResponse("failed", "Login first");
+        }
+        else {
+            if(paramObj instanceof PaginationDTO) {
+                try {
+                    PaginationDTO pagination = (PaginationDTO) paramObj;
+
+                    cartItemList = cartRenderInfoRepo.getFullCartListByCustomerId(
+                            customerId,
+                            (pagination.getPage() - 1) * pagination.getLimit(),
+                            pagination.getLimit()
+                    );
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+                }
+            }
+        }
+
+        return new ApiResponse("success", cartItemList);
     }
 
 
@@ -185,19 +210,20 @@ public class CartCrudServiceImpl implements CrudService {
 
     @Override
     public ApiResponse readingResponse(HttpSession session, String renderType) {
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
-
-        if(customerId == 0) {
-            return new ApiResponse("failed", "Login first");
-        }
-        else {
-            if(renderType == "ALL_CART_ITEMS") {
-                List<CartRenderInfoDTO> cartList = cartRenderInfoRepo.getFullCartListByCustomerId(customerId);
-
-                return new ApiResponse("success", cartList);
-            }
-        }
-        return new ApiResponse("failed", "Wrong render type");
+        return  null;
+//        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+//
+//        if(customerId == 0) {
+//            return new ApiResponse("failed", "Login first");
+//        }
+//        else {
+//            if(renderType == "ALL_CART_ITEMS") {
+//                List<CartRenderInfoDTO> cartList = cartRenderInfoRepo.getFullCartListByCustomerId(customerId);
+//
+//                return new ApiResponse("success", cartList);
+//            }
+//        }
+//        return new ApiResponse("failed", "Wrong render type");
     }
 
 

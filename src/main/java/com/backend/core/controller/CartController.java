@@ -3,6 +3,7 @@ package com.backend.core.controller;
 import com.backend.core.abstractclasses.CrudController;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.CartItemDTO;
+import com.backend.core.entity.dto.PaginationDTO;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.CartRenderInfoRepository;
 import com.backend.core.repository.CartRepository;
@@ -92,10 +93,12 @@ public class CartController extends CrudController {
     }
 
 
-    @GetMapping("/showFullCart")
+    @PostMapping("/showFullCart")
     @Override
-    public ApiResponse getListOfItems(String json, HttpSession session) throws IOException {
-        return crudService.readingResponse(session, RenderTypeEnum.ALL_CART_ITEMS.name());
+    public ApiResponse getListOfItems(@RequestBody String json, HttpSession session) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        PaginationDTO pagination = objectMapper.readValue(json, PaginationDTO.class);
+        return crudService.readingFromSingleRequest(pagination, session);
     }
 
 

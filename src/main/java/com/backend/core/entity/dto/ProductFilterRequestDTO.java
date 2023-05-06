@@ -13,13 +13,13 @@ public class ProductFilterRequestDTO implements FilterRequest {
     @JsonProperty("filter")
     ProductFilterDTO filter;
 
-    @JsonProperty("key")
-    String key;
+    @JsonProperty("pagination")
+    PaginationDTO pagination;
 
 
-    public ProductFilterRequestDTO(ProductFilterDTO filter, String key) {
+    public ProductFilterRequestDTO(ProductFilterDTO filter, PaginationDTO pagination) {
         this.filter = filter;
-        this.key = key;
+        this.pagination = pagination;
     }
 
     public ProductFilterRequestDTO() {}
@@ -30,8 +30,8 @@ public class ProductFilterRequestDTO implements FilterRequest {
     }
 
     @Override
-    public String getKey() {
-        return this.key;
+    public PaginationDTO getPagination() {
+        return this.pagination;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ProductFilterRequestDTO implements FilterRequest {
     }
 
     @Override
-    public void setKey(String key) {
-        this.key = key;
+    public void setPagination(PaginationDTO pagination) {
+        this.pagination = pagination;
     }
 }
