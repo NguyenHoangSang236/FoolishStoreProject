@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ProductRenderInfoRepository extends JpaRepository<ProductRenderInfoDTO, Integer> {
-    @Query(value = "select distinct * from product_info_for_ui limit :limit offset :startLine", nativeQuery = true)
+    @Query(value = "select * from product_info_for_ui limit :limit offset :startLine", nativeQuery = true)
     List<ProductRenderInfoDTO> getAllProducts(@Param("startLine") int startLine, @Param("limit") int limit);;
 
     @Query(value = "select * from top_8_best_sell_products", nativeQuery = true)

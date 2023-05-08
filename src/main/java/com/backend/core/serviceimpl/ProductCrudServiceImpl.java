@@ -83,7 +83,7 @@ public class ProductCrudServiceImpl implements CrudService {
                     // get filter query
                     String filterQuery = ValueRenderUtils.productFilterQuery(
                             productFilter.getCategories(),
-                            productFilter.getBrand().toLowerCase(),
+                            productFilter.getBrand(),
                             productFilter.getMinPrice(),
                             productFilter.getMaxPrice(),
                             productFilterRequest.getPagination().getPage(),

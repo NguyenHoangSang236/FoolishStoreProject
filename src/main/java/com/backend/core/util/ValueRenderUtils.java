@@ -212,11 +212,8 @@ public class ValueRenderUtils {
     //create a query for products binding filter
     public static String productFilterQuery(String[] catalogs, String brand, double price1, double price2, int page, int limit) {
         String result = "SELECT piu.*\n" +
-                        "FROM product_info_for_ui piu JOIN products p on piu.product_id = p.id\n" +
-                        "                             JOIN catalogs_with_products cwp ON p.id = cwp.product_id\n" +
+                        "FROM product_info_for_ui piu JOIN catalogs_with_products cwp ON piu.product_id = cwp.product_id\n" +
                         "                             JOIN catalog c ON c.id = cwp.catalog_id\n" +
-                        "                             JOIN products_management pm ON p.id = pm.product_id\n" +
-                        "                             JOIN product_images_management pim ON pim.product_id = p.id\n" +
                         "WHERE ";
         String dynamicConditions = "";
         int catalogsLength;
@@ -234,7 +231,12 @@ public class ValueRenderUtils {
             if(i == 0) {
                 dynamicConditions += ("and (c.name = '" + catalogs[i] + "'");
             }
-            else dynamicConditions += ("or c.name = '" + catalogs[i] + "' ");
+
+            else dynamicConditions += (" or c.name = '" + catalogs[i] + "'");
+
+            if(i == catalogsLength - 1) {
+                dynamicConditions += ") ";
+            }
         }
 
         if(price1 >= 0 && price2 > 0) {
@@ -242,7 +244,9 @@ public class ValueRenderUtils {
         }
 
         dynamicConditions = dynamicConditions.substring(4);
-        result += dynamicConditions + " GROUP BY p.name, pm.color ORDER BY p.id asc LIMIT " + (limit * (page-1)) + ", " + limit;
+        result += dynamicConditions + " ORDER BY piu.id desc LIMIT " + (limit * (page-1)) + ", " + limit;
+
+        System.out.println(result);
 
         return result;
     }
