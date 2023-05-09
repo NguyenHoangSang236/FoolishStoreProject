@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import com.backend.core.entity.interfaces.PurchaseCalculation;
 import com.backend.core.service.CalculationService;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,8 +21,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import com.backend.core.entity.dto.InvoicesWithProducts;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -51,7 +50,6 @@ public class Product implements Serializable, PurchaseCalculation {
 
     @Column(name = "original_price")
     private double originalPrice;
-
 
     @Column(name = "Discount")
     private double discount;

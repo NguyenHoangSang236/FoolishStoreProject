@@ -246,8 +246,6 @@ public class ValueRenderUtils {
         dynamicConditions = dynamicConditions.substring(4);
         result += dynamicConditions + " ORDER BY piu.id desc LIMIT " + (limit * (page-1)) + ", " + limit;
 
-        System.out.println(result);
-
         return result;
     }
 

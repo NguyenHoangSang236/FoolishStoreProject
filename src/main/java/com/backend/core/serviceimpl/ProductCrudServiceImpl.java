@@ -183,13 +183,13 @@ public class ProductCrudServiceImpl implements CrudService {
 
     @Override
     public ApiResponse readingById(int productId, HttpSession session) {
-        Product product = new Product();
+        List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
         String status = "failed";
 
         try {
-            product = productRepo.getProductById(productId);
+            productDetails = productRenderInfoRepo.getProductDetails(productId);
 
-            if(product.getName() != null) {
+            if(productDetails.size() > 0) {
                 status = "success";
             }
         }
@@ -198,6 +198,6 @@ public class ProductCrudServiceImpl implements CrudService {
             e.printStackTrace();
         }
 
-        return new ApiResponse(status, product);
+        return new ApiResponse(status, productDetails);
     }
 }
