@@ -148,16 +148,24 @@ public class CartCrudServiceImpl implements CrudService {
 
                         //update cart by cartDTO
                         Cart cartItm = cartRepo.getCartById(cartItemDTO.getCartId());
+
                         int pmId = productManagementRepo.getPrductsManagementIdByProductIDAndColorAndSize(
                                 cartItemDTO.getProductId(),
                                 cartItemDTO.getColor(),
                                 cartItemDTO.getSize());
+
                         ProductManagement pm = productManagementRepo.getProductManagementById(pmId);
 
-                        cartItm.setQuantity(cartItemDTO.getQuantity());
-                        cartItm.setProductManagement(pm);
+                        //check if updated cart quantity is higher than product's available quantity or not
+                        if(pm.getAvailableQuantity() < cartItemDTO.getQuantity()) {
+                            return new ApiResponse("failed", "We only have " + pm.getAvailableQuantity() + " items left!");
+                        }
+                        else {
+                            cartItm.setQuantity(cartItemDTO.getQuantity());
+                            cartItm.setProductManagement(pm);
 
-                        cartRepo.save(cartItm);
+                            cartRepo.save(cartItm);
+                        }
                     }
 
                     return new ApiResponse("success", "Update cart items successfully");
