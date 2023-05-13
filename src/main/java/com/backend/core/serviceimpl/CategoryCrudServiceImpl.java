@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -20,37 +21,37 @@ public class CategoryCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session) {
+    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session) {
+    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ApiResponse removingResponse(Object paramObj, HttpSession session) {
+    public ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session) {
+    public ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session) {
+    public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session) {
+    public ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ApiResponse readingResponse(HttpSession session, String renderType) {
+    public ApiResponse readingResponse(HttpSession session, String renderType, HttpServletRequest httpRequest) {
         try {
             List<Catalog> categoryList = categoryRepo.getAllCatalogs();
             return new ApiResponse("success", categoryList);
@@ -62,7 +63,7 @@ public class CategoryCrudServiceImpl implements CrudService {
     }
 
     @Override
-    public ApiResponse readingById(int id, HttpSession session) {
+    public ApiResponse readingById(int id, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 }

@@ -4,13 +4,11 @@ import com.backend.core.abstractclasses.CrudController;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.CartItemDTO;
 import com.backend.core.entity.dto.PaginationDTO;
-import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.CartRenderInfoRepository;
 import com.backend.core.repository.CartRepository;
 import com.backend.core.repository.CustomerRepository;
 import com.backend.core.repository.ProductManagementRepository;
 import com.backend.core.service.CrudService;
-import com.backend.core.serviceimpl.CartCrudServiceImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
@@ -20,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -51,59 +50,59 @@ public class CartController extends CrudController {
 
 
     @PostMapping("/remove")
-    public ApiResponse updateCart(@RequestBody int[] selectedCartIdArr, HttpSession session) {
-        return crudService.removingResponse(selectedCartIdArr, session);
+    public ApiResponse updateCart(@RequestBody int[] selectedCartIdArr, HttpSession session, HttpServletRequest httpRequest) {
+        return crudService.removingResponse(selectedCartIdArr, session, httpRequest);
     }
 
 
     @PostMapping("/add")
     @Override
-    public ApiResponse addNewItem(@RequestBody String json, HttpSession session) throws IOException {
+    public ApiResponse addNewItem(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CartItemDTO cartItemDTO = objectMapper.readValue(json, CartItemDTO.class);
 
-        return crudService.singleCreationalResponse(cartItemDTO, session);
+        return crudService.singleCreationalResponse(cartItemDTO, session, httpRequest);
     }
 
 
     @PostMapping("/update")
     @Override
-    public ApiResponse updateItem(@RequestBody String json, HttpSession session) throws IOException {
+    public ApiResponse updateItem(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         List<Object> objectList = objectMapper.readValue(json, new TypeReference<List<Object>>(){});
 
-        return crudService.updatingResponse(objectList, session);
+        return crudService.updatingResponse(objectList, session, httpRequest);
     }
 
     @Override
-    public ApiResponse readSelectedItemById(int id, HttpSession session) throws IOException {
+    public ApiResponse readSelectedItemById(int id, HttpSession session, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
 
     @Override
-    public ApiResponse deleteSelectedItemById(int id, HttpSession session) throws IOException {
+    public ApiResponse deleteSelectedItemById(int id, HttpSession session, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
 
     @Override
-    public ApiResponse updateSelectedItemById(int id, HttpSession session) throws IOException {
+    public ApiResponse updateSelectedItemById(int id, HttpSession session, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
 
     @PostMapping("/showFullCart")
     @Override
-    public ApiResponse getListOfItems(@RequestBody String json, HttpSession session) throws IOException {
+    public ApiResponse getListOfItems(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         PaginationDTO pagination = objectMapper.readValue(json, PaginationDTO.class);
-        return crudService.readingFromSingleRequest(pagination, session);
+        return crudService.readingFromSingleRequest(pagination, session, httpRequest);
     }
 
 
     @Override
-    public ApiResponse getListOfItemsFromFilter(String json, HttpSession session) throws IOException {
+    public ApiResponse getListOfItemsFromFilter(String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 }

@@ -3,14 +3,17 @@ package com.backend.core.service;
 import com.backend.core.entity.tableentity.Account;
 import com.backend.core.entity.dto.ApiResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.net.URISyntaxException;
+
 @Service
 public interface AuthenticationService {
-    public ApiResponse loginIntoSystem(Account account, HttpSession session);
+    public ResponseEntity<ApiResponse> loginIntoSystem(Account account, HttpSession session) throws URISyntaxException;
 
-    public ApiResponse forgotPassword(String username, String email);
+    public ResponseEntity<ApiResponse> forgotPassword(String username, String email) throws URISyntaxException;
 
     public ApiResponse logoutFromSystem(HttpSession session);
 

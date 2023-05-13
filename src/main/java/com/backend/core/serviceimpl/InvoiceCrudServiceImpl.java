@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,14 +53,14 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session) {
+    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
 
     @Override
-    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session) {
+    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         List<CartItemDTO> cartItemList = new ArrayList<CartItemDTO>();
@@ -155,19 +156,19 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse removingResponse(Object paramObj, HttpSession session) {
+    public ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session) {
+    public ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session) {
+    public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         List<InvoiceRenderInfoDTO> invoiceRenderList = new ArrayList<>();
@@ -270,13 +271,13 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session) {
+    public ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ApiResponse readingResponse(HttpSession session, String renderType) {
+    public ApiResponse readingResponse(HttpSession session, String renderType, HttpServletRequest httpRequest) {
 //        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 //
 //        // check if logged in or not
@@ -310,7 +311,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse readingById(int invoiceId, HttpSession session) {
+    public ApiResponse readingById(int invoiceId, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         if(customerId == 0) {
