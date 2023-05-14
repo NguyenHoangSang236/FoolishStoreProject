@@ -106,4 +106,9 @@ public class CartController extends CrudController {
     public ApiResponse getListOfItemsFromFilter(String json, HttpSession session) throws IOException {
         return null;
     }
+
+    @GetMapping("/totalCartItemQuantity")
+    public ApiResponse getTotatalCartItemQuantity(HttpSession session) {
+        return crudService.readingResponse(session, "");
+    }
 }

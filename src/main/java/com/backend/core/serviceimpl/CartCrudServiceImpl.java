@@ -218,20 +218,22 @@ public class CartCrudServiceImpl implements CrudService {
 
     @Override
     public ApiResponse readingResponse(HttpSession session, String renderType) {
-        return  null;
-//        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
-//
-//        if(customerId == 0) {
-//            return new ApiResponse("failed", "Login first");
-//        }
-//        else {
-//            if(renderType == "ALL_CART_ITEMS") {
-//                List<CartRenderInfoDTO> cartList = cartRenderInfoRepo.getFullCartListByCustomerId(customerId);
-//
-//                return new ApiResponse("success", cartList);
-//            }
-//        }
-//        return new ApiResponse("failed", "Wrong render type");
+        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+
+        int totalQuantity = 0;
+
+        if(customerId == 0) {
+            return new ApiResponse("failed", "Login first");
+        }
+        else {
+            try {
+                totalQuantity = cartRepo.getCartQuantityByCustomerId(customerId);
+            }
+            catch (Exception e) {
+                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+            }
+        }
+        return  new ApiResponse("success", totalQuantity);
     }
 
 
