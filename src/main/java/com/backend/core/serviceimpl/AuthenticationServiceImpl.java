@@ -14,13 +14,21 @@ import com.backend.core.enums.RoleEnum;
 import com.backend.core.util.ExceptionHandlerUtils;
 import com.backend.core.util.ValueRenderUtils;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Enumeration;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -46,10 +54,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public ApiResponse loginIntoSystem(Account account, HttpSession session) {
+    public ResponseEntity<ApiResponse> loginIntoSystem(Account account, HttpSession session) throws URISyntaxException {
         Account loginAcc = new Account();
         StaffRenderInfoDTO staffInfo = new StaffRenderInfoDTO();
         CustomerRenderInfoDTO customerInfo = new CustomerRenderInfoDTO();
+
+        URI location = new URI("http://192.168.1.9:8080/systemAuthentication/login");
+        HttpHeaders responseHeaders = new HttpHeaders();
 
         try{
             loginAcc = accountRepo.getAccountByUserNameAndPassword(account.getUserName(), account.getPassword());
@@ -57,27 +68,45 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if(loginAcc != null) {
                 session.setAttribute("currentUser", loginAcc);
 
+                System.out.println("from login: " + session.getId());
+
+                responseHeaders.setLocation(location);
+                responseHeaders.set("sessionid", session.getId());
+//                Account currentUser = (Account) session.getAttribute("currentUser");
+//
+//                System.out.println(currentUser.getUserName());
+
+//                Enumeration<String> attributes = session.getAttributeNames();
+//                while (attributes.hasMoreElements()) {
+//                    String attribute = (String) attributes.nextElement();
+//                    System.out.println(attribute+" : "+session.getAttribute(attribute));
+//                }
+
                 if(loginAcc.getRole().equals(RoleEnum.ADMIN.name()) || loginAcc.getRole().equals(RoleEnum.SHIPPER.name())) {
                     staffInfo = staffRenderInfoRepo.getStaffInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
-                    return new ApiResponse("success", staffInfo);
+                    return new ResponseEntity<>(new ApiResponse("success", staffInfo), responseHeaders, HttpStatus.OK);
                 }
                 else if(loginAcc.getRole().equals(RoleEnum.CUSTOMER.name())) {
                     customerInfo = customerRenderInfoRepo.getCustomerInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
-                    return new ApiResponse("success", customerInfo);
+                    return new ResponseEntity<>(new ApiResponse("success", customerInfo), responseHeaders, HttpStatus.OK);
                 }
-                else return new ApiResponse("failed", "This role is not existed");
+                else return new ResponseEntity<>(new ApiResponse("failed", "This role is not existed"), responseHeaders, HttpStatus.BAD_REQUEST);
+
             }
-            else return new ApiResponse("failed", "This account is not existed");
+            else return new ResponseEntity<>(new ApiResponse("failed", "This role is not existed"), responseHeaders, HttpStatus.BAD_REQUEST);
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), responseHeaders, HttpStatus.BAD_REQUEST);
         }
     }
 
 
     @Override
-    public ApiResponse forgotPassword(String username, String email) {
+    public ResponseEntity<ApiResponse> forgotPassword(String username, String email) throws URISyntaxException {
+        URI location = new URI("http://192.168.1.9:8080/systemAuthentication/forgotPassword");
+        HttpHeaders responseHeaders = new HttpHeaders();
+
         try {
             Account currentAccount = accountRepo.getAccountByUserName(username);
 
@@ -88,16 +117,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     currentAccount.setPassword(newPassword);
                     accountRepo.save(currentAccount);
                 }
-                else return new ApiResponse("failed", "This email does not belong to this account !!");
+                else return new ResponseEntity<>(new ApiResponse("failed", "This email does not belong to this account"), responseHeaders, HttpStatus.BAD_REQUEST);
             }
-            else return new ApiResponse("failed", "This account is not existed !!");
+            else return new ResponseEntity<>(new ApiResponse("failed", "This account is not existed"), responseHeaders, HttpStatus.BAD_REQUEST);
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), responseHeaders, HttpStatus.BAD_REQUEST);
         }
 
-        return new ApiResponse("success", "Change password successfully");
+        return new ResponseEntity<>(new ApiResponse("success", "Change password successfully"), responseHeaders, HttpStatus.OK);
     }
 
 

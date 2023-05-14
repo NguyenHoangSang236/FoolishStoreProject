@@ -3,7 +3,6 @@ package com.backend.core.serviceimpl;
 import com.backend.core.entity.dto.*;
 import com.backend.core.entity.interfaces.FilterRequest;
 import com.backend.core.entity.renderdto.ProductRenderInfoDTO;
-import com.backend.core.entity.tableentity.Product;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
 import com.backend.core.repository.CustomQueryRepository;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,30 +42,30 @@ public class ProductCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session) {
+    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session) {
-        return null;
-    }
-
-
-    @Override
-    public ApiResponse removingResponse(Object paramObj, HttpSession session) {
+    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session) {
+    public ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session) {
+    public ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+
+    @Override
+    public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         List<ProductRenderInfoDTO> productRenderList = null;
 
         if(paramObj instanceof ProductFilterRequestDTO) {
@@ -150,24 +150,24 @@ public class ProductCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session) {
+    public ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ApiResponse readingResponse(HttpSession session, String renderType) {
-        List<ProductRenderInfoDTO> allProductsList = new ArrayList<ProductRenderInfoDTO>();
+    public ApiResponse readingResponse(HttpSession session, String renderType, HttpServletRequest httpRequest) {
+        List<ProductRenderInfoDTO> productList = new ArrayList<ProductRenderInfoDTO>();
         String status = "failed";
 
         try {
             switch (renderType) {
-                case "NEW_ARRIVAL_PRODUCTS" -> allProductsList = productRenderInfoRepo.get8NewArrivalProducts();
-                case "HOT_DISCOUNT_PRODUCTS" -> allProductsList = productRenderInfoRepo.get8HotDiscountProducts();
-                case "TOP_8_BEST_SELL_PRODUCTS" -> allProductsList = productRenderInfoRepo.getTop8BestSellProducts();
+                case "NEW_ARRIVAL_PRODUCTS" -> productList = productRenderInfoRepo.get8NewArrivalProducts();
+                case "HOT_DISCOUNT_PRODUCTS" -> productList = productRenderInfoRepo.get8HotDiscountProducts();
+                case "TOP_8_BEST_SELL_PRODUCTS" -> productList = productRenderInfoRepo.getTop8BestSellProducts();
                 default -> new ApiResponse("failed", "Wrong render type");
             }
-            if(allProductsList != null) {
+            if(productList != null) {
                 status = "success";
             }
         }
@@ -177,12 +177,12 @@ public class ProductCrudServiceImpl implements CrudService {
             return new ApiResponse(status, ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
 
-        return new ApiResponse(status, allProductsList);
+        return new ApiResponse(status, productList);
     }
 
 
     @Override
-    public ApiResponse readingById(int productId, HttpSession session) {
+    public ApiResponse readingById(int productId, HttpSession session, HttpServletRequest httpRequest) {
         List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
         String status = "failed";
 
