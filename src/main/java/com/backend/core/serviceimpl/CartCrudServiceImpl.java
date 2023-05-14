@@ -15,6 +15,7 @@ import com.backend.core.repository.ProductManagementRepository;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.ValueRenderUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -45,7 +46,7 @@ public class CartCrudServiceImpl implements CrudService {
     public CartCrudServiceImpl() {}
 
     @Override
-    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session) {
+    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         CartItemDTO cartItemDTO = (CartItemDTO) paramObj;
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
         Cart newCartItem;
@@ -96,13 +97,13 @@ public class CartCrudServiceImpl implements CrudService {
     }
 
     @Override
-    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session) {
+    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ApiResponse removingResponse(Object paramObj, HttpSession session) {
+    public ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         int[] selectedCartIdArr = (int[]) paramObj;
 
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
@@ -134,7 +135,7 @@ public class CartCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse updatingResponse(List<Object> paramObj, HttpSession session) {
+    public ApiResponse updatingResponse(List<Object> paramObj, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         if(customerId == 0) {
@@ -180,7 +181,7 @@ public class CartCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session) {
+    public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
         List<CartRenderInfoDTO> cartItemList = new ArrayList<>();
 
@@ -210,14 +211,14 @@ public class CartCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session) {
+    public ApiResponse readingFromListRequest(List<Object> paramObjList, HttpSession session, HttpServletRequest httpRequest) {
 
         return null;
     }
 
 
     @Override
-    public ApiResponse readingResponse(HttpSession session, String renderType) {
+    public ApiResponse readingResponse(HttpSession session, String renderType, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         int totalQuantity = 0;
@@ -238,7 +239,7 @@ public class CartCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse readingById(int id, HttpSession session) {
+    public ApiResponse readingById(int id, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 }
