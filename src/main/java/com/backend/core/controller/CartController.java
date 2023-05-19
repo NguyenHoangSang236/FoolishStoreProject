@@ -3,12 +3,14 @@ package com.backend.core.controller;
 import com.backend.core.abstractclasses.CrudController;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.CartItemDTO;
+import com.backend.core.entity.dto.ListRequestDTO;
 import com.backend.core.entity.dto.PaginationDTO;
 import com.backend.core.repository.CartRenderInfoRepository;
 import com.backend.core.repository.CartRepository;
 import com.backend.core.repository.CustomerRepository;
 import com.backend.core.repository.ProductManagementRepository;
 import com.backend.core.service.CrudService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
@@ -50,8 +52,11 @@ public class CartController extends CrudController {
 
 
     @PostMapping("/remove")
-    public ApiResponse updateCart(@RequestBody int[] selectedCartIdArr, HttpSession session, HttpServletRequest httpRequest) {
-        return crudService.removingResponse(selectedCartIdArr, session, httpRequest);
+    public ApiResponse updateCart(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ListRequestDTO requestDTO = objectMapper.readValue(json, ListRequestDTO.class);
+
+        return crudService.removingResponse(requestDTO, session, httpRequest);
     }
 
 
@@ -69,9 +74,9 @@ public class CartController extends CrudController {
     @Override
     public ApiResponse updateItem(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        List<Object> objectList = objectMapper.readValue(json, new TypeReference<List<Object>>(){});
+        ListRequestDTO requestDTO = objectMapper.readValue(json, ListRequestDTO.class);
 
-        return crudService.updatingResponse(objectList, session, httpRequest);
+        return crudService.updatingResponse(requestDTO, session, httpRequest);
     }
 
     @Override

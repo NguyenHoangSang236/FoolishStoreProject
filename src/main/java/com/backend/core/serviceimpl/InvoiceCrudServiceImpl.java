@@ -162,7 +162,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse updatingResponse(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 

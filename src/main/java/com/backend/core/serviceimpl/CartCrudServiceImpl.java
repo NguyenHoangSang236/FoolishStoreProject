@@ -2,16 +2,14 @@ package com.backend.core.serviceimpl;
 
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.CartItemDTO;
+import com.backend.core.entity.dto.ListRequestDTO;
 import com.backend.core.entity.dto.PaginationDTO;
 import com.backend.core.entity.renderdto.CartRenderInfoDTO;
 import com.backend.core.entity.tableentity.Cart;
 import com.backend.core.entity.tableentity.ProductManagement;
 import com.backend.core.enums.CartBuyingStatusEnum;
 import com.backend.core.enums.ErrorTypeEnum;
-import com.backend.core.repository.CartRenderInfoRepository;
-import com.backend.core.repository.CartRepository;
-import com.backend.core.repository.CustomerRepository;
-import com.backend.core.repository.ProductManagementRepository;
+import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.ValueRenderUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +33,9 @@ public class CartCrudServiceImpl implements CrudService {
 
     @Autowired
     CustomerRepository customerRepo;
+
+    @Autowired
+    CustomQueryRepository customQueryRepo;
 
     @Autowired
     ProductManagementRepository productRepo;
@@ -80,7 +81,8 @@ public class CartCrudServiceImpl implements CrudService {
                         newCartItem = new Cart(
                                 customerRepo.getCustomerById(customerId),
                                 productManagement,
-                                cartItemDTO.getQuantity()
+                                cartItemDTO.getQuantity(),
+                                CartBuyingStatusEnum.NOT_BOUGHT_YET.name()
                         );
                         cartRepo.save(newCartItem);
 
@@ -107,8 +109,6 @@ public class CartCrudServiceImpl implements CrudService {
 
     @Override
     public ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
-        int[] selectedCartIdArr = (int[]) paramObj;
-
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         if(customerId == 0) {
@@ -116,12 +116,16 @@ public class CartCrudServiceImpl implements CrudService {
         }
         else {
             try {
-                if(selectedCartIdArr.length > 0) {
+                ListRequestDTO listRequestDTO = (ListRequestDTO) paramObj;
+
+                int[] selectedCartIdArr = listRequestDTO.getIntegerArray();
+
+                if(selectedCartIdArr != null) {
                     for (int id: selectedCartIdArr) {
                         Cart cart = cartRepo.getCartById(id);
 
                         if(cart.getCustomer().getId() == customerId && cart.getBuyingStatus().equals(CartBuyingStatusEnum.NOT_BOUGHT_YET.name())) {
-                            cartRepo.deleteById(id);
+                            customQueryRepo.deleteCartById(id);
                         }
                         else return new ApiResponse("failed", "This cart item is not yours");
                     }
@@ -138,7 +142,7 @@ public class CartCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse updatingResponse(List<Object> paramObj, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse updatingResponse(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         if(customerId == 0) {
@@ -146,8 +150,10 @@ public class CartCrudServiceImpl implements CrudService {
         }
         else {
             try {
-                if(paramObj.size() > 0) {
-                    for(Object obj: paramObj) {
+                List<Object> cartItemList = listRequestDTO.getObjectList();
+
+                if(cartItemList != null) {
+                    for(Object obj: cartItemList) {
                         CartItemDTO cartItemDTO = new ObjectMapper().convertValue(obj, CartItemDTO.class);
 
                         //update cart by cartDTO

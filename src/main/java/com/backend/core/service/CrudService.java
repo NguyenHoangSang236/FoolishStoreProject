@@ -1,6 +1,7 @@
 package com.backend.core.service;
 
 import com.backend.core.entity.dto.ApiResponse;
+import com.backend.core.entity.dto.ListRequestDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public interface CrudService {
     ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest);
 
     // generate post response for update
-    ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session, HttpServletRequest httpRequest);
+    ApiResponse updatingResponse(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest);
 
     // generate post response for reading a single object by post method
     ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest);

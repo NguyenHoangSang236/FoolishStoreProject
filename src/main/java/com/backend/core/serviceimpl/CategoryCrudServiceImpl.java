@@ -1,6 +1,7 @@
 package com.backend.core.serviceimpl;
 
 import com.backend.core.entity.dto.ApiResponse;
+import com.backend.core.entity.dto.ListRequestDTO;
 import com.backend.core.entity.tableentity.Catalog;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.repository.CatalogRepository;
@@ -36,7 +37,7 @@ public class CategoryCrudServiceImpl implements CrudService {
     }
 
     @Override
-    public ApiResponse updatingResponse(List<Object> paramObjList, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse updatingResponse(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
