@@ -64,15 +64,18 @@ public class CartCrudServiceImpl implements CrudService {
 
                 productManagement = productManagementRepo.getProductManagementById(pmId);
 
-                //check available product quantity is higher than order quantity or not
+                //check available product available quantity is higher than ordered quantity or not
                 if(productManagement.getAvailableQuantity() >= cartItemDTO.getQuantity()) {
-                    int count = cartRepo.getExistedCartItemCountByCustomerIdAndProductManagementId(customerId,productManagement.getId());
+                    // get total quantity of the selected product in customer cart
+                    int count = cartRepo.getExistedCartItemCountByCustomerIdAndProductManagementId(customerId, productManagement.getId());
 
+                    // if it exists in the customer cart -> add its quantity
                     if (count > 0) {
                         newCartItem = cartRepo.getCartItemByProductManagementIdAndCustomerId(productManagement.getId(), customerId);
                         newCartItem.addQuantity(cartItemDTO.getQuantity());
                         cartRepo.save(newCartItem);
                     }
+                    // if it does not exist in the customer cart -> create new one
                     else {
                         newCartItem = new Cart(
                                 customerRepo.getCustomerById(customerId),

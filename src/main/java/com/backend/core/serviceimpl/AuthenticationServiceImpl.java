@@ -68,8 +68,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if(loginAcc != null) {
                 session.setAttribute("currentUser", loginAcc);
 
-                System.out.println("from login: " + session.getId());
-
                 responseHeaders.setLocation(location);
                 responseHeaders.set("sessionid", session.getId());
 //                Account currentUser = (Account) session.getAttribute("currentUser");

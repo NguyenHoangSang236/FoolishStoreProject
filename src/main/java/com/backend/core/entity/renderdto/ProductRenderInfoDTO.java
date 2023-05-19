@@ -24,6 +24,9 @@ public class ProductRenderInfoDTO {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "size")
+    private String size;
+
     @Column(name = "selling_price")
     private double sellingPrice;
 
@@ -32,9 +35,6 @@ public class ProductRenderInfoDTO {
 
     @Column(name = "brand")
     private String brand;
-
-    @Column(name = "size")
-    private String size;
 
     @Column(name = "color")
     private String color;
@@ -54,14 +54,14 @@ public class ProductRenderInfoDTO {
     @Column(name = "image_4")
     private String image4;
 
+    @Column(name = "overall_rating")
+    private int overallRating;
+
     @Column(name = "description")
     private String description;
 
-    @Column(name = "overall_rating")
-    private double overallRating;
 
-
-    public ProductRenderInfoDTO(int id, int productId, String name, String size, double sellingPrice, double discount, String brand, String color, int availableQuantity, String image1, String image2, String image3, String image4) {
+    public ProductRenderInfoDTO(int id, int productId, String name, String size, double sellingPrice, double discount, String brand, String color, int availableQuantity, String image1, String image2, String image3, String image4, int overallRating, String description) {
         this.id = id;
         this.productId = productId;
         this.name = name;
@@ -75,24 +75,8 @@ public class ProductRenderInfoDTO {
         this.image2 = image2;
         this.image3 = image3;
         this.image4 = image4;
-    }
-
-    public ProductRenderInfoDTO(int id, int productId, String name, double sellingPrice, double discount, String brand, String size, String color, int availableQuantity, String image1, String image2, String image3, String image4, String description, double overallRating) {
-        this.id = id;
-        this.productId = productId;
-        this.name = name;
-        this.sellingPrice = sellingPrice;
-        this.discount = discount;
-        this.brand = brand;
-        this.size = size;
-        this.color = color;
-        this.availableQuantity = availableQuantity;
-        this.image1 = image1;
-        this.image2 = image2;
-        this.image3 = image3;
-        this.image4 = image4;
-        this.description = description;
         this.overallRating = overallRating;
+        this.description = description;
     }
 
     public ProductRenderInfoDTO() {}

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Qualifier("ProductCrudServiceImpl")
@@ -78,8 +79,13 @@ public class ProductCrudServiceImpl implements CrudService {
 
                 ProductFilterDTO productFilter = (ProductFilterDTO) productFilterRequest.getFilter();
 
-                // product filter does not have Name filed -> binding filter
-                if(productFilter.getName() == null || productFilter.getName().isBlank()) {
+                // product filter does not have Name field and other fields must have value -> binding filter
+                if((productFilter.getName() == null || productFilter.getName().isBlank()) &&
+                   (productFilter.getCategories() != null ||
+                    productFilter.getBrand() != null ||
+                    (productFilter.getMinPrice() > 0 &&
+                     productFilter.getMaxPrice() > 0 &&
+                     productFilter.getMinPrice() < productFilter.getMaxPrice()))) {
                     // get filter query
                     String filterQuery = ValueRenderUtils.productFilterQuery(
                             productFilter.getCategories(),
@@ -108,16 +114,23 @@ public class ProductCrudServiceImpl implements CrudService {
                                     (String) obj[9],
                                     (String) obj[10],
                                     (String) obj[11],
-                                    (String) obj[12]
-                            )
+                                    (String) obj[12],
+                                    obj[13] instanceof Long ? ((Long) obj[13]).intValue() : (int) obj[13],
+                                    (String) obj[14])
                     ).toList();
                 }
+                // else -> search product by Name
                 else {
-                    productRenderList = productRenderInfoRepo.getProductsByName(
-                            productFilter.getName(),
-                            (productFilterRequest.getPagination().getPage() - 1) * productFilterRequest.getPagination().getLimit(),
-                            productFilterRequest.getPagination().getLimit()
-                    );
+                    if(Objects.equals(productFilter.getName(), "")) {
+                        return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
+                    }
+                    else {
+                        productRenderList = productRenderInfoRepo.getProductsByName(
+                                productFilter.getName(),
+                                (productFilterRequest.getPagination().getPage() - 1) * productFilterRequest.getPagination().getLimit(),
+                                productFilterRequest.getPagination().getLimit()
+                        );
+                    }
                 }
             }
             catch (StringIndexOutOfBoundsException e) {
@@ -129,7 +142,7 @@ public class ProductCrudServiceImpl implements CrudService {
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
         }
-
+        // if there is no filter -> get all products with pagination
         else if(paramObj instanceof PaginationDTO) {
             try {
                 PaginationDTO pagination = (PaginationDTO) paramObj;

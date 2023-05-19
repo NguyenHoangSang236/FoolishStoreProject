@@ -1,6 +1,5 @@
 package com.backend.core.repository;
 
-import com.backend.core.entity.tableentity.Account;
 import com.backend.core.entity.tableentity.Languages;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

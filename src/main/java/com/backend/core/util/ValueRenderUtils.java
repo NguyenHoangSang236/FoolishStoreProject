@@ -215,7 +215,7 @@ public class ValueRenderUtils {
                         "FROM product_info_for_ui piu JOIN catalogs_with_products cwp ON piu.product_id = cwp.product_id\n" +
                         "                             JOIN catalog c ON c.id = cwp.catalog_id\n" +
                         "WHERE ";
-        String dynamicConditions = "";
+        StringBuilder dynamicConditions = new StringBuilder();
         int catalogsLength;
 
         if(catalogs == null) {
@@ -224,26 +224,27 @@ public class ValueRenderUtils {
         else catalogsLength = catalogs.length;
 
         if(brand != null) {
-            dynamicConditions += ("and piu.brand = '" + brand + "' ");
+            dynamicConditions.append("and piu.brand = '").append(brand).append("' ");
         }
 
         for(int i = 0; i < catalogsLength; i++) {
             if(i == 0) {
-                dynamicConditions += ("and (c.name = '" + catalogs[i] + "'");
+                dynamicConditions.append("and (c.name = '").append(catalogs[i]).append("'");
             }
 
-            else dynamicConditions += (" or c.name = '" + catalogs[i] + "'");
+            else dynamicConditions.append(" or c.name = '").append(catalogs[i]).append("'");
 
             if(i == catalogsLength - 1) {
-                dynamicConditions += ") ";
+                dynamicConditions.append(") ");
             }
         }
 
         if(price1 >= 0 && price2 > 0) {
-            dynamicConditions += (") and piu.selling_price >= " + price1 + " and piu.selling_price <= " + price2 );
+            dynamicConditions.append(") and piu.selling_price >= ").append(price1).append(" and piu.selling_price <= ").append(price2);
         }
 
-        dynamicConditions = dynamicConditions.substring(4);
+        dynamicConditions = new StringBuilder(dynamicConditions.substring(4));
+
         result += dynamicConditions + " ORDER BY piu.id desc LIMIT " + (limit * (page-1)) + ", " + limit;
 
         return result;
