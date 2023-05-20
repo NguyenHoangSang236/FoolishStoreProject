@@ -154,7 +154,7 @@ public class CartCrudServiceImpl implements CrudService {
 
                 if(cartItemList != null) {
                     for(Object obj: cartItemList) {
-                        CartItemDTO cartItemDTO = new ObjectMapper().convertValue(obj, CartItemDTO.class);
+                        CartItemDTO cartItemDTO = (CartItemDTO) obj;
 
                         //update cart by cartDTO
                         Cart cartItm = cartRepo.getCartById(cartItemDTO.getCartId());
@@ -163,6 +163,30 @@ public class CartCrudServiceImpl implements CrudService {
                                 cartItemDTO.getProductId(),
                                 cartItemDTO.getColor(),
                                 cartItemDTO.getSize());
+
+                        Cart tmpCartItem = cartRepo.getCartItemByProductManagementIdAndCustomerId(pmId, customerId);
+
+                        // if the updating information of a cart item does not match with any others in the cart -> update information for that item
+                        if(tmpCartItem == null) {
+                            ProductManagement pm = productManagementRepo.getProductManagementById(pmId);
+
+                            //check if updated cart quantity is higher than product's available quantity or not
+                            if(pm.getAvailableQuantity() < cartItemDTO.getQuantity()) {
+                                return new ApiResponse("failed", "We only have " + pm.getAvailableQuantity() + " items left!");
+                            }
+                            else {
+                                cartItm.setQuantity(cartItemDTO.getQuantity());
+                                cartItm.setProductManagement(pm);
+
+                                cartRepo.save(cartItm);
+                            }
+                        }
+                        // if the updating information of a cart item matches with one in the cart -> add quantity for the matched one -> remove the update-requested cart item
+                        else {
+                            tmpCartItem.addQuantity(cartItemDTO.getQuantity());
+                            cartRepo.save(tmpCartItem);
+                            customQueryRepo.deleteCartById(cartItemDTO.getCartId());
+                        }
 
                         ProductManagement pm = productManagementRepo.getProductManagementById(pmId);
 
