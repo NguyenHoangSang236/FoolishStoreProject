@@ -81,7 +81,9 @@ public class GoogleDriveConfig {
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType("offline")
                 .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8081).build(); // PORT URI OF GOOGLE SERVICE
+
+        // PORT URI OF GOOGLE SERVICE
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8081).build();
 
         this.ggDriveCredential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 

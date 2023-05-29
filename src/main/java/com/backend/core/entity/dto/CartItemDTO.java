@@ -1,5 +1,6 @@
 package com.backend.core.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -11,18 +12,23 @@ import java.util.Objects;
 @Setter
 public class CartItemDTO {
     @NotEmpty
+    @JsonProperty("productId")
     int productId;
 
     @Nullable
+    @JsonProperty("cartId")
     int cartId;
 
     @NotEmpty(message = "Select color first")
+    @JsonProperty("color")
     String color;
 
     @NotEmpty(message = "Select size first")
+    @JsonProperty("size")
     String size;
 
     @NotEmpty(message = "Input quantity first")
+    @JsonProperty("quantity")
     int quantity;
 
 

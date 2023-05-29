@@ -13,6 +13,7 @@ import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.ValueRenderUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,7 +155,9 @@ public class CartCrudServiceImpl implements CrudService {
 
                 if(cartItemList != null) {
                     for(Object obj: cartItemList) {
-                        CartItemDTO cartItemDTO = (CartItemDTO) obj;
+                        // parse json string without any double quotation marks to an object
+                        Gson gson = new Gson();
+                        CartItemDTO cartItemDTO = gson.fromJson(obj.toString(), CartItemDTO.class);
 
                         //update cart by cartDTO
                         Cart cartItm = cartRepo.getCartById(cartItemDTO.getCartId());
@@ -164,30 +167,6 @@ public class CartCrudServiceImpl implements CrudService {
                                 cartItemDTO.getColor(),
                                 cartItemDTO.getSize());
 
-                        Cart tmpCartItem = cartRepo.getCartItemByProductManagementIdAndCustomerId(pmId, customerId);
-
-                        // if the updating information of a cart item does not match with any others in the cart -> update information for that item
-                        if(tmpCartItem == null) {
-                            ProductManagement pm = productManagementRepo.getProductManagementById(pmId);
-
-                            //check if updated cart quantity is higher than product's available quantity or not
-                            if(pm.getAvailableQuantity() < cartItemDTO.getQuantity()) {
-                                return new ApiResponse("failed", "We only have " + pm.getAvailableQuantity() + " items left!");
-                            }
-                            else {
-                                cartItm.setQuantity(cartItemDTO.getQuantity());
-                                cartItm.setProductManagement(pm);
-
-                                cartRepo.save(cartItm);
-                            }
-                        }
-                        // if the updating information of a cart item matches with one in the cart -> add quantity for the matched one -> remove the update-requested cart item
-                        else {
-                            tmpCartItem.addQuantity(cartItemDTO.getQuantity());
-                            cartRepo.save(tmpCartItem);
-                            customQueryRepo.deleteCartById(cartItemDTO.getCartId());
-                        }
-
                         ProductManagement pm = productManagementRepo.getProductManagementById(pmId);
 
                         //check if updated cart quantity is higher than product's available quantity or not
@@ -195,17 +174,37 @@ public class CartCrudServiceImpl implements CrudService {
                             return new ApiResponse("failed", "We only have " + pm.getAvailableQuantity() + " items left!");
                         }
                         else {
-                            cartItm.setQuantity(cartItemDTO.getQuantity());
-                            cartItm.setProductManagement(pm);
+                            Cart tmpCartItem = cartRepo.getCartItemByProductManagementIdAndCustomerId(pmId, customerId);
 
-                            cartRepo.save(cartItm);
+                            // if the selected editing information of a cart item does not match with any others in the cart -> update information for that item
+                            if(tmpCartItem == null) {
+                                pm = productManagementRepo.getProductManagementById(pmId);
+
+                                //check if updated cart quantity is higher than product's available quantity or not
+                                if(pm.getAvailableQuantity() < cartItemDTO.getQuantity()) {
+                                    return new ApiResponse("failed", "We only have " + pm.getAvailableQuantity() + " items left!");
+                                }
+                                else {
+                                    cartItm.setQuantity(cartItemDTO.getQuantity());
+                                    cartItm.setProductManagement(pm);
+
+                                    cartRepo.save(cartItm);
+                                }
+                            }
+                            // if the updating information of a cart item matches with one in the cart -> add quantity for the matched one -> remove the update-requested cart item
+                            else {
+                                tmpCartItem.addQuantity(cartItemDTO.getQuantity());
+                                cartRepo.save(tmpCartItem);
+                                customQueryRepo.deleteCartById(cartItemDTO.getCartId());
+                            }
                         }
                     }
 
                     return new ApiResponse("success", "Update cart items successfully");
                 }
                 else return new ApiResponse("failed", "Please select items in cart to update");
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }

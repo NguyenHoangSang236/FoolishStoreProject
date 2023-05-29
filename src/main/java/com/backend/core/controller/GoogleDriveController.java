@@ -65,6 +65,7 @@ public class GoogleDriveController {
             return new ApiResponse("success", ValueRenderUtils.getGoogleDriveUrlFromFileId(fileId));
         }
         catch (Exception e) {
+            e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
     }

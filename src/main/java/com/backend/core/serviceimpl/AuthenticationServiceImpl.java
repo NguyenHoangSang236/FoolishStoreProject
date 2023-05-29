@@ -145,6 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public ApiResponse registerNewAccount(Account accountFromUI, BindingResult bindingResult) {
         accountFromUI.setRole("CUSTOMER");
         Customer customer = accountFromUI.getCustomer();
+        customer.setImage("1YduwQYRoEMMFWsgCN4ZFhH1GEfzw4uUt");
 
         try{
             //check for null information

@@ -1,6 +1,7 @@
 package com.backend.core.entity.tableentity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -44,8 +45,8 @@ public class Customer {
     @Column(name = "City")
     String city;
 
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("account")
+    @OneToOne()
     private Account account;
 
     @OneToMany(mappedBy = "customer")
