@@ -1,5 +1,6 @@
 package com.backend.core.abstractclasses;
 
+import com.backend.core.entity.renderdto.CustomerRenderInfoDTO;
 import com.backend.core.entity.tableentity.Account;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.service.AuthenticationService;
@@ -22,6 +23,8 @@ public abstract class AuthenticationController {
     public abstract ResponseEntity<ApiResponse> loginIntoSystem(@RequestBody Account account, HttpSession session) throws URISyntaxException;
 
     public abstract ApiResponse logoutFromSystem(HttpSession session);
+
+    public abstract ApiResponse updateProfile(@RequestBody CustomerRenderInfoDTO customerRenderInfoDTO, HttpSession session);
 
     public abstract ApiResponse registerNewAccount(@Validated @RequestBody Account account, BindingResult bindingResult);
 

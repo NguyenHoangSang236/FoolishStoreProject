@@ -36,7 +36,7 @@ public class InvoiceFilterRequestDTO implements FilterRequest {
     }
 
     @Override
-    public void setFilter(Object filter) throws JsonProcessingException {
+    public void setFilter(Object filter) {
         LinkedHashMap<String, Object> filterMap = (LinkedHashMap<String, Object>) filter;
         ObjectMapper objectMapper = new ObjectMapper();
         this.filter = objectMapper.convertValue(filterMap, InvoiceFilterDTO.class);

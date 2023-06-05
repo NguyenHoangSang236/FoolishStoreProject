@@ -9,6 +9,7 @@ import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.StringTypeEnum;
 import com.backend.core.repository.*;
 import com.backend.core.service.AuthenticationService;
+import com.backend.core.service.GoogleDriveService;
 import com.backend.core.util.CheckUtils;
 import com.backend.core.enums.RoleEnum;
 import com.backend.core.util.ExceptionHandlerUtils;
@@ -50,6 +51,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     JavaMailSender mailSender;
 
+    @Autowired
+    GoogleDriveService googleDriveService;
+
 
 
 
@@ -59,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         StaffRenderInfoDTO staffInfo = new StaffRenderInfoDTO();
         CustomerRenderInfoDTO customerInfo = new CustomerRenderInfoDTO();
 
-        URI location = new URI("http://192.168.1.9:8080/systemAuthentication/login");
+        URI location = new URI("http://localhost:8080/systemAuthentication/login");
         HttpHeaders responseHeaders = new HttpHeaders();
 
         try{
@@ -70,15 +74,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
                 responseHeaders.setLocation(location);
                 responseHeaders.set("sessionid", session.getId());
-//                Account currentUser = (Account) session.getAttribute("currentUser");
-//
-//                System.out.println(currentUser.getUserName());
-
-//                Enumeration<String> attributes = session.getAttributeNames();
-//                while (attributes.hasMoreElements()) {
-//                    String attribute = (String) attributes.nextElement();
-//                    System.out.println(attribute+" : "+session.getAttribute(attribute));
-//                }
 
                 if(loginAcc.getRole().equals(RoleEnum.ADMIN.name()) || loginAcc.getRole().equals(RoleEnum.SHIPPER.name())) {
                     staffInfo = staffRenderInfoRepo.getStaffInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
@@ -91,11 +86,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 else return new ResponseEntity<>(new ApiResponse("failed", "This role is not existed"), responseHeaders, HttpStatus.BAD_REQUEST);
 
             }
-            else return new ResponseEntity<>(new ApiResponse("failed", "This role is not existed"), responseHeaders, HttpStatus.BAD_REQUEST);
+            else return new ResponseEntity<>(new ApiResponse("failed", "Incorrect password or user name, please check again!"), responseHeaders, HttpStatus.OK);
         }
         catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), responseHeaders, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), responseHeaders, HttpStatus.OK);
         }
     }
 
@@ -145,7 +140,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public ApiResponse registerNewAccount(Account accountFromUI, BindingResult bindingResult) {
         accountFromUI.setRole("CUSTOMER");
         Customer customer = accountFromUI.getCustomer();
-        customer.setImage("1YduwQYRoEMMFWsgCN4ZFhH1GEfzw4uUt");
+        customer.setImage("1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R");
 
         try{
             //check for null information
@@ -200,6 +195,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         catch (Exception e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+        }
+    }
+
+    @Override
+    public ApiResponse updateProfile(CustomerRenderInfoDTO customerInfo, HttpSession session) {
+        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+
+        // check if logged in or not
+        if(customerId == 0) {
+            return new ApiResponse("failed", "Login first");
+        }
+        else {
+            try {
+                Customer customer = customerRepo.getCustomerById(customerId);
+
+                customer.setCustomerInfoFromRenderInfo(customerInfo);
+
+                customerRepo.save(customer);
+
+                return new ApiResponse("success", "Update profile successfully!");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR);
+            }
         }
     }
 

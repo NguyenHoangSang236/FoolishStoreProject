@@ -1,5 +1,7 @@
 package com.backend.core.controller;
 
+import com.backend.core.abstractclasses.AuthenticationController;
+import com.backend.core.entity.renderdto.CustomerRenderInfoDTO;
 import com.backend.core.entity.tableentity.Account;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.service.AuthenticationService;
@@ -19,7 +21,7 @@ import java.util.HashMap;
 @RestController
 @RequestMapping(value = "/systemAuthentication", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class SystemAuthenticationController extends com.backend.core.abstractclasses.AuthenticationController {
+public class SystemAuthenticationController extends AuthenticationController {
     public SystemAuthenticationController(AuthenticationService authenticationService) {
         super(authenticationService);
     }
@@ -28,7 +30,7 @@ public class SystemAuthenticationController extends com.backend.core.abstractcla
 
     @Override
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> loginIntoSystem (@Validated @RequestBody Account accountFromUI, HttpSession session) throws URISyntaxException {
+    public ResponseEntity<ApiResponse> loginIntoSystem (@RequestBody Account accountFromUI, HttpSession session) throws URISyntaxException {
         return authenticationService.loginIntoSystem(accountFromUI, session);
     }
 
@@ -37,6 +39,12 @@ public class SystemAuthenticationController extends com.backend.core.abstractcla
     @GetMapping("/logout")
     public ApiResponse logoutFromSystem(HttpSession session) {
         return authenticationService.logoutFromSystem(session);
+    }
+
+    @Override
+    @PostMapping("/updateProfile")
+    public ApiResponse updateProfile(@RequestBody CustomerRenderInfoDTO customerRenderInfoDTO, HttpSession session) {
+        return authenticationService.updateProfile(customerRenderInfoDTO, session);
     }
 
 

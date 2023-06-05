@@ -3,7 +3,9 @@ package com.backend.core.controller;
 import com.backend.core.configuration.GoogleDriveConfig;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.GoogleDriveFoldersDTO;
+import com.backend.core.entity.tableentity.Customer;
 import com.backend.core.enums.ErrorTypeEnum;
+import com.backend.core.repository.CustomerRepository;
 import com.backend.core.service.GoogleDriveService;
 import com.backend.core.util.ValueRenderUtils;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -15,6 +17,7 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +41,9 @@ public class GoogleDriveController {
     @Autowired
     GoogleDriveConfig googleDriveConfig;
 
+    @Autowired
+    CustomerRepository customerRepo;
+
 
     // Get all file on drive
 //    @GetMapping("/getAllFolders")
@@ -47,29 +53,48 @@ public class GoogleDriveController {
 //        return googleDriveService.getAllFolder();
 //    }
 
-//     Upload file to public
-    @PostMapping(value = "/uploadFile",
+//  Upload file to public
+    @PostMapping(value = "/upLoadCustomerAvatar",
                  consumes = {"*/*"},
                  produces = {MediaType.APPLICATION_JSON_VALUE} )
     public ApiResponse uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload,
                                   @RequestParam("filePath") String pathFile,
-                                  @RequestParam("shared") String shared) {
-
+                                  @RequestParam("shared") String shared,
+                                  HttpSession session) {
+        // Save to default folder if the user does not select a folder to save
         if (pathFile.equals("")){
-            pathFile = "Root"; // Save to default folder if the user does not select a folder to save - you can change it
+            pathFile = "Root";
         }
 
-        try {
-            String fileId = googleDriveService.uploadFile(fileUpload, pathFile, Boolean.parseBoolean(shared));
+        Customer customer = customerRepo.getCustomerById(ValueRenderUtils.getCustomerIdByHttpSession(session));
 
-            return new ApiResponse("success", ValueRenderUtils.getGoogleDriveUrlFromFileId(fileId));
+        // check if customer logged in or not
+        if(customer == null) {
+            return new ApiResponse("failed", "Login first!");
         }
-        catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+        else {
+            try {
+                // get gg drive fileId after successfully uploading
+                String fileId = googleDriveService.uploadFile(fileUpload, pathFile, Boolean.parseBoolean(shared));
+
+                // delete the old file on gg drive if the ID is different from the default user image's one
+                if(!customer.getImage().equals("1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R")) {
+                    googleDriveService.deleteFile(customer.getImage());
+                }
+
+                // set new avart image file id to customer
+                customer.setImage(fileId);
+                customerRepo.save(customer);
+
+                return new ApiResponse("success", ValueRenderUtils.getGoogleDriveUrlFromFileId(fileId));
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+            }
         }
     }
-//
+
 //    // Delete file by id
 //    @GetMapping("/delete/file/{id}")
 //    public ModelAndView deleteFile(@PathVariable String id) throws Exception {

@@ -3,7 +3,7 @@ package com.backend.core.controller;
 import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.entity.dto.GoogleTranslateDTO;
 import com.backend.core.repository.LanguagesRepository;
-import com.backend.core.translator.GoogleTranslateService;
+import com.backend.core.service.GoogleTranslateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

@@ -1,5 +1,6 @@
 package com.backend.core.service;
 
+import com.backend.core.entity.renderdto.CustomerRenderInfoDTO;
 import com.backend.core.entity.tableentity.Account;
 import com.backend.core.entity.dto.ApiResponse;
 import jakarta.servlet.http.HttpSession;
@@ -18,4 +19,6 @@ public interface AuthenticationService {
     public ApiResponse logoutFromSystem(HttpSession session);
 
     public ApiResponse registerNewAccount(Account account, BindingResult bindingResult);
+
+    public ApiResponse updateProfile(CustomerRenderInfoDTO customerInfo, HttpSession session);
 }
