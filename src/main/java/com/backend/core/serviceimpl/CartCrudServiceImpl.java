@@ -12,7 +12,6 @@ import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.ValueRenderUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
