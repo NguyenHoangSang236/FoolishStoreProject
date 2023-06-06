@@ -84,7 +84,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     return new ResponseEntity<>(new ApiResponse("success", customerInfo), responseHeaders, HttpStatus.OK);
                 }
                 else return new ResponseEntity<>(new ApiResponse("failed", "This role is not existed"), responseHeaders, HttpStatus.BAD_REQUEST);
-
             }
             else return new ResponseEntity<>(new ApiResponse("failed", "Incorrect password or user name, please check again!"), responseHeaders, HttpStatus.OK);
         }
