@@ -42,8 +42,8 @@ public class InvoicesWithProductsRepository {
 	      .executeUpdate();
 	}
 
-	@Transactional
-	public void remooveInvoicesWithProducts(InvoicesWithProducts invoicesWithProducts) {
-		entityManager.remove(invoicesWithProducts);
-	}
+//	@Transactional
+//	public void remooveInvoicesWithProducts(InvoicesWithProducts invoicesWithProducts) {
+//		entityManager.remove(invoicesWithProducts);
+//	}
 }

@@ -13,8 +13,8 @@ public interface ProductManagementRepository extends JpaRepository<ProductManage
 	ProductManagement getLastestProductManagementInfoByProductId(@Param("idVal") int productId);
 	
 	
-	@Query(value = "select id from products_management order by id desc limit 1", nativeQuery = true)
-	int getLastProductManagementId();
+//	@Query(value = "select id from products_management order by id desc limit 1", nativeQuery = true)
+//	int getLastProductManagementId();
 
 
 	@Query(value = "select * from products_management where id = :idVal", nativeQuery = true)

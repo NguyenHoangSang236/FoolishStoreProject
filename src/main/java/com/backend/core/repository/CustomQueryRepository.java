@@ -21,13 +21,13 @@ public class CustomQueryRepository {
     }
 	
 	
-	@Transactional
-	public void insertCatalogWithProducts(int catalogId, String productName) {
-	    this.entityManager.createNativeQuery("INSERT INTO catalog_with_products (catalog_id, product_name) VALUES (?,?)")
-	      .setParameter(1, catalogId)
-	      .setParameter(2, productName)
-	      .executeUpdate();
-	}
+//	@Transactional
+//	public void insertCatalogWithProducts(int catalogId, String productName) {
+//	    this.entityManager.createNativeQuery("INSERT INTO catalog_with_products (catalog_id, product_name) VALUES (?,?)")
+//	      .setParameter(1, catalogId)
+//	      .setParameter(2, productName)
+//	      .executeUpdate();
+//	}
 
 
 	@Transactional
