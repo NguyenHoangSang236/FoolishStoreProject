@@ -3,9 +3,6 @@ package com.backend.core.entity.tableentity;
 import java.util.Date;
 import java.util.List;
 
-import com.backend.core.entity.interfaces.PurchaseCalculation;
-import com.backend.core.entity.tableentity.Customer;
-import com.backend.core.entity.tableentity.Delivery;
 import com.backend.core.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -24,7 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "invoice")
-public class Invoice implements PurchaseCalculation {
+public class Invoice {
     @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)
@@ -328,10 +325,5 @@ public class Invoice implements PurchaseCalculation {
 
     public void setOnlinePaymentAccount(String onlinePaymentAccount) {
         this.onlinePaymentAccount = onlinePaymentAccount;
-    }
-
-    @Override
-    public double calculation(CalculationService calculationService) {
-        return calculationService.getTotalPriceFromProductsList(this, this.invoicesWithProducts);
     }
 }

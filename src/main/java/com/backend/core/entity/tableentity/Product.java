@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-import com.backend.core.entity.interfaces.PurchaseCalculation;
 import com.backend.core.service.CalculationService;
-import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +29,7 @@ import lombok.Setter;
 @Table(name = "products")
 @DynamicInsert
 @DynamicUpdate
-public class Product implements Serializable, PurchaseCalculation {
+public class Product implements Serializable {
     /**
      *
      */
@@ -113,8 +111,7 @@ public class Product implements Serializable, PurchaseCalculation {
     }
 
 
-    @Override
     public double calculation(CalculationService calculationService) {
-        return calculationService.getTotalPriceOfSingleProduct(this, this.sellingPrice, this.discount);
+        return calculationService.getTotalPriceOfSingleProduct(this.sellingPrice, this.discount);
     }
 }
