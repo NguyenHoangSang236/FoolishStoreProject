@@ -88,10 +88,12 @@ public class GoogleFileManager {
     // Upload file
     public String uploadFile(MultipartFile file, String folderName, String type, String role) throws Exception {
         String folderId = getFolderId(folderName);
+
         try {
             if (file != null) {
                 File fileMetadata = new File();
                 fileMetadata.setParents(Collections.singletonList(folderId));
+                fileMetadata.setShortcutDetails(new File.ShortcutDetails().setTargetId(folderId));
                 fileMetadata.setName(file.getOriginalFilename());
                 File uploadFile = googleDriveConfig.getInstance()
                         .files()
@@ -110,28 +112,13 @@ public class GoogleFileManager {
         }
         catch (TokenResponseException e) {
             if (e.getDetails().getError().equals("invalid_grant")) {
-                googleDriveConfig.ggDriveCredential.refreshToken();
-                File fileMetadata = new File();
-                fileMetadata.setParents(Collections.singletonList(folderId));
-                fileMetadata.setName(file.getOriginalFilename());
-                File uploadFile = googleDriveConfig.getInstance()
-                        .files()
-                        .create(fileMetadata, new InputStreamContent(
-                                file.getContentType(),
-                                new ByteArrayInputStream(file.getBytes()))
-                        )
-                        .setFields("id").execute();
-
-                if (!type.equals("private") && !role.equals("private")){
-                    // Call Set Permission drive
-                    googleDriveConfig.getInstance().permissions().create(uploadFile.getId(), setPermission(type, role)).execute();
-                }
-                return uploadFile.getId();
+                return uploadFile(file, folderName, type, role);
             }
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
@@ -206,11 +193,7 @@ public class GoogleFileManager {
     }
 
     public boolean checkExpiredAccessToken() {
-        return (GoogleDriveConfig.getGgDriveConfigInstance().ggDriveCredential.getAccessToken() != null && GoogleDriveConfig.getGgDriveConfigInstance().ggDriveCredential.getExpirationTimeMilliseconds() < System.currentTimeMillis());
+        return (GoogleDriveConfig.getGgDriveConfigInstance().googleCredential.getAccessToken() != null && GoogleDriveConfig.getGgDriveConfigInstance().googleCredential.getExpirationTimeMilliseconds() < System.currentTimeMillis());
     }
-
-//    public AccessToken getGgAuthenToken() {
-//        googleAuthenTokenManager = new GoogleAuthenTokenManager(googleDriveConfig.getCredentials)
-//    }
 }
 

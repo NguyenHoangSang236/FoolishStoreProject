@@ -58,12 +58,12 @@ public class GoogleDriveController {
                  consumes = {"*/*"},
                  produces = {MediaType.APPLICATION_JSON_VALUE} )
     public ApiResponse uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload,
-                                  @RequestParam("filePath") String pathFile,
+                                  @RequestParam("filePath") String driveFolderPath,
                                   @RequestParam("shared") String shared,
                                   HttpSession session) {
         // Save to default folder if the user does not select a folder to save
-        if (pathFile.equals("")){
-            pathFile = "Root";
+        if (driveFolderPath.equals("")){
+            driveFolderPath = "Root";
         }
 
         Customer customer = customerRepo.getCustomerById(ValueRenderUtils.getCustomerIdByHttpSession(session));
@@ -75,7 +75,7 @@ public class GoogleDriveController {
         else {
             try {
                 // get gg drive fileId after successfully uploading
-                String fileId = googleDriveService.uploadFile(fileUpload, pathFile, Boolean.parseBoolean(shared));
+                String fileId = googleDriveService.uploadFile(fileUpload, driveFolderPath, Boolean.parseBoolean(shared));
 
                 // delete the old file on gg drive if the ID is different from the default user image's one
                 if(!customer.getImage().equals("1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R")) {
