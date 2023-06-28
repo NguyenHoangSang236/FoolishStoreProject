@@ -24,6 +24,9 @@ public class Cart {
     @Column(name = "Buying_Status")
     String buyingStatus;
 
+    @Column(name = "Select_status")
+    int selectStatus;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -36,11 +39,12 @@ public class Cart {
 
     public Cart() {}
 
-    public Cart(Customer customer, ProductManagement productManagement, int quantity, String buyingStatus) {
+    public Cart(Customer customer, ProductManagement productManagement, int quantity, String buyingStatus, int selectStatus) {
         this.quantity = quantity;
         this.buyingStatus = buyingStatus;
         this.customer = customer;
         this.productManagement = productManagement;
+        this.selectStatus = selectStatus;
     }
 
     public Cart(Customer customer, ProductManagement productManagement, int quantity) {
@@ -77,12 +81,12 @@ public class Cart {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cart cart = (Cart) o;
-        return id == cart.id && quantity == cart.quantity && buyingStatus == cart.buyingStatus && customer.equals(cart.customer) && productManagement.equals(cart.productManagement);
+        return id == cart.id && quantity == cart.quantity && selectStatus == cart.selectStatus && Objects.equals(buyingStatus, cart.buyingStatus) && Objects.equals(customer, cart.customer) && Objects.equals(productManagement, cart.productManagement);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, quantity, buyingStatus, customer, productManagement);
+        return Objects.hash(id, quantity, buyingStatus, selectStatus, customer, productManagement);
     }
 
     @Override
@@ -90,7 +94,8 @@ public class Cart {
         return "Cart{" +
                 "id=" + id +
                 ", quantity=" + quantity +
-                ", buyingStatus=" + buyingStatus +
+                ", buyingStatus='" + buyingStatus + '\'' +
+                ", selectStatus=" + selectStatus +
                 ", customer=" + customer +
                 ", productManagement=" + productManagement +
                 '}';

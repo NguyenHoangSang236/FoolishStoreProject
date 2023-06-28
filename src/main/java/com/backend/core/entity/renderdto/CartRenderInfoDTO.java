@@ -28,6 +28,9 @@ public class CartRenderInfoDTO {
     @Column(name = "buying_status")
     String buyingStatus;
 
+    @Column(name = "select_status")
+    int selectStatus;
+
     @Column(name = "product_id")
     int productId;
 
@@ -55,12 +58,13 @@ public class CartRenderInfoDTO {
 
     public CartRenderInfoDTO() {}
 
-    public CartRenderInfoDTO(int id, int customerId, int productManagementId, int quantity, String buyingStatus, int productId, String color, String size, String name, String brand, double sellingPrice, double discount, String image1) {
+    public CartRenderInfoDTO(int id, int customerId, int productManagementId, int quantity, String buyingStatus, int selectStatus, int productId, String color, String size, String name, String brand, double sellingPrice, double discount, String image1) {
         this.id = id;
         this.customerId = customerId;
         this.productManagementId = productManagementId;
         this.quantity = quantity;
         this.buyingStatus = buyingStatus;
+        this.selectStatus = selectStatus;
         this.productId = productId;
         this.color = color;
         this.size = size;
@@ -71,28 +75,28 @@ public class CartRenderInfoDTO {
         this.image1 = image1;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartRenderInfoDTO that = (CartRenderInfoDTO) o;
-        return id == that.id && customerId == that.customerId && productManagementId == that.productManagementId && quantity == that.quantity && buyingStatus == that.buyingStatus && productId == that.productId && Double.compare(that.sellingPrice, sellingPrice) == 0 && Double.compare(that.discount, discount) == 0 && color.equals(that.color) && size.equals(that.size) && name.equals(that.name) && brand.equals(that.brand) && image1.equals(that.image1);
+        return id == that.id && customerId == that.customerId && productManagementId == that.productManagementId && quantity == that.quantity && selectStatus == that.selectStatus && productId == that.productId && Double.compare(that.sellingPrice, sellingPrice) == 0 && Double.compare(that.discount, discount) == 0 && Objects.equals(buyingStatus, that.buyingStatus) && Objects.equals(color, that.color) && Objects.equals(size, that.size) && Objects.equals(name, that.name) && Objects.equals(brand, that.brand) && Objects.equals(image1, that.image1);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerId, productManagementId, quantity, buyingStatus, productId, color, size, name, brand, sellingPrice, discount, image1);
+        return Objects.hash(id, customerId, productManagementId, quantity, buyingStatus, selectStatus, productId, color, size, name, brand, sellingPrice, discount, image1);
     }
 
     @Override
     public String toString() {
-        return "CartRenderInfo{" +
+        return "CartRenderInfoDTO{" +
                 "id=" + id +
                 ", customerId=" + customerId +
                 ", productManagementId=" + productManagementId +
                 ", quantity=" + quantity +
-                ", buyingStatus=" + buyingStatus +
+                ", buyingStatus='" + buyingStatus + '\'' +
+                ", selectStatus=" + selectStatus +
                 ", productId=" + productId +
                 ", color='" + color + '\'' +
                 ", size='" + size + '\'' +

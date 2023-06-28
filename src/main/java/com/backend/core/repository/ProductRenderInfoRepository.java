@@ -14,10 +14,10 @@ public interface ProductRenderInfoRepository extends JpaRepository<ProductRender
     @Query(value = "select * from top_8_best_sell_products", nativeQuery = true)
     List<ProductRenderInfoDTO> getTop8BestSellProducts();
 
-    @Query(value = "select * from product_info_for_ui group by name order by id desc limit 8", nativeQuery = true)
+    @Query(value = "select * from new_arrival_products", nativeQuery = true)
     List<ProductRenderInfoDTO> get8NewArrivalProducts();
 
-    @Query(value = "select * from product_info_for_ui where discount > 0 group by name order by discount desc limit 8", nativeQuery = true)
+    @Query(value = "select * from hot_discount_products", nativeQuery = true)
     List<ProductRenderInfoDTO> get8HotDiscountProducts();
 
     @Query(value = "select * from product_info_for_ui where name like %:nameVal% group by name order by product_id limit :limit offset :startLine", nativeQuery = true)

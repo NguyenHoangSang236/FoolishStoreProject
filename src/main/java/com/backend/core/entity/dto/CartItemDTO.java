@@ -31,20 +31,17 @@ public class CartItemDTO {
     @JsonProperty("quantity")
     int quantity;
 
+    @JsonProperty("select_status")
+    int selectStatus;
 
-    public CartItemDTO(int productId, String color, String size, int quantity) {
-        this.productId = productId;
-        this.color = color;
-        this.size = size;
-        this.quantity = quantity;
-    }
 
-    public CartItemDTO(int productId, int cartId, String color, String size, int quantity) {
+    public CartItemDTO(int productId, int cartId, String color, String size, int quantity, int selectStatus) {
         this.productId = productId;
         this.cartId = cartId;
         this.color = color;
         this.size = size;
         this.quantity = quantity;
+        this.selectStatus = selectStatus;
     }
 
     public CartItemDTO() {}
@@ -55,12 +52,12 @@ public class CartItemDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartItemDTO that = (CartItemDTO) o;
-        return productId == that.productId && cartId == that.cartId && quantity == that.quantity && color.equals(that.color) && size.equals(that.size);
+        return productId == that.productId && cartId == that.cartId && quantity == that.quantity && selectStatus == that.selectStatus && Objects.equals(color, that.color) && Objects.equals(size, that.size);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productId, cartId, color, size, quantity);
+        return Objects.hash(productId, cartId, color, size, quantity, selectStatus);
     }
 
     @Override
@@ -71,6 +68,7 @@ public class CartItemDTO {
                 ", color='" + color + '\'' +
                 ", size='" + size + '\'' +
                 ", quantity=" + quantity +
+                ", selectStatus=" + selectStatus +
                 '}';
     }
 }
