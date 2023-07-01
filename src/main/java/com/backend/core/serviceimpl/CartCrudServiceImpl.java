@@ -7,7 +7,7 @@ import com.backend.core.entity.dto.PaginationDTO;
 import com.backend.core.entity.renderdto.CartRenderInfoDTO;
 import com.backend.core.entity.tableentity.Cart;
 import com.backend.core.entity.tableentity.ProductManagement;
-import com.backend.core.enums.CartBuyingStatusEnum;
+import com.backend.core.enums.CartEnum;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
@@ -82,7 +82,7 @@ public class CartCrudServiceImpl implements CrudService {
                                 customerRepo.getCustomerById(customerId),
                                 productManagement,
                                 cartItemDTO.getQuantity(),
-                                CartBuyingStatusEnum.NOT_BOUGHT_YET.name(),
+                                CartEnum.NOT_BOUGHT_YET.name(),
                                 0
                         );
                         cartRepo.save(newCartItem);
@@ -125,7 +125,7 @@ public class CartCrudServiceImpl implements CrudService {
                     for (int id: selectedCartIdArr) {
                         Cart cart = cartRepo.getCartById(id);
 
-                        if(cart.getCustomer().getId() == customerId && cart.getBuyingStatus().equals(CartBuyingStatusEnum.NOT_BOUGHT_YET.name())) {
+                        if(cart.getCustomer().getId() == customerId && cart.getBuyingStatus().equals(CartEnum.NOT_BOUGHT_YET.name())) {
                             customQueryRepo.deleteCartById(id);
                         }
                         else return new ApiResponse("failed", "This cart item is not yours");

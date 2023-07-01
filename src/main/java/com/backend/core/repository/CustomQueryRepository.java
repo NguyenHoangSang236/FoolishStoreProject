@@ -16,8 +16,8 @@ public class CustomQueryRepository {
     
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> getBindingFilteredList(String query) {
-        return this.entityManager.createNativeQuery(query).getResultList();
+	public <T> List<T> getBindingFilteredList(String query, Class<T> entity) {
+        return this.entityManager.createNativeQuery(query, entity).getResultList();
     }
 	
 	

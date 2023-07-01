@@ -111,6 +111,7 @@ public class CartController extends CrudController {
         return null;
     }
 
+
     @GetMapping("/totalCartItemQuantity")
     public ApiResponse getTotatalCartItemQuantity(HttpSession session, HttpServletRequest httpRequest) {
         return crudService.readingResponse(session, "", httpRequest);

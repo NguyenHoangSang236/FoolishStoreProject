@@ -102,7 +102,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
                         // check if this cart item is in your cart or not
                         if(cartItem.getCustomer().getId() != customerId ||
-                           cartItem.getBuyingStatus().equals(CartBuyingStatusEnum.NOT_BOUGHT_YET.name())) {
+                           cartItem.getBuyingStatus().equals(CartEnum.NOT_BOUGHT_YET.name())) {
                             return new ApiResponse("failed", "This item is not in your cart");
                         }
 
@@ -202,28 +202,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                             invoiceFilterRequest.getPagination().getLimit()
                     );
 
-                    // get object[] list from query
-                    List<Object[]> objList = customQueryRepo.getBindingFilteredList(query);
-
-                    // convert object[] list to InvoiceRenderInfoDTO list
-                    invoiceRenderList = objList.stream().map(
-                            obj -> new InvoiceRenderInfoDTO(
-                                    obj[0] instanceof Long ? ((Long) obj[0]).intValue() : (int) obj[0],
-                                    obj[1] instanceof Long ? ((Long) obj[1]).intValue() : (int) obj[1],
-                                    (java.util.Date) obj[2],
-                                    (Byte) obj[3],
-                                    (String) obj[4],
-                                    (double) obj[5],
-                                    (String) obj[6],
-                                    (String) obj[7],
-                                    (String) obj[8],
-                                    (String) obj[9],
-                                    (String) obj[10],
-                                    (String) obj[11],
-                                    (double) obj[12],
-                                    (String) obj[13]
-                            )
-                    ).toList();
+                    // get list from query
+                    invoiceRenderList = customQueryRepo.getBindingFilteredList(query, InvoiceRenderInfoDTO.class);
 
                     return new ApiResponse("success", invoiceRenderList);
                 }

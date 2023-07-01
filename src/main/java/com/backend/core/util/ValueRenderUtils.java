@@ -1,12 +1,14 @@
 package com.backend.core.util;
 
 import com.backend.core.entity.tableentity.Account;
+import com.backend.core.enums.CartEnum;
 import com.backend.core.repository.CartRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -246,6 +248,38 @@ public class ValueRenderUtils {
         dynamicConditions = new StringBuilder(dynamicConditions.substring(4));
 
         result += dynamicConditions + " ORDER BY piu.id desc LIMIT " + (limit * (page-1)) + ", " + limit;
+
+        return result;
+    }
+
+
+
+    //create a query for cart items binding filter
+    public String cartItemFilterQuery(String name, String[] status, String brand) {
+        String result = "select * from cart_item_info_for_ui where ";
+
+        if(!brand.isEmpty() && !brand.isBlank()) {
+            result += "brand = '" + brand.toLowerCase() + "' and ";
+        }
+
+        if(!name.isEmpty() && !name.isBlank()) {
+            result += "name = '" + brand.toLowerCase() + "' and ";
+        }
+
+        if(status.length > 0) {
+            if(Arrays.stream(status).anyMatch(elem -> elem.equals(CartEnum.DISCOUNT.name()))) {
+                result += "discount > 0 and ";
+            }
+
+            if(Arrays.stream(status).anyMatch(elem -> elem.equals(CartEnum.SELECTED.name()))) {
+                result += "selected_status = 1 and ";
+            }
+        }
+
+        int lastIndex = result.lastIndexOf("and");
+        if (lastIndex >= 0) {
+            result = result.substring(0, lastIndex) + result.substring(lastIndex + "and".length());
+        }
 
         return result;
     }

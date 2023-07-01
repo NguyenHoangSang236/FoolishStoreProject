@@ -96,28 +96,8 @@ public class ProductCrudServiceImpl implements CrudService {
                             productFilterRequest.getPagination().getLimit()
                     );
 
-                    // get object[] list from query
-                    List<Object[]> objectList = customQueryRepo.getBindingFilteredList(filterQuery);
-
-                    // convert object[] list to ProductRenderInfoDTO list
-                    productRenderList = objectList.stream().map(
-                            obj -> new ProductRenderInfoDTO(
-                                    obj[0] instanceof Long ? ((Long) obj[0]).intValue() : (int) obj[0],
-                                    obj[1] instanceof Long ? ((Long) obj[1]).intValue() : (int) obj[1],
-                                    (String) obj[2],
-                                    (String) obj[3],
-                                    (double) obj[4],
-                                    (double) obj[5],
-                                    (String) obj[6],
-                                    (String) obj[7],
-                                    obj[8] instanceof Long ? ((Long) obj[8]).intValue() : (int) obj[8],
-                                    (String) obj[9],
-                                    (String) obj[10],
-                                    (String) obj[11],
-                                    (String) obj[12],
-                                    obj[13] instanceof Long ? ((Long) obj[13]).intValue() : (int) obj[13],
-                                    (String) obj[14])
-                    ).toList();
+                    // get list from query
+                    productRenderList = customQueryRepo.getBindingFilteredList(filterQuery, ProductRenderInfoDTO.class);
                 }
                 // else -> search product by Name
                 else {
