@@ -13,8 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomQueryRepository {
 	@PersistenceContext
     private EntityManager entityManager;
-    
-	
+
+
+	public CustomQueryRepository() {}
+
+	public CustomQueryRepository(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getBindingFilteredList(String query, Class<T> entity) {
         return this.entityManager.createNativeQuery(query, entity).getResultList();

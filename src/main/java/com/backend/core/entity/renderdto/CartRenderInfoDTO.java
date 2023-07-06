@@ -107,4 +107,8 @@ public class CartRenderInfoDTO {
                 ", image1='" + image1 + '\'' +
                 '}';
     }
+
+    public double getTotalPrice() {
+        return this.sellingPrice - (this.sellingPrice * (this.discount / 100));
+    }
 }

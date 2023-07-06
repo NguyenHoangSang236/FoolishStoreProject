@@ -89,4 +89,12 @@ public class InvoiceCustomerController extends CrudController {
         InvoiceFilterRequestDTO invoiceFilterRequestDTO = objectMapper.readValue(json, InvoiceFilterRequestDTO.class);
         return crudService.readingFromSingleRequest(invoiceFilterRequestDTO, session, httpRequest);
     }
+
+
+    @PostMapping("/onlinePayment")
+    public ApiResponse getBankingInfo(@RequestParam("invoiceId") int invoiceId, @RequestParam("type") String type, HttpSession session, HttpServletRequest httpRequest) {
+        
+
+        return  null;
+    }
 }

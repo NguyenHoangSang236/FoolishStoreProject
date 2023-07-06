@@ -181,29 +181,10 @@ public class InvoiceCrudServiceImpl implements CrudService {
         else {
             if(paramObj instanceof InvoiceFilterRequestDTO) {
                 try {
-                    // determine filter type
-                    FilterRequest invoiceFilterRequest = FilterFactory.getFilterRequest(FilterTypeEnum.INVOICE);
-
-                    // convert paramObj
-                    invoiceFilterRequest = (InvoiceFilterRequestDTO) paramObj;
-
-                    InvoiceFilterDTO invoiceFilter = (InvoiceFilterDTO) invoiceFilterRequest.getFilter();
-
-                    // create query for filter
-                    String query = ValueRenderUtils.invoiceFilterQuery(
-                            customerId,
-                            invoiceFilter.getAdminAcceptance(),
-                            invoiceFilter.getPaymentStatus(),
-                            invoiceFilter.getDeliveryStatus(),
-                            invoiceFilter.getStartInvoiceDate(),
-                            invoiceFilter.getEndInvoiceDate(),
-                            invoiceFilter.getPaymentMethod(),
-                            invoiceFilterRequest.getPagination().getPage(),
-                            invoiceFilterRequest.getPagination().getLimit()
-                    );
+                    String filterQuery = ValueRenderUtils.getFilterQuery(paramObj, FilterTypeEnum.INVOICE, session);
 
                     // get list from query
-                    invoiceRenderList = customQueryRepo.getBindingFilteredList(query, InvoiceRenderInfoDTO.class);
+                    invoiceRenderList = customQueryRepo.getBindingFilteredList(filterQuery, InvoiceRenderInfoDTO.class);
 
                     return new ApiResponse("success", invoiceRenderList);
                 }
@@ -258,34 +239,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Override
     public ApiResponse readingResponse(HttpSession session, String renderType, HttpServletRequest httpRequest) {
-//        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
-//
-//        // check if logged in or not
-//        if(customerId == 0) {
-//            return new ApiResponse("failed", "Login first");
-//        }
-//        else {
-//            try {
-//                List<Invoice> invoiceList = new ArrayList<>();
-//
-//                switch (renderType) {
-//                    case "CUSTOMER_ALL_CURRENT_INVOICES": {
-//                        invoiceList = invoiceRepo.getAllCurrentInvoicesByCustomerId(customerId);
-//                        break;
-//                    }
-//                    case "CUSTOMER_PURCHASE_HISTORY": {
-//                        invoiceList = invoiceRepo.getAllInvoicesByCustomerId(customerId);
-//                        break;
-//                    }
-//                }
-//
-//                return new ApiResponse("success", invoiceList);
-//            }
-//            catch (Exception e) {
-//                e.printStackTrace();
-//                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
-//            }
-//        }
         return null;
     }
 
@@ -317,4 +270,5 @@ public class InvoiceCrudServiceImpl implements CrudService {
     public boolean isInvoiceOwner(int customerId, int invoiceId) {
         return (invoiceRepo.getInvoiceCountByInvoiceIdAndCustomerId(invoiceId, customerId) > 0);
     }
+
 }

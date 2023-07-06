@@ -1,10 +1,8 @@
 package com.backend.core.controller;
 
 import com.backend.core.abstractclasses.CrudController;
-import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.entity.dto.CartItemDTO;
-import com.backend.core.entity.dto.ListRequestDTO;
-import com.backend.core.entity.dto.PaginationDTO;
+import com.backend.core.entity.dto.*;
+import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.CartRenderInfoRepository;
 import com.backend.core.repository.CartRepository;
 import com.backend.core.repository.CustomerRepository;
@@ -106,14 +104,23 @@ public class CartController extends CrudController {
     }
 
 
+    @PostMapping("/filterCartItems")
     @Override
-    public ApiResponse getListOfItemsFromFilter(String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    public ApiResponse getListOfItemsFromFilter(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        CartItemFilterRequestDTO filterRequest = objectMapper.readValue(json, CartItemFilterRequestDTO.class);
+        return crudService.readingFromSingleRequest(filterRequest, session, httpRequest);
     }
 
 
     @GetMapping("/totalCartItemQuantity")
     public ApiResponse getTotatalCartItemQuantity(HttpSession session, HttpServletRequest httpRequest) {
-        return crudService.readingResponse(session, "", httpRequest);
+        return crudService.readingResponse(session, RenderTypeEnum.TOTAL_CART_ITEM_QUANTITY.name(), httpRequest);
+    }
+
+
+    @GetMapping("/checkout")
+    public ApiResponse getCartCheckout(HttpSession session, HttpServletRequest httpRequest) {
+        return crudService.readingResponse(session, RenderTypeEnum.CART_CHECKOUT.name(), httpRequest);
     }
 }

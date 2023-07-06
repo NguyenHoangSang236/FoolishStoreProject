@@ -1,14 +1,14 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.entity.dto.CartItemDTO;
-import com.backend.core.entity.dto.ListRequestDTO;
-import com.backend.core.entity.dto.PaginationDTO;
+import com.backend.core.entity.dto.*;
+import com.backend.core.entity.interfaces.FilterRequest;
 import com.backend.core.entity.renderdto.CartRenderInfoDTO;
 import com.backend.core.entity.tableentity.Cart;
 import com.backend.core.entity.tableentity.ProductManagement;
 import com.backend.core.enums.CartEnum;
 import com.backend.core.enums.ErrorTypeEnum;
+import com.backend.core.enums.FilterTypeEnum;
+import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.ValueRenderUtils;
@@ -227,6 +227,7 @@ public class CartCrudServiceImpl implements CrudService {
             return new ApiResponse("failed", "Login first");
         }
         else {
+            // if the param is pagination only -> show full cart items
             if(paramObj instanceof PaginationDTO) {
                 try {
                     PaginationDTO pagination = (PaginationDTO) paramObj;
@@ -236,6 +237,18 @@ public class CartCrudServiceImpl implements CrudService {
                             (pagination.getPage() - 1) * pagination.getLimit(),
                             pagination.getLimit()
                     );
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+                }
+            }
+            // if the param is filter -> filter cart items
+            else if(paramObj instanceof CartItemFilterRequestDTO) {
+                try {
+                    String filterQuery = ValueRenderUtils.getFilterQuery(paramObj, FilterTypeEnum.CART_ITEMS, session);
+
+                    cartItemList = customQueryRepo.getBindingFilteredList(filterQuery, CartRenderInfoDTO.class);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -259,20 +272,44 @@ public class CartCrudServiceImpl implements CrudService {
     public ApiResponse readingResponse(HttpSession session, String renderType, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
-        int totalQuantity = 0;
-
         if(customerId == 0) {
             return new ApiResponse("failed", "Login first");
         }
         else {
-            try {
-                totalQuantity = cartRepo.getCartQuantityByCustomerId(customerId);
+            if(renderType == RenderTypeEnum.TOTAL_CART_ITEM_QUANTITY.name()) {
+                int totalQuantity = 0;
+
+                try {
+                    totalQuantity = cartRepo.getCartQuantityByCustomerId(customerId);
+
+                    return  new ApiResponse("success", totalQuantity);
+                }
+                catch (Exception e) {
+                    return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+                }
             }
-            catch (Exception e) {
-                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+            else if(renderType == RenderTypeEnum.CART_CHECKOUT.name()){
+                try {
+                    List<CartRenderInfoDTO> selectedCartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
+
+                    double subtotal = 0;
+                    double shippingFee = 3;
+
+                    for(int i = 0; i < selectedCartItemList.size(); i++) {
+                        subtotal += selectedCartItemList.get(i).getTotalPrice();
+                    }
+
+                    CartCheckoutDTO checkout = new CartCheckoutDTO(subtotal, shippingFee, subtotal + shippingFee);
+
+                    return new ApiResponse("success", checkout);
+                }
+                catch (Exception e) {
+                    return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+                }
             }
         }
-        return  new ApiResponse("success", totalQuantity);
+
+        return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
     }
 
 

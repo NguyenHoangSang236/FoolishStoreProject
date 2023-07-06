@@ -10,6 +10,7 @@ public class FilterFactory {
         return switch (filterType) {
             case PRODUCT -> new ProductFilterRequestDTO();
             case INVOICE -> new InvoiceFilterRequestDTO();
+            case CART_ITEMS -> new CartItemFilterRequestDTO();
             default -> null;
         };
     }

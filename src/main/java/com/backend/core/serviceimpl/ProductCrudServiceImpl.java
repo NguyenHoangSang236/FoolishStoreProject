@@ -71,47 +71,9 @@ public class ProductCrudServiceImpl implements CrudService {
 
         if(paramObj instanceof ProductFilterRequestDTO) {
             try {
-                // determine filter type
-                FilterRequest productFilterRequest = FilterFactory.getFilterRequest(FilterTypeEnum.PRODUCT);
+                String filterQuery = ValueRenderUtils.getFilterQuery(paramObj, FilterTypeEnum.PRODUCT, session);
 
-                // convert paramObj
-                productFilterRequest = (ProductFilterRequestDTO) paramObj;
-
-                ProductFilterDTO productFilter = (ProductFilterDTO) productFilterRequest.getFilter();
-
-                // product filter does not have Name field and other fields must have value -> binding filter
-                if((productFilter.getName() == null || productFilter.getName().isBlank()) &&
-                   (productFilter.getCategories() != null ||
-                    productFilter.getBrand() != null ||
-                    (productFilter.getMinPrice() > 0 &&
-                     productFilter.getMaxPrice() > 0 &&
-                     productFilter.getMinPrice() < productFilter.getMaxPrice()))) {
-                    // get filter query
-                    String filterQuery = ValueRenderUtils.productFilterQuery(
-                            productFilter.getCategories(),
-                            productFilter.getBrand(),
-                            productFilter.getMinPrice(),
-                            productFilter.getMaxPrice(),
-                            productFilterRequest.getPagination().getPage(),
-                            productFilterRequest.getPagination().getLimit()
-                    );
-
-                    // get list from query
-                    productRenderList = customQueryRepo.getBindingFilteredList(filterQuery, ProductRenderInfoDTO.class);
-                }
-                // else -> search product by Name
-                else {
-                    if(Objects.equals(productFilter.getName(), "")) {
-                        return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
-                    }
-                    else {
-                        productRenderList = productRenderInfoRepo.getProductsByName(
-                                productFilter.getName(),
-                                (productFilterRequest.getPagination().getPage() - 1) * productFilterRequest.getPagination().getLimit(),
-                                productFilterRequest.getPagination().getLimit()
-                        );
-                    }
-                }
+                productRenderList = customQueryRepo.getBindingFilteredList(filterQuery, ProductRenderInfoDTO.class);
             }
             catch (StringIndexOutOfBoundsException e) {
                 e.printStackTrace();
