@@ -2,10 +2,13 @@ package com.backend.core.controller;
 
 import com.backend.core.abstractclasses.CrudController;
 import com.backend.core.entity.dto.*;
+import com.backend.core.entity.tableentity.Invoice;
 import com.backend.core.repository.InvoiceRepository;
 import com.backend.core.service.CrudService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/invoice/customer", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -33,10 +37,10 @@ public class InvoiceCustomerController extends CrudController {
     @Override
     @PostMapping("/addNewOrder")
     public ApiResponse addNewItem(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
-        ObjectMapper objMapper = new ObjectMapper();
-        List<Object> objList = objMapper.readValue(json, new TypeReference<List<Object>>() {});
+        Gson gson = new Gson();
+        Map<String,String> request = gson.fromJson(json,Map.class);
 
-        return crudService.listCreationalResponse(objList, session, httpRequest);
+        return crudService.singleCreationalResponse(request.get("paymentMethod"), session, httpRequest);
     }
 
 
@@ -92,9 +96,12 @@ public class InvoiceCustomerController extends CrudController {
 
 
     @PostMapping("/onlinePayment")
-    public ApiResponse getBankingInfo(@RequestParam("invoiceId") int invoiceId, @RequestParam("type") String type, HttpSession session, HttpServletRequest httpRequest) {
-        
-
-        return  null;
+    public ApiResponse getBankingInfo(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Invoice invoice = objectMapper.readValue(json, Invoice.class);
+        return crudService.readingFromSingleRequest(invoice, session, httpRequest);
     }
+
+
+
 }

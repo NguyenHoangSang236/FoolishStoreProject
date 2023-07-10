@@ -31,8 +31,8 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 	int getInvoiceCountByInvoiceIdAndCustomerId(@Param("invoiceIdVal") int invoiceId, @Param("customerIdVal") int customerId);
 	
 	
-//	@Query(value = "select * from invoice where id = :idVal", nativeQuery = true)
-//	Invoice getInvoiceById(@Param("idVal") int id);
+	@Query(value = "select * from invoice where id = :idVal", nativeQuery = true)
+	Invoice getInvoiceById(@Param("idVal") int id);
 //
 //
 //	@Query(value = "select * from invoice where Payment_Method != 'cod'", nativeQuery = true)

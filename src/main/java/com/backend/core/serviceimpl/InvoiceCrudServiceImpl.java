@@ -3,6 +3,7 @@ package com.backend.core.serviceimpl;
 import com.backend.core.entity.dto.*;
 import com.backend.core.entity.embededkey.InvoicesWithProductsPrimaryKeys;
 import com.backend.core.entity.interfaces.FilterRequest;
+import com.backend.core.entity.renderdto.CartRenderInfoDTO;
 import com.backend.core.entity.renderdto.InvoiceDetailRenderInfoDTO;
 import com.backend.core.entity.renderdto.InvoiceRenderInfoDTO;
 import com.backend.core.entity.tableentity.Invoice;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -47,111 +49,131 @@ public class InvoiceCrudServiceImpl implements CrudService {
     @Autowired
     CartRepository cartRepo;
 
+    @Autowired
+    CartRenderInfoRepository cartRenderInfoRepo;
+
 
     public InvoiceCrudServiceImpl() {}
 
 
 
     @Override
-    public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-
-    @Override
-    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session, HttpServletRequest httpRequest) {
+    public synchronized ApiResponse singleCreationalResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
-
-        List<CartItemDTO> cartItemList = new ArrayList<CartItemDTO>();
+        String paymentMethod = (String) paramObj;
+        List<CartRenderInfoDTO> cartItemList = new ArrayList<>();
 
         // check if logged in or not
         if(customerId == 0) {
             return new ApiResponse("failed", "Login first");
         }
         else {
-            int newInvoiceId = invoiceRepo.getLastestInvoiceId() + 1;
+            Invoice newInvoice = new Invoice();
 
-            Invoice newInvoice = new Invoice(
-                    newInvoiceId,
-                    new Date(),
-                    DeliveryTypeEnum.ACCEPTANCE_WAITING.name(),
-                    0,
-                    PaymentMethodEnum.COD.name(),
-                    CurrencyEnum.USD.name(),
-                    "",
-                    "",
-                    0,
-                    0,
-                    "",
-                    "",
-                    AdminAcceptanceEnum.WAITING.name(),
-                    null,
-                    null,
-                    customerRepo.getCustomerById(customerId)
-            );
+            try{
+                cartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
+                int newInvoiceId = invoiceRepo.getLastestInvoiceId() + 1;
+                double invoiceTotalPrice = 0;
 
-            try {
-                if(objList.size() > 0) {
-                    // check if all cart items meet the requirements or not
-                    for(Object elem : objList) {
-                        CartItemDTO item = new ObjectMapper().convertValue(elem, CartItemDTO.class);
-                        cartItemList.add(item);
-
-                        Cart cartItem = cartRepo.getCartById(item.getCartId());
-
-                        // check if this cart item is in your cart or not
-                        if(cartItem.getCustomer().getId() != customerId ||
-                           cartItem.getBuyingStatus().equals(CartEnum.NOT_BOUGHT_YET.name())) {
-                            return new ApiResponse("failed", "This item is not in your cart");
-                        }
-
-                        // check if this cart item's quantity is higher than available quantity or not
-                        if(cartItem.getProductManagement().getAvailableQuantity() < item.getQuantity()) {
-                            return new ApiResponse("failed", "The available quantity of " + cartItem.getProductManagement().getProduct().getName() + " is only " + cartItem.getProductManagement().getAvailableQuantity() + " left");
-                        }
-                    }
-
-                    // save new invoice first to take its ID as the foreign key for InvoicesWithProducts to progress
-                    invoiceRepo.save(newInvoice);
-
-                    // insert data to tables
-                    for(CartItemDTO item : cartItemList) {
-                        Cart cartItem = cartRepo.getCartById(item.getCartId());
-
-                        // get ProductManagement by id, color and size
-                        ProductManagement pm = productManagementRepo.getPrductsManagementByProductIDAndColorAndSize(
-                                item.getProductId(),
-                                item.getColor(),
-                                item.getSize()
-                        );
-
-                        // subtract available quantity
-                        pm.subtractQuantity(ProductManagementQuantityTypeEnum.AVAILABLE_QUANTITY.name(), cartItem.getQuantity());
-                        // add sold quantity
-                        pm.addQuantity(ProductManagementQuantityTypeEnum.SOLD_QUANTITY.name(), cartItem.getQuantity());
-                        productManagementRepo.save(pm);
-
-                        InvoicesWithProducts invoicesWithProducts = new InvoicesWithProducts(
-                                new InvoicesWithProductsPrimaryKeys(pm.getId(), newInvoice.getId()),
-                                pm,
-                                newInvoice,
-                                item.getQuantity()
-                        );
-
-                        // insert to InvoicesWithProducts table
-                        invoicesWithProductsRepo.insertInvoicesWithProducts(invoicesWithProducts);
-                    }
-
-                    return new ApiResponse("success", "Add new order successfully");
+                if(paymentMethod.equals(PaymentMethodEnum.COD.name())) {
+                    newInvoice = new Invoice(
+                            newInvoiceId,
+                            new Date(),
+                            DeliveryTypeEnum.ACCEPTANCE_WAITING.name(),
+                            0,
+                            paymentMethod,
+                            CurrencyEnum.USD.name(),
+                            "",
+                            "",
+                            0,
+                            0,
+                            "",
+                            "",
+                            AdminAcceptanceEnum.WAITING.name(),
+                            null,
+                            null,
+                            customerRepo.getCustomerById(customerId)
+                    );
                 }
-                else return new ApiResponse("failed", "There is no item");
+                else if(isPaymentMethod(paymentMethod) == true) {
+                    newInvoice = new Invoice(
+                            newInvoiceId,
+                            new Date(),
+                            DeliveryTypeEnum.PAYMENT_WAITING.name(),
+                            0,
+                            paymentMethod,
+                            CurrencyEnum.USD.name(),
+                            "",
+                            "",
+                            0,
+                            0,
+                            "",
+                            "",
+                            AdminAcceptanceEnum.WAITING.name(),
+                            null,
+                            null,
+                            customerRepo.getCustomerById(customerId)
+                    );
+                }
+                else {
+                    return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+                }
+
+                // save new invoice first to take its ID as the foreign key for InvoicesWithProducts to progress
+                invoiceRepo.save(newInvoice);
+
+                // modify data to tables
+                for(CartRenderInfoDTO item : cartItemList) {
+                    invoiceTotalPrice += item.getTotalPrice();
+
+                    Cart tblCart = cartRepo.getCartById(item.getId());
+
+                    // get ProductManagement by id, color and size
+                    ProductManagement pm = productManagementRepo.getPrductsManagementByProductIDAndColorAndSize(
+                            item.getProductId(),
+                            item.getColor(),
+                            item.getSize()
+                    );
+
+                    // set cart item from Cart table to buying_status = BOUGHT and select_status = 0
+                    tblCart.setSelectStatus(0);
+                    tblCart.setBuyingStatus(CartEnum.BOUGHT.name());
+                    cartRepo.save(tblCart);
+
+                    // subtract available quantity
+                    pm.subtractQuantity(ProductManagementQuantityTypeEnum.AVAILABLE_QUANTITY.name(), tblCart.getQuantity());
+                    // add sold quantity
+                    pm.addQuantity(ProductManagementQuantityTypeEnum.SOLD_QUANTITY.name(), tblCart.getQuantity());
+                    productManagementRepo.save(pm);
+
+                    InvoicesWithProducts invoicesWithProducts = new InvoicesWithProducts(
+                            new InvoicesWithProductsPrimaryKeys(pm.getId(), newInvoice.getId()),
+                            pm,
+                            newInvoice,
+                            item.getQuantity()
+                    );
+
+                    // insert to InvoicesWithProducts table
+                    invoicesWithProductsRepo.insertInvoicesWithProducts(invoicesWithProducts);
+                }
+
+                newInvoice.setTotalPrice(invoiceTotalPrice);
+                invoiceRepo.save(newInvoice);
             }
             catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
         }
+
+        return new ApiResponse("success", "New order has been created successfully");
+    }
+
+
+
+    @Override
+    public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
     }
 
 
@@ -225,6 +247,39 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
                 }
             }
+            else if(paramObj instanceof Invoice) {
+                Invoice paramInvoice = (Invoice) paramObj;
+                Invoice currentInvoice = invoiceRepo.getInvoiceById(paramInvoice.getId());
+                String currentPaymentMethod = paramInvoice.getPaymentMethod();
+                OnlinePaymentReceiverDTO receiver = new OnlinePaymentReceiverDTO();
+
+                if(currentInvoice.getPaymentStatus() == 0 &&
+                   currentInvoice.getDeliveryStatus() == DeliveryTypeEnum.PAYMENT_WAITING.name() &&
+                   currentInvoice.getAdminAcceptance() == AdminAcceptanceEnum.WAITING.name())   {
+                    if(currentPaymentMethod.equals(PaymentMethodEnum.PAYPAL.name())) {
+                        receiver = new OnlinePaymentReceiverDTO(
+                                "Pay for invoice " + currentInvoice.getId(),
+                                "03365672301",
+                                "NGUYEN HOANG SANG",
+                                "TP BANK - Tien Phong Bank",
+                                currentInvoice.getTotalPrice()
+                        );
+                    }
+                    else if(currentPaymentMethod.equals(PaymentMethodEnum.MOMO.name())) {
+                        receiver = new OnlinePaymentReceiverDTO(
+                                "Pay for invoice " + currentInvoice.getId(),
+                                "0977815809",
+                                "NGUYEN HOANG SANG",
+                                "",
+                                currentInvoice.getTotalPrice()
+                        );
+                    }
+                }
+
+
+
+                return new ApiResponse("success", receiver);
+            }
         }
 
         return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
@@ -271,4 +326,17 @@ public class InvoiceCrudServiceImpl implements CrudService {
         return (invoiceRepo.getInvoiceCountByInvoiceIdAndCustomerId(invoiceId, customerId) > 0);
     }
 
+
+    public boolean isPaymentMethod(String method) {
+        List choices = Arrays.asList(PaymentMethodEnum.values());
+
+        //compare with enum value
+        if(choices.contains(PaymentMethodEnum.MOMO.name()) ||
+           choices.contains(PaymentMethodEnum.BANK_TRANSFER.name()) ||
+           choices.contains(PaymentMethodEnum.PAYPAL.name())){
+            return true;
+        }
+
+        return false;
+    }
 }

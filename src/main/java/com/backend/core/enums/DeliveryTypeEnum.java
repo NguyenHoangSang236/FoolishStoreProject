@@ -7,4 +7,5 @@ public enum DeliveryTypeEnum {
     CANCEL,
     ACCEPTANCE_WAITING,
     PACKING,
+    PAYMENT_WAITING,
 }
