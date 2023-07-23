@@ -69,38 +69,15 @@ public class ProductCrudServiceImpl implements CrudService {
     public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         List<ProductRenderInfoDTO> productRenderList = null;
 
-        if(paramObj instanceof ProductFilterRequestDTO) {
-            try {
-                String filterQuery = ValueRenderUtils.getFilterQuery(paramObj, FilterTypeEnum.PRODUCT, session);
-
-                productRenderList = customQueryRepo.getBindingFilteredList(filterQuery, ProductRenderInfoDTO.class);
-            }
-            catch (StringIndexOutOfBoundsException e) {
-                e.printStackTrace();
-                return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
-            }
+        // get products from filter request
+        if(paramObj instanceof ProductFilterRequestDTO productFilterRequest) {
+            return filterProducts(productFilterRequest, session);
         }
         // if there is no filter -> get all products with pagination
-        else if(paramObj instanceof PaginationDTO) {
-            try {
-                PaginationDTO pagination = (PaginationDTO) paramObj;
-
-                productRenderList = productRenderInfoRepo.getAllProducts(
-                        (pagination.getPage() - 1) * pagination.getLimit(),
-                        pagination.getLimit()
-                );
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
-            }
+        else if(paramObj instanceof PaginationDTO pagination) {
+            return getProductFromPagination(pagination);
         }
-
-        return new ApiResponse("success", productRenderList);
+        else return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
     }
 
 
@@ -154,5 +131,42 @@ public class ProductCrudServiceImpl implements CrudService {
         }
 
         return new ApiResponse(status, productDetails);
+    }
+
+
+
+    // filter products
+    public ApiResponse filterProducts(ProductFilterRequestDTO productFilterRequest, HttpSession session) {
+        try {
+            String filterQuery = ValueRenderUtils.getFilterQuery(productFilterRequest, FilterTypeEnum.PRODUCT, session);
+
+            List<ProductRenderInfoDTO> productRenderList = customQueryRepo.getBindingFilteredList(filterQuery, ProductRenderInfoDTO.class);
+
+            return new ApiResponse("success", productRenderList);
+        }
+        catch (StringIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+        }
+    }
+
+
+    // get product list from pagination
+    public ApiResponse getProductFromPagination(PaginationDTO pagination) {
+        try {
+            List<ProductRenderInfoDTO> productRenderList = productRenderInfoRepo.getAllProducts(
+                    (pagination.getPage() - 1) * pagination.getLimit(),
+                    pagination.getLimit()
+            );
+            return new ApiResponse("success", productRenderList);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+        }
     }
 }

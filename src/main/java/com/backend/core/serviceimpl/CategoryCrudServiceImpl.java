@@ -51,6 +51,8 @@ public class CategoryCrudServiceImpl implements CrudService {
         return null;
     }
 
+
+    // get all categories
     @Override
     public ApiResponse readingResponse(HttpSession session, String renderType, HttpServletRequest httpRequest) {
         try {

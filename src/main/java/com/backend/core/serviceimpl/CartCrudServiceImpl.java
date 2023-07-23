@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Qualifier("CartCrudServiceImpl")
@@ -46,6 +47,8 @@ public class CartCrudServiceImpl implements CrudService {
 
     public CartCrudServiceImpl() {}
 
+
+    // add a new item to cart
     @Override
     public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         CartItemDTO cartItemDTO = (CartItemDTO) paramObj;
@@ -86,9 +89,6 @@ public class CartCrudServiceImpl implements CrudService {
                                 0
                         );
                         cartRepo.save(newCartItem);
-
-//                        productManagement.subtractQuantity(cartItemDTO.getQuantity());
-//                        productManagementRepo.save(productManagement);
                     }
                     return new ApiResponse("success", "Add successfully");
                 } else {
@@ -102,12 +102,14 @@ public class CartCrudServiceImpl implements CrudService {
         }
     }
 
+
     @Override
     public ApiResponse listCreationalResponse(List<Object> objList, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
+    // remove an item from cart
     @Override
     public ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
@@ -142,6 +144,7 @@ public class CartCrudServiceImpl implements CrudService {
     }
 
 
+    // update item info from cart
     @Override
     public ApiResponse updatingResponse(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
@@ -218,6 +221,7 @@ public class CartCrudServiceImpl implements CrudService {
     }
 
 
+    // get cart item list through pagination or filter
     @Override
     public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
@@ -272,11 +276,13 @@ public class CartCrudServiceImpl implements CrudService {
     public ApiResponse readingResponse(HttpSession session, String renderType, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
+        // check login
         if(customerId == 0) {
             return new ApiResponse("failed", "Login first");
         }
         else {
-            if(renderType == RenderTypeEnum.TOTAL_CART_ITEM_QUANTITY.name()) {
+            // get cart item total quantity
+            if(renderType.equals(RenderTypeEnum.TOTAL_CART_ITEM_QUANTITY.name())) {
                 int totalQuantity = 0;
 
                 try {
@@ -288,17 +294,20 @@ public class CartCrudServiceImpl implements CrudService {
                     return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
                 }
             }
-            else if(renderType == RenderTypeEnum.CART_CHECKOUT.name()){
+            // get checkout info
+            else if(renderType.equals(RenderTypeEnum.CART_CHECKOUT.name())){
                 try {
                     List<CartRenderInfoDTO> selectedCartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
 
                     double subtotal = 0;
                     double shippingFee = 3;
 
-                    for(int i = 0; i < selectedCartItemList.size(); i++) {
-                        subtotal += selectedCartItemList.get(i).getTotalPrice();
+                    // calculate subtotal price
+                    for (CartRenderInfoDTO cartRenderInfoDTO : selectedCartItemList) {
+                        subtotal += cartRenderInfoDTO.getTotalPrice();
                     }
 
+                    // init new checkout object
                     CartCheckoutDTO checkout = new CartCheckoutDTO(subtotal, shippingFee, subtotal + shippingFee);
 
                     return new ApiResponse("success", checkout);
