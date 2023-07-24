@@ -76,6 +76,11 @@ public class Invoice {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "admin_in_charge_id")
+    private Staff staff;
+
 
     public Invoice() {}
 

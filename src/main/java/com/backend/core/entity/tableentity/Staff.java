@@ -67,6 +67,9 @@ public class Staff {
     private Account account;
 
     @OneToMany(mappedBy = "staff")
+    private List<Invoice> invoices;
+
+    @OneToMany(mappedBy = "staff")
     private List<Delivery> deliveries;
 
 
@@ -78,12 +81,12 @@ public class Staff {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Staff staff = (Staff) o;
-        return id == staff.id && name.equals(staff.name) && birthDate.equals(staff.birthDate) && hometown.equals(staff.hometown) && position.equals(staff.position) && email.equals(staff.email) && phoneNumber.equals(staff.phoneNumber) && image.equals(staff.image) && Objects.equals(account, staff.account) && Objects.equals(deliveries, staff.deliveries);
+        return id == staff.id && Objects.equals(name, staff.name) && Objects.equals(birthDate, staff.birthDate) && Objects.equals(hometown, staff.hometown) && Objects.equals(position, staff.position) && Objects.equals(email, staff.email) && Objects.equals(phoneNumber, staff.phoneNumber) && Objects.equals(image, staff.image) && Objects.equals(account, staff.account) && Objects.equals(invoices, staff.invoices) && Objects.equals(deliveries, staff.deliveries);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, birthDate, hometown, position, email, phoneNumber, image, account, deliveries);
+        return Objects.hash(id, name, birthDate, hometown, position, email, phoneNumber, image, account, invoices, deliveries);
     }
 
     @Override
@@ -98,6 +101,7 @@ public class Staff {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", image='" + image + '\'' +
                 ", account=" + account +
+                ", invoices=" + invoices +
                 ", deliveries=" + deliveries +
                 '}';
     }

@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `fashionstorewebsite` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `fashionstorewebsite`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Linux (x86_64)
 --
--- Host: containers-us-west-29.railway.app    Database: fashionstorewebsite
+-- Host: localhost    Database: fashionstorewebsite
 -- ------------------------------------------------------
--- Server version	8.0.33
+-- Server version	8.0.33-0ubuntu0.22.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -97,30 +95,6 @@ LOCK TABLES `catalog` WRITE;
 /*!40000 ALTER TABLE `catalog` DISABLE KEYS */;
 INSERT INTO `catalog` VALUES (1,'Jackets','1SJd_q9XgP6t3IcZyr9yge-YWpB7m4r6p'),(2,'Glasses','1sxJBW8O5FurTGUE39cIxdRcRycLg6pnK'),(3,'Shoes','1C22R6MlFTiMwbewDPkzpX1wb_GnNGu08'),(4,'Male','17X-b4LDq0VoHV1QOJE5fMvVhIoejq_2u'),(5,'Female','128ptt1MwwaDE1B-Qd0PYt-z0mooOBU9L'),(6,'Accessories','1vu0bQvTF38IAsJtLBH_rFQHNJAqY1IgM'),(7,'Purses','1GKehSvAvHwZ9dVe82dDoGBzXe1rbw1vz'),(8,'Sport','14Ap5-CSmhnR5wAxbLsJ0XKkbi45vya6X'),(9,'Backpackes','1rdb1BgNCVRL2A5FAVqvRcV0azUd1nBlw');
 /*!40000 ALTER TABLE `catalog` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `catalog_with_products`
---
-
-DROP TABLE IF EXISTS `catalog_with_products`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `catalog_with_products` (
-  `Catalog_ID` int NOT NULL,
-  `Product_Name` int NOT NULL,
-  KEY `FK1es8tkqsg5sgoi0u315w193mx` (`Product_Name`),
-  KEY `FK50jif4e95lehiot2yimi3cp6j` (`Catalog_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `catalog_with_products`
---
-
-LOCK TABLES `catalog_with_products` WRITE;
-/*!40000 ALTER TABLE `catalog_with_products` DISABLE KEYS */;
-/*!40000 ALTER TABLE `catalog_with_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -316,9 +290,12 @@ CREATE TABLE `invoice` (
   `admin_acceptance` varchar(20) NOT NULL DEFAULT 'WAITING',
   `total_price` double DEFAULT '0',
   `online_payment_account` text,
+  `admin_in_charge_id` bigint NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `FK_customer_invoice` (`Customer_ID`),
-  CONSTRAINT `FK_customer_invoice` FOREIGN KEY (`Customer_ID`) REFERENCES `customers` (`id`)
+  KEY `FK_staff_invoice` (`admin_in_charge_id`),
+  CONSTRAINT `FK_customer_invoice` FOREIGN KEY (`Customer_ID`) REFERENCES `customers` (`id`),
+  CONSTRAINT `FK_staff_invoice` FOREIGN KEY (`admin_in_charge_id`) REFERENCES `staffs` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -328,7 +305,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice` VALUES (1,1,'2023-03-10',1,'SHIPPED',0,NULL,'USD','PAYPAL',NULL,NULL,'ACCEPTED',0,'sb-2437s98400372@personal.example.com'),(2,1,'2023-03-10',1,'CANCEL',100,'admin\'s reasons are written herer ...','USD','VNPAY',NULL,'akdgfg','ACCEPTED',0,NULL),(3,1,'2023-03-10',0,'ACCEPTANCE_WAITING',0,NULL,'USD','COD','alo alo',NULL,'WAITING',0,NULL),(4,1,'2023-03-10',0,'CANCEL',0,'The shop caught fire !!','USD','COD','alo alo',NULL,'REFUSED',0,NULL),(5,2,'2023-03-10',0,'ACCEPTANCE_WAITING',0,NULL,'USD','COD','nguyen quynh nhu',NULL,'WAITING',0,NULL),(6,1,'2023-03-10',1,'CANCEL',0,'shipper comments are written here...','USD','PAYPAL','alo alo','hhhhhhhhhhhhhhhhhh','ACCEPTED',0,'sb-2437s98400372@personal.example.com'),(7,1,'2023-03-10',0,'PACKING',0,NULL,'USD','COD','alo alo','hhhhhhhhhhhhhhhhhh','ACCEPTED',0,NULL),(8,2,'2023-03-10',0,'SHIPPING',0,NULL,'USD','COD','huhuhuhuu','kakakakak','ACCEPTED',0,NULL),(9,2,'2023-03-10',0,'NOT_SHIPPED',0,'customer canceled order before admin accept','USD','COD','huhuhuhuu','kakakakak','WAITING',0,''),(10,1,'2023-03-17',0,'PACKING',0,'','USD','COD','alo alo','hhhhhhhhhhhhhhhhhh','ACCEPTED',0,''),(11,2,'2023-03-17',1,'SHIPPING',0,'','USD','PAYPAL','duc ngu','phuc ngu','ACCEPTED',0,'sb-2437s98400372@personal.example.com');
+INSERT INTO `invoice` VALUES (1,1,'2023-03-10',1,'SHIPPED',0,NULL,'USD','PAYPAL',NULL,NULL,'ACCEPTED',0,'sb-2437s98400372@personal.example.com',1),(2,1,'2023-03-10',1,'CANCEL',100,'admin\'s reasons are written herer ...','USD','VNPAY',NULL,'akdgfg','ACCEPTED',0,NULL,1),(3,1,'2023-03-10',0,'ACCEPTANCE_WAITING',0,NULL,'USD','COD','alo alo',NULL,'WAITING',0,NULL,1),(4,1,'2023-03-10',0,'CANCEL',0,'The shop caught fire !!','USD','COD','alo alo',NULL,'REFUSED',0,NULL,1),(5,2,'2023-03-10',0,'ACCEPTANCE_WAITING',0,NULL,'USD','COD','nguyen quynh nhu',NULL,'WAITING',0,NULL,1),(6,1,'2023-03-10',1,'CANCEL',0,'shipper comments are written here...','USD','PAYPAL','alo alo','hhhhhhhhhhhhhhhhhh','ACCEPTED',0,'sb-2437s98400372@personal.example.com',1),(7,1,'2023-03-10',0,'PACKING',0,NULL,'USD','COD','alo alo','hhhhhhhhhhhhhhhhhh','ACCEPTED',0,NULL,1),(8,2,'2023-03-10',0,'SHIPPING',0,NULL,'USD','COD','huhuhuhuu','kakakakak','ACCEPTED',0,NULL,1),(9,2,'2023-03-10',0,'NOT_SHIPPED',0,'customer canceled order before admin accept','USD','COD','huhuhuhuu','kakakakak','WAITING',0,'',0),(10,1,'2023-03-17',0,'PACKING',0,'','USD','COD','alo alo','hhhhhhhhhhhhhhhhhh','ACCEPTED',0,'',1),(11,2,'2023-03-17',1,'SHIPPING',0,'','USD','PAYPAL','duc ngu','phuc ngu','ACCEPTED',0,'sb-2437s98400372@personal.example.com',1);
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -366,7 +343,6 @@ CREATE TABLE `invoices_with_products` (
   `Invoice_ID` bigint NOT NULL,
   `Product_Management_ID` bigint NOT NULL,
   `Quantity` int NOT NULL,
-  `product_id` int NOT NULL,
   PRIMARY KEY (`Invoice_ID`,`Product_Management_ID`),
   KEY `FK_from_products_management_idx` (`Product_Management_ID`),
   CONSTRAINT `FK_from_invoice` FOREIGN KEY (`Invoice_ID`) REFERENCES `invoice` (`ID`),
@@ -380,7 +356,7 @@ CREATE TABLE `invoices_with_products` (
 
 LOCK TABLES `invoices_with_products` WRITE;
 /*!40000 ALTER TABLE `invoices_with_products` DISABLE KEYS */;
-INSERT INTO `invoices_with_products` VALUES (1,3,4,0),(1,4,1,0),(1,11,5,0),(2,1,1,0),(2,3,4,0),(3,11,3,0),(3,12,3,0),(4,1,1,0),(5,4,4,0),(6,18,1,0),(7,12,1,0),(7,20,13,0),(8,1,3,0),(9,1,3,0),(10,20,5,0),(11,13,1,0),(11,17,1,0),(11,19,5,0),(11,20,5,0);
+INSERT INTO `invoices_with_products` VALUES (1,3,4),(1,4,1),(1,11,5),(2,1,1),(2,3,4),(3,11,3),(3,12,3),(4,1,1),(5,4,4),(6,18,1),(7,12,1),(7,20,13),(8,1,3),(9,1,3),(10,20,5),(11,13,1),(11,17,1),(11,19,5),(11,20,5);
 /*!40000 ALTER TABLE `invoices_with_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -761,7 +737,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `hot_discount_products` AS select `pm`.`id` AS `id`,`pm`.`product_id` AS `product_id`,`p`.`name` AS `name`,`pm`.`size` AS `size`,`p`.`selling_price` AS `selling_price`,`p`.`discount` AS `discount`,`p`.`brand` AS `brand`,`pm`.`color` AS `color`,`pm`.`available_quantity` AS `available_quantity`,`pim`.`image_1` AS `image_1`,`pim`.`image_2` AS `image_2`,`pim`.`image_3` AS `image_3`,`pim`.`image_4` AS `image_4`,`p`.`overall_rating` AS `overall_rating`,`p`.`description` AS `description` from (((`products` `p` left join `products_management` `pm` on((`p`.`id` = `pm`.`product_id`))) join `product_images_management` `pim` on((`p`.`id` = `pim`.`product_id`))) join (select min(`pm`.`id`) AS `id`,`pim`.`product_id` AS `product_id`,`pim`.`color` AS `color` from (`product_images_management` `pim` left join `products_management` `pm` on(((`pim`.`product_id` = `pm`.`product_id`) and (`pim`.`color` = `pm`.`color`)))) group by `pim`.`product_id`,`pim`.`color`) `tmp` on((`tmp`.`id` = `pm`.`id`))) where ((`pim`.`color` = `pm`.`color`) and (`p`.`discount` > 0)) order by `p`.`discount` desc limit 8 */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -797,7 +773,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8mb4 */;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `new_arrival_products` AS select `pm`.`id` AS `id`,`pm`.`product_id` AS `product_id`,`p`.`name` AS `name`,`pm`.`size` AS `size`,`p`.`selling_price` AS `selling_price`,`p`.`discount` AS `discount`,`p`.`brand` AS `brand`,`pm`.`color` AS `color`,`pm`.`available_quantity` AS `available_quantity`,`pim`.`image_1` AS `image_1`,`pim`.`image_2` AS `image_2`,`pim`.`image_3` AS `image_3`,`pim`.`image_4` AS `image_4`,`p`.`overall_rating` AS `overall_rating`,`p`.`description` AS `description` from (((`products` `p` left join `products_management` `pm` on((`p`.`id` = `pm`.`product_id`))) join `product_images_management` `pim` on((`p`.`id` = `pim`.`product_id`))) join (select min(`pm`.`id`) AS `id`,`pim`.`product_id` AS `product_id`,`pim`.`color` AS `color` from (`product_images_management` `pim` left join `products_management` `pm` on(((`pim`.`product_id` = `pm`.`product_id`) and (`pim`.`color` = `pm`.`color`)))) group by `pim`.`product_id`,`pim`.`color` order by `id` desc limit 8) `tmp` on((`tmp`.`id` = `pm`.`id`))) where (`pim`.`color` = `pm`.`color`) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -866,4 +842,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-28 17:43:58
+-- Dump completed on 2023-07-24 16:28:19

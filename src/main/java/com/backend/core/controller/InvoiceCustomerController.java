@@ -103,5 +103,8 @@ public class InvoiceCustomerController extends CrudController {
     }
 
 
-
+    @PostMapping("/cancelOrder")
+    public ApiResponse cancelOrder(@RequestBody String json, HttpSession session, HttpServletRequest httpServletRequest) {
+        return null;
+    }
 }
