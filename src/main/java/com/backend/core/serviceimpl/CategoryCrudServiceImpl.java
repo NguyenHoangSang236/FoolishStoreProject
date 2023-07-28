@@ -37,7 +37,7 @@ public class CategoryCrudServiceImpl implements CrudService {
     }
 
     @Override
-    public ApiResponse updatingResponse(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse updatingResponse(int id, ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 

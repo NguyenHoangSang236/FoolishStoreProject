@@ -60,7 +60,7 @@ public class ProductCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse updatingResponse(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse updatingResponse(int id, ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
@@ -121,7 +121,7 @@ public class ProductCrudServiceImpl implements CrudService {
         try {
             productDetails = productRenderInfoRepo.getProductDetails(productId);
 
-            if(productDetails.size() > 0) {
+            if(!productDetails.isEmpty()) {
                 status = "success";
             }
         }

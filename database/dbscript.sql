@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `fashionstorewebsite` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `fashionstorewebsite`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Linux (x86_64)
 --
 -- Host: localhost    Database: fashionstorewebsite
@@ -280,14 +282,14 @@ CREATE TABLE `invoice` (
   `Customer_ID` bigint DEFAULT NULL,
   `Invoice_Date` date NOT NULL,
   `Payment_Status` tinyint NOT NULL DEFAULT '0',
+  `admin_acceptance` varchar(20) NOT NULL DEFAULT 'WAITING',
   `Delivery_Status` varchar(20) NOT NULL DEFAULT 'WAITING_ACCEPTANCE',
-  `Refund_Percentage` double DEFAULT '0',
+  `Payment_Method` varchar(20) NOT NULL DEFAULT 'COD',
   `Reason` text,
+  `Refund_Percentage` double DEFAULT '0',
   `Currency` varchar(10) NOT NULL DEFAULT 'USD',
-  `Payment_Method` varchar(10) NOT NULL DEFAULT 'COD',
   `Description` text,
   `Intent` text,
-  `admin_acceptance` varchar(20) NOT NULL DEFAULT 'WAITING',
   `total_price` double DEFAULT '0',
   `online_payment_account` text,
   `admin_in_charge_id` bigint NOT NULL DEFAULT '0',
@@ -305,7 +307,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice` VALUES (1,1,'2023-03-10',1,'SHIPPED',0,NULL,'USD','PAYPAL',NULL,NULL,'ACCEPTED',0,'sb-2437s98400372@personal.example.com',1),(2,1,'2023-03-10',1,'CANCEL',100,'admin\'s reasons are written herer ...','USD','VNPAY',NULL,'akdgfg','ACCEPTED',0,NULL,1),(3,1,'2023-03-10',0,'ACCEPTANCE_WAITING',0,NULL,'USD','COD','alo alo',NULL,'WAITING',0,NULL,1),(4,1,'2023-03-10',0,'CANCEL',0,'The shop caught fire !!','USD','COD','alo alo',NULL,'REFUSED',0,NULL,1),(5,2,'2023-03-10',0,'ACCEPTANCE_WAITING',0,NULL,'USD','COD','nguyen quynh nhu',NULL,'WAITING',0,NULL,1),(6,1,'2023-03-10',1,'CANCEL',0,'shipper comments are written here...','USD','PAYPAL','alo alo','hhhhhhhhhhhhhhhhhh','ACCEPTED',0,'sb-2437s98400372@personal.example.com',1),(7,1,'2023-03-10',0,'PACKING',0,NULL,'USD','COD','alo alo','hhhhhhhhhhhhhhhhhh','ACCEPTED',0,NULL,1),(8,2,'2023-03-10',0,'SHIPPING',0,NULL,'USD','COD','huhuhuhuu','kakakakak','ACCEPTED',0,NULL,1),(9,2,'2023-03-10',0,'NOT_SHIPPED',0,'customer canceled order before admin accept','USD','COD','huhuhuhuu','kakakakak','WAITING',0,'',0),(10,1,'2023-03-17',0,'PACKING',0,'','USD','COD','alo alo','hhhhhhhhhhhhhhhhhh','ACCEPTED',0,'',1),(11,2,'2023-03-17',1,'SHIPPING',0,'','USD','PAYPAL','duc ngu','phuc ngu','ACCEPTED',0,'sb-2437s98400372@personal.example.com',1);
+INSERT INTO `invoice` VALUES (1,1,'2023-03-10',1,'ACCEPTED','SHIPPED','PAYPAL',NULL,0,'USD',NULL,NULL,0,'sb-2437s98400372@personal.example.com',1),(2,1,'2023-03-09',1,'ACCEPTED','CANCEL','VNPAY','Customer cancels order before shipper takes over, refund 50%',50,'USD',NULL,'akdgfg',0,NULL,1),(3,1,'2023-03-10',0,'ACCEPTED','SHIPPER_WAITING','BANK_TRANSFER','',0,'USD','alo alo',NULL,0,NULL,1),(4,1,'2023-03-10',0,'REFUSED','CANCEL','COD','The shop caught fire !!',0,'USD','alo alo',NULL,0,NULL,1),(5,2,'2023-03-10',0,'WAITING','ACCEPTANCE_WAITING','COD',NULL,0,'USD','nguyen quynh nhu',NULL,0,NULL,1),(6,1,'2023-03-10',1,'ACCEPTED','CANCEL','PAYPAL','shipper comments are written here...',0,'USD','alo alo','hhhhhhhhhhhhhhhhhh',0,'sb-2437s98400372@personal.example.com',1),(7,1,'2023-03-10',0,'ACCEPTED','PACKING','COD',NULL,0,'USD','alo alo','hhhhhhhhhhhhhhhhhh',0,NULL,1),(8,2,'2023-03-10',0,'ACCEPTED','SHIPPING','COD',NULL,0,'USD','huhuhuhuu','kakakakak',0,NULL,1),(9,2,'2023-03-10',0,'WAITING','NOT_SHIPPED','COD','customer canceled order before admin accept',0,'USD','huhuhuhuu','kakakakak',0,'',0),(10,1,'2023-03-17',0,'ACCEPTED','PACKING','COD','',0,'USD','alo alo','hhhhhhhhhhhhhhhhhh',0,'',1),(11,2,'2023-03-17',1,'ACCEPTED','SHIPPING','PAYPAL','',0,'USD','duc ngu','phuc ngu',0,'sb-2437s98400372@personal.example.com',1);
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -402,7 +404,7 @@ CREATE TABLE `login_accounts` (
   `status` varchar(10) NOT NULL DEFAULT 'allowed',
   PRIMARY KEY (`id`),
   UNIQUE KEY `User_Name` (`user_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -411,7 +413,7 @@ CREATE TABLE `login_accounts` (
 
 LOCK TABLES `login_accounts` WRITE;
 /*!40000 ALTER TABLE `login_accounts` DISABLE KEYS */;
-INSERT INTO `login_accounts` VALUES (1,'admin','123','ADMIN','allowed'),(2,'user','123456','CUSTOMER','allowed'),(3,'nhu0707','B1czXA9LT3','CUSTOMER','allowed'),(7,'sang236','123','CUSTOMER','banned'),(8,'shipper','123','SHIPPER','allowed'),(9,'tester','123','CUSTOMER','allowed'),(11,'qweqwe','qweqwe','CUSTOMER','allowed'),(12,'quochoang','123','CUSTOMER','allowed'),(13,'ducngu','123','CUSTOMER','allowed'),(44,'manhngu','123','CUSTOMER','allowed'),(50,'qhoang','123','CUSTOMER','allowed'),(51,'anhkhoa','123','CUSTOMER','allowed'),(52,'kien','123','CUSTOMER','allowed');
+INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','allowed'),(1,'admin','123','ADMIN','allowed'),(2,'user','123456','CUSTOMER','allowed'),(3,'nhu0707','B1czXA9LT3','CUSTOMER','allowed'),(7,'sang236','123','CUSTOMER','banned'),(8,'shipper','123','SHIPPER','allowed'),(9,'tester','123','CUSTOMER','allowed'),(11,'qweqwe','qweqwe','CUSTOMER','allowed'),(12,'quochoang','123','CUSTOMER','allowed'),(13,'ducngu','123','CUSTOMER','allowed'),(44,'manhngu','123','CUSTOMER','allowed'),(50,'qhoang','123','CUSTOMER','allowed'),(51,'anhkhoa','123','CUSTOMER','allowed'),(52,'kien','123','CUSTOMER','allowed');
 /*!40000 ALTER TABLE `login_accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -650,7 +652,7 @@ CREATE TABLE `staffs` (
   PRIMARY KEY (`id`),
   KEY `FK_Staffs_Accounts` (`account_id`),
   CONSTRAINT `FK_Staffs_Accounts` FOREIGN KEY (`account_id`) REFERENCES `login_accounts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -659,7 +661,7 @@ CREATE TABLE `staffs` (
 
 LOCK TABLES `staffs` WRITE;
 /*!40000 ALTER TABLE `staffs` DISABLE KEYS */;
-INSERT INTO `staffs` VALUES (1,'Nguyen Hoang Sang','hcm','admin','2001-06-23','nguyenhoangsang236@gmail.com','0123456987',1,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(2,'Nguyen Anh Duc','hcm','shipper','2001-02-02','ducnguvcl@gmail.com','0321654987',8,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU');
+INSERT INTO `staffs` VALUES (1,'Nguyen Hoang Sang','hcm','admin','2001-06-23','nguyenhoangsang236@gmail.com','0123456987',1,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(2,'Nguyen Anh Duc','hcm','shipper','2001-02-02','ducnguvcl@gmail.com','0321654987',8,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(5,'uknown','abc','admin','1900-02-02','aasfasfasf','0111111111',0,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU');
 /*!40000 ALTER TABLE `staffs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -842,4 +844,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-24 16:28:19
+-- Dump completed on 2023-07-29  0:49:46

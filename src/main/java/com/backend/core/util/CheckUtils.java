@@ -1,10 +1,12 @@
 package com.backend.core.util;
 
+import com.backend.core.entity.dto.ApiResponse;
 import com.backend.core.enums.RoleEnum;
 import com.backend.core.enums.StringTypeEnum;
 import com.backend.core.repository.CustomerRepository;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.regex.Pattern;
@@ -111,5 +113,12 @@ public class CheckUtils {
         return Pattern.compile(regexPattern)
                 .matcher(content)
                 .matches();
+    }
+
+
+    // check to force login
+    public static boolean loggedIn(HttpSession session) {
+        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        return customerId != 0;
     }
 }

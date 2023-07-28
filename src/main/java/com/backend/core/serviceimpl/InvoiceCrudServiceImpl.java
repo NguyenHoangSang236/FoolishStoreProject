@@ -11,6 +11,7 @@ import com.backend.core.entity.tableentity.ProductManagement;
 import com.backend.core.enums.*;
 import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
+import com.backend.core.util.CheckUtils;
 import com.backend.core.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -48,27 +49,25 @@ public class InvoiceCrudServiceImpl implements CrudService {
     CartRenderInfoRepository cartRenderInfoRepo;
 
 
-    public InvoiceCrudServiceImpl() {}
-
+    public InvoiceCrudServiceImpl() {
+    }
 
 
     @Override
     public synchronized ApiResponse singleCreationalResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
         String paymentMethod = (String) paramObj;
-        List<CartRenderInfoDTO> cartItemList = new ArrayList<>();
+        String responseSuccessMessage = "New order has been created successfully";
+        Invoice newInvoice;
 
         // check if logged in or not
-        if(customerId == 0) {
-            return new ApiResponse("failed", "Login first");
-        }
-        else {
-            Invoice newInvoice = new Invoice();
-
-            try{
+        if (!CheckUtils.loggedIn(session)) {
+            return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
+        } else {
+            try {
                 int newInvoiceId = invoiceRepo.getLastestInvoiceId() + 1;
 
-                if(paymentMethod.equals(PaymentMethodEnum.COD.name())) {
+                if (paymentMethod.equals(PaymentMethodEnum.COD.name())) {
                     newInvoice = new Invoice(
                             newInvoiceId,
                             new Date(),
@@ -87,8 +86,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                             null,
                             customerRepo.getCustomerById(customerId)
                     );
-                }
-                else if(isOnlinePaymentMethod(paymentMethod)) {
+                    responseSuccessMessage += ", please wait for Admin accept your order!";
+                } else if (isOnlinePaymentMethod(paymentMethod)) {
                     newInvoice = new Invoice(
                             newInvoiceId,
                             new Date(),
@@ -107,22 +106,20 @@ public class InvoiceCrudServiceImpl implements CrudService {
                             null,
                             customerRepo.getCustomerById(customerId)
                     );
-                }
-                else {
+                    responseSuccessMessage += ", please transfer money to the given banking information for us to continue processing your order!";
+                } else {
                     return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
                 }
 
                 createNewInvoice(newInvoice, customerId);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
         }
 
-        return new ApiResponse("success", "New order has been created successfully");
+        return new ApiResponse("success", responseSuccessMessage);
     }
-
 
 
     @Override
@@ -138,8 +135,54 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse updatingResponse(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
-        return null;
+    public ApiResponse updatingResponse(int id, ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
+        Invoice invoice = new Invoice();
+        String message = "Cancel order successfully, ";
+        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+
+        // check if logged in or not
+        if (!CheckUtils.loggedIn(session)) {
+            return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
+        } else if (id == 0) {
+            return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
+        }
+        else {
+            try {
+                invoice = invoiceRepo.getInvoiceById(id);
+
+                // check if this customer is the owner or not
+                if(customerId != invoice.getCustomer().getId()) {
+                    return new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
+                }
+
+                // if online payment and shipper has not accepted the order yet -> refund 50%
+                if (!invoice.getPaymentMethod().equals(PaymentMethodEnum.COD.name()) &&
+                    !invoice.getDeliveryStatus().equals(DeliveryTypeEnum.CANCEL.name()) &&
+                        (invoice.getDeliveryStatus().equals(DeliveryTypeEnum.SHIPPER_WAITING.name()) ||
+                         invoice.getDeliveryStatus().equals(DeliveryTypeEnum.PACKING.name()) ||
+                         invoice.getDeliveryStatus().equals(DeliveryTypeEnum.PAYMENT_WAITING.name()))) {
+                    invoice.setRefundPercentage(50);
+                    invoice.setReason("Customer cancels order before shipper takes over, refund 50%");
+                    message += "you will be refunded 50% of the total order value, we will send it within 24 hours!";
+                }
+                // if COD payment -> error
+                else if(invoice.getPaymentMethod().equals(PaymentMethodEnum.COD.name())) {
+                    return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+                }
+                else {
+                    invoice.setReason("Customer cancels order, no refund");
+                    message += "the shipper has already been on the way, so you will not have any refund!";
+                }
+                invoice.setDeliveryStatus(DeliveryTypeEnum.CANCEL.name());
+                invoiceRepo.save(invoice);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+            }
+        }
+
+        return new ApiResponse("success", message);
     }
 
 
@@ -151,17 +194,14 @@ public class InvoiceCrudServiceImpl implements CrudService {
         List<Invoice> invoiceList = new ArrayList<>();
 
         // check if logged in or not
-        if(customerId == 0) {
-            return new ApiResponse("failed", "Login first");
-        }
-        else {
-            if(paramObj instanceof InvoiceFilterRequestDTO invoiceFilterRequest) {
+        if (!CheckUtils.loggedIn(session)) {
+            return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
+        } else {
+            if (paramObj instanceof InvoiceFilterRequestDTO invoiceFilterRequest) {
                 return filterInvoice(invoiceFilterRequest, session);
-            }
-            else if(paramObj instanceof PaginationDTO pagination) {
+            } else if (paramObj instanceof PaginationDTO pagination) {
                 return getInvoiceList(pagination, customerId);
-            }
-            else if(paramObj instanceof Invoice paramInvoice) {
+            } else if (paramObj instanceof Invoice paramInvoice) {
                 return getReceiverBankInfo(paramInvoice);
             }
         }
@@ -186,24 +226,20 @@ public class InvoiceCrudServiceImpl implements CrudService {
     public ApiResponse readingById(int invoiceId, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
-        if(customerId == 0) {
-            return new ApiResponse("failed", "Login first");
-        }
-        else if(!isInvoiceOwner(customerId, invoiceId)) {
-            return new ApiResponse("failed", "You are not the owner of this invoice");
-        }
-        else {
+        if (!CheckUtils.loggedIn(session)) {
+            return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
+        } else if (!isInvoiceOwner(customerId, invoiceId)) {
+            return new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
+        } else {
             try {
                 List<InvoiceDetailRenderInfoDTO> invoiceItemsList = invoiceDetailsRenderInfoRepo.getInvoiceItemsByInvoiceId(invoiceId);
                 return new ApiResponse("success", invoiceItemsList);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
         }
     }
-
 
 
     public boolean isInvoiceOwner(int customerId, int invoiceId) {
@@ -215,9 +251,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
         List choices = Arrays.asList(PaymentMethodEnum.values());
 
         //compare with enum value
-        if(choices.contains(PaymentMethodEnum.MOMO.name()) ||
-           choices.contains(PaymentMethodEnum.BANK_TRANSFER.name()) ||
-           choices.contains(PaymentMethodEnum.PAYPAL.name())){
+        if (choices.contains(PaymentMethodEnum.MOMO.name()) ||
+                choices.contains(PaymentMethodEnum.BANK_TRANSFER.name()) ||
+                choices.contains(PaymentMethodEnum.PAYPAL.name())) {
             return true;
         }
 
@@ -234,12 +270,10 @@ public class InvoiceCrudServiceImpl implements CrudService {
             List<InvoiceRenderInfoDTO> invoiceRenderList = customQueryRepo.getBindingFilteredList(filterQuery, InvoiceRenderInfoDTO.class);
 
             return new ApiResponse("success", invoiceRenderList);
-        }
-        catch (StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
@@ -269,24 +303,23 @@ public class InvoiceCrudServiceImpl implements CrudService {
             }
 
             return new ApiResponse("success", invoiceList);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
     }
-    
-    
+
+
     // get receiver banking info
     public ApiResponse getReceiverBankInfo(Invoice invoice) {
         Invoice currentInvoice = invoiceRepo.getInvoiceById(invoice.getId());
         String currentPaymentMethod = invoice.getPaymentMethod();
         OnlinePaymentReceiverDTO receiver = new OnlinePaymentReceiverDTO();
 
-        if(currentInvoice.getPaymentStatus() == 0 &&
-           currentInvoice.getDeliveryStatus().equals(DeliveryTypeEnum.PAYMENT_WAITING.name()) &&
-           currentInvoice.getAdminAcceptance().equals(AdminAcceptanceEnum.WAITING.name())) {
-            if(currentPaymentMethod.equals(PaymentMethodEnum.PAYPAL.name())) {
+        if (currentInvoice.getPaymentStatus() == 0 &&
+                currentInvoice.getDeliveryStatus().equals(DeliveryTypeEnum.PAYMENT_WAITING.name()) &&
+                currentInvoice.getAdminAcceptance().equals(AdminAcceptanceEnum.WAITING.name())) {
+            if (currentPaymentMethod.equals(PaymentMethodEnum.PAYPAL.name())) {
                 receiver = new OnlinePaymentReceiverDTO(
                         "Pay for invoice " + currentInvoice.getId(),
                         "03365672301",
@@ -294,8 +327,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                         "TP BANK - Tien Phong Bank",
                         currentInvoice.getTotalPrice()
                 );
-            }
-            else if(currentPaymentMethod.equals(PaymentMethodEnum.MOMO.name())) {
+            } else if (currentPaymentMethod.equals(PaymentMethodEnum.MOMO.name())) {
                 receiver = new OnlinePaymentReceiverDTO(
                         "Pay for invoice " + currentInvoice.getId(),
                         "0977815809",
@@ -319,10 +351,15 @@ public class InvoiceCrudServiceImpl implements CrudService {
         invoiceRepo.save(newInvoice);
 
         // modify data to tables
-        for(CartRenderInfoDTO item : cartItemList) {
+        for (CartRenderInfoDTO item : cartItemList) {
             invoiceTotalPrice += item.getTotalPrice();
 
             Cart tblCart = cartRepo.getCartById(item.getId());
+
+            // set cart item from Cart table to buying_status = BOUGHT and select_status = 0
+            tblCart.setSelectStatus(0);
+            tblCart.setBuyingStatus(CartEnum.BOUGHT.name());
+            cartRepo.save(tblCart);
 
             // get ProductManagement by id, color and size
             ProductManagement pm = productManagementRepo.getPrductsManagementByProductIDAndColorAndSize(
@@ -330,17 +367,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     item.getColor(),
                     item.getSize()
             );
-
-            // set cart item from Cart table to buying_status = BOUGHT and select_status = 0
-            tblCart.setSelectStatus(0);
-            tblCart.setBuyingStatus(CartEnum.BOUGHT.name());
-            cartRepo.save(tblCart);
-
-            // subtract available quantity
-            pm.subtractQuantity(ProductManagementQuantityTypeEnum.AVAILABLE_QUANTITY.name(), tblCart.getQuantity());
-            // add sold quantity
-            pm.addQuantity(ProductManagementQuantityTypeEnum.SOLD_QUANTITY.name(), tblCart.getQuantity());
-            productManagementRepo.save(pm);
 
             InvoicesWithProducts invoicesWithProducts = new InvoicesWithProducts(
                     new InvoicesWithProductsPrimaryKeys(pm.getId(), newInvoice.getId()),
@@ -355,5 +381,24 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
         newInvoice.setTotalPrice(invoiceTotalPrice);
         invoiceRepo.save(newInvoice);
+    }
+
+
+    // subtract available quantity and add sold quantity of the product
+    public void soldProductQuantityProcess(int productId, String productColor, String productSize, int productQuantity) {
+        // get ProductManagement by id, color and size
+        ProductManagement pm = productManagementRepo.getPrductsManagementByProductIDAndColorAndSize(
+                productId,
+                productColor,
+                productSize
+        );
+
+        // subtract available quantity
+        pm.subtractQuantity(ProductManagementQuantityTypeEnum.AVAILABLE_QUANTITY.name(), productQuantity);
+        // add sold quantity
+        pm.addQuantity(ProductManagementQuantityTypeEnum.SOLD_QUANTITY.name(), productQuantity);
+
+        productManagementRepo.save(pm);
+
     }
 }

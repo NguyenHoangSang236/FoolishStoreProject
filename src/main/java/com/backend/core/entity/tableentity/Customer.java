@@ -50,13 +50,13 @@ public class Customer {
     @OneToOne()
     private Account account;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade={CascadeType.ALL})
     private List<Invoice> invoices;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade={CascadeType.ALL})
     private List<Cart> carts;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", cascade={CascadeType.ALL})
     private List<Comment> comments;
 
 

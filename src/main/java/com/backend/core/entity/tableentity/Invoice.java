@@ -72,7 +72,7 @@ public class Invoice {
     List<InvoicesWithProducts> invoicesWithProducts;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

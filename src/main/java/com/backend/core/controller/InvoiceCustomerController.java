@@ -24,10 +24,6 @@ import java.util.Map;
 @RequestMapping(value = "/invoice/customer", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class InvoiceCustomerController extends CrudController {
-    @Autowired
-    InvoiceRepository invoiceRepo;
-
-
     public InvoiceCustomerController(@Autowired @Qualifier("InvoiceCrudServiceImpl") CrudService invoiceCrudServiceImpl) {
         super(invoiceCrudServiceImpl);
         super.crudService = invoiceCrudServiceImpl;
@@ -36,36 +32,37 @@ public class InvoiceCustomerController extends CrudController {
 
     @Override
     @PostMapping("/addNewOrder")
-    public ApiResponse addNewItem(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
+    public ApiResponse addNewItem(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) {
         Gson gson = new Gson();
-        Map<String,String> request = gson.fromJson(json,Map.class);
+        Map<String, String> request = gson.fromJson(json,Map.class);
 
         return crudService.singleCreationalResponse(request.get("paymentMethod"), session, httpRequest);
     }
 
 
     @Override
-    public ApiResponse updateItem(String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
+    public ApiResponse updateItem(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
     @GetMapping("/invoice_id={id}")
-    public ApiResponse readSelectedItemById(@PathVariable(value = "id") int invoiceId, HttpSession session, HttpServletRequest httpRequest) throws IOException {
+    public ApiResponse readSelectedItemById(@PathVariable(value = "id") int invoiceId, HttpSession session, HttpServletRequest httpRequest) {
         return crudService.readingById(invoiceId, session, httpRequest);
     }
 
 
     @Override
-    public ApiResponse deleteSelectedItemById(int id, HttpSession session, HttpServletRequest httpRequest) throws IOException {
+    public ApiResponse deleteSelectedItemById(int id, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ApiResponse updateSelectedItemById(int id, HttpSession session, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    @GetMapping("/cancel_order_id={id}")
+    public ApiResponse updateSelectedItemById(@PathVariable(value = "id") int invoiceId, HttpSession session, HttpServletRequest httpRequest) {
+        return crudService.updatingResponse(invoiceId, null, session, httpRequest);
     }
 
 
@@ -100,11 +97,5 @@ public class InvoiceCustomerController extends CrudController {
         ObjectMapper objectMapper = new ObjectMapper();
         Invoice invoice = objectMapper.readValue(json, Invoice.class);
         return crudService.readingFromSingleRequest(invoice, session, httpRequest);
-    }
-
-
-    @PostMapping("/cancelOrder")
-    public ApiResponse cancelOrder(@RequestBody String json, HttpSession session, HttpServletRequest httpServletRequest) {
-        return null;
     }
 }

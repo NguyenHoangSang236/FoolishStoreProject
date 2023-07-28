@@ -202,8 +202,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         // check if logged in or not
-        if(customerId == 0) {
-            return new ApiResponse("failed", "Login first");
+        if(!CheckUtils.loggedIn(session)) {
+            return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
         }
         else {
             try {

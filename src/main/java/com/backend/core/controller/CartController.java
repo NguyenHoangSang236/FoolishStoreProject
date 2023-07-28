@@ -74,7 +74,7 @@ public class CartController extends CrudController {
         ObjectMapper objectMapper = new ObjectMapper();
         ListRequestDTO requestDTO = objectMapper.readValue(json, ListRequestDTO.class);
 
-        return crudService.updatingResponse(requestDTO, session, httpRequest);
+        return crudService.updatingResponse(0, requestDTO, session, httpRequest);
     }
 
     @Override

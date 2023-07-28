@@ -8,9 +8,16 @@ import lombok.Setter;
 public class ApiResponse {
     private String result;
     private Object content;
+    private String message;
 
     public ApiResponse(String result, Object content) {
         this.result = result;
         this.content = content;
+    }
+
+    public ApiResponse(String result, Object content, String message) {
+        this.result = result;
+        this.content = content;
+        this.message = message;
     }
 }

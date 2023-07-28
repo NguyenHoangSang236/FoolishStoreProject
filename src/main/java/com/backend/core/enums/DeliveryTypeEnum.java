@@ -8,4 +8,5 @@ public enum DeliveryTypeEnum {
     ACCEPTANCE_WAITING,
     PACKING,
     PAYMENT_WAITING,
+    SHIPPER_WAITING
 }

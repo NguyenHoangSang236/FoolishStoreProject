@@ -11,6 +11,7 @@ import com.backend.core.enums.FilterTypeEnum;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
+import com.backend.core.util.CheckUtils;
 import com.backend.core.util.ValueRenderUtils;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,8 +57,8 @@ public class CartCrudServiceImpl implements CrudService {
         Cart newCartItem;
         ProductManagement productManagement;
 
-        if(customerId == 0) {
-            return new ApiResponse("failed", "Login first");
+        if(!CheckUtils.loggedIn(session)) {
+            return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
         }
         else {
             try{
@@ -114,8 +115,8 @@ public class CartCrudServiceImpl implements CrudService {
     public ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
-        if(customerId == 0) {
-            return new ApiResponse("failed", "Login first");
+        if(!CheckUtils.loggedIn(session)) {
+            return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
         }
         else {
             try {
@@ -130,7 +131,7 @@ public class CartCrudServiceImpl implements CrudService {
                         if(cart.getCustomer().getId() == customerId && cart.getBuyingStatus().equals(CartEnum.NOT_BOUGHT_YET.name())) {
                             customQueryRepo.deleteCartById(id);
                         }
-                        else return new ApiResponse("failed", "This cart item is not yours");
+                        else return new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
                     }
                     return new ApiResponse("success", "Remove successfully");
                 }
@@ -146,11 +147,11 @@ public class CartCrudServiceImpl implements CrudService {
 
     // update item info from cart
     @Override
-    public ApiResponse updatingResponse(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse updatingResponse(int id, ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
-        if(customerId == 0) {
-            return new ApiResponse("failed", "Login first");
+        if(!CheckUtils.loggedIn(session)) {
+            return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
         }
         else {
             try {
@@ -195,13 +196,13 @@ public class CartCrudServiceImpl implements CrudService {
                                 }
                             }
                             // if the updating information of a cart item matches with one in the cart -> add quantity for the matched one -> remove the update-requested cart item
-                            else if(existedCartItem != null && existedCartItem.getId() != cartItemDTO.getCartId()){
+                            else if(existedCartItem.getId() != cartItemDTO.getCartId()){
                                 existedCartItem.addQuantity(cartItemDTO.getQuantity());
                                 cartRepo.save(existedCartItem);
                                 customQueryRepo.deleteCartById(cartItemDTO.getCartId());
                             }
                             // if the updating information of a cart item does not change in product detail (change quantity or select status only)
-                            else if(existedCartItem != null && existedCartItem.getId() == cartItemDTO.getCartId()) {
+                            else {
                                 existedCartItem.setQuantity(cartItemDTO.getQuantity());
                                 existedCartItem.setSelectStatus(cartItemDTO.getSelectStatus());
                                 cartRepo.save(existedCartItem);
@@ -227,8 +228,8 @@ public class CartCrudServiceImpl implements CrudService {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
         List<CartRenderInfoDTO> cartItemList = new ArrayList<>();
 
-        if(customerId == 0) {
-            return new ApiResponse("failed", "Login first");
+        if(!CheckUtils.loggedIn(session)) {
+            return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
         }
         else {
             // if the param is pagination only -> show full cart items
@@ -277,8 +278,8 @@ public class CartCrudServiceImpl implements CrudService {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         // check login
-        if(customerId == 0) {
-            return new ApiResponse("failed", "Login first");
+        if(!CheckUtils.loggedIn(session)) {
+            return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
         }
         else {
             // get cart item total quantity

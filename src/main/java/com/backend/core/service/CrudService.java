@@ -20,7 +20,7 @@ public interface CrudService {
     ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest);
 
     // generate post response for update
-    ApiResponse updatingResponse(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest);
+    ApiResponse updatingResponse(int id, ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest);
 
     // generate post response for reading a single object by post method
     ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest);
