@@ -2,13 +2,9 @@ package com.backend.core.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.backend.core.entity.tableentity.Product;
+import com.backend.core.entities.tableentity.Product;
 
 @Repository
 public interface ProductRemoveRepository extends JpaRepository<Product, Integer>{

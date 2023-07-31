@@ -1,7 +1,7 @@
 package com.backend.core.service;
 
-import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.entity.dto.ListRequestDTO;
+import com.backend.core.entities.dto.ApiResponse;
+import com.backend.core.entities.dto.ListRequestDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +17,19 @@ public interface CrudService {
     ApiResponse listCreationalResponse(List<Object> objList, HttpSession session, HttpServletRequest httpRequest);
 
     // generate post response for removal
-    ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest);
+    ApiResponse removingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest);
+
+    // generate post response for removal by id
+    ApiResponse removingResponseById(int id, HttpSession session, HttpServletRequest httpRequest);
 
     // generate post response for update
-    ApiResponse updatingResponse(int id, ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest);
+    ApiResponse updatingResponseByList(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest);
+
+    // generate post response for updating by id
+    ApiResponse updatingResponseById(int id, HttpSession session, HttpServletRequest httpRequest);
+
+    // generate post response for updating by request
+    ApiResponse updatingResponseByRequest(Object paramObj,  HttpSession session, HttpServletRequest httpRequest);
 
     // generate post response for reading a single object by post method
     ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest);

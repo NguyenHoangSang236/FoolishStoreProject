@@ -1,10 +1,10 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entity.tableentity.Account;
-import com.backend.core.entity.tableentity.Customer;
-import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.entity.renderdto.CustomerRenderInfoDTO;
-import com.backend.core.entity.renderdto.StaffRenderInfoDTO;
+import com.backend.core.entities.tableentity.Account;
+import com.backend.core.entities.tableentity.Customer;
+import com.backend.core.entities.dto.ApiResponse;
+import com.backend.core.entities.renderdto.CustomerRenderInfoDTO;
+import com.backend.core.entities.renderdto.StaffRenderInfoDTO;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.StringTypeEnum;
 import com.backend.core.repository.*;
@@ -15,7 +15,6 @@ import com.backend.core.enums.RoleEnum;
 import com.backend.core.util.ExceptionHandlerUtils;
 import com.backend.core.util.ValueRenderUtils;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +28,6 @@ import org.springframework.validation.BindingResult;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Enumeration;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {

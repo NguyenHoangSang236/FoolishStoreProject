@@ -1,12 +1,11 @@
 package com.backend.core.controller;
 
 import com.backend.core.abstractclasses.CrudController;
-import com.backend.core.entity.dto.*;
-import com.backend.core.entity.tableentity.Invoice;
-import com.backend.core.repository.InvoiceRepository;
+import com.backend.core.entities.dto.*;
+import com.backend.core.entities.dto.invoice.InvoiceFilterRequestDTO;
+import com.backend.core.entities.tableentity.Invoice;
 import com.backend.core.service.CrudService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpSession;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
+
 import java.util.Map;
 
 @RestController
@@ -62,7 +61,7 @@ public class InvoiceCustomerController extends CrudController {
     @Override
     @GetMapping("/cancel_order_id={id}")
     public ApiResponse updateSelectedItemById(@PathVariable(value = "id") int invoiceId, HttpSession session, HttpServletRequest httpRequest) {
-        return crudService.updatingResponse(invoiceId, null, session, httpRequest);
+        return crudService.updatingResponseById(invoiceId, session, httpRequest);
     }
 
 

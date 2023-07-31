@@ -1,32 +1,17 @@
 package com.backend.core.controller;
 
 import com.backend.core.configuration.GoogleDriveConfig;
-import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.entity.dto.GoogleDriveFoldersDTO;
-import com.backend.core.entity.tableentity.Customer;
+import com.backend.core.entities.dto.ApiResponse;
+import com.backend.core.entities.tableentity.Customer;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.repository.CustomerRepository;
 import com.backend.core.service.GoogleDriveService;
 import com.backend.core.util.ValueRenderUtils;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.client.http.FileContent;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.File;
-import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.List;
 
 
 @RestController

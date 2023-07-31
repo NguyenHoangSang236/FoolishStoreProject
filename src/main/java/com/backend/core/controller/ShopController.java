@@ -1,9 +1,9 @@
 package com.backend.core.controller;
 
 import com.backend.core.abstractclasses.CrudController;
-import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.entity.dto.PaginationDTO;
-import com.backend.core.entity.dto.ProductFilterRequestDTO;
+import com.backend.core.entities.dto.ApiResponse;
+import com.backend.core.entities.dto.PaginationDTO;
+import com.backend.core.entities.dto.product.ProductFilterRequestDTO;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.ProductRepository;
 import com.backend.core.service.CalculationService;

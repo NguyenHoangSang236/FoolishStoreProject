@@ -1,10 +1,12 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entity.dto.*;
-import com.backend.core.entity.interfaces.FilterRequest;
-import com.backend.core.entity.renderdto.CartRenderInfoDTO;
-import com.backend.core.entity.tableentity.Cart;
-import com.backend.core.entity.tableentity.ProductManagement;
+import com.backend.core.entities.dto.*;
+import com.backend.core.entities.dto.cart.CartCheckoutDTO;
+import com.backend.core.entities.dto.cart.CartItemDTO;
+import com.backend.core.entities.dto.cart.CartItemFilterRequestDTO;
+import com.backend.core.entities.renderdto.CartRenderInfoDTO;
+import com.backend.core.entities.tableentity.Cart;
+import com.backend.core.entities.tableentity.ProductManagement;
 import com.backend.core.enums.CartEnum;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
@@ -22,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Qualifier("CartCrudServiceImpl")
@@ -112,7 +113,7 @@ public class CartCrudServiceImpl implements CrudService {
 
     // remove an item from cart
     @Override
-    public ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse removingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         if(!CheckUtils.loggedIn(session)) {
@@ -144,10 +145,15 @@ public class CartCrudServiceImpl implements CrudService {
         }
     }
 
+    @Override
+    public ApiResponse removingResponseById(int id, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
+    }
+
 
     // update item info from cart
     @Override
-    public ApiResponse updatingResponse(int id, ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse updatingResponseByList(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
 
         if(!CheckUtils.loggedIn(session)) {
@@ -219,6 +225,16 @@ public class CartCrudServiceImpl implements CrudService {
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
         }
+    }
+
+    @Override
+    public ApiResponse updatingResponseById(int id, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse updatingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
     }
 
 

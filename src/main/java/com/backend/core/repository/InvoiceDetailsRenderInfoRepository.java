@@ -1,7 +1,7 @@
 package com.backend.core.repository;
 
-import com.backend.core.entity.embededkey.InvoicesWithProductsPrimaryKeys;
-import com.backend.core.entity.renderdto.InvoiceDetailRenderInfoDTO;
+import com.backend.core.entities.embededkey.InvoicesWithProductsPrimaryKeys;
+import com.backend.core.entities.renderdto.InvoiceDetailRenderInfoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -2,7 +2,6 @@ package com.backend.core.repository;
 
 import java.util.List;
 
-import com.backend.core.entity.renderdto.ProductRenderInfoDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 

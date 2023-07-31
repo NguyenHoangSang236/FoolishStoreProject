@@ -6,7 +6,7 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
-import com.backend.core.entity.dto.InvoicesWithProducts;
+import com.backend.core.entities.dto.invoice.InvoicesWithProducts;
 
 @Repository
 public class InvoicesWithProductsRepository {

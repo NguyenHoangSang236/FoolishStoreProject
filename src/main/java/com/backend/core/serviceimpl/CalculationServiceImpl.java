@@ -1,6 +1,6 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entity.dto.InvoicesWithProducts;
+import com.backend.core.entities.dto.invoice.InvoicesWithProducts;
 import com.backend.core.service.CalculationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

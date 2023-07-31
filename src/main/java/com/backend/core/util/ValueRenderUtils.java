@@ -1,15 +1,15 @@
 package com.backend.core.util;
 
-import com.backend.core.entity.dto.*;
-import com.backend.core.entity.interfaces.FilterRequest;
-import com.backend.core.entity.renderdto.CartRenderInfoDTO;
-import com.backend.core.entity.renderdto.InvoiceRenderInfoDTO;
-import com.backend.core.entity.renderdto.ProductRenderInfoDTO;
-import com.backend.core.entity.tableentity.Account;
+import com.backend.core.entities.dto.*;
+import com.backend.core.entities.dto.cart.CartItemFilterDTO;
+import com.backend.core.entities.dto.comment.CommentRequestDTO;
+import com.backend.core.entities.dto.invoice.InvoiceFilterDTO;
+import com.backend.core.entities.dto.product.ProductFilterDTO;
+import com.backend.core.entities.interfaces.FilterRequest;
+import com.backend.core.entities.tableentity.Account;
 import com.backend.core.enums.CartEnum;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
-import com.backend.core.repository.CartRepository;
 import com.backend.core.repository.CustomQueryRepository;
 import com.backend.core.repository.ProductRenderInfoRepository;
 import jakarta.servlet.http.HttpSession;
@@ -19,7 +19,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public class ValueRenderUtils {
@@ -224,7 +223,25 @@ public class ValueRenderUtils {
     }
 
 
-    //create a query for products binding filter
+    // create a query for comments binding filter
+    public static String commentFilterQuery(int productId, String productColor, int replyOn, int page, int limit) {
+        String result = "select * from comments where ";
+
+        if(productColor != null && !productColor.isEmpty() && !productColor.isBlank()) {
+            result += "product_color = '" + productColor.toLowerCase() + "' and ";
+        }
+
+        if(productId > 0) {
+            result += "product_id = " + productId + " and ";
+        }
+
+        result += "reply_on = " + replyOn + " limit " + (limit * (page-1)) + ", " + limit;
+
+        return result;
+    }
+
+
+    // create a query for products binding filter
     public static String productFilterQuery(String[] catalogs, String name, String brand, double price1, double price2, int page, int limit) {
         String result = "SELECT piu.*\n" +
                         "FROM product_info_for_ui piu JOIN catalogs_with_products cwp ON piu.product_id = cwp.product_id\n" +
@@ -336,102 +353,104 @@ public class ValueRenderUtils {
         // get current customer id
         int customerId = getCustomerIdByHttpSession(session);
 
+        String filterQuery = ErrorTypeEnum.TECHNICAL_ERROR.name();
+
         // initiate filter type
         FilterRequest filterRequest = FilterFactory.getFilterRequest(filterType);
 
         // determine filter request class type
-        Class filterRequestEntity = filterRequest.getClass();
+        Class<? extends FilterRequest> filterRequestEntity = filterRequest.getClass();
 
         // convert paramObj
         if(filterRequestEntity.isInstance(paramObj)) {
-            filterRequest = (FilterRequest) filterRequestEntity.cast(paramObj);
-        }
+            filterRequest = filterRequestEntity.cast(paramObj);
 
-        Object filter = (Object) filterRequest.getFilter();
-        String filterQuery = ErrorTypeEnum.TECHNICAL_ERROR.name();
+            Object filter = filterRequest.getFilter();
 
-        try {
-            switch (filterType) {
-                case INVOICE: {
-                    InvoiceFilterDTO invoiceFilter = (InvoiceFilterDTO) filter;
+            int page = filterRequest.getPagination().getPage();
+            int limit = filterRequest.getPagination().getLimit();
 
-                    filterQuery = ValueRenderUtils.invoiceFilterQuery(
-                            customerId,
-                            invoiceFilter.getAdminAcceptance(),
-                            invoiceFilter.getPaymentStatus(),
-                            invoiceFilter.getDeliveryStatus(),
-                            invoiceFilter.getStartInvoiceDate(),
-                            invoiceFilter.getEndInvoiceDate(),
-                            invoiceFilter.getPaymentMethod(),
-                            filterRequest.getPagination().getPage(),
-                            filterRequest.getPagination().getLimit()
-                    );
-                    break;
-                }
-                case PRODUCT: {
-                    ProductFilterDTO productFilter = (ProductFilterDTO) filter;
+            try {
+                switch (filterType) {
+                    case INVOICE -> {
+                        InvoiceFilterDTO invoiceFilter = (InvoiceFilterDTO) filter;
 
-                    // product filter does not have Name field and other fields must have value -> binding filter
-                    if((productFilter.getName() == null || productFilter.getName().isBlank()) &&
-                       (productFilter.getCategories() != null ||
-                        productFilter.getBrand() != null ||
-                        (productFilter.getMinPrice() > 0 &&
-                         productFilter.getMaxPrice() > 0 &&
-                         productFilter.getMinPrice() < productFilter.getMaxPrice()))) {
-                        // get filter query
-                        filterQuery = ValueRenderUtils.productFilterQuery(
-                                productFilter.getCategories(),
-                                productFilter.getName(),
-                                productFilter.getBrand(),
-                                productFilter.getMinPrice(),
-                                productFilter.getMaxPrice(),
-                                filterRequest.getPagination().getPage(),
-                                filterRequest.getPagination().getLimit()
+                        filterQuery = invoiceFilterQuery(
+                                customerId,
+                                invoiceFilter.getAdminAcceptance(),
+                                invoiceFilter.getPaymentStatus(),
+                                invoiceFilter.getDeliveryStatus(),
+                                invoiceFilter.getStartInvoiceDate(),
+                                invoiceFilter.getEndInvoiceDate(),
+                                invoiceFilter.getPaymentMethod(),
+                                page, limit
                         );
                     }
-                    // else -> search product by Name
-                    else {
-                        if(Objects.equals(productFilter.getName(), "")) {
-                            return filterQuery;
-                        }
-                        else {
-                            filterQuery = ValueRenderUtils.productFilterQuery(
+                    case PRODUCT -> {
+                        ProductFilterDTO productFilter = (ProductFilterDTO) filter;
+
+                        // product filter does not have Name field and other fields must have value -> binding filter
+                        if ((productFilter.getName() == null || productFilter.getName().isBlank()) &&
+                                (productFilter.getCategories() != null ||
+                                        productFilter.getBrand() != null ||
+                                        (productFilter.getMinPrice() > 0 &&
+                                                productFilter.getMaxPrice() > 0 &&
+                                                productFilter.getMinPrice() < productFilter.getMaxPrice()))) {
+                            // get filter query
+                            filterQuery = productFilterQuery(
                                     productFilter.getCategories(),
                                     productFilter.getName(),
                                     productFilter.getBrand(),
                                     productFilter.getMinPrice(),
                                     productFilter.getMaxPrice(),
-                                    filterRequest.getPagination().getPage(),
-                                    filterRequest.getPagination().getLimit()
+                                    page, limit
                             );
                         }
+                        // else -> search product by Name
+                        else {
+                            if (Objects.equals(productFilter.getName(), "")) {
+                                return filterQuery;
+                            } else {
+                                filterQuery = productFilterQuery(
+                                        productFilter.getCategories(),
+                                        productFilter.getName(),
+                                        productFilter.getBrand(),
+                                        productFilter.getMinPrice(),
+                                        productFilter.getMaxPrice(),
+                                        page, limit
+                                );
+                            }
+                        }
                     }
-                    break;
-                }
-                case CART_ITEMS: {
-                    CartItemFilterDTO cartItemFilter = (CartItemFilterDTO) filter;
+                    case CART_ITEMS -> {
+                        CartItemFilterDTO cartItemFilter = (CartItemFilterDTO) filter;
 
-                    String name = cartItemFilter.getName();
-                    String brand = cartItemFilter.getBrand();
-                    String[] status = cartItemFilter.getStatus();
-                    int page = filterRequest.getPagination().getPage();
-                    int limit = filterRequest.getPagination().getLimit();
+                        String name = cartItemFilter.getName();
+                        String brand = cartItemFilter.getBrand();
+                        String[] status = cartItemFilter.getStatus();
 
-                    filterQuery = ValueRenderUtils.cartItemFilterQuery(name, status, brand, page, limit);
+                        filterQuery = cartItemFilterQuery(name, status, brand, page, limit);
 
-                    break;
-                }
-                case DELIVERY:{
-                    break;
-                }
-                default: {
-                    return filterQuery;
+                    }
+                    case DELIVERY -> {
+                    }
+                    case COMMENT -> {
+                        CommentRequestDTO commentRequest = (CommentRequestDTO) filter;
+
+                        int productId = commentRequest.getProductId();
+                        int replyOn = commentRequest.getReplyOn();
+                        String productColor = commentRequest.getProductColor();
+
+                        filterQuery = commentFilterQuery(productId, productColor, replyOn, page, limit);
+                    }
+                    default -> {
+                        return filterQuery;
+                    }
                 }
             }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            filterQuery = ErrorTypeEnum.TECHNICAL_ERROR.name();
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return filterQuery;

@@ -1,7 +1,5 @@
 package com.backend.core.util;
 
-import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.enums.RoleEnum;
 import com.backend.core.enums.StringTypeEnum;
 import com.backend.core.repository.CustomerRepository;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;

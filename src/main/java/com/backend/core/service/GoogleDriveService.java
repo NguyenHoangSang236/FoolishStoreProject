@@ -1,7 +1,7 @@
 package com.backend.core.service;
 
-import com.backend.core.entity.dto.GoogleDriveFileDTO;
-import com.backend.core.entity.dto.GoogleDriveFoldersDTO;
+import com.backend.core.entities.dto.google.GoogleDriveFileDTO;
+import com.backend.core.entities.dto.google.GoogleDriveFoldersDTO;
 import com.backend.core.util.GoogleFileManager;
 import com.backend.core.util.ValueRenderUtils;
 import com.google.api.services.drive.model.File;

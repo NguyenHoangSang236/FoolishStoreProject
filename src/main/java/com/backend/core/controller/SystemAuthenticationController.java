@@ -1,9 +1,9 @@
 package com.backend.core.controller;
 
 import com.backend.core.abstractclasses.AuthenticationController;
-import com.backend.core.entity.renderdto.CustomerRenderInfoDTO;
-import com.backend.core.entity.tableentity.Account;
-import com.backend.core.entity.dto.ApiResponse;
+import com.backend.core.entities.renderdto.CustomerRenderInfoDTO;
+import com.backend.core.entities.tableentity.Account;
+import com.backend.core.entities.dto.ApiResponse;
 import com.backend.core.service.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

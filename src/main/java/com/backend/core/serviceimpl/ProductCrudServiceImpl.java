@@ -1,8 +1,8 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entity.dto.*;
-import com.backend.core.entity.interfaces.FilterRequest;
-import com.backend.core.entity.renderdto.ProductRenderInfoDTO;
+import com.backend.core.entities.dto.*;
+import com.backend.core.entities.dto.product.ProductFilterRequestDTO;
+import com.backend.core.entities.renderdto.ProductRenderInfoDTO;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
 import com.backend.core.repository.CustomQueryRepository;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Qualifier("ProductCrudServiceImpl")
@@ -54,13 +53,28 @@ public class ProductCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse removingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse removingResponseById(int id, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ApiResponse updatingResponse(int id, ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse updatingResponseByList(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse updatingResponseById(int id, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse updatingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 

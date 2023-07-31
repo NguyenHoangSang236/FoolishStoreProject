@@ -1,8 +1,8 @@
 package com.backend.core.abstractclasses;
 
-import com.backend.core.entity.renderdto.CustomerRenderInfoDTO;
-import com.backend.core.entity.tableentity.Account;
-import com.backend.core.entity.dto.ApiResponse;
+import com.backend.core.entities.renderdto.CustomerRenderInfoDTO;
+import com.backend.core.entities.tableentity.Account;
+import com.backend.core.entities.dto.ApiResponse;
 import com.backend.core.service.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpSession;

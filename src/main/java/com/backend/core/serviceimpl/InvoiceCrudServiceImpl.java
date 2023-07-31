@@ -1,13 +1,16 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entity.dto.*;
-import com.backend.core.entity.embededkey.InvoicesWithProductsPrimaryKeys;
-import com.backend.core.entity.renderdto.CartRenderInfoDTO;
-import com.backend.core.entity.renderdto.InvoiceDetailRenderInfoDTO;
-import com.backend.core.entity.renderdto.InvoiceRenderInfoDTO;
-import com.backend.core.entity.tableentity.Cart;
-import com.backend.core.entity.tableentity.Invoice;
-import com.backend.core.entity.tableentity.ProductManagement;
+import com.backend.core.entities.dto.*;
+import com.backend.core.entities.dto.invoice.InvoiceFilterRequestDTO;
+import com.backend.core.entities.dto.invoice.InvoicesWithProducts;
+import com.backend.core.entities.dto.invoice.OnlinePaymentReceiverDTO;
+import com.backend.core.entities.embededkey.InvoicesWithProductsPrimaryKeys;
+import com.backend.core.entities.renderdto.CartRenderInfoDTO;
+import com.backend.core.entities.renderdto.InvoiceDetailRenderInfoDTO;
+import com.backend.core.entities.renderdto.InvoiceRenderInfoDTO;
+import com.backend.core.entities.tableentity.Cart;
+import com.backend.core.entities.tableentity.Invoice;
+import com.backend.core.entities.tableentity.ProductManagement;
 import com.backend.core.enums.*;
 import com.backend.core.repository.*;
 import com.backend.core.service.CrudService;
@@ -129,13 +132,23 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse removingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse removingResponseById(int id, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse updatingResponseByList(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ApiResponse updatingResponse(int id, ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse updatingResponseById(int id, HttpSession session, HttpServletRequest httpRequest) {
         Invoice invoice = new Invoice();
         String message = "Cancel order successfully, ";
         int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
@@ -183,6 +196,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
         }
 
         return new ApiResponse("success", message);
+    }
+
+    @Override
+    public ApiResponse updatingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
     }
 
 

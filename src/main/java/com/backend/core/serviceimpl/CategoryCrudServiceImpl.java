@@ -1,8 +1,8 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entity.dto.ApiResponse;
-import com.backend.core.entity.dto.ListRequestDTO;
-import com.backend.core.entity.tableentity.Catalog;
+import com.backend.core.entities.dto.ApiResponse;
+import com.backend.core.entities.dto.ListRequestDTO;
+import com.backend.core.entities.tableentity.Catalog;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.repository.CatalogRepository;
 import com.backend.core.service.CrudService;
@@ -32,12 +32,27 @@ public class CategoryCrudServiceImpl implements CrudService {
     }
 
     @Override
-    public ApiResponse removingResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse removingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ApiResponse updatingResponse(int id, ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
+    public ApiResponse removingResponseById(int id, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse updatingResponseByList(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse updatingResponseById(int id, HttpSession session, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+    @Override
+    public ApiResponse updatingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         return null;
     }
 

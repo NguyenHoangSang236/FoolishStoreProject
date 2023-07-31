@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.backend.core.entity.tableentity.ProductManagement;
+import com.backend.core.entities.tableentity.ProductManagement;
 
 @Repository
 public interface ProductManagementRepository extends JpaRepository<ProductManagement, Integer>{

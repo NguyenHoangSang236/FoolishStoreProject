@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.backend.core.entity.tableentity.Cart;
+import com.backend.core.entities.tableentity.Cart;
 
 @Repository
 public interface CartRemoveRepository extends JpaRepository<Cart, Integer>{

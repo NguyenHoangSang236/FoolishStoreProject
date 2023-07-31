@@ -4,5 +4,6 @@ public enum FilterTypeEnum {
     PRODUCT,
     INVOICE,
     DELIVERY,
-    CART_ITEMS
+    CART_ITEMS,
+    COMMENT,
 }
