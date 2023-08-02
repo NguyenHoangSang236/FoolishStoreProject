@@ -79,7 +79,8 @@ public class ProductRenderInfoDTO {
         this.description = description;
     }
 
-    public ProductRenderInfoDTO() {}
+    public ProductRenderInfoDTO() {
+    }
 
 
     @Override

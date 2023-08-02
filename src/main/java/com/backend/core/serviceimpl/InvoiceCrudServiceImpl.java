@@ -1,6 +1,8 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entities.dto.*;
+import com.backend.core.entities.dto.ApiResponse;
+import com.backend.core.entities.dto.ListRequestDTO;
+import com.backend.core.entities.dto.PaginationDTO;
 import com.backend.core.entities.dto.invoice.InvoiceFilterRequestDTO;
 import com.backend.core.entities.dto.invoice.InvoicesWithProducts;
 import com.backend.core.entities.dto.invoice.OnlinePaymentReceiverDTO;
@@ -22,7 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Qualifier("InvoiceCrudServiceImpl")
@@ -380,7 +385,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             cartRepo.save(tblCart);
 
             // get ProductManagement by id, color and size
-            ProductManagement pm = productManagementRepo.getPrductsManagementByProductIDAndColorAndSize(
+            ProductManagement pm = productManagementRepo.getProductsManagementByProductIDAndColorAndSize(
                     item.getProductId(),
                     item.getColor(),
                     item.getSize()
@@ -405,7 +410,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
     // subtract available quantity and add sold quantity of the product
     public void soldProductQuantityProcess(int productId, String productColor, String productSize, int productQuantity) {
         // get ProductManagement by id, color and size
-        ProductManagement pm = productManagementRepo.getPrductsManagementByProductIDAndColorAndSize(
+        ProductManagement pm = productManagementRepo.getProductsManagementByProductIDAndColorAndSize(
                 productId,
                 productColor,
                 productSize

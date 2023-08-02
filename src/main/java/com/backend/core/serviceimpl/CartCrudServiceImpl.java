@@ -1,6 +1,8 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entities.dto.*;
+import com.backend.core.entities.dto.ApiResponse;
+import com.backend.core.entities.dto.ListRequestDTO;
+import com.backend.core.entities.dto.PaginationDTO;
 import com.backend.core.entities.dto.cart.CartCheckoutDTO;
 import com.backend.core.entities.dto.cart.CartItemDTO;
 import com.backend.core.entities.dto.cart.CartItemFilterRequestDTO;
@@ -63,7 +65,7 @@ public class CartCrudServiceImpl implements CrudService {
         }
         else {
             try{
-                int pmId = productManagementRepo.getPrductsManagementIdByProductIDAndColorAndSize(
+                int pmId = productManagementRepo.getProductsManagementIdByProductIDAndColorAndSize(
                         cartItemDTO.getProductId(),
                         cartItemDTO.getColor(),
                         cartItemDTO.getSize());
@@ -172,7 +174,7 @@ public class CartCrudServiceImpl implements CrudService {
                         //update cart by cartDTO
                         Cart cartItm = cartRepo.getCartById(cartItemDTO.getCartId());
 
-                        int pmId = productManagementRepo.getPrductsManagementIdByProductIDAndColorAndSize(
+                        int pmId = productManagementRepo.getProductsManagementIdByProductIDAndColorAndSize(
                                 cartItemDTO.getProductId(),
                                 cartItemDTO.getColor(),
                                 cartItemDTO.getSize());

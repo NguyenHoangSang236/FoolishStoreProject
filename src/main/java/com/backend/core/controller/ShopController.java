@@ -4,11 +4,13 @@ import com.backend.core.abstractclasses.CrudController;
 import com.backend.core.entities.dto.ApiResponse;
 import com.backend.core.entities.dto.PaginationDTO;
 import com.backend.core.entities.dto.product.ProductFilterRequestDTO;
+import com.backend.core.entities.renderdto.ProductRenderInfoDTO;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.repository.ProductRepository;
 import com.backend.core.service.CalculationService;
 import com.backend.core.service.CrudService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/shop", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -43,8 +44,12 @@ public class ShopController extends CrudController {
 
 
     @Override
-    public ApiResponse updateItem(String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    @PostMapping("/rateProduct")
+    public ApiResponse updateItem(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductRenderInfoDTO request = objectMapper.readValue(json, ProductRenderInfoDTO.class);
+
+        return crudService.updatingResponseByRequest(request, session, httpRequest);
     }
 
     @Override

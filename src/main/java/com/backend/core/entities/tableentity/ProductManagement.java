@@ -1,23 +1,20 @@
 package com.backend.core.entities.tableentity;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
-
 import com.backend.core.entities.dto.invoice.InvoicesWithProducts;
 import com.backend.core.service.CalculationService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Getter;
-import lombok.Setter;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -59,6 +56,9 @@ public class ProductManagement implements Serializable {
     @Column(name = "Five_star_quantity")
     private int fiveStarQuantity;
 
+    @Column(name = "overall_rating")
+    private int overallRating;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -81,26 +81,54 @@ public class ProductManagement implements Serializable {
     public ProductManagement() {}
 
 
-    public int getTotalRatingNumber() {
+    public void setTotalRatingNumber() {
         int total = 0;
+        int totalRating = 0;
 
-        if(this.oneStarQuantity != 0) {
+        if (this.oneStarQuantity > 0) {
             total += this.oneStarQuantity;
+            totalRating += this.oneStarQuantity;
         }
-        if(this.twoStarQuantity != 0) {
+        if (this.twoStarQuantity > 0) {
             total += this.twoStarQuantity;
+            totalRating += this.twoStarQuantity * 2;
         }
-        if(this.threeStarQuantity != 0) {
+        if (this.threeStarQuantity > 0) {
             total += this.threeStarQuantity;
+            totalRating += this.threeStarQuantity * 3;
         }
-        if(this.fourStarQuantity != 0) {
+        if (this.fourStarQuantity > 0) {
             total += this.fourStarQuantity;
+            totalRating += this.fourStarQuantity * 4;
         }
-        if(this.fiveStarQuantity != 0) {
+        if (this.fiveStarQuantity > 0) {
             total += this.fiveStarQuantity;
+            totalRating += this.fiveStarQuantity * 5;
         }
 
-        return total;
+        System.out.println(totalRating / total);
+
+        this.overallRating = totalRating / total;
+    }
+
+    public void addRatingStars(int rate) {
+        switch (rate) {
+            case 1:
+                this.oneStarQuantity++;
+                break;
+            case 2:
+                this.twoStarQuantity++;
+                break;
+            case 3:
+                this.threeStarQuantity++;
+                break;
+            case 4:
+                this.fourStarQuantity++;
+                break;
+            case 5:
+                this.fiveStarQuantity++;
+                break;
+        }
     }
 
     public void addQuantity(String type, int quant) {

@@ -1,22 +1,27 @@
 package com.backend.core.serviceimpl;
 
-import com.backend.core.entities.dto.*;
+import com.backend.core.entities.dto.ApiResponse;
+import com.backend.core.entities.dto.ListRequestDTO;
+import com.backend.core.entities.dto.PaginationDTO;
 import com.backend.core.entities.dto.product.ProductFilterRequestDTO;
 import com.backend.core.entities.renderdto.ProductRenderInfoDTO;
+import com.backend.core.entities.tableentity.ProductManagement;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
 import com.backend.core.repository.CustomQueryRepository;
+import com.backend.core.repository.ProductManagementRepository;
 import com.backend.core.repository.ProductRenderInfoRepository;
 import com.backend.core.repository.ProductRepository;
 import com.backend.core.service.CalculationService;
 import com.backend.core.service.CrudService;
+import com.backend.core.util.CheckUtils;
 import com.backend.core.util.ValueRenderUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +36,9 @@ public class ProductCrudServiceImpl implements CrudService {
 
     @Autowired
     ProductRenderInfoRepository productRenderInfoRepo;
+
+    @Autowired
+    ProductManagementRepository productManagementRepo;
 
     @Autowired
     CustomQueryRepository customQueryRepo;
@@ -75,7 +83,44 @@ public class ProductCrudServiceImpl implements CrudService {
 
     @Override
     public ApiResponse updatingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
-        return null;
+        if (!CheckUtils.loggedIn(session)) {
+            return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
+        } else {
+            try {
+                // convert param object to ProductRenderInfoDTO
+                ProductRenderInfoDTO request = (ProductRenderInfoDTO) paramObj;
+
+                int productId = request.getProductId();
+                int rating = request.getOverallRating();
+                String color = request.getColor();
+
+                System.out.println(productId);
+                System.out.println(rating);
+                System.out.println(color);
+
+                // rating only from 1-5
+                if (rating < 1 || rating > 5) {
+                    return new ApiResponse("failed", "Rate from one to five stars only");
+                }
+
+                List<ProductManagement> pmList = productManagementRepo.getProductsManagementListByProductIDAndColor(productId, color);
+
+                // save rating stars column in each data of product_management table
+                for (ProductManagement pm : pmList) {
+                    // add rating star in column
+                    pm.addRatingStars(rating);
+                    // get total rating star
+                    pm.setTotalRatingNumber();
+
+                    productManagementRepo.save(pm);
+                }
+
+                return new ApiResponse("success", "Thanks for your rating!");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+            }
+        }
     }
 
 

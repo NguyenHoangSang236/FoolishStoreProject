@@ -23,6 +23,9 @@ public interface ProductRenderInfoRepository extends JpaRepository<ProductRender
     @Query(value = "select * from product_info_for_ui where name like %:nameVal% group by name order by product_id limit :limit offset :startLine", nativeQuery = true)
     List<ProductRenderInfoDTO> getProductsByName(@Param("nameVal") String productName, @Param("startLine") int startLine, @Param("limit") int limit);
 
+    @Query(value = "select * from product_info_for_ui where color = :colorVal and product_id = :idVal", nativeQuery = true)
+    ProductRenderInfoDTO getProductByIdAndColor(@Param("idVal") int id, @Param("colorVal") String color);
+
     @Query(value = "SELECT  `pm`.`id` AS `id`,\n" +
             "        `pm`.`product_id` AS `product_id`,\n" +
             "        `p`.`name` AS `name`,\n" +
@@ -44,4 +47,5 @@ public interface ProductRenderInfoRepository extends JpaRepository<ProductRender
             "        JOIN `products_management` `pm` ON ((`pm`.`product_id` = `p`.`id`)))\n" +
             "    WHERE `pim`.`color` = `pm`.`color` and pm.product_id = :productId", nativeQuery = true)
     List<ProductRenderInfoDTO> getProductDetails(@Param("productId") int productId);
+
 }

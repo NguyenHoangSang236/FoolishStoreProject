@@ -1,30 +1,20 @@
 package com.backend.core.entities.tableentity;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
-
 import com.backend.core.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -50,10 +40,10 @@ public class Product implements Serializable {
     @Column(name = "original_price")
     private double originalPrice;
 
-    @Column(name = "Discount")
+    @Column(name = "discount")
     private double discount;
 
-    @Column(name = "Brand")
+    @Column(name = "brand")
     private String brand;
 
     @Column(name = "description")
