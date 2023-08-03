@@ -1,21 +1,18 @@
 package com.backend.core.entities.tableentity;
 
-import java.util.Date;
-import java.util.List;
-
+import com.backend.core.entities.dto.invoice.InvoicesWithProducts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import com.backend.core.entities.dto.invoice.InvoicesWithProducts;
-
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -30,8 +27,11 @@ public class Invoice {
     @Column(name = "ID", unique = true)
     int id;
 
-    @Column(name = "Invoice_Date")
+    @Column(name = "invoice_date")
     Date invoiceDate;
+
+    @Column(name = "pay_date")
+    Date payDate;
 
     @Column(name = "Delivery_Status")
     String deliveryStatus;
@@ -60,6 +60,7 @@ public class Invoice {
     @Column(name = "reason")
     String reason;
 
+    @JsonIgnore
     @Column(name = "online_payment_account")
     String onlinePaymentAccount;
 
@@ -87,33 +88,6 @@ public class Invoice {
 
     public Invoice() {}
 
-    public Invoice(int id, Customer customer, Date invoiceDate) {
-        super();
-        this.id = id;
-        this.invoiceDate = invoiceDate;
-        this.customer = customer;
-    }
-
-    public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency,
-                   String intent, String description, double refundPercentage, String reason, Delivery delivery,
-                   List<InvoicesWithProducts> invoicesWithProducts, Customer customer, String adminAcceptance) {
-        super();
-        this.id = id;
-        this.invoiceDate = invoiceDate;
-        this.deliveryStatus = deliveryStatus;
-        this.paymentStatus = paymentStatus;
-        this.paymentMethod = paymentMethod;
-        this.currency = currency;
-        this.intent = intent;
-        this.description = description;
-        this.refundPercentage = refundPercentage;
-        this.reason = reason;
-        this.delivery = delivery;
-        this.invoicesWithProducts = invoicesWithProducts;
-        this.customer = customer;
-        this.adminAcceptance = adminAcceptance;
-    }
-
     public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency,
                    String intent, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount,
                    String adminAcceptance, Delivery delivery, List<InvoicesWithProducts> invoicesWithProducts, Customer customer) {
@@ -133,39 +107,6 @@ public class Invoice {
         this.delivery = delivery;
         this.invoicesWithProducts = invoicesWithProducts;
         this.customer = customer;
-    }
-
-    public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency,
-                   String intent, String description, Customer customer, double totalPrice, String adminAcceptance) {
-        super();
-        this.id = id;
-        this.invoiceDate = invoiceDate;
-        this.deliveryStatus = deliveryStatus;
-        this.paymentStatus = paymentStatus;
-        this.paymentMethod = paymentMethod;
-        this.currency = currency;
-        this.intent = intent;
-        this.description = description;
-        this.customer = customer;
-        this.totalPrice = totalPrice;
-        this.adminAcceptance = adminAcceptance;
-    }
-
-    public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency,
-                   String intent, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount, String adminAcceptance) {
-        this.id = id;
-        this.invoiceDate = invoiceDate;
-        this.deliveryStatus = deliveryStatus;
-        this.paymentStatus = paymentStatus;
-        this.paymentMethod = paymentMethod;
-        this.currency = currency;
-        this.intent = intent;
-        this.description = description;
-        this.refundPercentage = refundPercentage;
-        this.totalPrice = totalPrice;
-        this.reason = reason;
-        this.onlinePaymentAccount = onlinePaymentAccount;
-        this.adminAcceptance = adminAcceptance;
     }
 
 

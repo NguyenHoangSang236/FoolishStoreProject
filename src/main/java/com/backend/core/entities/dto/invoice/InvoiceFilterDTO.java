@@ -27,18 +27,19 @@ public class InvoiceFilterDTO {
     @JsonProperty("paymentMethod")
     String paymentMethod;
 
+    @JsonProperty("type")
+    String type;
 
-    public InvoiceFilterDTO(String adminAcceptance, int paymentStatus, String deliveryStatus, Date startInvoiceDate, Date endInvoiceDate, String paymentMethod) {
+
+    public InvoiceFilterDTO(String adminAcceptance, int paymentStatus, String deliveryStatus, Date startInvoiceDate, Date endInvoiceDate, String paymentMethod, String type) {
         this.adminAcceptance = adminAcceptance;
         this.paymentStatus = paymentStatus;
         this.deliveryStatus = deliveryStatus;
         this.startInvoiceDate = startInvoiceDate;
         this.endInvoiceDate = endInvoiceDate;
         this.paymentMethod = paymentMethod;
+        this.type = type;
     }
 
     public InvoiceFilterDTO() {}
-
-
-
 }

@@ -1,6 +1,6 @@
 package com.backend.core.util;
 
-import com.backend.core.entities.dto.*;
+import com.backend.core.entities.dto.FilterFactory;
 import com.backend.core.entities.dto.cart.CartItemFilterDTO;
 import com.backend.core.entities.dto.comment.CommentRequestDTO;
 import com.backend.core.entities.dto.invoice.InvoiceFilterDTO;
@@ -10,8 +10,8 @@ import com.backend.core.entities.tableentity.Account;
 import com.backend.core.enums.CartEnum;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
-import com.backend.core.repository.CustomQueryRepository;
-import com.backend.core.repository.ProductRenderInfoRepository;
+import com.backend.core.repository.customQuery.CustomQueryRepository;
+import com.backend.core.repository.product.ProductRenderInfoRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 

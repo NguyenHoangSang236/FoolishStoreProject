@@ -1,7 +1,7 @@
 package com.backend.core.util;
 
 import com.backend.core.enums.StringTypeEnum;
-import com.backend.core.repository.CustomerRepository;
+import com.backend.core.repository.customer.CustomerRepository;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import jakarta.servlet.http.HttpSession;
