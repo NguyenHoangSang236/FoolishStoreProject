@@ -218,7 +218,7 @@ public class ProductCrudServiceImpl implements CrudService {
     public ApiResponse getProductFromPagination(PaginationDTO pagination) {
         try {
             List<ProductRenderInfoDTO> productRenderList = productRenderInfoRepo.getAllProducts(
-                    (pagination.getPage() - 1) * pagination.getLimit(),
+                    ValueRenderUtils.getStartLineForQueryPagination(pagination.getLimit(), pagination.getPage()),
                     pagination.getLimit()
             );
             return new ApiResponse("success", productRenderList);

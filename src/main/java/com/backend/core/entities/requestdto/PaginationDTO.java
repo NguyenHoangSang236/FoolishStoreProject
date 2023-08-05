@@ -17,13 +17,4 @@ public class PaginationDTO {
     }
 
     public PaginationDTO() {}
-
-    @Override
-    public String toString() {
-        return "PaginationDTO{" +
-                "page=" + page +
-                ", limit=" + limit +
-                ", type=" + type +
-                '}';
-    }
 }

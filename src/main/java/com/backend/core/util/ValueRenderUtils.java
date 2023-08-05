@@ -457,7 +457,8 @@ public class ValueRenderUtils {
     }
 
 
-
-    // convert a string to a Map<String, String>
-
+    // generate start line for query from limit and page
+    public static int getStartLineForQueryPagination(int limit, int page) {
+        return (page - 1) * limit;
+    }
 }
