@@ -1,7 +1,7 @@
 package com.backend.core.controller.customer;
 
 import com.backend.core.abstractclasses.CrudController;
-import com.backend.core.entities.dto.ApiResponse;
+import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.service.CrudService;
 import jakarta.servlet.http.HttpServletRequest;

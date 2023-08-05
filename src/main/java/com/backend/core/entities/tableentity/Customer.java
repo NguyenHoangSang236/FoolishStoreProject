@@ -3,7 +3,6 @@ package com.backend.core.entities.tableentity;
 import com.backend.core.entities.renderdto.CustomerRenderInfoDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -52,8 +51,8 @@ public class Customer {
     String city;
 
     @JsonIgnore
-    @JsonIgnoreProperties("account")
     @OneToOne()
+    @JoinColumn(name = "Account_ID", referencedColumnName = "id")
     private Account account;
 
     @JsonIgnore

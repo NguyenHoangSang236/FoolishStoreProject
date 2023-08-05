@@ -1,12 +1,12 @@
 package com.backend.core.serviceimpl.customer;
 
-import com.backend.core.entities.dto.ApiResponse;
-import com.backend.core.entities.dto.ListRequestDTO;
-import com.backend.core.entities.dto.PaginationDTO;
-import com.backend.core.entities.dto.cart.CartCheckoutDTO;
-import com.backend.core.entities.dto.cart.CartItemDTO;
-import com.backend.core.entities.dto.cart.CartItemFilterRequestDTO;
 import com.backend.core.entities.renderdto.CartRenderInfoDTO;
+import com.backend.core.entities.requestdto.ApiResponse;
+import com.backend.core.entities.requestdto.ListRequestDTO;
+import com.backend.core.entities.requestdto.PaginationDTO;
+import com.backend.core.entities.requestdto.cart.CartCheckoutDTO;
+import com.backend.core.entities.requestdto.cart.CartItemDTO;
+import com.backend.core.entities.requestdto.cart.CartItemFilterRequestDTO;
 import com.backend.core.entities.tableentity.Cart;
 import com.backend.core.entities.tableentity.ProductManagement;
 import com.backend.core.enums.CartEnum;
@@ -60,7 +60,7 @@ public class CartCrudServiceImpl implements CrudService {
     @Override
     public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         CartItemDTO cartItemDTO = (CartItemDTO) paramObj;
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
         Cart newCartItem;
         ProductManagement productManagement;
 
@@ -120,7 +120,7 @@ public class CartCrudServiceImpl implements CrudService {
     // remove an item from cart
     @Override
     public ApiResponse removingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
         if(!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
@@ -160,7 +160,7 @@ public class CartCrudServiceImpl implements CrudService {
     // update item info from cart
     @Override
     public ApiResponse updatingResponseByList(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
         if(!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
@@ -247,7 +247,7 @@ public class CartCrudServiceImpl implements CrudService {
     // get cart item list through pagination or filter
     @Override
     public ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
         List<CartRenderInfoDTO> cartItemList = new ArrayList<>();
 
         if(!CheckUtils.loggedIn(session)) {
@@ -297,7 +297,7 @@ public class CartCrudServiceImpl implements CrudService {
 
     @Override
     public ApiResponse readingResponse(HttpSession session, String renderType, HttpServletRequest httpRequest) {
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
         // check login
         if(!CheckUtils.loggedIn(session)) {

@@ -1,7 +1,7 @@
 package com.backend.core.serviceimpl.customer;
 
-import com.backend.core.entities.dto.ApiResponse;
-import com.backend.core.entities.dto.ListRequestDTO;
+import com.backend.core.entities.requestdto.ApiResponse;
+import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.tableentity.Catalog;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.repository.catalog.CatalogRepository;

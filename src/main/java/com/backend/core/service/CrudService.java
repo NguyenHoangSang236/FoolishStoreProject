@@ -1,11 +1,11 @@
 package com.backend.core.service;
 
-import com.backend.core.entities.dto.ApiResponse;
-import com.backend.core.entities.dto.ListRequestDTO;
+import com.backend.core.entities.requestdto.ApiResponse;
+import com.backend.core.entities.requestdto.ListRequestDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service

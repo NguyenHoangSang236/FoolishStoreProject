@@ -1,7 +1,7 @@
 package com.backend.core.controller.customer;
 
 import com.backend.core.configuration.GoogleDriveConfig;
-import com.backend.core.entities.dto.ApiResponse;
+import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.tableentity.Customer;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.repository.customer.CustomerRepository;
@@ -51,7 +51,7 @@ public class GoogleDriveController {
             driveFolderPath = "Root";
         }
 
-        Customer customer = customerRepo.getCustomerById(ValueRenderUtils.getCustomerIdByHttpSession(session));
+        Customer customer = customerRepo.getCustomerById(ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session));
 
         // check if customer logged in or not
         if(customer == null) {

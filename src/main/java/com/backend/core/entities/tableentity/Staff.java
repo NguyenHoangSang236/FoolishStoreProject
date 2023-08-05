@@ -1,29 +1,17 @@
 package com.backend.core.entities.tableentity;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -66,9 +54,11 @@ public class Staff {
     @JoinColumn(name = "Account_ID", referencedColumnName = "id")
     private Account account;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "staff")
     private List<Invoice> invoices;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "staff")
     private List<Delivery> deliveries;
 

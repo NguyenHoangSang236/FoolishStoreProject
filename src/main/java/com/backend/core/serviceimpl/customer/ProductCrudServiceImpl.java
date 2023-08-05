@@ -1,10 +1,10 @@
 package com.backend.core.serviceimpl.customer;
 
-import com.backend.core.entities.dto.ApiResponse;
-import com.backend.core.entities.dto.ListRequestDTO;
-import com.backend.core.entities.dto.PaginationDTO;
-import com.backend.core.entities.dto.product.ProductFilterRequestDTO;
 import com.backend.core.entities.renderdto.ProductRenderInfoDTO;
+import com.backend.core.entities.requestdto.ApiResponse;
+import com.backend.core.entities.requestdto.ListRequestDTO;
+import com.backend.core.entities.requestdto.PaginationDTO;
+import com.backend.core.entities.requestdto.product.ProductFilterRequestDTO;
 import com.backend.core.entities.tableentity.ProductManagement;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;

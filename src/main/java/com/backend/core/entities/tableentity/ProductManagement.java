@@ -1,6 +1,6 @@
 package com.backend.core.entities.tableentity;
 
-import com.backend.core.entities.dto.invoice.InvoicesWithProducts;
+import com.backend.core.entities.requestdto.invoice.InvoicesWithProducts;
 import com.backend.core.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

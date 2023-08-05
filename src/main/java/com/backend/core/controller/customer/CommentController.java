@@ -1,9 +1,9 @@
 package com.backend.core.controller.customer;
 
 import com.backend.core.abstractclasses.CrudController;
-import com.backend.core.entities.dto.ApiResponse;
-import com.backend.core.entities.dto.comment.CommentFilterRequestDTO;
-import com.backend.core.entities.dto.comment.CommentRequestDTO;
+import com.backend.core.entities.requestdto.ApiResponse;
+import com.backend.core.entities.requestdto.comment.CommentFilterRequestDTO;
+import com.backend.core.entities.requestdto.comment.CommentRequestDTO;
 import com.backend.core.service.CrudService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

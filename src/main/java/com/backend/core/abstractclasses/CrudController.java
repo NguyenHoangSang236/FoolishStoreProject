@@ -1,11 +1,12 @@
 package com.backend.core.abstractclasses;
-import com.backend.core.entities.dto.ApiResponse;
+
+import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.service.CrudService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
-import jakarta.servlet.http.HttpServletRequest;
 
 public abstract class CrudController {
     protected CrudService crudService;

@@ -1,11 +1,11 @@
 package com.backend.core.util;
 
-import com.backend.core.entities.dto.FilterFactory;
-import com.backend.core.entities.dto.cart.CartItemFilterDTO;
-import com.backend.core.entities.dto.comment.CommentRequestDTO;
-import com.backend.core.entities.dto.invoice.InvoiceFilterDTO;
-import com.backend.core.entities.dto.product.ProductFilterDTO;
 import com.backend.core.entities.interfaces.FilterRequest;
+import com.backend.core.entities.requestdto.FilterFactory;
+import com.backend.core.entities.requestdto.cart.CartItemFilterDTO;
+import com.backend.core.entities.requestdto.comment.CommentRequestDTO;
+import com.backend.core.entities.requestdto.invoice.InvoiceFilterDTO;
+import com.backend.core.entities.requestdto.product.ProductFilterDTO;
 import com.backend.core.entities.tableentity.Account;
 import com.backend.core.enums.CartEnum;
 import com.backend.core.enums.ErrorTypeEnum;
@@ -173,7 +173,7 @@ public class ValueRenderUtils {
 
 
     //get customer id from HttpSession
-    public static int getCustomerIdByHttpSession(HttpSession session) {
+    public static int getCustomerOrStaffIdByHttpSession(HttpSession session) {
         try {
             Account currentUser = (Account) session.getAttribute("currentUser");
 
@@ -351,7 +351,7 @@ public class ValueRenderUtils {
     // get list of data from filter
     static public String getFilterQuery(Object paramObj, FilterTypeEnum filterType, HttpSession session) {
         // get current customer id
-        int customerId = getCustomerIdByHttpSession(session);
+        int customerId = getCustomerOrStaffIdByHttpSession(session);
 
         String filterQuery = ErrorTypeEnum.TECHNICAL_ERROR.name();
 

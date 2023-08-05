@@ -1,6 +1,6 @@
 package com.backend.core.entities.interfaces;
 
-import com.backend.core.entities.dto.PaginationDTO;
+import com.backend.core.entities.requestdto.PaginationDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Component;
 

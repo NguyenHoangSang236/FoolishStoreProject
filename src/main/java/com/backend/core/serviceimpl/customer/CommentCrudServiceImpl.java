@@ -1,9 +1,9 @@
 package com.backend.core.serviceimpl.customer;
 
-import com.backend.core.entities.dto.ApiResponse;
-import com.backend.core.entities.dto.ListRequestDTO;
-import com.backend.core.entities.dto.comment.CommentFilterRequestDTO;
-import com.backend.core.entities.dto.comment.CommentRequestDTO;
+import com.backend.core.entities.requestdto.ApiResponse;
+import com.backend.core.entities.requestdto.ListRequestDTO;
+import com.backend.core.entities.requestdto.comment.CommentFilterRequestDTO;
+import com.backend.core.entities.requestdto.comment.CommentRequestDTO;
 import com.backend.core.entities.tableentity.Comment;
 import com.backend.core.entities.tableentity.Product;
 import com.backend.core.enums.ErrorTypeEnum;
@@ -69,7 +69,7 @@ public class CommentCrudServiceImpl implements CrudService {
     @Override
     public ApiResponse removingResponseById(int id, HttpSession session, HttpServletRequest httpRequest) {
         Comment comment;
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
         if(!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
@@ -102,7 +102,7 @@ public class CommentCrudServiceImpl implements CrudService {
     @Override
     public ApiResponse updatingResponseById(int id, HttpSession session, HttpServletRequest httpRequest) {
         Comment comment;
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
         if(!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
@@ -129,7 +129,7 @@ public class CommentCrudServiceImpl implements CrudService {
     public ApiResponse updatingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         CommentRequestDTO request;
         Comment comment;
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
         if(!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
@@ -202,7 +202,7 @@ public class CommentCrudServiceImpl implements CrudService {
         int customerId;
 
         try {
-            customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+            customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
             product = productRepo.getProductById(request.getProductId());
 
             newComment.setProduct(product);

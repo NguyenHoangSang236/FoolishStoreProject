@@ -1,6 +1,6 @@
 package com.backend.core.repository.invoice;
 
-import com.backend.core.entities.dto.invoice.InvoicesWithProducts;
+import com.backend.core.entities.requestdto.invoice.InvoicesWithProducts;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;

@@ -1,7 +1,7 @@
 package com.backend.core.controller.customer;
 
-import com.backend.core.entities.dto.ApiResponse;
-import com.backend.core.entities.dto.google.GoogleTranslateDTO;
+import com.backend.core.entities.requestdto.ApiResponse;
+import com.backend.core.entities.requestdto.google.GoogleTranslateDTO;
 import com.backend.core.repository.language.LanguagesRepository;
 import com.backend.core.service.GoogleTranslateService;
 import com.fasterxml.jackson.databind.ObjectMapper;

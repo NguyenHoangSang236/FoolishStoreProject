@@ -1,6 +1,6 @@
 package com.backend.core.entities.tableentity;
 
-import com.backend.core.entities.dto.invoice.InvoicesWithProducts;
+import com.backend.core.entities.requestdto.invoice.InvoicesWithProducts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;

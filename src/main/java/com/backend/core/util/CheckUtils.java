@@ -1,5 +1,6 @@
 package com.backend.core.util;
 
+import com.backend.core.entities.tableentity.Account;
 import com.backend.core.enums.StringTypeEnum;
 import com.backend.core.repository.customer.CustomerRepository;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -116,7 +117,20 @@ public class CheckUtils {
 
     // check to force login
     public static boolean loggedIn(HttpSession session) {
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
         return customerId != 0;
+    }
+
+
+    // check if user is admin or not
+    public static boolean isAdmin(HttpSession session) {
+        try {
+            Account currentUser = (Account) session.getAttribute("currentUser");
+
+            return currentUser.getStaff() != null && currentUser.getStaff().getPosition().equals("admin");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

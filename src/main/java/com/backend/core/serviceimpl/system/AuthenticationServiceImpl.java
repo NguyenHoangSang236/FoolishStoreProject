@@ -1,8 +1,8 @@
 package com.backend.core.serviceimpl.system;
 
-import com.backend.core.entities.dto.ApiResponse;
 import com.backend.core.entities.renderdto.CustomerRenderInfoDTO;
 import com.backend.core.entities.renderdto.StaffRenderInfoDTO;
+import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.tableentity.Account;
 import com.backend.core.entities.tableentity.Customer;
 import com.backend.core.enums.ErrorTypeEnum;
@@ -201,7 +201,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ApiResponse updateProfile(CustomerRenderInfoDTO customerInfo, HttpSession session) {
-        int customerId = ValueRenderUtils.getCustomerIdByHttpSession(session);
+        int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
         // check if logged in or not
         if(!CheckUtils.loggedIn(session)) {
