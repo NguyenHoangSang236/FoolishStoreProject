@@ -2,7 +2,6 @@ package com.backend.core.entities.tableentity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
@@ -41,7 +40,8 @@ public class Cart {
     ProductManagement productManagement;
 
 
-    public Cart() {}
+    public Cart() {
+    }
 
     public Cart(Customer customer, ProductManagement productManagement, int quantity, String buyingStatus, int selectStatus) {
         this.quantity = quantity;

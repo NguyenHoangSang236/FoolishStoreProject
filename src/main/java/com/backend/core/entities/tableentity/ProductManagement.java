@@ -24,50 +24,37 @@ import java.util.Objects;
 @DynamicUpdate
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 public class ProductManagement implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private int id;
-
-    @Column(name = "color", nullable = false)
-    private String color;
-
-    @Column(name = "size", nullable = false)
-    private String size;
-
-    @Column(name = "available_quantity")
-    private int availableQuantity;
-
-    @Column(name = "sold_quantity")
-    private int soldQuantity;
-
-    @Column(name = "One_star_quantity")
-    private int oneStarQuantity;
-
-    @Column(name = "Two_star_quantity")
-    private int twoStarQuantity;
-
-    @Column(name = "Three_star_quantity")
-    private int threeStarQuantity;
-
-    @Column(name = "Four_star_quantity")
-    private int fourStarQuantity;
-
-    @Column(name = "Five_star_quantity")
-    private int fiveStarQuantity;
-
-    @Column(name = "overall_rating")
-    private int overallRating;
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
-
     @JsonIgnore
     @OneToMany(mappedBy = "productManagement")
     List<InvoicesWithProducts> invoicesWithProducts;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private int id;
+    @Column(name = "color", nullable = false)
+    private String color;
+    @Column(name = "size", nullable = false)
+    private String size;
+    @Column(name = "available_quantity")
+    private int availableQuantity;
+    @Column(name = "sold_quantity")
+    private int soldQuantity;
+    @Column(name = "One_star_quantity")
+    private int oneStarQuantity;
+    @Column(name = "Two_star_quantity")
+    private int twoStarQuantity;
+    @Column(name = "Three_star_quantity")
+    private int threeStarQuantity;
+    @Column(name = "Four_star_quantity")
+    private int fourStarQuantity;
+    @Column(name = "Five_star_quantity")
+    private int fiveStarQuantity;
+    @Column(name = "overall_rating")
+    private int overallRating;
     @JsonIgnore
     @OneToMany(mappedBy = "productManagement", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -78,7 +65,8 @@ public class ProductManagement implements Serializable {
     private List<ProductImportManagement> productImportManagements;
 
 
-    public ProductManagement() {}
+    public ProductManagement() {
+    }
 
 
     public void setTotalRatingNumber() {

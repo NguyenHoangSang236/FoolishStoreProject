@@ -9,22 +9,23 @@ import java.util.List;
 
 @Repository
 public class CustomQueryRepository {
-	@PersistenceContext
+    @PersistenceContext
     private EntityManager entityManager;
 
 
-	public CustomQueryRepository() {}
+    public CustomQueryRepository() {
+    }
 
-	public CustomQueryRepository(EntityManager entityManager) {
-		this.entityManager = entityManager;
-	}
+    public CustomQueryRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
-	@SuppressWarnings("unchecked")
-	public <T> List<T> getBindingFilteredList(String query, Class<T> entity) {
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getBindingFilteredList(String query, Class<T> entity) {
         return this.entityManager.createNativeQuery(query, entity).getResultList();
     }
-	
-	
+
+
 //	@Transactional
 //	public void insertCatalogWithProducts(int catalogId, String productName) {
 //	    this.entityManager.createNativeQuery("INSERT INTO catalog_with_products (catalog_id, product_name) VALUES (?,?)")
@@ -34,10 +35,10 @@ public class CustomQueryRepository {
 //	}
 
 
-	@Transactional
-	public void deleteCartById(int cartId) {
-		this.entityManager.createNativeQuery("DELETE FROM cart WHERE (`id` = ?)")
-				.setParameter(1, cartId)
-				.executeUpdate();
-	}
+    @Transactional
+    public void deleteCartById(int cartId) {
+        this.entityManager.createNativeQuery("DELETE FROM cart WHERE (`id` = ?)")
+                .setParameter(1, cartId)
+                .executeUpdate();
+    }
 }

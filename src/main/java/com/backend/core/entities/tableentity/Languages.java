@@ -37,7 +37,8 @@ public class Languages {
         this.imageLocalStoragePath = imageLocalStoragePath;
     }
 
-    public Languages() {}
+    public Languages() {
+    }
 
 
     @Override

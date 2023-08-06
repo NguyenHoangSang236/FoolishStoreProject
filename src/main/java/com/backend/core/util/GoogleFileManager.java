@@ -7,7 +7,6 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.Permission;
-import com.google.auth.oauth2.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,7 +76,7 @@ public class GoogleFileManager {
 
 
     // Set permission drive file
-    private Permission setPermission(String type, String role){
+    private Permission setPermission(String type, String role) {
         Permission permission = new Permission();
         permission.setType(type);
         permission.setRole(role);
@@ -103,19 +102,17 @@ public class GoogleFileManager {
                         )
                         .setFields("id").execute();
 
-                if (!type.equals("private") && !role.equals("private")){
+                if (!type.equals("private") && !role.equals("private")) {
                     // Call Set Permission drive
                     googleDriveConfig.getInstance().permissions().create(uploadFile.getId(), setPermission(type, role)).execute();
                 }
                 return uploadFile.getId();
             }
-        }
-        catch (TokenResponseException e) {
+        } catch (TokenResponseException e) {
             if (e.getDetails().getError().equals("invalid_grant")) {
                 return uploadFile(file, folderName, type, role);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

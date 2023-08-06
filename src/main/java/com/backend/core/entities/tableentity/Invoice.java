@@ -66,15 +66,12 @@ public class Invoice {
 
     @Column(name = "admin_acceptance")
     String adminAcceptance;
-
+    @JsonIgnore
+    @OneToMany(mappedBy = "invoice", cascade = {CascadeType.ALL})
+    List<InvoicesWithProducts> invoicesWithProducts;
     @OneToOne(mappedBy = "invoice")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Delivery delivery;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "invoice", cascade={CascadeType.ALL})
-    List<InvoicesWithProducts> invoicesWithProducts;
-
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
@@ -86,7 +83,8 @@ public class Invoice {
     private Staff staff;
 
 
-    public Invoice() {}
+    public Invoice() {
+    }
 
     public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency,
                    String intent, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount,
@@ -108,7 +106,6 @@ public class Invoice {
         this.invoicesWithProducts = invoicesWithProducts;
         this.customer = customer;
     }
-
 
 
     //    public String formattedTotalPrice() {

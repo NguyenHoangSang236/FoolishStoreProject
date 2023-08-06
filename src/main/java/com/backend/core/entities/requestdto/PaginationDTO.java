@@ -16,5 +16,6 @@ public class PaginationDTO {
         this.type = type;
     }
 
-    public PaginationDTO() {}
+    public PaginationDTO() {
+    }
 }

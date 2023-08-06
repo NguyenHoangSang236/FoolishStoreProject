@@ -53,7 +53,8 @@ public class CartCrudServiceImpl implements CrudService {
     ProductManagementRepository productManagementRepo;
 
 
-    public CartCrudServiceImpl() {}
+    public CartCrudServiceImpl() {
+    }
 
 
     // add a new item to cart
@@ -64,11 +65,10 @@ public class CartCrudServiceImpl implements CrudService {
         Cart newCartItem;
         ProductManagement productManagement;
 
-        if(!CheckUtils.loggedIn(session)) {
+        if (!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
-        }
-        else {
-            try{
+        } else {
+            try {
                 int pmId = productManagementRepo.getProductsManagementIdByProductIDAndColorAndSize(
                         cartItemDTO.getProductId(),
                         cartItemDTO.getColor(),
@@ -77,7 +77,7 @@ public class CartCrudServiceImpl implements CrudService {
                 productManagement = productManagementRepo.getProductManagementById(pmId);
 
                 //check available product available quantity is higher than ordered quantity or not
-                if(productManagement.getAvailableQuantity() >= cartItemDTO.getQuantity()) {
+                if (productManagement.getAvailableQuantity() >= cartItemDTO.getQuantity()) {
                     // get total quantity of the selected product in customer cart
                     int count = cartRepo.getExistedCartItemCountByCustomerIdAndProductManagementId(customerId, productManagement.getId());
 
@@ -102,8 +102,7 @@ public class CartCrudServiceImpl implements CrudService {
                 } else {
                     return new ApiResponse("failed", "Do not have enough quantity for your order");
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
@@ -122,29 +121,25 @@ public class CartCrudServiceImpl implements CrudService {
     public ApiResponse removingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
-        if(!CheckUtils.loggedIn(session)) {
+        if (!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
-        }
-        else {
+        } else {
             try {
                 ListRequestDTO listRequestDTO = (ListRequestDTO) paramObj;
 
                 int[] selectedCartIdArr = listRequestDTO.getIntegerArray();
 
-                if(selectedCartIdArr != null) {
-                    for (int id: selectedCartIdArr) {
+                if (selectedCartIdArr != null) {
+                    for (int id : selectedCartIdArr) {
                         Cart cart = cartRepo.getCartById(id);
 
-                        if(cart.getCustomer().getId() == customerId && cart.getBuyingStatus().equals(CartEnum.NOT_BOUGHT_YET.name())) {
+                        if (cart.getCustomer().getId() == customerId && cart.getBuyingStatus().equals(CartEnum.NOT_BOUGHT_YET.name())) {
                             customQueryRepo.deleteCartById(id);
-                        }
-                        else return new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
+                        } else return new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
                     }
                     return new ApiResponse("success", "Remove successfully");
-                }
-                else return new ApiResponse("failed", "Choose items to delete first");
-            }
-            catch (Exception e) {
+                } else return new ApiResponse("failed", "Choose items to delete first");
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
@@ -162,15 +157,14 @@ public class CartCrudServiceImpl implements CrudService {
     public ApiResponse updatingResponseByList(ListRequestDTO listRequestDTO, HttpSession session, HttpServletRequest httpRequest) {
         int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
-        if(!CheckUtils.loggedIn(session)) {
+        if (!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
-        }
-        else {
+        } else {
             try {
                 List<Object> cartItemList = listRequestDTO.getObjectList();
 
-                if(cartItemList != null) {
-                    for(Object obj: cartItemList) {
+                if (cartItemList != null) {
+                    for (Object obj : cartItemList) {
                         // parse json string without any double quotation marks to an object
                         Gson gson = new Gson();
                         CartItemDTO cartItemDTO = gson.fromJson(obj.toString(), CartItemDTO.class);
@@ -186,21 +180,19 @@ public class CartCrudServiceImpl implements CrudService {
                         ProductManagement pm = productManagementRepo.getProductManagementById(pmId);
 
                         //check if updated cart quantity is higher than product's available quantity or not
-                        if(pm.getAvailableQuantity() < cartItemDTO.getQuantity()) {
+                        if (pm.getAvailableQuantity() < cartItemDTO.getQuantity()) {
                             return new ApiResponse("failed", "We only have " + pm.getAvailableQuantity() + " items left!");
-                        }
-                        else {
+                        } else {
                             Cart existedCartItem = cartRepo.getCartItemByProductManagementIdAndCustomerId(pmId, customerId);
 
                             // if the selected editing information of a cart item does not match with any others in the cart -> update information for that item
-                            if(existedCartItem == null) {
+                            if (existedCartItem == null) {
                                 pm = productManagementRepo.getProductManagementById(pmId);
 
                                 //check if updated cart quantity is higher than product's available quantity or not
-                                if(pm.getAvailableQuantity() < cartItemDTO.getQuantity()) {
+                                if (pm.getAvailableQuantity() < cartItemDTO.getQuantity()) {
                                     return new ApiResponse("failed", "We only have " + pm.getAvailableQuantity() + " items left!");
-                                }
-                                else {
+                                } else {
                                     cartItm.setQuantity(cartItemDTO.getQuantity());
                                     cartItm.setProductManagement(pm);
 
@@ -208,7 +200,7 @@ public class CartCrudServiceImpl implements CrudService {
                                 }
                             }
                             // if the updating information of a cart item matches with one in the cart -> add quantity for the matched one -> remove the update-requested cart item
-                            else if(existedCartItem.getId() != cartItemDTO.getCartId()){
+                            else if (existedCartItem.getId() != cartItemDTO.getCartId()) {
                                 existedCartItem.addQuantity(cartItemDTO.getQuantity());
                                 cartRepo.save(existedCartItem);
                                 customQueryRepo.deleteCartById(cartItemDTO.getCartId());
@@ -223,10 +215,8 @@ public class CartCrudServiceImpl implements CrudService {
                     }
 
                     return new ApiResponse("success", "Update cart items successfully");
-                }
-                else return new ApiResponse("failed", "Please select items in cart to update");
-            }
-            catch (Exception e) {
+                } else return new ApiResponse("failed", "Please select items in cart to update");
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
@@ -250,12 +240,11 @@ public class CartCrudServiceImpl implements CrudService {
         int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
         List<CartRenderInfoDTO> cartItemList = new ArrayList<>();
 
-        if(!CheckUtils.loggedIn(session)) {
+        if (!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
-        }
-        else {
+        } else {
             // if the param is pagination only -> show full cart items
-            if(paramObj instanceof PaginationDTO) {
+            if (paramObj instanceof PaginationDTO) {
                 try {
                     PaginationDTO pagination = (PaginationDTO) paramObj;
 
@@ -264,20 +253,18 @@ public class CartCrudServiceImpl implements CrudService {
                             (pagination.getPage() - 1) * pagination.getLimit(),
                             pagination.getLimit()
                     );
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
                 }
             }
             // if the param is filter -> filter cart items
-            else if(paramObj instanceof CartItemFilterRequestDTO) {
+            else if (paramObj instanceof CartItemFilterRequestDTO) {
                 try {
                     String filterQuery = ValueRenderUtils.getFilterQuery(paramObj, FilterTypeEnum.CART_ITEMS, session);
 
                     cartItemList = customQueryRepo.getBindingFilteredList(filterQuery, CartRenderInfoDTO.class);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
                 }
@@ -300,25 +287,23 @@ public class CartCrudServiceImpl implements CrudService {
         int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
         // check login
-        if(!CheckUtils.loggedIn(session)) {
+        if (!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
-        }
-        else {
+        } else {
             // get cart item total quantity
-            if(renderType.equals(RenderTypeEnum.TOTAL_CART_ITEM_QUANTITY.name())) {
+            if (renderType.equals(RenderTypeEnum.TOTAL_CART_ITEM_QUANTITY.name())) {
                 int totalQuantity = 0;
 
                 try {
                     totalQuantity = cartRepo.getCartQuantityByCustomerId(customerId);
 
-                    return  new ApiResponse("success", totalQuantity);
-                }
-                catch (Exception e) {
+                    return new ApiResponse("success", totalQuantity);
+                } catch (Exception e) {
                     return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
                 }
             }
             // get checkout info
-            else if(renderType.equals(RenderTypeEnum.CART_CHECKOUT.name())){
+            else if (renderType.equals(RenderTypeEnum.CART_CHECKOUT.name())) {
                 try {
                     List<CartRenderInfoDTO> selectedCartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
 
@@ -334,8 +319,7 @@ public class CartCrudServiceImpl implements CrudService {
                     CartCheckoutDTO checkout = new CartCheckoutDTO(subtotal, shippingFee, subtotal + shippingFee);
 
                     return new ApiResponse("success", checkout);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
                 }
             }

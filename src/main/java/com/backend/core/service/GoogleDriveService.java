@@ -84,7 +84,7 @@ public class GoogleDriveService {
                 dto = new GoogleDriveFoldersDTO();
                 dto.setId(f.getId());
                 dto.setName(f.getName());
-                dto.setLink("https://drive.google.com/drive/u/3/folders/"+f.getId());
+                dto.setLink("https://drive.google.com/drive/u/3/folders/" + f.getId());
                 responseList.add(dto);
             }
         }

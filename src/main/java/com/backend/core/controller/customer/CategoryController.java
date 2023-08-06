@@ -54,7 +54,7 @@ public class CategoryController extends CrudController {
     @Override
     @GetMapping("/allCategories")
     public ApiResponse getListOfItems(String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
-        return crudService.readingResponse(session, RenderTypeEnum.ALL_CATEGORIES.name(),httpRequest);
+        return crudService.readingResponse(session, RenderTypeEnum.ALL_CATEGORIES.name(), httpRequest);
     }
 
     @Override

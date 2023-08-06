@@ -28,7 +28,8 @@ public class ListRequestDTO {
     float[] floatArray;
 
 
-    public ListRequestDTO() {}
+    public ListRequestDTO() {
+    }
 
 
     @Override

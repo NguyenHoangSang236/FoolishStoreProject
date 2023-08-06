@@ -22,7 +22,8 @@ public class ProductFilterRequestDTO implements FilterRequest {
         this.pagination = pagination;
     }
 
-    public ProductFilterRequestDTO() {}
+    public ProductFilterRequestDTO() {
+    }
 
     @Override
     public Object getFilter() {
@@ -30,15 +31,15 @@ public class ProductFilterRequestDTO implements FilterRequest {
     }
 
     @Override
-    public PaginationDTO getPagination() {
-        return this.pagination;
-    }
-
-    @Override
     public void setFilter(Object filter) {
         LinkedHashMap<String, Object> filterMap = (LinkedHashMap<String, Object>) filter;
         ObjectMapper objectMapper = new ObjectMapper();
         this.filter = objectMapper.convertValue(filterMap, ProductFilterDTO.class);
+    }
+
+    @Override
+    public PaginationDTO getPagination() {
+        return this.pagination;
     }
 
     @Override

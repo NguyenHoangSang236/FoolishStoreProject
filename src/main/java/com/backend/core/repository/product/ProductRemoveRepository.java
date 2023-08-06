@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductRemoveRepository extends JpaRepository<Product, Integer>{
+public interface ProductRemoveRepository extends JpaRepository<Product, Integer> {
 //    @Modifying
 //    @Transactional
 //    @Query(value = "delete from catalog_with_products where product_name = :nameVal", nativeQuery = true)

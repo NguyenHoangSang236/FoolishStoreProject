@@ -17,10 +17,10 @@ public class CalculationServiceImpl implements CalculationService {
 
     // calculate total price of a product after discount
     @Override
-    public double  getTotalPriceOfSingleProduct(double price, double discount) {
+    public double getTotalPriceOfSingleProduct(double price, double discount) {
         BigDecimal priceDec = new BigDecimal(price);
         BigDecimal discountDec = new BigDecimal(discount);
-        BigDecimal result  = priceDec.multiply(discountDec.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
+        BigDecimal result = priceDec.multiply(discountDec.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
 
         return price - result.doubleValue();
     }
@@ -31,7 +31,7 @@ public class CalculationServiceImpl implements CalculationService {
     public double getTotalPriceFromProductsList(List<InvoicesWithProducts> invoiceProductsList) {
         double result = 0;
 
-        for(InvoicesWithProducts itm: invoiceProductsList) {
+        for (InvoicesWithProducts itm : invoiceProductsList) {
             result += itm.getProductManagement().calculation(calculationService) * itm.getQuantity();
         }
 

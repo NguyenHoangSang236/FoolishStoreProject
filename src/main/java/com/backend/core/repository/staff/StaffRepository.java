@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StaffRepository extends JpaRepository<Staff, Integer>{
+public interface StaffRepository extends JpaRepository<Staff, Integer> {
 //	@Query(value = "select * from staffs where id = :idVal", nativeQuery = true)
 //    Staff getStaffById(@Param("idVal") int id);
 //

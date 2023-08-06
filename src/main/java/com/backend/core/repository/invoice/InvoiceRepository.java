@@ -12,26 +12,26 @@ import java.util.List;
 public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 //	@Query(value = "select * from invoice where customer_id = :idVal", nativeQuery = true)
 //	List<Invoice> getPaymentHistoryByCustomerId(@Param("idVal") int id);
-	
-	
-	@Query(value = "select id from invoice order by id desc limit 1", nativeQuery = true)
-	int getLastestInvoiceId();
-	
-	
-	@Query(value = "select * from invoice i join customers c on i.customer_id = c.id where i.customer_id = :idVal and payment_status = 0 limit :limit offset :startLine", nativeQuery = true)
-	List<Invoice> getAllCurrentInvoicesByCustomerId(@Param("idVal") int customerId, @Param("startLine") int startLine, @Param("limit") int limit);
 
 
-	@Query(value = "select * from invoice i join customers c on i.customer_id = c.id where i.customer_id = :idVal limit :limit offset :startLine", nativeQuery = true)
-	List<Invoice> getAllInvoicesByCustomerId(@Param("idVal") int customerId, @Param("startLine") int startLine, @Param("limit") int limit);
+    @Query(value = "select id from invoice order by id desc limit 1", nativeQuery = true)
+    int getLastestInvoiceId();
 
 
-	@Query(value = "select count(*) from invoice i join customers c on i.customer_id = c.id where i.customer_id = :invoiceIdVal and c.id = :customerIdVal", nativeQuery = true)
-	int getInvoiceCountByInvoiceIdAndCustomerId(@Param("invoiceIdVal") int invoiceId, @Param("customerIdVal") int customerId);
-	
-	
-	@Query(value = "select * from invoice where id = :idVal", nativeQuery = true)
-	Invoice getInvoiceById(@Param("idVal") int id);
+    @Query(value = "select * from invoice i join customers c on i.customer_id = c.id where i.customer_id = :idVal and payment_status = 0 limit :limit offset :startLine", nativeQuery = true)
+    List<Invoice> getAllCurrentInvoicesByCustomerId(@Param("idVal") int customerId, @Param("startLine") int startLine, @Param("limit") int limit);
+
+
+    @Query(value = "select * from invoice i join customers c on i.customer_id = c.id where i.customer_id = :idVal limit :limit offset :startLine", nativeQuery = true)
+    List<Invoice> getAllInvoicesByCustomerId(@Param("idVal") int customerId, @Param("startLine") int startLine, @Param("limit") int limit);
+
+
+    @Query(value = "select count(*) from invoice i join customers c on i.customer_id = c.id where i.customer_id = :invoiceIdVal and c.id = :customerIdVal", nativeQuery = true)
+    int getInvoiceCountByInvoiceIdAndCustomerId(@Param("invoiceIdVal") int invoiceId, @Param("customerIdVal") int customerId);
+
+
+    @Query(value = "select * from invoice where id = :idVal", nativeQuery = true)
+    Invoice getInvoiceById(@Param("idVal") int id);
 //
 //
 //	@Query(value = "select * from invoice where Payment_Method != 'cod'", nativeQuery = true)

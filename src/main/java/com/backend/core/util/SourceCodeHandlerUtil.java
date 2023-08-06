@@ -11,7 +11,7 @@ public class SourceCodeHandlerUtil {
     public static void deleteDerectory(String path) throws IOException {
         File file = new File(path);
 
-        if(file != null) {
+        if (file != null) {
             FileUtils.deleteDirectory(file);
             file.delete();
         }

@@ -170,13 +170,12 @@ public class InvoiceCrudServiceImpl implements CrudService {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
         } else if (id == 0) {
             return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
-        }
-        else {
+        } else {
             try {
                 invoice = invoiceRepo.getInvoiceById(id);
 
                 // check if this customer is the owner or not
-                if(customerId != invoice.getCustomer().getId()) {
+                if (customerId != invoice.getCustomer().getId()) {
                     return new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
                 }
 
@@ -191,10 +190,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     message += "you will be refunded 50% of the total order value, we will send it within 24 hours!";
                 }
                 // if COD payment -> error
-                else if(invoice.getPaymentMethod().equals(PaymentMethodEnum.COD.name())) {
+                else if (invoice.getPaymentMethod().equals(PaymentMethodEnum.COD.name())) {
                     return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
-                }
-                else {
+                } else {
                     invoice.setReason("Customer cancels order, no refund");
                     message += "the shipper has already been on the way, so you will not have any refund!";
                 }

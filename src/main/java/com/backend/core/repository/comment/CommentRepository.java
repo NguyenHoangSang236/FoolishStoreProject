@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Integer>{
+public interface CommentRepository extends JpaRepository<Comment, Integer> {
     @Query(value = "select c.* from comments c join products p on c.product_id = p.id where p.name = :nameVal and p.color = :colorVal order by id asc", nativeQuery = true)
     List<Comment> getCommentsByProductNameAndColor(@Param("nameVal") String name, @Param("colorVal") String color);
 

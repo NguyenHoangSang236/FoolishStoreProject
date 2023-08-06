@@ -9,7 +9,7 @@ import java.util.List;
 
 
 @Repository
-public interface CatalogRepository extends JpaRepository<Catalog, Integer>{
+public interface CatalogRepository extends JpaRepository<Catalog, Integer> {
 //    @Query(value = "select count(newTable.id) from (select p.* "
 //                 + "from products p join catalog_with_products cwp on p.name = cwp.product_name join catalog c on c.id = cwp.catalog_id "
 //                 + "where c.name = :catalogNameVal "
@@ -19,12 +19,12 @@ public interface CatalogRepository extends JpaRepository<Catalog, Integer>{
 //
 //    @Query(value = "select name from catalog", nativeQuery = true)
 //    List<String> getAllCatalogsName();
-    
-    
+
+
     @Query(value = "select * from catalog", nativeQuery = true)
     List<Catalog> getAllCatalogs();
-    
-    
+
+
 //    @Query(value = "select id from catalog where name = :catalogNameVal", nativeQuery = true)
 //    int getCatalogIdByName(@Param("catalogNameVal") String catalogName);
 //

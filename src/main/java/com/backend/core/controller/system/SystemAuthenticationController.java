@@ -27,10 +27,9 @@ public class SystemAuthenticationController extends AuthenticationController {
     }
 
 
-
     @Override
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> loginIntoSystem (@RequestBody Account accountFromUI, HttpSession session) throws URISyntaxException {
+    public ResponseEntity<ApiResponse> loginIntoSystem(@RequestBody Account accountFromUI, HttpSession session) throws URISyntaxException {
         return authenticationService.loginIntoSystem(accountFromUI, session);
     }
 
@@ -50,7 +49,7 @@ public class SystemAuthenticationController extends AuthenticationController {
 
     @Override
     @PostMapping("/register")
-    public ApiResponse registerNewAccount(@Validated @RequestBody  Account account, BindingResult bindingResult) {
+    public ApiResponse registerNewAccount(@Validated @RequestBody Account account, BindingResult bindingResult) {
         return authenticationService.registerNewAccount(account, bindingResult);
     }
 
@@ -59,7 +58,8 @@ public class SystemAuthenticationController extends AuthenticationController {
     @PostMapping("/forgotPassword")
     public ResponseEntity<ApiResponse> forgotPassword(@Validated @RequestBody String accJson, BindingResult bindingResult) throws JsonProcessingException, URISyntaxException {
         ObjectMapper objMapper = new ObjectMapper();
-        HashMap<String, Object> map = objMapper.readValue(accJson, new TypeReference<HashMap<String, Object>>(){});
+        HashMap<String, Object> map = objMapper.readValue(accJson, new TypeReference<HashMap<String, Object>>() {
+        });
 
         String username = (String) map.get("userName");
         String email = (String) map.get("email");

@@ -16,8 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/googleDrive",
-                consumes = {"*/*"},
-                produces = {MediaType.APPLICATION_JSON_VALUE})
+        consumes = {"*/*"},
+        produces = {MediaType.APPLICATION_JSON_VALUE})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class GoogleDriveController {
     @Autowired
@@ -38,32 +38,31 @@ public class GoogleDriveController {
 //        return googleDriveService.getAllFolder();
 //    }
 
-//  Upload file to public
+    //  Upload file to public
     @PostMapping(value = "/upLoadCustomerAvatar",
-                 consumes = {"*/*"},
-                 produces = {MediaType.APPLICATION_JSON_VALUE} )
+            consumes = {"*/*"},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
     public ApiResponse uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload,
                                   @RequestParam("filePath") String driveFolderPath,
                                   @RequestParam("shared") String shared,
                                   HttpSession session) {
         // Save to default folder if the user does not select a folder to save
-        if (driveFolderPath.equals("")){
+        if (driveFolderPath.equals("")) {
             driveFolderPath = "Root";
         }
 
         Customer customer = customerRepo.getCustomerById(ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session));
 
         // check if customer logged in or not
-        if(customer == null) {
+        if (customer == null) {
             return new ApiResponse("failed", "Login first!");
-        }
-        else {
+        } else {
             try {
                 // get gg drive fileId after successfully uploading
                 String fileId = googleDriveService.uploadFile(fileUpload, driveFolderPath, Boolean.parseBoolean(shared));
 
                 // delete the old file on gg drive if the ID is different from the default user image's one
-                if(!customer.getImage().equals("1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R")) {
+                if (!customer.getImage().equals("1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R")) {
                     googleDriveService.deleteFile(customer.getImage());
                 }
 
@@ -72,8 +71,7 @@ public class GoogleDriveController {
                 customerRepo.save(customer);
 
                 return new ApiResponse("success", ValueRenderUtils.getGoogleDriveUrlFromFileId(fileId));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }

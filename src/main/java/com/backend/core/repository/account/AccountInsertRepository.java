@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountInsertRepository {
     @PersistenceContext
     private EntityManager entityManager;
-    
+
     @Transactional
     public void createNewAccount(Account account) {
         this.entityManager.persist(account);

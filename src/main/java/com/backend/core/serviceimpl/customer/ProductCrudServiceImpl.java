@@ -44,9 +44,8 @@ public class ProductCrudServiceImpl implements CrudService {
     CustomQueryRepository customQueryRepo;
 
 
-
-    public ProductCrudServiceImpl() {}
-
+    public ProductCrudServiceImpl() {
+    }
 
 
     @Override
@@ -129,14 +128,13 @@ public class ProductCrudServiceImpl implements CrudService {
         List<ProductRenderInfoDTO> productRenderList = null;
 
         // get products from filter request
-        if(paramObj instanceof ProductFilterRequestDTO productFilterRequest) {
+        if (paramObj instanceof ProductFilterRequestDTO productFilterRequest) {
             return filterProducts(productFilterRequest, session);
         }
         // if there is no filter -> get all products with pagination
-        else if(paramObj instanceof PaginationDTO pagination) {
+        else if (paramObj instanceof PaginationDTO pagination) {
             return getProductFromPagination(pagination);
-        }
-        else return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+        } else return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
     }
 
 
@@ -158,11 +156,10 @@ public class ProductCrudServiceImpl implements CrudService {
                 case "TOP_8_BEST_SELL_PRODUCTS" -> productList = productRenderInfoRepo.getTop8BestSellProducts();
                 default -> new ApiResponse("failed", "Wrong render type");
             }
-            if(productList != null) {
+            if (productList != null) {
                 status = "success";
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             status = "failed";
             e.printStackTrace();
             return new ApiResponse(status, ErrorTypeEnum.TECHNICAL_ERROR.name());
@@ -180,18 +177,16 @@ public class ProductCrudServiceImpl implements CrudService {
         try {
             productDetails = productRenderInfoRepo.getProductDetails(productId);
 
-            if(!productDetails.isEmpty()) {
+            if (!productDetails.isEmpty()) {
                 status = "success";
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             status = "failed";
             e.printStackTrace();
         }
 
         return new ApiResponse(status, productDetails);
     }
-
 
 
     // filter products
@@ -202,12 +197,10 @@ public class ProductCrudServiceImpl implements CrudService {
             List<ProductRenderInfoDTO> productRenderList = customQueryRepo.getBindingFilteredList(filterQuery, ProductRenderInfoDTO.class);
 
             return new ApiResponse("success", productRenderList);
-        }
-        catch (StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
@@ -222,8 +215,7 @@ public class ProductCrudServiceImpl implements CrudService {
                     pagination.getLimit()
             );
             return new ApiResponse("success", productRenderList);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }

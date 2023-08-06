@@ -14,9 +14,8 @@ public class ExceptionHandlerUtils {
 //        if (e.getBindingResult().hasErrors())
 //            e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
 //        return errorMessage;
-        if(e.getBindingResult().getAllErrors().size() > 1){
+        if (e.getBindingResult().getAllErrors().size() > 1) {
             return "Please fill in all fields of information";
-        }
-        else return e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        } else return e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
     }
 }

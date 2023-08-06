@@ -44,7 +44,8 @@ public class CartItemDTO {
         this.selectStatus = selectStatus;
     }
 
-    public CartItemDTO() {}
+    public CartItemDTO() {
+    }
 
 
     @Override

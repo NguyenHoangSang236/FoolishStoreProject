@@ -69,7 +69,8 @@ public class Product implements Serializable {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ProductImagesManagement> productImagesManagement;
 
-    public Product() { }
+    public Product() {
+    }
 
     @Override
     public boolean equals(Object o) {

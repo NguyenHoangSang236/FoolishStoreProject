@@ -34,5 +34,6 @@ public class ProductFilterDTO {
         this.name = name;
     }
 
-    public ProductFilterDTO() {}
+    public ProductFilterDTO() {
+    }
 }

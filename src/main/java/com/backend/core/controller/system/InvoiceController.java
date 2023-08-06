@@ -33,7 +33,7 @@ public class InvoiceController extends CrudController {
     @PostMapping("/addNewOrder")
     public ApiResponse addNewItem(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) {
         Gson gson = new Gson();
-        Map<String, String> request = gson.fromJson(json,Map.class);
+        Map<String, String> request = gson.fromJson(json, Map.class);
 
         return crudService.singleCreationalResponse(request.get("paymentMethod"), session, httpRequest);
     }

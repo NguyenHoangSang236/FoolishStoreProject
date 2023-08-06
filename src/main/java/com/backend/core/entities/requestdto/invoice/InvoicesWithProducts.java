@@ -33,7 +33,8 @@ public class InvoicesWithProducts {
     int quantity;
 
 
-    public InvoicesWithProducts() {}
+    public InvoicesWithProducts() {
+    }
 
     public InvoicesWithProducts(InvoicesWithProductsPrimaryKeys id, ProductManagement productManagement, Invoice invoice, int quantity) {
         this.id = id;

@@ -9,13 +9,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public interface CartRemoveRepository extends JpaRepository<Cart, Integer>{
+public interface CartRemoveRepository extends JpaRepository<Cart, Integer> {
     @Modifying
     @Transactional
     @Query(value = "delete from cart where id = :idVal", nativeQuery = true)
     void deleteProductFromCartById(@Param("idVal") int cartId);
-    
-    
+
+
     @Modifying
     @Transactional
     @Query(value = "delete from cart where product_id = :idVal", nativeQuery = true)

@@ -56,21 +56,21 @@ public class Customer {
     private Account account;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "customer", cascade={CascadeType.ALL})
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.ALL})
     private List<Invoice> invoices;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "customer", cascade={CascadeType.ALL})
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.ALL})
     private List<Cart> carts;
 
     @JsonIgnore
     @JsonBackReference
-    @OneToMany(mappedBy = "customer", cascade={CascadeType.ALL})
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.ALL})
     private List<Comment> comments;
 
 
-
-    public Customer() {}
+    public Customer() {
+    }
 
 
     @Override
@@ -105,33 +105,32 @@ public class Customer {
     }
 
 
-
     public void setCustomerInfoFromRenderInfo(CustomerRenderInfoDTO customerRenderDTO) {
-        if(customerRenderDTO.getPassword() != null && !customerRenderDTO.getPassword().isEmpty() && !customerRenderDTO.getPassword().isBlank()) {
+        if (customerRenderDTO.getPassword() != null && !customerRenderDTO.getPassword().isEmpty() && !customerRenderDTO.getPassword().isBlank()) {
             this.account.setPassword(customerRenderDTO.getPassword());
         }
 
-        if(customerRenderDTO.getPassword() != null && !customerRenderDTO.getName().isEmpty() && !customerRenderDTO.getName().isBlank()) {
+        if (customerRenderDTO.getPassword() != null && !customerRenderDTO.getName().isEmpty() && !customerRenderDTO.getName().isBlank()) {
             this.setName(customerRenderDTO.getName());
         }
 
-        if(customerRenderDTO.getEmail() != null && !customerRenderDTO.getEmail().isEmpty() && !customerRenderDTO.getEmail().isBlank()) {
+        if (customerRenderDTO.getEmail() != null && !customerRenderDTO.getEmail().isEmpty() && !customerRenderDTO.getEmail().isBlank()) {
             this.setEmail(customerRenderDTO.getEmail());
         }
 
-        if(customerRenderDTO.getPhoneNumber() != null && !customerRenderDTO.getPhoneNumber().isEmpty() && !customerRenderDTO.getPhoneNumber().isBlank()) {
+        if (customerRenderDTO.getPhoneNumber() != null && !customerRenderDTO.getPhoneNumber().isEmpty() && !customerRenderDTO.getPhoneNumber().isBlank()) {
             this.setPhoneNumber(customerRenderDTO.getPhoneNumber());
         }
 
-        if(customerRenderDTO.getCountry() != null && !customerRenderDTO.getCountry().isEmpty() && !customerRenderDTO.getCountry().isBlank()) {
+        if (customerRenderDTO.getCountry() != null && !customerRenderDTO.getCountry().isEmpty() && !customerRenderDTO.getCountry().isBlank()) {
             this.setCountry(customerRenderDTO.getCountry());
         }
 
-        if(customerRenderDTO.getCity() != null && !customerRenderDTO.getCity().isEmpty() && !customerRenderDTO.getCity().isBlank()) {
+        if (customerRenderDTO.getCity() != null && !customerRenderDTO.getCity().isEmpty() && !customerRenderDTO.getCity().isBlank()) {
             this.setCity(customerRenderDTO.getCity());
         }
 
-        if(customerRenderDTO.getAddress() != null && !customerRenderDTO.getAddress().isEmpty() && !customerRenderDTO.getAddress().isBlank()) {
+        if (customerRenderDTO.getAddress() != null && !customerRenderDTO.getAddress().isEmpty() && !customerRenderDTO.getAddress().isBlank()) {
             this.setAddress(customerRenderDTO.getAddress());
         }
 

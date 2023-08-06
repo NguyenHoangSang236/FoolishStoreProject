@@ -28,7 +28,8 @@ public class GoogleUploadFileDTO {
         this.isShared = isShared;
     }
 
-    public GoogleUploadFileDTO() {}
+    public GoogleUploadFileDTO() {
+    }
 
     @Override
     public boolean equals(Object o) {

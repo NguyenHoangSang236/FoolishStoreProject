@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CatalogRemoveRepository extends JpaRepository<Catalog, Integer>{
+public interface CatalogRemoveRepository extends JpaRepository<Catalog, Integer> {
 //	 @Modifying
 //	 @Transactional
 //	 @Query(value = "delete from catalog where name = :nameVal", nativeQuery = true)

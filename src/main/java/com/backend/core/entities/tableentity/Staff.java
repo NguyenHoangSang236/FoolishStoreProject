@@ -63,7 +63,8 @@ public class Staff {
     private List<Delivery> deliveries;
 
 
-    public Staff() {}
+    public Staff() {
+    }
 
 
     @Override

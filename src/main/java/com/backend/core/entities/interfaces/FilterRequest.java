@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 public interface FilterRequest {
     public abstract Object getFilter();
 
-    public abstract PaginationDTO getPagination();
-
     public abstract void setFilter(Object filter) throws JsonProcessingException;
+
+    public abstract PaginationDTO getPagination();
 
     public abstract void setPagination(PaginationDTO paginationDTO);
 }

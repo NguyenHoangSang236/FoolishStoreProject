@@ -26,7 +26,8 @@ public class CartItemFilterDTO {
         this.name = name;
     }
 
-    public CartItemFilterDTO() {}
+    public CartItemFilterDTO() {
+    }
 
     @Override
     public boolean equals(Object o) {

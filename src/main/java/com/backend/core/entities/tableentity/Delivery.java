@@ -1,22 +1,12 @@
 package com.backend.core.entities.tableentity;
 
-import java.util.Date;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
+import java.util.Date;
 
 @Entity
 @Getter
@@ -24,7 +14,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "delivery")
 @DynamicInsert
 @DynamicUpdate
-public class Delivery{
+public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
@@ -52,7 +42,8 @@ public class Delivery{
     private Invoice invoice;
 
 
-    public Delivery() {}
+    public Delivery() {
+    }
 
     public Delivery(Date deliveryDate, String currentStatus, String additionalShipperComment, byte[] evidenceImage,
                     Staff staff, Invoice invoice) {

@@ -7,11 +7,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Integer>{    
+public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     @Query(value = "select * from customers where id = :idVal", nativeQuery = true)
     Customer getCustomerById(@Param("idVal") int id);
-    
-    
+
+
 //    @Query(value = "select * from customers", nativeQuery = true)
 //    List<Customer> getAllCustomers();
 //

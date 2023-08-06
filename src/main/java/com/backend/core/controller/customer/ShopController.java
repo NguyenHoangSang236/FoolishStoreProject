@@ -30,7 +30,6 @@ public class ShopController extends CrudController {
     private ProductRepository productRepo;
 
 
-
     public ShopController(@Autowired @Qualifier("ProductCrudServiceImpl") CrudService productCrudServiceImpl) {
         super(productCrudServiceImpl);
         super.crudService = productCrudServiceImpl;

@@ -1,21 +1,16 @@
 package com.backend.core.configuration;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
@@ -35,17 +30,18 @@ public class GoogleDriveConfig {
 
     private static GoogleDriveConfig ggDriveConfigInstance;
 
-//    public Credential googleCredential;
+    //    public Credential googleCredential;
     public GoogleCredential googleCredential;
 
 
-    public GoogleDriveConfig() {}
+    public GoogleDriveConfig() {
+    }
 
 
     public static GoogleDriveConfig getGgDriveConfigInstance() {
-        if(ggDriveConfigInstance == null){
-            synchronized(GoogleDriveConfig.class){
-                if(ggDriveConfigInstance == null){
+        if (ggDriveConfigInstance == null) {
+            synchronized (GoogleDriveConfig.class) {
+                if (ggDriveConfigInstance == null) {
                     ggDriveConfigInstance = new GoogleDriveConfig();
                 }
             }

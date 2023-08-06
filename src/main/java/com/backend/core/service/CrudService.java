@@ -29,7 +29,7 @@ public interface CrudService {
     ApiResponse updatingResponseById(int id, HttpSession session, HttpServletRequest httpRequest);
 
     // generate post response for updating by request
-    ApiResponse updatingResponseByRequest(Object paramObj,  HttpSession session, HttpServletRequest httpRequest);
+    ApiResponse updatingResponseByRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest);
 
     // generate post response for reading a single object by post method
     ApiResponse readingFromSingleRequest(Object paramObj, HttpSession session, HttpServletRequest httpRequest);

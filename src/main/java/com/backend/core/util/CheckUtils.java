@@ -17,14 +17,11 @@ public class CheckUtils {
 
     //check String has space or not
     public static boolean checkValidStringType(String content, StringTypeEnum type) {
-        if(type == StringTypeEnum.HAS_NO_SPACE) {
+        if (type == StringTypeEnum.HAS_NO_SPACE) {
             return !isStringWithSpace(content);
-        }
-        else if (type == StringTypeEnum.HAS_SPACE) {
+        } else if (type == StringTypeEnum.HAS_SPACE) {
             return isStringWithSpace(content);
-        }
-
-        else return false;
+        } else return false;
     }
 
 
@@ -34,13 +31,6 @@ public class CheckUtils {
 
         return PhoneNumberUtil.getInstance().isValidNumber(phoneNumber);
     }
-
-
-    //check email has been used or not
-    public boolean isUsedEmail(String email) {
-        return customerRepo.getCustomerByEmail(email) != null;
-    }
-
 
     //check email is valid or not
     //    It allows numeric values from 0 to 9.
@@ -52,7 +42,6 @@ public class CheckUtils {
     public static boolean isValidEmail(String email) {
         return patternMatches(email, "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
     }
-
 
     //check if there is any space in a String
     public static boolean isStringWithSpace(String content) {
@@ -66,7 +55,6 @@ public class CheckUtils {
         return false;
     }
 
-
     //remove spaces at the beginning of the input text
     public static String trimmedInputString(String input) {
         int count = 0;
@@ -74,15 +62,14 @@ public class CheckUtils {
         char[] charArr = input.toCharArray();
         char[] resultCharArr = new char[charArr.length];
 
-        for(int i = 0; i < charArr.length - 1; i++) {
-            if(i > 0) {
-                if(charArr[i] != ' ' || (charArr[i] == ' ' && charArr[i - 1] != ' ')) {
+        for (int i = 0; i < charArr.length - 1; i++) {
+            if (i > 0) {
+                if (charArr[i] != ' ' || (charArr[i] == ' ' && charArr[i - 1] != ' ')) {
                     resultCharArr[count] = charArr[i];
                     count++;
                 }
-            }
-            else {
-                if(charArr[i] != ' ') {
+            } else {
+                if (charArr[i] != ' ') {
                     resultCharArr[count] = charArr[i];
                     count++;
                 }
@@ -92,20 +79,18 @@ public class CheckUtils {
         return String.copyValueOf(resultCharArr).trim();
     }
 
-
     //check if the text has special sign
-    public static boolean hasSpecialSign (String input) {
+    public static boolean hasSpecialSign(String input) {
         char[] testCharArr = input.toCharArray();
 
-        for(int i = 0; i < testCharArr.length - 1; i++) {
-            if(testCharArr[i] != 32 && testCharArr[i] < 65 && testCharArr[i] > 90 && testCharArr[i] < 97 && testCharArr[i] > 122) {
+        for (int i = 0; i < testCharArr.length - 1; i++) {
+            if (testCharArr[i] != 32 && testCharArr[i] < 65 && testCharArr[i] > 90 && testCharArr[i] < 97 && testCharArr[i] > 122) {
                 return true;
             }
         }
 
         return false;
     }
-
 
     //check if String matches using Regex
     public static boolean patternMatches(String content, String regexPattern) {
@@ -114,13 +99,11 @@ public class CheckUtils {
                 .matches();
     }
 
-
     // check to force login
     public static boolean loggedIn(HttpSession session) {
         int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
         return customerId != 0;
     }
-
 
     // check if user is admin or not
     public static boolean isAdmin(HttpSession session) {
@@ -132,5 +115,10 @@ public class CheckUtils {
             e.printStackTrace();
             return false;
         }
+    }
+
+    //check email has been used or not
+    public boolean isUsedEmail(String email) {
+        return customerRepo.getCustomerByEmail(email) != null;
     }
 }

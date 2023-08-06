@@ -41,5 +41,6 @@ public class InvoiceFilterDTO {
         this.type = type;
     }
 
-    public InvoiceFilterDTO() {}
+    public InvoiceFilterDTO() {
+    }
 }

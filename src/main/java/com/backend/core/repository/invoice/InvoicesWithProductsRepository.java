@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class InvoicesWithProductsRepository {
-	@PersistenceContext
-	EntityManager entityManager;
-	
-	
+    @PersistenceContext
+    EntityManager entityManager;
+
+
 //	@Transactional
 //	public void insertNewInvoice(Invoice invoice) {
 //	    entityManager.createNativeQuery("INSERT INTO invoice (id, customer_id, invoice_date, payment_status, delivery_status, refund_percentage, reason, currency, payment_method, description, intent, admin_acceptance, total_price) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)")
@@ -30,15 +30,15 @@ public class InvoicesWithProductsRepository {
 //	      .setParameter(13, invoice.getTotalPrice())
 //	      .executeUpdate();
 //	}
-	
-	@Transactional
-	public void insertInvoicesWithProducts(InvoicesWithProducts invoicesWithProducts) {
-		 entityManager.createNativeQuery("INSERT INTO invoices_with_products (invoice_id, product_management_id, quantity) VALUES (?,?,?)")
-	      .setParameter(1, invoicesWithProducts.getId().getInvoiceId())
-	      .setParameter(2, invoicesWithProducts.getId().getProductManagementId())
-	      .setParameter(3, invoicesWithProducts.getQuantity())
-	      .executeUpdate();
-	}
+
+    @Transactional
+    public void insertInvoicesWithProducts(InvoicesWithProducts invoicesWithProducts) {
+        entityManager.createNativeQuery("INSERT INTO invoices_with_products (invoice_id, product_management_id, quantity) VALUES (?,?,?)")
+                .setParameter(1, invoicesWithProducts.getId().getInvoiceId())
+                .setParameter(2, invoicesWithProducts.getId().getProductManagementId())
+                .setParameter(3, invoicesWithProducts.getQuantity())
+                .executeUpdate();
+    }
 
 //	@Transactional
 //	public void remooveInvoicesWithProducts(InvoicesWithProducts invoicesWithProducts) {

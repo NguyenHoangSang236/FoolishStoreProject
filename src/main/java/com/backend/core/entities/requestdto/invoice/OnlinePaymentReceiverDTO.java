@@ -33,7 +33,8 @@ public class OnlinePaymentReceiverDTO {
         this.moneyAmount = moneyAmount;
     }
 
-    public OnlinePaymentReceiverDTO() {}
+    public OnlinePaymentReceiverDTO() {
+    }
 
 
     @Override

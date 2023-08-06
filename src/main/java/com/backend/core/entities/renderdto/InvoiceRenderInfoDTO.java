@@ -74,5 +74,6 @@ public class InvoiceRenderInfoDTO {
         this.adminAcceptance = adminAcceptance;
     }
 
-    public InvoiceRenderInfoDTO() {}
+    public InvoiceRenderInfoDTO() {
+    }
 }

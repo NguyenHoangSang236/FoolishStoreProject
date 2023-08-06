@@ -16,13 +16,13 @@ public class CommentFilterRequestDTO implements FilterRequest {
     PaginationDTO pagination;
 
 
-    public CommentFilterRequestDTO() {}
+    public CommentFilterRequestDTO() {
+    }
 
     public CommentFilterRequestDTO(CommentRequestDTO filter, PaginationDTO pagination) {
         this.filter = filter;
         this.pagination = pagination;
     }
-
 
 
     @Override
@@ -31,15 +31,15 @@ public class CommentFilterRequestDTO implements FilterRequest {
     }
 
     @Override
-    public PaginationDTO getPagination() {
-        return this.pagination;
-    }
-
-    @Override
     public void setFilter(Object filter) throws JsonProcessingException {
         LinkedHashMap<String, Object> filterMap = (LinkedHashMap<String, Object>) filter;
         ObjectMapper objectMapper = new ObjectMapper();
         this.filter = objectMapper.convertValue(filterMap, CommentRequestDTO.class);
+    }
+
+    @Override
+    public PaginationDTO getPagination() {
+        return this.pagination;
     }
 
     @Override

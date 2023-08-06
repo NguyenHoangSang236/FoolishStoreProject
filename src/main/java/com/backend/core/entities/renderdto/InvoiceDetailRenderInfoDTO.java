@@ -59,7 +59,8 @@ public class InvoiceDetailRenderInfoDTO {
         this.image = image;
     }
 
-    public InvoiceDetailRenderInfoDTO() {}
+    public InvoiceDetailRenderInfoDTO() {
+    }
 
     @Override
     public boolean equals(Object o) {

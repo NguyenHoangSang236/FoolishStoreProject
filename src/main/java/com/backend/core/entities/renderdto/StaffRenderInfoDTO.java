@@ -46,7 +46,6 @@ public class StaffRenderInfoDTO {
     String avatar;
 
 
-
     public StaffRenderInfoDTO(int id, int accountId, String userName, String password, String status, String name, String email, String phoneNumber, String position, String avatar) {
         this.id = id;
         this.accountId = accountId;
@@ -62,7 +61,6 @@ public class StaffRenderInfoDTO {
 
     public StaffRenderInfoDTO() {
     }
-
 
 
     @Override

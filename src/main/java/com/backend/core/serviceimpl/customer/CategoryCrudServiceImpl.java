@@ -73,8 +73,7 @@ public class CategoryCrudServiceImpl implements CrudService {
         try {
             List<Catalog> categoryList = categoryRepo.getAllCatalogs();
             return new ApiResponse("success", categoryList);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ApiResponse("success", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }

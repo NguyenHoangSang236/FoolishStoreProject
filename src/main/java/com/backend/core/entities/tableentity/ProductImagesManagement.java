@@ -16,28 +16,22 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 public class ProductImagesManagement {
-    @Id
-    @Column(name = "product_id")
-    private int productId;
-
-    @Id
-    @Column(name = "color")
-    private String color;
-
-    @Column(name = "Image_1")
-    private String image1;
-
-    @Column(name = "Image_2")
-    private String image2;
-
-    @Column(name = "Image_3")
-    private String image3;
-
-    @Column(name = "Image_4")
-    private String image4;
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
+    @Id
+    @Column(name = "product_id")
+    private int productId;
+    @Id
+    @Column(name = "color")
+    private String color;
+    @Column(name = "Image_1")
+    private String image1;
+    @Column(name = "Image_2")
+    private String image2;
+    @Column(name = "Image_3")
+    private String image3;
+    @Column(name = "Image_4")
+    private String image4;
 }

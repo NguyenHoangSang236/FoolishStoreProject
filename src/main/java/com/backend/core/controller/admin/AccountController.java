@@ -3,6 +3,7 @@ package com.backend.core.controller.admin;
 import com.backend.core.abstractclasses.CrudController;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.PaginationDTO;
+import com.backend.core.entities.tableentity.Account;
 import com.backend.core.service.CrudService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,9 +29,12 @@ public class AccountController extends CrudController {
         return null;
     }
 
+    @PostMapping("/actionOnAccount")
     @Override
-    public ApiResponse updateItem(String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    public ApiResponse updateItem(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Account acc = objectMapper.readValue(json, Account.class);
+        return crudService.updatingResponseByRequest(acc, session, httpRequest);
     }
 
     @Override

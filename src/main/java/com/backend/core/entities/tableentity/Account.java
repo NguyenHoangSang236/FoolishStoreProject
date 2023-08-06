@@ -44,7 +44,8 @@ public class Account {
     Staff staff;
 
 
-    public Account() {}
+    public Account() {
+    }
 
 
     @Override

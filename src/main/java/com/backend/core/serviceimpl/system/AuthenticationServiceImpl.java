@@ -57,8 +57,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     GoogleDriveService googleDriveService;
 
 
-
-
     @Override
     public ResponseEntity<ApiResponse> loginIntoSystem(Account account, HttpSession session) throws URISyntaxException {
         Account loginAcc = new Account();
@@ -68,28 +66,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         URI location = new URI("http://localhost:8080/systemAuthentication/login");
         HttpHeaders responseHeaders = new HttpHeaders();
 
-        try{
+        try {
             loginAcc = accountRepo.getAccountByUserNameAndPassword(account.getUserName(), account.getPassword());
 
-            if(loginAcc != null) {
+            if (loginAcc != null) {
                 session.setAttribute("currentUser", loginAcc);
 
                 responseHeaders.setLocation(location);
                 responseHeaders.set("sessionid", session.getId());
 
-                if(loginAcc.getRole().equals(RoleEnum.ADMIN.name()) || loginAcc.getRole().equals(RoleEnum.SHIPPER.name())) {
+                if (loginAcc.getRole().equals(RoleEnum.ADMIN.name()) || loginAcc.getRole().equals(RoleEnum.SHIPPER.name())) {
                     staffInfo = staffRenderInfoRepo.getStaffInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
                     return new ResponseEntity<>(new ApiResponse("success", staffInfo), responseHeaders, HttpStatus.OK);
-                }
-                else if(loginAcc.getRole().equals(RoleEnum.CUSTOMER.name())) {
+                } else if (loginAcc.getRole().equals(RoleEnum.CUSTOMER.name())) {
                     customerInfo = customerRenderInfoRepo.getCustomerInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
                     return new ResponseEntity<>(new ApiResponse("success", customerInfo), responseHeaders, HttpStatus.OK);
-                }
-                else return new ResponseEntity<>(new ApiResponse("failed", "This role is not existed"), responseHeaders, HttpStatus.BAD_REQUEST);
-            }
-            else return new ResponseEntity<>(new ApiResponse("failed", "Incorrect password or user name, please check again!"), responseHeaders, HttpStatus.OK);
-        }
-        catch (Exception e) {
+                } else
+                    return new ResponseEntity<>(new ApiResponse("failed", "This role is not existed"), responseHeaders, HttpStatus.BAD_REQUEST);
+            } else
+                return new ResponseEntity<>(new ApiResponse("failed", "Incorrect password or user name, please check again!"), responseHeaders, HttpStatus.OK);
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), responseHeaders, HttpStatus.OK);
         }
@@ -104,18 +100,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             Account currentAccount = accountRepo.getAccountByUserName(username);
 
-            if(currentAccount != null) {
-                if(currentAccount.getCustomer().getEmail().equals(email)) {
+            if (currentAccount != null) {
+                if (currentAccount.getCustomer().getEmail().equals(email)) {
                     String newPassword = getNewTemporaryRandomPasswordMail(username, email);
 
                     currentAccount.setPassword(newPassword);
                     accountRepo.save(currentAccount);
-                }
-                else return new ResponseEntity<>(new ApiResponse("failed", "This email does not belong to this account"), responseHeaders, HttpStatus.BAD_REQUEST);
-            }
-            else return new ResponseEntity<>(new ApiResponse("failed", "This account is not existed"), responseHeaders, HttpStatus.BAD_REQUEST);
-        }
-        catch (Exception e) {
+                } else
+                    return new ResponseEntity<>(new ApiResponse("failed", "This email does not belong to this account"), responseHeaders, HttpStatus.BAD_REQUEST);
+            } else
+                return new ResponseEntity<>(new ApiResponse("failed", "This account is not existed"), responseHeaders, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), responseHeaders, HttpStatus.BAD_REQUEST);
         }
@@ -129,8 +124,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             session.removeAttribute("currentUser");
             return new ApiResponse("success", "Logout successfully");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
@@ -143,17 +137,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Customer customer = accountFromUI.getCustomer();
         customer.setImage("1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R");
 
-        try{
+        try {
             //check for null information
-            if(bindingResult.hasErrors()) {
+            if (bindingResult.hasErrors()) {
                 return new ApiResponse("failed", ExceptionHandlerUtils.getHandleBindException(new BindException(bindingResult)));
             }
             //check for null password
-            else if(accountFromUI.getPassword().isEmpty() || accountFromUI.getPassword().isBlank()) {
+            else if (accountFromUI.getPassword().isEmpty() || accountFromUI.getPassword().isBlank()) {
                 return new ApiResponse("failed", "Password can not be null !!");
             }
             //check valid username and password
-            else if(!CheckUtils.checkValidStringType(accountFromUI.getUserName(), StringTypeEnum.HAS_NO_SPACE) ||
+            else if (!CheckUtils.checkValidStringType(accountFromUI.getUserName(), StringTypeEnum.HAS_NO_SPACE) ||
                     !CheckUtils.checkValidStringType(accountFromUI.getPassword(), StringTypeEnum.HAS_NO_SPACE)) {
                 return new ApiResponse("failed", "Please remove all spaces in Username and Password !!");
             }
@@ -180,8 +174,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             //check valid customer full name
             else if (CheckUtils.hasSpecialSign(customer.getName())) {
                 return new ApiResponse("failed", "Full name can not have special signs !!");
-            }
-            else{
+            } else {
                 accountFromUI.setCustomer(null);
                 accountRepo.save(accountFromUI);
 
@@ -192,8 +185,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
                 return new ApiResponse("success", "Register successfully");
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
@@ -204,10 +196,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
         // check if logged in or not
-        if(!CheckUtils.loggedIn(session)) {
+        if (!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
-        }
-        else {
+        } else {
             try {
                 Customer customer = customerRepo.getCustomerById(customerId);
 
@@ -216,8 +207,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 customerRepo.save(customer);
 
                 return new ApiResponse("success", "Update profile successfully!");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR);
             }
@@ -230,24 +220,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String senderName = "Fool!st Fashion Store";
         String subject = "Your new temporary password";
         String newTempPassoword = ValueRenderUtils.randomTemporaryPassword(userName);
-        String content =  "Dear [[name]],<br>"
-                        + "Your new temporary password is " + newTempPassoword + "<br>"
-                        + "Please rememder to change a new password for your new account because this temporary password will be changed after you close the website !!<br><br>"
-                        + "Thank you,<br>"
-                        + "Fool!st Fashion Store";
+        String content = "Dear [[name]],<br>"
+                + "Your new temporary password is " + newTempPassoword + "<br>"
+                + "Please rememder to change a new password for your new account because this temporary password will be changed after you close the website !!<br><br>"
+                + "Thank you,<br>"
+                + "Fool!st Fashion Store";
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         try {
-            helper.setFrom(fromAddress, senderName);helper.setTo(email);
+            helper.setFrom(fromAddress, senderName);
+            helper.setTo(email);
             helper.setSubject(subject);
 
             content = content.replace("[[name]]", userName);
 
             helper.setText(content, true);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

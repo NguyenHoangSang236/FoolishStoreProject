@@ -1,9 +1,9 @@
 package com.backend.core.entities.embededkey;
 
-import java.io.Serializable;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+
+import java.io.Serializable;
 
 @Embeddable
 public class InvoicesWithProductsPrimaryKeys implements Serializable {
@@ -19,7 +19,8 @@ public class InvoicesWithProductsPrimaryKeys implements Serializable {
     int invoiceId;
 
 
-    public InvoicesWithProductsPrimaryKeys() {}
+    public InvoicesWithProductsPrimaryKeys() {
+    }
 
     public InvoicesWithProductsPrimaryKeys(int productManagementId, int invoiceId) {
         super();

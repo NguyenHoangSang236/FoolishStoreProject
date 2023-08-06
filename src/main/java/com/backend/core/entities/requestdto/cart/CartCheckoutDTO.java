@@ -25,7 +25,8 @@ public class CartCheckoutDTO {
         this.shippingFee = shippingFee;
     }
 
-    public CartCheckoutDTO() {}
+    public CartCheckoutDTO() {
+    }
 
 
     @Override

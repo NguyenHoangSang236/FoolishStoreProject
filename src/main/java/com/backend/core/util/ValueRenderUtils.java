@@ -36,15 +36,14 @@ public class ValueRenderUtils {
         char[] resultCharArr = new char[charArr.length];
         int resultIndex = 0;
 
-        for(int i = 0; i < charArr.length; i++) {
-            if(i == 0) {
-                if(Character.isLowerCase(charArr[i])) {
+        for (int i = 0; i < charArr.length; i++) {
+            if (i == 0) {
+                if (Character.isLowerCase(charArr[i])) {
                     resultCharArr[resultIndex] = Character.toUpperCase(charArr[i]);
                     resultIndex++;
                 }
-            }
-            else if (i < charArr.length - 1){
-                if(!Character.isWhitespace(charArr[i - 1]) && Character.isUpperCase(charArr[i])) {
+            } else if (i < charArr.length - 1) {
+                if (!Character.isWhitespace(charArr[i - 1]) && Character.isUpperCase(charArr[i])) {
                     resultCharArr[resultIndex] = Character.toLowerCase(charArr[i]);
                     resultIndex++;
                 } else if (!Character.isWhitespace(charArr[i - 1]) && Character.isLowerCase(charArr[i])) {
@@ -57,9 +56,8 @@ public class ValueRenderUtils {
                     resultCharArr[resultIndex] = ' ';
                     resultIndex++;
                 }
-            }
-            else {
-                if(Character.isUpperCase(charArr[i])) {
+            } else {
+                if (Character.isUpperCase(charArr[i])) {
                     resultCharArr[resultIndex] = Character.toLowerCase(charArr[i]);
                 } else {
                     resultCharArr[resultIndex] = charArr[i];
@@ -75,7 +73,7 @@ public class ValueRenderUtils {
         char[] charArr = pass.toCharArray();
         String result;
 
-        for(int i = 0; i < charArr.length; i++) {
+        for (int i = 0; i < charArr.length; i++) {
             charArr[i] = (char) (charArr[i] + 5);
         }
         result = charArr.toString();
@@ -89,7 +87,7 @@ public class ValueRenderUtils {
         char[] charArr = pass.toCharArray();
         String result;
 
-        for(int i = 0; i < charArr.length; i++) {
+        for (int i = 0; i < charArr.length; i++) {
             charArr[i] = (char) (charArr[i] - 5);
         }
         result = String.valueOf(charArr);
@@ -103,8 +101,8 @@ public class ValueRenderUtils {
         String result = " ";
         char[] linkCharrArr = link.toCharArray();
 
-        for(int i = 0; i < linkCharrArr.length; i++) {
-            if(linkCharrArr[i] == ' ') {
+        for (int i = 0; i < linkCharrArr.length; i++) {
+            if (linkCharrArr[i] == ' ') {
                 linkCharrArr[i] = '_';
             }
         }
@@ -119,8 +117,8 @@ public class ValueRenderUtils {
         String result = " ";
         char[] linkCharrArr = link.toCharArray();
 
-        for(int i = 0; i < linkCharrArr.length; i++) {
-            if(linkCharrArr[i] == '_') {
+        for (int i = 0; i < linkCharrArr.length; i++) {
+            if (linkCharrArr[i] == '_') {
                 linkCharrArr[i] = ' ';
             }
         }
@@ -157,15 +155,15 @@ public class ValueRenderUtils {
         double mb = kb / n;
         double gb = mb / n;
         double tb = gb / n;
-        if(size < n) {
+        if (size < n) {
             s = size + " Bytes";
-        } else if(size >= n && size < (n * n)) {
-            s =  String.format("%.1f", kb) + " KB";
-        } else if(size >= (n * n) && size < (n * n * n)) {
+        } else if (size >= n && size < (n * n)) {
+            s = String.format("%.1f", kb) + " KB";
+        } else if (size >= (n * n) && size < (n * n * n)) {
             s = String.format("%.1f", mb) + " MB";
-        } else if(size >= (n * n * n) && size < (n * n * n * n)) {
+        } else if (size >= (n * n * n) && size < (n * n * n * n)) {
             s = String.format("%.2f", gb) + " GB";
-        } else if(size >= (n * n * n * n)) {
+        } else if (size >= (n * n * n * n)) {
             s = String.format("%.2f", tb) + " TB";
         }
         return s;
@@ -177,16 +175,14 @@ public class ValueRenderUtils {
         try {
             Account currentUser = (Account) session.getAttribute("currentUser");
 
-            if(currentUser != null) {
-                if(currentUser.getCustomer() != null) {
+            if (currentUser != null) {
+                if (currentUser.getCustomer() != null) {
                     return currentUser.getCustomer().getId();
                 } else {
                     return currentUser.getStaff().getId();
                 }
-            }
-            else return 0;
-        }
-        catch (Exception e) {
+            } else return 0;
+        } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
@@ -197,27 +193,27 @@ public class ValueRenderUtils {
     public static String invoiceFilterQuery(int customerId, String adminAcceptance, int paymentStatus, String deliveryStatus, Date startInvoiceDate, Date endInvoiceDate, String paymentMethod, int page, int limit) {
         String result = "select * from invoice where Customer_ID = " + customerId + " and Payment_Status = " + paymentStatus;
 
-        if(adminAcceptance != null) {
+        if (adminAcceptance != null) {
             result += " and Admin_Acceptance = '" + adminAcceptance + "' ";
         }
 
-        if(deliveryStatus != null) {
+        if (deliveryStatus != null) {
             result += " and Delivery_Status = '" + deliveryStatus + "' ";
         }
 
-        if(paymentMethod != null) {
+        if (paymentMethod != null) {
             result += " and Payment_Method = '" + paymentMethod + "' ";
         }
 
-        if(startInvoiceDate != null) {
+        if (startInvoiceDate != null) {
             result += " and Invoice_Date >= '" + formatDateToString(startInvoiceDate, "yyyy-MM-dd") + "' ";
         }
 
-        if(endInvoiceDate != null) {
+        if (endInvoiceDate != null) {
             result += " and Invoice_Date <= '" + formatDateToString(endInvoiceDate, "yyyy-MM-dd") + "' ";
         }
 
-        result += "limit " + (limit * (page-1)) + ", " + limit;
+        result += "limit " + (limit * (page - 1)) + ", " + limit;
 
         return result + ';';
     }
@@ -227,15 +223,15 @@ public class ValueRenderUtils {
     public static String commentFilterQuery(int productId, String productColor, int replyOn, int page, int limit) {
         String result = "select * from comments where ";
 
-        if(productColor != null && !productColor.isEmpty() && !productColor.isBlank()) {
+        if (productColor != null && !productColor.isEmpty() && !productColor.isBlank()) {
             result += "product_color = '" + productColor.toLowerCase() + "' and ";
         }
 
-        if(productId > 0) {
+        if (productId > 0) {
             result += "product_id = " + productId + " and ";
         }
 
-        result += "reply_on = " + replyOn + " limit " + (limit * (page-1)) + ", " + limit;
+        result += "reply_on = " + replyOn + " limit " + (limit * (page - 1)) + ", " + limit;
 
         return result;
     }
@@ -244,74 +240,70 @@ public class ValueRenderUtils {
     // create a query for products binding filter
     public static String productFilterQuery(String[] catalogs, String name, String brand, double price1, double price2, int page, int limit) {
         String result = "SELECT piu.*\n" +
-                        "FROM product_info_for_ui piu JOIN catalogs_with_products cwp ON piu.product_id = cwp.product_id\n" +
-                        "                             JOIN catalog c ON c.id = cwp.catalog_id\n" +
-                        "WHERE ";
+                "FROM product_info_for_ui piu JOIN catalogs_with_products cwp ON piu.product_id = cwp.product_id\n" +
+                "                             JOIN catalog c ON c.id = cwp.catalog_id\n" +
+                "WHERE ";
         StringBuilder dynamicConditions = new StringBuilder();
         int catalogsLength;
 
-        if(catalogs == null) {
+        if (catalogs == null) {
             catalogsLength = 0;
-        }
-        else catalogsLength = catalogs.length;
+        } else catalogsLength = catalogs.length;
 
-        if(brand != null && !brand.isBlank() && !brand.isEmpty()) {
+        if (brand != null && !brand.isBlank() && !brand.isEmpty()) {
             dynamicConditions.append("and piu.brand = '").append(brand).append("' ");
         }
 
-        for(int i = 0; i < catalogsLength; i++) {
-            if(i == 0) {
+        for (int i = 0; i < catalogsLength; i++) {
+            if (i == 0) {
                 dynamicConditions.append("and (c.name = '").append(catalogs[i]).append("'");
-            }
+            } else dynamicConditions.append(" or c.name = '").append(catalogs[i]).append("'");
 
-            else dynamicConditions.append(" or c.name = '").append(catalogs[i]).append("'");
-
-            if(i == catalogsLength - 1) {
+            if (i == catalogsLength - 1) {
                 dynamicConditions.append(") ");
             }
         }
 
-        if(price1 >= 0 && price2 > 0) {
+        if (price1 >= 0 && price2 > 0) {
             dynamicConditions.append(" and piu.selling_price >= ").append(price1).append(" and piu.selling_price <= ").append(price2);
         }
 
-        if(name != null && !name.isBlank() && !name.isEmpty()) {
+        if (name != null && !name.isBlank() && !name.isEmpty()) {
             dynamicConditions.append(" and piu.name like '%").append(name).append("%'");
         }
 
         dynamicConditions = new StringBuilder(dynamicConditions.substring(4));
 
-        result += dynamicConditions + " ORDER BY piu.id desc LIMIT " + (limit * (page-1)) + ", " + limit;
+        result += dynamicConditions + " ORDER BY piu.id desc LIMIT " + (limit * (page - 1)) + ", " + limit;
 
         return result;
     }
-
 
 
     //create a query for cart items binding filter
     public static String cartItemFilterQuery(String name, String[] status, String brand, int page, int limit) {
         String result = "select * from cart_item_info_for_ui where ";
 
-        if(brand != null && !brand.isEmpty() && !brand.isBlank()) {
+        if (brand != null && !brand.isEmpty() && !brand.isBlank()) {
             result += "brand = '" + brand.toLowerCase() + "' and ";
         }
 
-        if(name != null && !name.isEmpty() && !name.isBlank()) {
+        if (name != null && !name.isEmpty() && !name.isBlank()) {
             result += "name = '" + brand.toLowerCase() + "' and ";
         }
 
-        if(status != null && status.length > 0) {
-            if(Arrays.stream(status).anyMatch(elem -> elem.equals(CartEnum.DISCOUNT.name()))) {
+        if (status != null && status.length > 0) {
+            if (Arrays.stream(status).anyMatch(elem -> elem.equals(CartEnum.DISCOUNT.name()))) {
                 result += "discount > 0 and ";
             }
 
-            if(Arrays.stream(status).anyMatch(elem -> elem.equals(CartEnum.SELECTED.name()))) {
+            if (Arrays.stream(status).anyMatch(elem -> elem.equals(CartEnum.SELECTED.name()))) {
                 result += "select_status = 1 and ";
             }
         }
 
-        if(page != 0 && limit != 0) {
-            result += " ORDER BY id desc LIMIT " + (limit * (page-1)) + ", " + limit;
+        if (page != 0 && limit != 0) {
+            result += " ORDER BY id desc LIMIT " + (limit * (page - 1)) + ", " + limit;
         }
 
         int lastIndex = result.lastIndexOf("and");
@@ -323,7 +315,6 @@ public class ValueRenderUtils {
     }
 
 
-
     //create a random temporary password
     public static String randomTemporaryPassword(String userName) {
         String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
@@ -331,7 +322,7 @@ public class ValueRenderUtils {
         StringBuilder sb = new StringBuilder(10);
 
         for (int i = 0; i < 10; i++) {
-            int index = (int)(AlphaNumericString.length() * Math.random());
+            int index = (int) (AlphaNumericString.length() * Math.random());
 
             sb.append(AlphaNumericString.charAt(index));
         }
@@ -340,12 +331,10 @@ public class ValueRenderUtils {
     }
 
 
-
     // get gg drive url from file ID
     public static String getGoogleDriveUrlFromFileId(String fileId) {
         return "https://drive.google.com/file/d/" + fileId + "/view?usp=sharing";
     }
-
 
 
     // get list of data from filter
@@ -362,7 +351,7 @@ public class ValueRenderUtils {
         Class<? extends FilterRequest> filterRequestEntity = filterRequest.getClass();
 
         // convert paramObj
-        if(filterRequestEntity.isInstance(paramObj)) {
+        if (filterRequestEntity.isInstance(paramObj)) {
             filterRequest = filterRequestEntity.cast(paramObj);
 
             Object filter = filterRequest.getFilter();
@@ -447,8 +436,7 @@ public class ValueRenderUtils {
                         return filterQuery;
                     }
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

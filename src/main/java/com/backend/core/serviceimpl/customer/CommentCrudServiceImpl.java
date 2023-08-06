@@ -44,10 +44,9 @@ public class CommentCrudServiceImpl implements CrudService {
     public ApiResponse singleCreationalResponse(Object paramObj, HttpSession session, HttpServletRequest httpRequest) {
         CommentRequestDTO request;
 
-        if(!CheckUtils.loggedIn(session)) {
+        if (!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
-        }
-        else {
+        } else {
             request = (CommentRequestDTO) paramObj;
 
             return addNewComment(request, session);
@@ -71,22 +70,20 @@ public class CommentCrudServiceImpl implements CrudService {
         Comment comment;
         int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
-        if(!CheckUtils.loggedIn(session)) {
+        if (!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
-        }
-        else {
+        } else {
             try {
                 comment = commentRepo.getCommentById(id);
 
-                if(customerId != comment.getCustomer().getId()) {
+                if (customerId != comment.getCustomer().getId()) {
                     return new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
                 }
 
                 commentRepo.deleteById(id);
 
                 return new ApiResponse("success", "Update comment successfully");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
@@ -104,12 +101,11 @@ public class CommentCrudServiceImpl implements CrudService {
         Comment comment;
         int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
-        if(!CheckUtils.loggedIn(session)) {
+        if (!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
         } else if (id == 0) {
             return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name());
-        }
-        else {
+        } else {
             try {
                 comment = commentRepo.getCommentById(id);
 
@@ -117,8 +113,7 @@ public class CommentCrudServiceImpl implements CrudService {
                 commentRepo.save(comment);
 
                 return new ApiResponse("success", "Like comment successfully");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
@@ -131,15 +126,14 @@ public class CommentCrudServiceImpl implements CrudService {
         Comment comment;
         int customerId = ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session);
 
-        if(!CheckUtils.loggedIn(session)) {
+        if (!CheckUtils.loggedIn(session)) {
             return new ApiResponse("failed", ErrorTypeEnum.LOGIN_FIRST.name());
-        }
-        else {
+        } else {
             try {
                 request = (CommentRequestDTO) paramObj;
                 comment = commentRepo.getCommentById(request.getId());
 
-                if(customerId != comment.getCustomer().getId()) {
+                if (customerId != comment.getCustomer().getId()) {
                     return new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
                 }
 
@@ -149,8 +143,7 @@ public class CommentCrudServiceImpl implements CrudService {
                 commentRepo.save(comment);
 
                 return new ApiResponse("success", "Delete comment successfully");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
             }
@@ -168,8 +161,7 @@ public class CommentCrudServiceImpl implements CrudService {
             List<Comment> commentList = customQueryRepo.getBindingFilteredList(filterQuery, Comment.class);
 
             return new ApiResponse("success", commentList);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }
@@ -194,7 +186,6 @@ public class CommentCrudServiceImpl implements CrudService {
     }
 
 
-
     // add new comment process
     public ApiResponse addNewComment(CommentRequestDTO request, HttpSession session) {
         Comment newComment = new Comment();
@@ -214,8 +205,7 @@ public class CommentCrudServiceImpl implements CrudService {
             commentRepo.save(newComment);
 
             return new ApiResponse("success", "Add new comment successfully");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
         }

@@ -67,7 +67,8 @@ public class CustomerRenderInfoDTO {
         this.avatar = avatar;
     }
 
-    public CustomerRenderInfoDTO() {}
+    public CustomerRenderInfoDTO() {
+    }
 
     @Override
     public boolean equals(Object o) {

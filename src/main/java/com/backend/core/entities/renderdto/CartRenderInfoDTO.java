@@ -1,6 +1,9 @@
 package com.backend.core.entities.renderdto;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -56,7 +59,8 @@ public class CartRenderInfoDTO {
     String image1;
 
 
-    public CartRenderInfoDTO() {}
+    public CartRenderInfoDTO() {
+    }
 
     public CartRenderInfoDTO(int id, int customerId, int productManagementId, int quantity, String buyingStatus, int selectStatus, int productId, String color, String size, String name, String brand, double sellingPrice, double discount, String image1) {
         this.id = id;

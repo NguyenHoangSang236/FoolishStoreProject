@@ -29,7 +29,6 @@ public class CartController extends CrudController {
     }
 
 
-
     @PostMapping("/remove")
     public ApiResponse updateCart(@RequestBody String json, HttpSession session, HttpServletRequest httpRequest) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();

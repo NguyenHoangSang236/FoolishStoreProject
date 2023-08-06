@@ -16,7 +16,8 @@ public class GoogleTranslateDTO {
         this.sourceLanguageCode = sourceLanguageCode;
     }
 
-    public GoogleTranslateDTO() {}
+    public GoogleTranslateDTO() {
+    }
 
     @Override
     public boolean equals(Object o) {
