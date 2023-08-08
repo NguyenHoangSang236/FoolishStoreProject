@@ -26,12 +26,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -56,6 +59,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     GoogleDriveService googleDriveService;
 
+    @Autowired
+    SessionRegistry sessionRegistry;
+
+
 
     @Override
     public ResponseEntity<ApiResponse> loginIntoSystem(Account account, HttpSession session) throws URISyntaxException {
@@ -74,6 +81,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
                 responseHeaders.setLocation(location);
                 responseHeaders.set("sessionid", session.getId());
+
+                sessionRegistry.registerNewSession(session.getId(), loginAcc);
 
                 if (loginAcc.getRole().equals(RoleEnum.ADMIN.name()) || loginAcc.getRole().equals(RoleEnum.SHIPPER.name())) {
                     staffInfo = staffRenderInfoRepo.getStaffInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
@@ -122,6 +131,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public ApiResponse logoutFromSystem(HttpSession session) {
         try {
+            Account currentAcc = (Account) session.getAttribute("currentUser");
+
+            List<SessionInformation> sessions = sessionRegistry.getAllSessions(currentAcc, false);
+            for (SessionInformation sessionInfo : sessions) {
+                System.out.println(sessionInfo.toString());
+                sessionInfo.expireNow();
+            }
+
             session.removeAttribute("currentUser");
             return new ApiResponse("success", "Logout successfully");
         } catch (Exception e) {
