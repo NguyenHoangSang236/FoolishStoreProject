@@ -7,7 +7,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -16,7 +21,7 @@ import java.util.Objects;
 @Table(name = "login_accounts")
 @DynamicInsert
 @DynamicUpdate
-public class Account {
+public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)
@@ -72,6 +77,41 @@ public class Account {
                 ", customer=" + customer +
                 ", staff=" + staff +
                 '}';
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.role));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.userName;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
 

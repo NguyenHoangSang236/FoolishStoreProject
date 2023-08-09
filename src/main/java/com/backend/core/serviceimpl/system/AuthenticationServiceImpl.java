@@ -13,6 +13,7 @@ import com.backend.core.repository.customer.CustomerRenderInfoRepository;
 import com.backend.core.repository.customer.CustomerRepository;
 import com.backend.core.repository.staff.StaffRenderInfoRepository;
 import com.backend.core.repository.staff.StaffRepository;
+import com.backend.core.security.JwtService;
 import com.backend.core.service.AuthenticationService;
 import com.backend.core.service.GoogleDriveService;
 import com.backend.core.util.CheckUtils;
@@ -20,23 +21,26 @@ import com.backend.core.util.ExceptionHandlerUtils;
 import com.backend.core.util.ValueRenderUtils;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     StaffRepository staffRepo;
@@ -59,8 +63,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     GoogleDriveService googleDriveService;
 
-    @Autowired
-    SessionRegistry sessionRegistry;
+    final JwtService jwtService;
+
+    final AuthenticationManager authenticationManager;
+
+    final PasswordEncoder passwordEncoder;
 
 
 
@@ -70,33 +77,42 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         StaffRenderInfoDTO staffInfo = new StaffRenderInfoDTO();
         CustomerRenderInfoDTO customerInfo = new CustomerRenderInfoDTO();
 
-        URI location = new URI("http://localhost:8080/systemAuthentication/login");
+//        URI location = new URI("http://localhost:8080/systemAuthentication/login");
         HttpHeaders responseHeaders = new HttpHeaders();
 
         try {
-            loginAcc = accountRepo.getAccountByUserNameAndPassword(account.getUserName(), account.getPassword());
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            account.getUsername(),
+                            account.getPassword()
+                    )
+            );
+
+            loginAcc = accountRepo.getAccountByUserName(account.getUsername());
 
             if (loginAcc != null) {
+                String jwt = jwtService.generateJwt(loginAcc);
+
                 session.setAttribute("currentUser", loginAcc);
 
-                responseHeaders.setLocation(location);
-                responseHeaders.set("sessionid", session.getId());
-
-                sessionRegistry.registerNewSession(session.getId(), loginAcc);
+//                responseHeaders.setLocation(location);
+//                responseHeaders.set("sessionid", session.getId());
 
                 if (loginAcc.getRole().equals(RoleEnum.ADMIN.name()) || loginAcc.getRole().equals(RoleEnum.SHIPPER.name())) {
-                    staffInfo = staffRenderInfoRepo.getStaffInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
-                    return new ResponseEntity<>(new ApiResponse("success", staffInfo), responseHeaders, HttpStatus.OK);
+                    staffInfo = staffRenderInfoRepo.getStaffInfoByUserName(account.getUsername());
+                    return new ResponseEntity<>(new ApiResponse("success", staffInfo, jwt), responseHeaders, HttpStatus.OK);
                 } else if (loginAcc.getRole().equals(RoleEnum.CUSTOMER.name())) {
-                    customerInfo = customerRenderInfoRepo.getCustomerInfoByUserNameAndPassword(account.getUserName(), account.getPassword());
-                    return new ResponseEntity<>(new ApiResponse("success", customerInfo), responseHeaders, HttpStatus.OK);
+                    customerInfo = customerRenderInfoRepo.getCustomerInfoByUserName(account.getUsername());
+                    return new ResponseEntity<>(new ApiResponse("success", customerInfo, jwt), responseHeaders, HttpStatus.OK);
                 } else
                     return new ResponseEntity<>(new ApiResponse("failed", "This role is not existed"), responseHeaders, HttpStatus.BAD_REQUEST);
             } else
-                return new ResponseEntity<>(new ApiResponse("failed", "Incorrect password or user name, please check again!"), responseHeaders, HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("failed", "Incorrect password or user name, please check again!"), responseHeaders, HttpStatus.UNAUTHORIZED);
+        } catch (BadCredentialsException e) {
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), responseHeaders, HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), responseHeaders, HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), responseHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -133,11 +149,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             Account currentAcc = (Account) session.getAttribute("currentUser");
 
-            List<SessionInformation> sessions = sessionRegistry.getAllSessions(currentAcc, false);
-            for (SessionInformation sessionInfo : sessions) {
-                System.out.println(sessionInfo.toString());
-                sessionInfo.expireNow();
-            }
+//            List<SessionInformation> sessions = sessionRegistry.getAllSessions(currentAcc, false);
+//            for (SessionInformation sessionInfo : sessions) {
+//                System.out.println(sessionInfo.toString());
+//                sessionInfo.expireNow();
+//            }
 
             session.removeAttribute("currentUser");
             return new ApiResponse("success", "Logout successfully");
@@ -164,12 +180,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 return new ApiResponse("failed", "Password can not be null !!");
             }
             //check valid username and password
-            else if (!CheckUtils.checkValidStringType(accountFromUI.getUserName(), StringTypeEnum.HAS_NO_SPACE) ||
+            else if (!CheckUtils.checkValidStringType(accountFromUI.getUsername(), StringTypeEnum.HAS_NO_SPACE) ||
                     !CheckUtils.checkValidStringType(accountFromUI.getPassword(), StringTypeEnum.HAS_NO_SPACE)) {
                 return new ApiResponse("failed", "Please remove all spaces in Username and Password !!");
             }
             //check for existed username
-            else if (accountRepo.getAccountByUserName(accountFromUI.getUserName()) != null) {
+            else if (accountRepo.getAccountByUserName(accountFromUI.getUsername()) != null) {
                 return new ApiResponse("failed", "This username has already been existed");
             }
 //            //check valid phone number
@@ -192,6 +208,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             else if (CheckUtils.hasSpecialSign(customer.getName())) {
                 return new ApiResponse("failed", "Full name can not have special signs !!");
             } else {
+                String jwt = jwtService.generateJwt(accountFromUI);
+                String newEncodedPassword = passwordEncoder.encode(accountFromUI.getPassword());
+
+                accountFromUI.setPassword(newEncodedPassword);
                 accountFromUI.setCustomer(null);
                 accountRepo.save(accountFromUI);
 
