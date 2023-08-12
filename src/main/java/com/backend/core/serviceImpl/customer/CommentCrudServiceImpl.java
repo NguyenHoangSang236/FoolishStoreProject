@@ -39,6 +39,9 @@ public class CommentCrudServiceImpl implements CrudService {
     @Autowired
     CustomQueryRepository customQueryRepo;
 
+    @Autowired
+    ValueRenderUtils valueRenderUtils;
+
 
     @Override
     public ResponseEntity singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
@@ -63,7 +66,7 @@ public class CommentCrudServiceImpl implements CrudService {
     @Override
     public ResponseEntity removingResponseById(int id, HttpServletRequest httpRequest) {
         Comment comment;
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         try {
             comment = commentRepo.getCommentById(id);
@@ -90,7 +93,7 @@ public class CommentCrudServiceImpl implements CrudService {
     @Override
     public ResponseEntity updatingResponseById(int id, HttpServletRequest httpRequest) {
         Comment comment;
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         if (id == 0) {
             return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
@@ -113,7 +116,7 @@ public class CommentCrudServiceImpl implements CrudService {
     public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         CommentRequestDTO request;
         Comment comment;
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         try {
             request = (CommentRequestDTO) paramObj;
@@ -141,7 +144,7 @@ public class CommentCrudServiceImpl implements CrudService {
         try {
             CommentFilterRequestDTO commentFilterRequest = (CommentFilterRequestDTO) paramObj;
 
-            String filterQuery = ValueRenderUtils.getFilterQuery(commentFilterRequest, FilterTypeEnum.COMMENT, httpRequest);
+            String filterQuery = valueRenderUtils.getFilterQuery(commentFilterRequest, FilterTypeEnum.COMMENT, httpRequest);
 
             List<Comment> commentList = customQueryRepo.getBindingFilteredList(filterQuery, Comment.class);
 
@@ -178,7 +181,7 @@ public class CommentCrudServiceImpl implements CrudService {
         int customerId;
 
         try {
-            customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpServletRequest);
+            customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpServletRequest);
             product = productRepo.getProductById(request.getProductId());
 
             newComment.setProduct(product);

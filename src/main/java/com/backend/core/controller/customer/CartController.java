@@ -14,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/authen/cart", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+@PreAuthorize("hasAuthority('CUSTOMER')")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CartController extends CrudController {
     public CartController(@Autowired @Qualifier("CartCrudServiceImpl") CrudService cartCrudServiceImpl) {
@@ -75,7 +77,6 @@ public class CartController extends CrudController {
 
 
     @PostMapping("/showFullCart")
-//    @PreAuthorize("hasRole('CUSTOMER')")
     @Override
     public ResponseEntity getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();

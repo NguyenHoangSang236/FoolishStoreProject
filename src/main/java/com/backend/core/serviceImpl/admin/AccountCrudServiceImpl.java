@@ -36,6 +36,12 @@ public class AccountCrudServiceImpl implements CrudService {
     @Autowired
     AccountRepository accountRepo;
 
+    @Autowired
+    CheckUtils checkUtils;
+
+    @Autowired
+    ValueRenderUtils valueRenderUtils;
+
 
     @Override
     public ResponseEntity singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
@@ -69,7 +75,7 @@ public class AccountCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        if (!CheckUtils.isAdmin(httpRequest)) {
+        if (!checkUtils.isAdmin(httpRequest)) {
             return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
         } else {
             try {
@@ -105,7 +111,7 @@ public class AccountCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
-        if (!CheckUtils.isAdmin(httpRequest)) {
+        if (!checkUtils.isAdmin(httpRequest)) {
             return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
         } else {
             try {
@@ -122,7 +128,7 @@ public class AccountCrudServiceImpl implements CrudService {
 
                     // get customer info list by pagination
                     customerList = customerRenderInfoRepo.getCustomerInfoList(
-                            ValueRenderUtils.getStartLineForQueryPagination(limit, page),
+                            valueRenderUtils.getStartLineForQueryPagination(limit, page),
                             limit
                     );
 
@@ -132,7 +138,7 @@ public class AccountCrudServiceImpl implements CrudService {
 
                     // get shipper info list by pagination
                     shipperList = staffRenderInfoRepo.getShipperInfoList(
-                            ValueRenderUtils.getStartLineForQueryPagination(limit, page),
+                            valueRenderUtils.getStartLineForQueryPagination(limit, page),
                             limit
                     );
 
@@ -142,7 +148,7 @@ public class AccountCrudServiceImpl implements CrudService {
 
                     // get admin info list by pagination
                     adminList = staffRenderInfoRepo.getAdminInfoList(
-                            ValueRenderUtils.getStartLineForQueryPagination(limit, page),
+                            valueRenderUtils.getStartLineForQueryPagination(limit, page),
                             limit
                     );
 

@@ -1,4 +1,4 @@
-package com.backend.core.controller.customer;
+package com.backend.core.controller.common;
 
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.google.GoogleTranslateDTO;

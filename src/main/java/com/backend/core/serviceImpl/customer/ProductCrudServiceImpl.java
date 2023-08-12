@@ -43,6 +43,9 @@ public class ProductCrudServiceImpl implements CrudService {
     @Autowired
     CustomQueryRepository customQueryRepo;
 
+    @Autowired
+    ValueRenderUtils valueRenderUtils;
+
 
     public ProductCrudServiceImpl() {
     }
@@ -189,7 +192,7 @@ public class ProductCrudServiceImpl implements CrudService {
     // filter products
     public ResponseEntity filterProducts(ProductFilterRequestDTO productFilterRequest, HttpServletRequest request) {
         try {
-            String filterQuery = ValueRenderUtils.getFilterQuery(productFilterRequest, FilterTypeEnum.PRODUCT, request);
+            String filterQuery = valueRenderUtils.getFilterQuery(productFilterRequest, FilterTypeEnum.PRODUCT, request);
 
             List<ProductRenderInfoDTO> productRenderList = customQueryRepo.getBindingFilteredList(filterQuery, ProductRenderInfoDTO.class);
 
@@ -208,7 +211,7 @@ public class ProductCrudServiceImpl implements CrudService {
     public ResponseEntity getProductFromPagination(PaginationDTO pagination) {
         try {
             List<ProductRenderInfoDTO> productRenderList = productRenderInfoRepo.getAllProducts(
-                    ValueRenderUtils.getStartLineForQueryPagination(pagination.getLimit(), pagination.getPage()),
+                    valueRenderUtils.getStartLineForQueryPagination(pagination.getLimit(), pagination.getPage()),
                     pagination.getLimit()
             );
             return new ResponseEntity(new ApiResponse("success", productRenderList), HttpStatus.OK);

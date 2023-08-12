@@ -52,6 +52,9 @@ public class CartCrudServiceImpl implements CrudService {
     @Autowired
     ProductManagementRepository productManagementRepo;
 
+    @Autowired
+    ValueRenderUtils valueRenderUtils;
+
 
     public CartCrudServiceImpl() {
     }
@@ -61,7 +64,7 @@ public class CartCrudServiceImpl implements CrudService {
     @Override
     public ResponseEntity singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
         CartItemDTO cartItemDTO = (CartItemDTO) paramObj;
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
         Cart newCartItem;
         ProductManagement productManagement;
 
@@ -115,7 +118,7 @@ public class CartCrudServiceImpl implements CrudService {
     // remove an item from cart
     @Override
     public ResponseEntity removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         try {
             ListRequestDTO listRequestDTO = (ListRequestDTO) paramObj;
@@ -149,7 +152,7 @@ public class CartCrudServiceImpl implements CrudService {
     // update item info from cart
     @Override
     public ResponseEntity updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         try {
             List<Object> cartItemList = listRequestDTO.getObjectList();
@@ -223,7 +226,7 @@ public class CartCrudServiceImpl implements CrudService {
     // get cart item list through pagination or filter
     @Override
     public ResponseEntity readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
         List<CartRenderInfoDTO> cartItemList = new ArrayList<>();
 
         // if the param is pagination only -> show full cart items
@@ -244,7 +247,7 @@ public class CartCrudServiceImpl implements CrudService {
         // if the param is filter -> filter cart items
         else if (paramObj instanceof CartItemFilterRequestDTO) {
             try {
-                String filterQuery = ValueRenderUtils.getFilterQuery(paramObj, FilterTypeEnum.CART_ITEMS, httpRequest);
+                String filterQuery = valueRenderUtils.getFilterQuery(paramObj, FilterTypeEnum.CART_ITEMS, httpRequest);
 
                 cartItemList = customQueryRepo.getBindingFilteredList(filterQuery, CartRenderInfoDTO.class);
             } catch (Exception e) {
@@ -266,7 +269,7 @@ public class CartCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity readingResponse(String renderType, HttpServletRequest httpRequest) {
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         // get cart item total quantity
         if (renderType.equals(RenderTypeEnum.TOTAL_CART_ITEM_QUANTITY.name())) {

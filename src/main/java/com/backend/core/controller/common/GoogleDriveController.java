@@ -1,4 +1,4 @@
-package com.backend.core.controller.customer;
+package com.backend.core.controller.common;
 
 import com.backend.core.configuration.GoogleDriveConfig;
 import com.backend.core.entities.requestdto.ApiResponse;
@@ -29,6 +29,9 @@ public class GoogleDriveController {
     @Autowired
     CustomerRepository customerRepo;
 
+    @Autowired
+    ValueRenderUtils valueRenderUtils;
+
 
     // Get all file on drive
 //    @GetMapping("/getAllFolders")
@@ -51,7 +54,7 @@ public class GoogleDriveController {
             driveFolderPath = "Root";
         }
 
-        Customer customer = customerRepo.getCustomerById(ValueRenderUtils.getCustomerOrStaffIdFromRequest(request));
+        Customer customer = customerRepo.getCustomerById(valueRenderUtils.getCustomerOrStaffIdFromRequest(request));
 
         // check if customer logged in or not
         if (customer == null) {
@@ -70,7 +73,7 @@ public class GoogleDriveController {
                 customer.setImage(fileId);
                 customerRepo.save(customer);
 
-                return new ApiResponse("success", ValueRenderUtils.getGoogleDriveUrlFromFileId(fileId));
+                return new ApiResponse("success", valueRenderUtils.getGoogleDriveUrlFromFileId(fileId));
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());

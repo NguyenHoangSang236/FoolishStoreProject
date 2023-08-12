@@ -14,7 +14,8 @@ import com.backend.core.repository.account.AccountRepository;
 import com.backend.core.repository.customQuery.CustomQueryRepository;
 import com.backend.core.repository.product.ProductRenderInfoRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -22,23 +23,24 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
+@Service
+@RequiredArgsConstructor
 public class ValueRenderUtils {
-    @Autowired
-    static CustomQueryRepository customQueryRepo = new CustomQueryRepository();
+    final CustomQueryRepository customQueryRepo;
 
-    @Autowired
-    static ProductRenderInfoRepository productRenderInfoRepo;
+    final ProductRenderInfoRepository productRenderInfoRepo;
 
-    @Autowired
-    static AccountRepository accountRepo;
+    final AccountRepository accountRepo;
 
-    @Autowired
-    static JwtUtils jwtUtils;
+    final JwtUtils jwtUtils;
+
+    final CheckUtils checkUtils;
+
 
 
     //format person's full name (trim, remove unnecessary spaces and capitalize fist letters)
-    public static String formattedPersonFullName(String name) {
-        name = CheckUtils.trimmedInputString(name);
+    public String formattedPersonFullName(String name) {
+        name = checkUtils.trimmedInputString(name);
         char[] charArr = name.toCharArray();
         char[] resultCharArr = new char[charArr.length];
         int resultIndex = 0;
@@ -76,7 +78,7 @@ public class ValueRenderUtils {
 
 
     //encode the password
-    public static String encodePassword(String pass) {
+    public String encodePassword(String pass) {
         char[] charArr = pass.toCharArray();
         String result;
 
@@ -90,7 +92,7 @@ public class ValueRenderUtils {
 
 
     //decode the password
-    public static String decodePassword(String pass) {
+    public String decodePassword(String pass) {
         char[] charArr = pass.toCharArray();
         String result;
 
@@ -104,7 +106,7 @@ public class ValueRenderUtils {
 
 
     //format string to link
-    public static String stringToLink(String link) {
+    public String stringToLink(String link) {
         String result = " ";
         char[] linkCharrArr = link.toCharArray();
 
@@ -120,7 +122,7 @@ public class ValueRenderUtils {
 
 
     //format link to string
-    public static String linkToString(String link) {
+    public String linkToString(String link) {
         String result = " ";
         char[] linkCharrArr = link.toCharArray();
 
@@ -136,26 +138,26 @@ public class ValueRenderUtils {
 
 
     //format DateTime
-    public static String formatDateToString(Date date, String pattern) {
+    public String formatDateToString(Date date, String pattern) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         return simpleDateFormat.format(date);
     }
 
 
     //convert String to byte[]
-    public static byte[] convertStringToByteArray(String input) {
+    public byte[] convertStringToByteArray(String input) {
         return input.getBytes(StandardCharsets.UTF_8);
     }
 
 
     //convert byte[] to String
-    public static String convertByteToString(byte[] input) {
+    public String convertByteToString(byte[] input) {
         return new String(input, StandardCharsets.UTF_8);
     }
 
 
     //convert byte[] to KB, MB, GB, TB
-    public static String getConvertedDataSize(long size) {
+    public String getConvertedDataSize(long size) {
         long n = 1024;
         String s = "";
         double kb = size / n;
@@ -178,7 +180,7 @@ public class ValueRenderUtils {
 
 
     //get customer id from HttpSession
-    public static int getCustomerOrStaffIdFromRequest(HttpServletRequest request) {
+    public int getCustomerOrStaffIdFromRequest(HttpServletRequest request) {
         try {
             String jwt = jwtUtils.getJwtFromRequest(request);
             String userName = jwtUtils.getUserNameFromJwt(jwt);
@@ -200,7 +202,7 @@ public class ValueRenderUtils {
 
 
     //create a query for invoice binding filter
-    public static String invoiceFilterQuery(int customerId, String adminAcceptance, int paymentStatus, String deliveryStatus, Date startInvoiceDate, Date endInvoiceDate, String paymentMethod, int page, int limit) {
+    public String invoiceFilterQuery(int customerId, String adminAcceptance, int paymentStatus, String deliveryStatus, Date startInvoiceDate, Date endInvoiceDate, String paymentMethod, int page, int limit) {
         String result = "select * from invoice where Customer_ID = " + customerId + " and Payment_Status = " + paymentStatus;
 
         if (adminAcceptance != null) {
@@ -230,7 +232,7 @@ public class ValueRenderUtils {
 
 
     // create a query for comments binding filter
-    public static String commentFilterQuery(int productId, String productColor, int replyOn, int page, int limit) {
+    public String commentFilterQuery(int productId, String productColor, int replyOn, int page, int limit) {
         String result = "select * from comments where ";
 
         if (productColor != null && !productColor.isEmpty() && !productColor.isBlank()) {
@@ -248,7 +250,7 @@ public class ValueRenderUtils {
 
 
     // create a query for products binding filter
-    public static String productFilterQuery(String[] catalogs, String name, String brand, double price1, double price2, int page, int limit) {
+    public String productFilterQuery(String[] catalogs, String name, String brand, double price1, double price2, int page, int limit) {
         String result = "SELECT piu.*\n" +
                 "FROM product_info_for_ui piu JOIN catalogs_with_products cwp ON piu.product_id = cwp.product_id\n" +
                 "                             JOIN catalog c ON c.id = cwp.catalog_id\n" +
@@ -291,7 +293,7 @@ public class ValueRenderUtils {
 
 
     //create a query for cart items binding filter
-    public static String cartItemFilterQuery(String name, String[] status, String brand, int page, int limit) {
+    public String cartItemFilterQuery(String name, String[] status, String brand, int page, int limit) {
         String result = "select * from cart_item_info_for_ui where ";
 
         if (brand != null && !brand.isEmpty() && !brand.isBlank()) {
@@ -326,7 +328,7 @@ public class ValueRenderUtils {
 
 
     //create a random temporary password
-    public static String randomTemporaryPassword(String userName) {
+    public String randomTemporaryPassword(String userName) {
         String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
 
         StringBuilder sb = new StringBuilder(10);
@@ -342,13 +344,13 @@ public class ValueRenderUtils {
 
 
     // get gg drive url from file ID
-    public static String getGoogleDriveUrlFromFileId(String fileId) {
+    public String getGoogleDriveUrlFromFileId(String fileId) {
         return "https://drive.google.com/file/d/" + fileId + "/view?usp=sharing";
     }
 
 
     // get list of data from filter
-    static public String getFilterQuery(Object paramObj, FilterTypeEnum filterType, HttpServletRequest request) {
+    public String getFilterQuery(Object paramObj, FilterTypeEnum filterType, HttpServletRequest request) {
         // get current customer id
         int customerId = getCustomerOrStaffIdFromRequest(request);
 
@@ -456,7 +458,7 @@ public class ValueRenderUtils {
 
 
     // generate start line for query from limit and page
-    public static int getStartLineForQueryPagination(int limit, int page) {
+    public int getStartLineForQueryPagination(int limit, int page) {
         return (page - 1) * limit;
     }
 }

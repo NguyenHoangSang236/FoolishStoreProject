@@ -21,6 +21,9 @@ public class GoogleDriveService {
     @Autowired
     GoogleFileManager googleFileManager;
 
+    @Autowired
+    ValueRenderUtils valueRenderUtils;
+
     public List<GoogleDriveFileDTO> getAllFile() throws IOException, GeneralSecurityException {
 
         List<GoogleDriveFileDTO> responseList = null;
@@ -35,7 +38,7 @@ public class GoogleDriveService {
                     dto.setId(f.getId());
                     dto.setName(f.getName());
                     dto.setThumbnailLink(f.getThumbnailLink());
-                    dto.setSize(ValueRenderUtils.getConvertedDataSize(f.getSize()));
+                    dto.setSize(valueRenderUtils.getConvertedDataSize(f.getSize()));
                     dto.setLink("https://drive.google.com/file/d/" + f.getId() + "/view?usp=sharing");
                     dto.setShared(f.getShared());
 

@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/authen/comment", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+@PreAuthorize("hasAuthority('CUSTOMER')")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CommentController extends CrudController {
     public CommentController(@Autowired @Qualifier("CommentCrudServiceImpl") CrudService commentCrudServiceImpl) {

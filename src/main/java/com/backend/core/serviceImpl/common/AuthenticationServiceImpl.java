@@ -63,6 +63,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     GoogleDriveService googleDriveService;
 
+    @Autowired
+    CheckUtils checkUtils;
+
+    @Autowired
+    ValueRenderUtils valueRenderUtils;
+
     final JwtUtils jwtUtils;
 
     final AuthenticationManager authenticationManager;
@@ -171,8 +177,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 return new ResponseEntity(new ApiResponse("failed", "Password can not be null !!"), HttpStatus.BAD_REQUEST);
             }
             //check valid username and password
-            else if (!CheckUtils.checkValidStringType(accountFromUI.getUsername(), StringTypeEnum.HAS_NO_SPACE) ||
-                    !CheckUtils.checkValidStringType(accountFromUI.getPassword(), StringTypeEnum.HAS_NO_SPACE)) {
+            else if (!checkUtils.checkValidStringType(accountFromUI.getUsername(), StringTypeEnum.HAS_NO_SPACE) ||
+                    !checkUtils.checkValidStringType(accountFromUI.getPassword(), StringTypeEnum.HAS_NO_SPACE)) {
                 return new ResponseEntity(new ApiResponse("failed", "Please remove all spaces in Username and Password !!"), HttpStatus.BAD_REQUEST);
             }
             //check for existed username
@@ -180,7 +186,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 return new ResponseEntity(new ApiResponse("failed", "This username has already been existed"), HttpStatus.BAD_REQUEST);
             }
 //            //check valid phone number
-//            else if (!CheckUtils.isValidPhoneNumber(customer.getPhoneNumber())) {
+//            else if (!checkUtils.isValidPhoneNumber(customer.getPhoneNumber())) {
 //                return "This is not a phone number !!";
 //            }
             //check valid VN phone number
@@ -188,7 +194,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 return new ResponseEntity(new ApiResponse("failed", "Phone number must be 10-digit !!"), HttpStatus.BAD_REQUEST);
             }
             //check valid email
-            else if (!CheckUtils.isValidEmail(customer.getEmail())) {
+            else if (!checkUtils.isValidEmail(customer.getEmail())) {
                 return new ResponseEntity(new ApiResponse("failed", "This is not an email, please input again !!"), HttpStatus.BAD_REQUEST);
             }
             //check reused email
@@ -196,7 +202,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 return new ResponseEntity(new ApiResponse("failed", "This email has been used !!"), HttpStatus.BAD_REQUEST);
             }
             //check valid customer full name
-            else if (CheckUtils.hasSpecialSign(customer.getName())) {
+            else if (checkUtils.hasSpecialSign(customer.getName())) {
                 return new ResponseEntity(new ApiResponse("failed", "Full name can not have special signs !!"), HttpStatus.BAD_REQUEST);
             } else {
                 String jwt = jwtUtils.generateJwt(accountFromUI);
@@ -207,7 +213,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 accountRepo.save(accountFromUI);
 
                 customer.setAccount(accountFromUI);
-                String formattedName = ValueRenderUtils.formattedPersonFullName(customer.getName());
+                String formattedName = valueRenderUtils.formattedPersonFullName(customer.getName());
                 customer.setName(formattedName);
                 customerRepo.save(customer);
 
@@ -221,7 +227,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ResponseEntity updateProfile(CustomerRenderInfoDTO customerInfo, HttpServletRequest request) {
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(request);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(request);
 
         try {
             Customer customer = customerRepo.getCustomerById(customerId);
@@ -240,7 +246,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String fromAddress = "nguyenhoangsang236@gmail.com";
         String senderName = "Fool!st Fashion Store";
         String subject = "Your new temporary password";
-        String newTempPassoword = ValueRenderUtils.randomTemporaryPassword(userName);
+        String newTempPassoword = valueRenderUtils.randomTemporaryPassword(userName);
         String content = "Dear [[name]],<br>"
                 + "Your new temporary password is " + newTempPassoword + "<br>"
                 + "Please rememder to change a new password for your new account because this temporary password will be changed after you close the website !!<br><br>"

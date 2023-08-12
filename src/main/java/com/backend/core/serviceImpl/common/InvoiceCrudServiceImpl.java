@@ -64,6 +64,12 @@ public class InvoiceCrudServiceImpl implements CrudService {
     @Autowired
     CartRenderInfoRepository cartRenderInfoRepo;
 
+    @Autowired
+    CheckUtils checkUtils;
+
+    @Autowired
+    ValueRenderUtils valueRenderUtils;
+
 
     public InvoiceCrudServiceImpl() {
     }
@@ -71,7 +77,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Override
     public synchronized ResponseEntity singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
         String paymentMethod = (String) paramObj;
         String responseSuccessMessage = "New order has been created successfully";
         Invoice newInvoice;
@@ -159,7 +165,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
     public ResponseEntity updatingResponseById(int id, HttpServletRequest httpRequest) {
         Invoice invoice = new Invoice();
         String message = "Cancel order successfully, ";
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         if (id == 0) {
             return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
@@ -203,7 +209,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        if (CheckUtils.isAdmin(httpRequest) == false) {
+        if (checkUtils.isAdmin(httpRequest) == false) {
             return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
         } else {
             try {
@@ -252,7 +258,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         List<InvoiceRenderInfoDTO> invoiceRenderList = new ArrayList<>();
         List<Invoice> invoiceList = new ArrayList<>();
@@ -285,7 +291,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity readingById(int invoiceId, HttpServletRequest httpRequest) {
-        int customerId = ValueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         if (!isInvoiceOwner(customerId, invoiceId)) {
             return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
@@ -318,7 +324,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
     // filter invoices
     public ResponseEntity filterInvoice(InvoiceFilterRequestDTO invoiceFilterRequest, HttpServletRequest request) {
         try {
-            String filterQuery = ValueRenderUtils.getFilterQuery(invoiceFilterRequest, FilterTypeEnum.INVOICE, request);
+            String filterQuery = valueRenderUtils.getFilterQuery(invoiceFilterRequest, FilterTypeEnum.INVOICE, request);
 
             // get list from query
             List<InvoiceRenderInfoDTO> invoiceRenderList = customQueryRepo.getBindingFilteredList(filterQuery, InvoiceRenderInfoDTO.class);

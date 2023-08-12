@@ -7,24 +7,23 @@ import com.backend.core.repository.customer.CustomerRepository;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.regex.Pattern;
 
-
+@Service
+@RequiredArgsConstructor
 public class CheckUtils {
-    @Autowired
-    static CustomerRepository customerRepo;
+    final CustomerRepository customerRepo;
 
-    @Autowired
-    static AccountRepository accountRepo;
+    final AccountRepository accountRepo;
 
-    @Autowired
-    static JwtUtils jwtUtils;
+    final JwtUtils jwtUtils;
 
 
     //check String has space or not
-    public static boolean checkValidStringType(String content, StringTypeEnum type) {
+    public boolean checkValidStringType(String content, StringTypeEnum type) {
         if (type == StringTypeEnum.HAS_NO_SPACE) {
             return !isStringWithSpace(content);
         } else if (type == StringTypeEnum.HAS_SPACE) {
@@ -34,7 +33,7 @@ public class CheckUtils {
 
 
     //check phone number is valid or not
-    public static boolean isValidPhoneNumber(String number) {
+    public boolean isValidPhoneNumber(String number) {
         Phonenumber.PhoneNumber phoneNumber = new Phonenumber.PhoneNumber();
 
         return PhoneNumberUtil.getInstance().isValidNumber(phoneNumber);
@@ -47,12 +46,12 @@ public class CheckUtils {
     //    Dot isn't allowed at the start and end of the local part.
     //    Consecutive dots aren't allowed.
     //    For the local part, a maximum of 64 characters are allowed.
-    public static boolean isValidEmail(String email) {
+    public boolean isValidEmail(String email) {
         return patternMatches(email, "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
     }
 
     //check if there is any space in a String
-    public static boolean isStringWithSpace(String content) {
+    public boolean isStringWithSpace(String content) {
         char[] charArr = trimmedInputString(content).toCharArray();
 
         for (char c : charArr) {
@@ -64,7 +63,7 @@ public class CheckUtils {
     }
 
     //remove spaces at the beginning of the input text
-    public static String trimmedInputString(String input) {
+    public String trimmedInputString(String input) {
         int count = 0;
 
         char[] charArr = input.toCharArray();
@@ -88,7 +87,7 @@ public class CheckUtils {
     }
 
     //check if the text has special sign
-    public static boolean hasSpecialSign(String input) {
+    public boolean hasSpecialSign(String input) {
         char[] testCharArr = input.toCharArray();
 
         for (int i = 0; i < testCharArr.length - 1; i++) {
@@ -101,14 +100,14 @@ public class CheckUtils {
     }
 
     //check if String matches using Regex
-    public static boolean patternMatches(String content, String regexPattern) {
+    public boolean patternMatches(String content, String regexPattern) {
         return Pattern.compile(regexPattern)
                 .matcher(content)
                 .matches();
     }
 
     // check if user is admin or not
-    public static boolean isAdmin(HttpServletRequest request) {
+    public boolean isAdmin(HttpServletRequest request) {
         try {
             String jwt = jwtUtils.getJwtFromRequest(request);
             String userName = jwtUtils.getUserNameFromJwt(jwt);
@@ -123,7 +122,7 @@ public class CheckUtils {
     }
 
     //check email has been used or not
-    public static boolean isUsedEmail(String email) {
+    public boolean isUsedEmail(String email) {
         return customerRepo.getCustomerByEmail(email) != null;
     }
 }
