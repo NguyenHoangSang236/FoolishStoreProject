@@ -1,6 +1,6 @@
 package com.backend.core;
 
-import com.backend.core.util.SourceCodeHandlerUtil;
+import com.backend.core.util.handler.SourceCodeHandlerUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -15,7 +15,7 @@ import java.util.Collections;
 public class DemoApplication {
 
     public static void main(String[] args) throws IOException {
-        SourceCodeHandlerUtil.deleteDerectory("/home/mr/JAVA/FoolishStoreProject/tokens");
+        SourceCodeHandlerUtil.deleteDirectory("/home/mr/JAVA/FoolishStoreProject/tokens");
 
         SpringApplication app = new SpringApplication(DemoApplication.class);
         app.setDefaultProperties(Collections.singletonMap("server.port", "8080"));

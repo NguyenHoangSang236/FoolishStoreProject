@@ -2,8 +2,8 @@ package com.backend.core.service;
 
 import com.backend.core.entities.requestdto.google.GoogleDriveFileDTO;
 import com.backend.core.entities.requestdto.google.GoogleDriveFoldersDTO;
-import com.backend.core.util.GoogleFileManager;
-import com.backend.core.util.ValueRenderUtils;
+import com.backend.core.util.process.GoogleFileManager;
+import com.backend.core.util.process.ValueRenderUtils;
 import com.google.api.services.drive.model.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

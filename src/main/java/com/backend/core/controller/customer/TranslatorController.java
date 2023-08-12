@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping(value = "/translator", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(value = "/unauthen/translator", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class TranslatorController {
     @Autowired

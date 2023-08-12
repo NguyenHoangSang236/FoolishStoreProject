@@ -6,8 +6,8 @@ import com.backend.core.entities.tableentity.Customer;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.repository.customer.CustomerRepository;
 import com.backend.core.service.GoogleDriveService;
-import com.backend.core.util.ValueRenderUtils;
-import jakarta.servlet.http.HttpSession;
+import com.backend.core.util.process.ValueRenderUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
-@RequestMapping(value = "/googleDrive",
+@RequestMapping(value = "/authen/googleDrive",
         consumes = {"*/*"},
         produces = {MediaType.APPLICATION_JSON_VALUE})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -45,13 +45,13 @@ public class GoogleDriveController {
     public ApiResponse uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload,
                                   @RequestParam("filePath") String driveFolderPath,
                                   @RequestParam("shared") String shared,
-                                  HttpSession session) {
+                                  HttpServletRequest request) {
         // Save to default folder if the user does not select a folder to save
         if (driveFolderPath.equals("")) {
             driveFolderPath = "Root";
         }
 
-        Customer customer = customerRepo.getCustomerById(ValueRenderUtils.getCustomerOrStaffIdByHttpSession(session));
+        Customer customer = customerRepo.getCustomerById(ValueRenderUtils.getCustomerOrStaffIdFromRequest(request));
 
         // check if customer logged in or not
         if (customer == null) {
