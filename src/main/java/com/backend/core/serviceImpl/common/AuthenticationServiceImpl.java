@@ -163,7 +163,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ResponseEntity registerNewAccount(Account accountFromUI, BindingResult bindingResult) {
-        accountFromUI.setRole("CUSTOMER");
+        accountFromUI.setRole(RoleEnum.CUSTOMER.name());
         Customer customer = accountFromUI.getCustomer();
         customer.setImage("1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R");
 

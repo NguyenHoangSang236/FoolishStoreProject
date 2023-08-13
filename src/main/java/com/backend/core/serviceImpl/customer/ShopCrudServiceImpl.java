@@ -27,7 +27,7 @@ import java.util.List;
 
 @Service
 @Qualifier("ProductCrudServiceImpl")
-public class ProductCrudServiceImpl implements CrudService {
+public class ShopCrudServiceImpl implements CrudService {
     @Autowired
     CalculationService calculationService;
 
@@ -47,7 +47,7 @@ public class ProductCrudServiceImpl implements CrudService {
     ValueRenderUtils valueRenderUtils;
 
 
-    public ProductCrudServiceImpl() {
+    public ShopCrudServiceImpl() {
     }
 
 

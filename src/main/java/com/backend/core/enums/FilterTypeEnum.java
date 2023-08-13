@@ -6,4 +6,5 @@ public enum FilterTypeEnum {
     DELIVERY,
     CART_ITEMS,
     COMMENT,
+    ACCOUNT,
 }

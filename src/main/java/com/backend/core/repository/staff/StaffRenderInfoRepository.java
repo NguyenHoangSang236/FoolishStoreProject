@@ -13,6 +13,9 @@ public interface StaffRenderInfoRepository extends JpaRepository<StaffRenderInfo
     @Query(value = "select * from staff_info_for_ui where user_name = :userNameVal", nativeQuery = true)
     StaffRenderInfoDTO getStaffInfoByUserName(@Param("userNameVal") String userName);
 
+    @Query(value = "select * from staff_info_for_ui where account_id = :idVal", nativeQuery = true)
+    StaffRenderInfoDTO getStaffInfoByAccountId(@Param("idVal") int id);
+
     @Query(value = "select * from staff_info_for_ui where position = 'admin' limit :limit offset :startLine", nativeQuery = true)
     List<StaffRenderInfoDTO> getAdminInfoList(@Param("startLine") int startLine, @Param("limit") int limit);
 

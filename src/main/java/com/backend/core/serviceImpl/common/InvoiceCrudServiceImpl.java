@@ -209,49 +209,44 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        if (checkUtils.isAdmin(httpRequest) == false) {
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
-        } else {
-            try {
-                OrderProcessDTO orderProcess = (OrderProcessDTO) paramObj;
+        try {
+            OrderProcessDTO orderProcess = (OrderProcessDTO) paramObj;
 
-                String adminAction = orderProcess.getAdminAction();
-                int invoiceId = orderProcess.getId();
-                Invoice invoice = invoiceRepo.getInvoiceById(invoiceId);
+            String adminAction = orderProcess.getAdminAction();
+            int invoiceId = orderProcess.getId();
+            Invoice invoice = invoiceRepo.getInvoiceById(invoiceId);
 
-                if (invoice == null)
-                    return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
+            if (invoice == null)
+                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
 
 
-                if ((adminAction.equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
-                        adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) &&
-                        invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.WAITING.name()) &&
-                        invoice.getDeliveryStatus().equals(DeliveryStatusEnum.ACCEPTANCE_WAITING.name()) &&
-                        invoice.getPaymentMethod().equals(PaymentMethodEnum.COD.name())) {
-                    invoice.setAdminAcceptance(adminAction);
-                    if (adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) {
-                        invoice.setDeliveryStatus(DeliveryStatusEnum.NOT_SHIPPED.name());
-                    } else {
-                        invoice.setDeliveryStatus(DeliveryStatusEnum.PACKING.name());
-                    }
-                } else if (adminAction.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
-                        invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name()) &&
-                        invoice.getDeliveryStatus().equals(DeliveryStatusEnum.ACCEPTANCE_WAITING.name()) &&
-                        !invoice.getPaymentMethod().equals(PaymentMethodEnum.COD.name())) {
-                    invoice.setAdminAcceptance(adminAction);
+            if ((adminAction.equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
+                    adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) &&
+                    invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.WAITING.name()) &&
+                    invoice.getDeliveryStatus().equals(DeliveryStatusEnum.ACCEPTANCE_WAITING.name()) &&
+                    invoice.getPaymentMethod().equals(PaymentMethodEnum.COD.name())) {
+                invoice.setAdminAcceptance(adminAction);
+                if (adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) {
+                    invoice.setDeliveryStatus(DeliveryStatusEnum.NOT_SHIPPED.name());
+                } else {
                     invoice.setDeliveryStatus(DeliveryStatusEnum.PACKING.name());
-                } else
-                    return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
-
-
-                invoiceRepo.save(invoice);
-
-                return new ResponseEntity(new ApiResponse("success", adminActionResult(adminAction)), HttpStatus.OK);
-            } catch (Exception e) {
-                e.printStackTrace();
+                }
+            } else if (adminAction.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
+                    invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name()) &&
+                    invoice.getDeliveryStatus().equals(DeliveryStatusEnum.ACCEPTANCE_WAITING.name()) &&
+                    !invoice.getPaymentMethod().equals(PaymentMethodEnum.COD.name())) {
+                invoice.setAdminAcceptance(adminAction);
+                invoice.setDeliveryStatus(DeliveryStatusEnum.PACKING.name());
+            } else
                 return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
 
-            }
+
+            invoiceRepo.save(invoice);
+
+            return new ResponseEntity(new ApiResponse("success", adminActionResult(adminAction)), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.backend.core.entities.requestdto;
 
 import com.backend.core.entities.interfaces.FilterRequest;
+import com.backend.core.entities.requestdto.account.AccountFilterRequestDTO;
 import com.backend.core.entities.requestdto.cart.CartItemFilterRequestDTO;
 import com.backend.core.entities.requestdto.comment.CommentFilterRequestDTO;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterRequestDTO;
@@ -16,6 +17,7 @@ public class FilterFactory {
             case INVOICE -> new InvoiceFilterRequestDTO();
             case CART_ITEMS -> new CartItemFilterRequestDTO();
             case COMMENT -> new CommentFilterRequestDTO();
+            case ACCOUNT -> new AccountFilterRequestDTO();
             default -> null;
         };
     }

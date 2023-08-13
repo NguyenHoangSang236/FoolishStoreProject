@@ -1,12 +1,10 @@
 package com.backend.core.util.process;
 
-import com.backend.core.entities.tableentity.Account;
 import com.backend.core.enums.StringTypeEnum;
 import com.backend.core.repository.account.AccountRepository;
 import com.backend.core.repository.customer.CustomerRepository;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -104,21 +102,6 @@ public class CheckUtils {
         return Pattern.compile(regexPattern)
                 .matcher(content)
                 .matches();
-    }
-
-    // check if user is admin or not
-    public boolean isAdmin(HttpServletRequest request) {
-        try {
-            String jwt = jwtUtils.getJwtFromRequest(request);
-            String userName = jwtUtils.getUserNameFromJwt(jwt);
-
-            Account currentUser = accountRepo.getAccountByUserName(userName);
-
-            return currentUser.getStaff() != null && currentUser.getStaff().getPosition().equals("admin");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     //check email has been used or not

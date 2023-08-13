@@ -13,6 +13,9 @@ public interface CustomerRenderInfoRepository extends JpaRepository<CustomerRend
     @Query(value = "select * from customer_info_for_ui where user_name = :userNameVal", nativeQuery = true)
     CustomerRenderInfoDTO getCustomerInfoByUserName(@Param("userNameVal") String userName);
 
+    @Query(value = "select * from customer_info_for_ui where account_id = :idVal", nativeQuery = true)
+    CustomerRenderInfoDTO getCustomerInfoByAccountId(@Param("idVal") int id);
+
     @Query(value = "select * from customer_info_for_ui limit :limit offset :startLine", nativeQuery = true)
     List<CustomerRenderInfoDTO> getCustomerInfoList(@Param("startLine") int startLine, @Param("limit") int limit);
 }

@@ -2,6 +2,7 @@ package com.backend.core.controller.admin;
 
 import com.backend.core.abstractClasses.CrudController;
 import com.backend.core.entities.requestdto.PaginationDTO;
+import com.backend.core.entities.requestdto.account.AccountFilterRequestDTO;
 import com.backend.core.entities.tableentity.Account;
 import com.backend.core.service.CrudService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,9 +39,11 @@ public class AccountController extends CrudController {
         return crudService.updatingResponseByRequest(acc, httpRequest);
     }
 
+    @GetMapping("/account_id={id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public ResponseEntity readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    public ResponseEntity readSelectedItemById(@PathVariable int id, HttpServletRequest httpRequest) throws IOException {
+        return crudService.readingById(id, httpRequest);
     }
 
     @Override
@@ -54,7 +57,7 @@ public class AccountController extends CrudController {
     }
 
     @PostMapping("/allAccounts")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Override
     public ResponseEntity getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -62,8 +65,12 @@ public class AccountController extends CrudController {
         return crudService.readingFromSingleRequest(pagination, httpRequest);
     }
 
+    @PostMapping("/filterAccounts")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public ResponseEntity getListOfItemsFromFilter(String json, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    public ResponseEntity getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        AccountFilterRequestDTO accountFilterRequest = objectMapper.readValue(json, AccountFilterRequestDTO.class);
+        return crudService.readingFromSingleRequest(accountFilterRequest, httpRequest);
     }
 }

@@ -5,10 +5,13 @@ import com.backend.core.entities.renderdto.StaffRenderInfoDTO;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.PaginationDTO;
+import com.backend.core.entities.requestdto.account.AccountFilterDTO;
+import com.backend.core.entities.requestdto.account.AccountFilterRequestDTO;
 import com.backend.core.entities.tableentity.Account;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.RoleEnum;
 import com.backend.core.repository.account.AccountRepository;
+import com.backend.core.repository.customQuery.CustomQueryRepository;
 import com.backend.core.repository.customer.CustomerRenderInfoRepository;
 import com.backend.core.repository.staff.StaffRenderInfoRepository;
 import com.backend.core.service.CrudService;
@@ -35,6 +38,9 @@ public class AccountCrudServiceImpl implements CrudService {
 
     @Autowired
     AccountRepository accountRepo;
+
+    @Autowired
+    CustomQueryRepository customQueryRepo;
 
     @Autowired
     CheckUtils checkUtils;
@@ -75,45 +81,39 @@ public class AccountCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        if (!checkUtils.isAdmin(httpRequest)) {
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
-        } else {
-            try {
-                // convert request param into Account
-                Account account = (Account) paramObj;
+        try {
+            // convert request param into Account
+            Account account = (Account) paramObj;
 
-                int id = account.getId();
-                String status = account.getStatus();
+            int id = account.getId();
+            String status = account.getStatus();
 
-                // get Account by id
-                Account selectedAcc = accountRepo.getAccountByID(id);
+            // get Account by id
+            Account selectedAcc = accountRepo.getAccountByID(id);
 
-                // check if selected account is existed
-                if (selectedAcc == null) {
-                    return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
-                }
-
-                // set status to CUSTOMER account and the status of it is DIFFERENT from request param's one
-                if (!selectedAcc.getStatus().equals(account.getStatus()) && !selectedAcc.getRole().equals(RoleEnum.ADMIN.name())) {
-                    selectedAcc.setStatus(status);
-                    accountRepo.save(selectedAcc);
-
-                    return new ResponseEntity(new ApiResponse("success", "Update account successfully"), HttpStatus.OK);
-                } else {
-                    return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            // check if selected account is existed
+            if (selectedAcc == null) {
+                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
             }
+
+            // set status to CUSTOMER account and the status of it is DIFFERENT from request param's one
+            if (!selectedAcc.getStatus().equals(account.getStatus()) && !selectedAcc.getRole().equals(RoleEnum.ADMIN.name())) {
+                selectedAcc.setStatus(status);
+                accountRepo.save(selectedAcc);
+
+                return new ResponseEntity(new ApiResponse("success", "Update account successfully"), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public ResponseEntity readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
-        if (!checkUtils.isAdmin(httpRequest)) {
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
-        } else {
+        if (paramObj instanceof PaginationDTO) {
             try {
                 // convert request param into PaginationDTO
                 PaginationDTO pagination = (PaginationDTO) paramObj;
@@ -159,7 +159,32 @@ public class AccountCrudServiceImpl implements CrudService {
                 e.printStackTrace();
                 return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
+        } else if (paramObj instanceof AccountFilterRequestDTO) {
+            try {
+                AccountFilterRequestDTO accountFilterRequest = (AccountFilterRequestDTO) paramObj;
+                String filterQuery = valueRenderUtils.accountFilterQuery(
+                        (AccountFilterDTO) accountFilterRequest.getFilter(),
+                        accountFilterRequest.getPagination()
+                );
+
+                if (accountFilterRequest.getPagination().getType().equals(RoleEnum.ADMIN.name()) ||
+                        accountFilterRequest.getPagination().getType().equals(RoleEnum.SHIPPER.name())) {
+                    List<StaffRenderInfoDTO> staffInfoList = customQueryRepo.getBindingFilteredList(filterQuery, StaffRenderInfoDTO.class);
+
+                    return new ResponseEntity(new ApiResponse("success", staffInfoList), HttpStatus.OK);
+                } else if (accountFilterRequest.getPagination().getType().equals(RoleEnum.CUSTOMER.name())) {
+                    List<CustomerRenderInfoDTO> customerInfoList = customQueryRepo.getBindingFilteredList(filterQuery, CustomerRenderInfoDTO.class);
+
+                    return new ResponseEntity(new ApiResponse("success", customerInfoList), HttpStatus.OK);
+                } else
+                    return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+
+        return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -174,8 +199,23 @@ public class AccountCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity readingById(int id, HttpServletRequest httpRequest) {
-        return null;
+        try {
+            if (id < 1) {
+                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+            }
+
+            CustomerRenderInfoDTO customerRenderInfo = customerRenderInfoRepo.getCustomerInfoByAccountId(id);
+            StaffRenderInfoDTO staffRenderInfo = staffRenderInfoRepo.getStaffInfoByAccountId(id);
+
+            if (customerRenderInfo != null) {
+                return new ResponseEntity(new ApiResponse("success", customerRenderInfo), HttpStatus.OK);
+            } else if (staffRenderInfo != null) {
+                return new ResponseEntity(new ApiResponse("success", staffRenderInfo), HttpStatus.OK);
+            } else
+                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-
 }

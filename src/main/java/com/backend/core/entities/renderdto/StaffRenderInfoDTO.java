@@ -1,5 +1,6 @@
 package com.backend.core.entities.renderdto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -24,6 +25,7 @@ public class StaffRenderInfoDTO {
     @Column(name = "user_name", unique = true)
     String userName;
 
+    @JsonIgnore
     @Column(name = "password")
     String password;
 
