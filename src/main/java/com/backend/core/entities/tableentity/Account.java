@@ -57,7 +57,6 @@ public class Account implements UserDetails {
     }
 
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.role));

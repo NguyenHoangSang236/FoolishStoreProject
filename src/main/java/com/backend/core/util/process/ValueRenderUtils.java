@@ -41,7 +41,6 @@ public class ValueRenderUtils {
     FilterFactory filterFactory;
 
 
-
     //format person's full name (trim, remove unnecessary spaces and capitalize fist letters)
     public String formattedPersonFullName(String name) {
         name = checkUtils.trimmedInputString(name);

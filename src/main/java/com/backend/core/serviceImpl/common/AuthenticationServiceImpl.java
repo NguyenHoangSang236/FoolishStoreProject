@@ -42,40 +42,27 @@ import java.net.URISyntaxException;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
+    final JwtUtils jwtUtils;
+    final AuthenticationManager authenticationManager;
+    final PasswordEncoder passwordEncoder;
     @Autowired
     StaffRepository staffRepo;
-
     @Autowired
     CustomerRepository customerRepo;
-
     @Autowired
     AccountRepository accountRepo;
-
     @Autowired
     StaffRenderInfoRepository staffRenderInfoRepo;
-
     @Autowired
     CustomerRenderInfoRepository customerRenderInfoRepo;
-
     @Autowired
     JavaMailSender mailSender;
-
     @Autowired
     GoogleDriveService googleDriveService;
-
     @Autowired
     CheckUtils checkUtils;
-
     @Autowired
     ValueRenderUtils valueRenderUtils;
-
-    final JwtUtils jwtUtils;
-
-    final AuthenticationManager authenticationManager;
-
-    final PasswordEncoder passwordEncoder;
-
-
 
     @Override
     public ResponseEntity<ApiResponse> loginIntoSystem(Account account, HttpServletRequest request) throws URISyntaxException {

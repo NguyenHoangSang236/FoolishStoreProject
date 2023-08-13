@@ -15,14 +15,14 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("select a from Account a where a.userName = :userNameVal")
     Account getAccountByUserName(@Param("userNameVal") String userName);
 
-//	@Query(value = "select * from login_accounts ", nativeQuery = true)
+    //	@Query(value = "select * from login_accounts ", nativeQuery = true)
 //	List<Account> getAllAccounts();
 //
 //	@Query(value = "select la.* from login_accounts la join customers c on la.id = c.account_id where role = 'user'", nativeQuery = true)
 //	List<Account> getAllCustomerAccounts();
 //
-@Query("select a from Account a where a.id = :idVal")
-Account getAccountByID(@Param("idVal") int id);
+    @Query("select a from Account a where a.id = :idVal")
+    Account getAccountByID(@Param("idVal") int id);
 //
 //	@Query(value = "select id from login_accounts order by id desc limit 1", nativeQuery = true)
 //	int getLastestAccountId();
