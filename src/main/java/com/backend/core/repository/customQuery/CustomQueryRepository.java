@@ -41,4 +41,12 @@ public class CustomQueryRepository {
                 .setParameter(1, cartId)
                 .executeUpdate();
     }
+
+
+    @Transactional
+    public void deleteCatalogsWithProductsById(int catalogId) {
+        this.entityManager.createNativeQuery("DELETE FROM catalogs_with_products WHERE (`catalog_id` = ?)")
+                .setParameter(1, catalogId)
+                .executeUpdate();
+    }
 }

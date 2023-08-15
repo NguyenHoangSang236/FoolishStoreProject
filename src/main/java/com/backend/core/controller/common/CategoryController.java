@@ -1,17 +1,17 @@
 package com.backend.core.controller.common;
 
 import com.backend.core.abstractClasses.CrudController;
+import com.backend.core.entities.tableentity.Catalog;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.service.CrudService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -20,19 +20,27 @@ import java.io.IOException;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CategoryController extends CrudController {
 
-    public CategoryController(@Autowired @Qualifier("CategoryCrudServiceImpl") CrudService cartCrudServiceImpl) {
-        super(cartCrudServiceImpl);
-        super.crudService = cartCrudServiceImpl;
+    public CategoryController(@Autowired @Qualifier("CategoryCrudServiceImpl") CrudService categoryCrudServiceImpl) {
+        super(categoryCrudServiceImpl);
+        super.crudService = categoryCrudServiceImpl;
     }
 
+    @PostMapping("/authen/category/add")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public ResponseEntity addNewItem(String json, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    public ResponseEntity addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Catalog catalog = objectMapper.readValue(json, Catalog.class);
+        return crudService.singleCreationalResponse(catalog, httpRequest);
     }
 
+    @PostMapping("/authen/category/update")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public ResponseEntity updateItem(String json, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    public ResponseEntity updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Catalog catalog = objectMapper.readValue(json, Catalog.class);
+        return crudService.updatingResponseByRequest(catalog, httpRequest);
     }
 
     @Override
@@ -40,9 +48,11 @@ public class CategoryController extends CrudController {
         return null;
     }
 
+    @GetMapping("authen/category/delete_category_id={id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public ResponseEntity deleteSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    public ResponseEntity deleteSelectedItemById(@PathVariable int id, HttpServletRequest httpRequest) throws IOException {
+        return crudService.removingResponseById(id, httpRequest);
     }
 
     @Override
@@ -51,7 +61,7 @@ public class CategoryController extends CrudController {
     }
 
     @Override
-    @GetMapping("unauth/category/allCategories")
+    @GetMapping("/unauthen/category/allCategories")
     public ResponseEntity getListOfItems(String json, HttpServletRequest httpRequest) throws IOException {
         return crudService.readingResponse(RenderTypeEnum.ALL_CATEGORIES.name(), httpRequest);
     }

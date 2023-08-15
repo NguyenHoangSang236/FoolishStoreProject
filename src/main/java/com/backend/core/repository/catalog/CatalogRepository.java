@@ -3,9 +3,11 @@ package com.backend.core.repository.catalog;
 import com.backend.core.entities.tableentity.Catalog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Repository
@@ -25,14 +27,18 @@ public interface CatalogRepository extends JpaRepository<Catalog, Integer> {
     List<Catalog> getAllCatalogs();
 
 
-//    @Query(value = "select id from catalog where name = :catalogNameVal", nativeQuery = true)
-//    int getCatalogIdByName(@Param("catalogNameVal") String catalogName);
-//
-//
-//    @Query(value = "select * from catalog where name = :catalogNameVal", nativeQuery = true)
-//    Catalog getCatalogByName(@Param("catalogNameVal") String catalogName);
-//
-//
-//    @Query(value = "select * from catalog c join catalog_with_products cwp on c.id = cwp.catalog_id join products p on p.name = cwp.product_name where p.name = :nameVal group by c.name", nativeQuery = true)
-//    List<Catalog> getCatalogsByProductName(@Param("nameVal") String productName);
+    @Query(value = "select * from catalog where id = :idVal", nativeQuery = true)
+    Catalog getCatalogById(@Param("idVal") int id);
+
+
+    @Query(value = "select * from catalog where name = :catalogNameVal", nativeQuery = true)
+    Catalog getCatalogByName(@Param("catalogNameVal") String catalogName);
+
+
+    @Query(value = "select name from catalog", nativeQuery = true)
+    Set<String> getAllCatalogName();
+
+
+    @Query(value = "select * from catalog c join catalog_with_products cwp on c.id = cwp.catalog_id join products p on p.name = cwp.product_name where p.name = :nameVal group by c.name", nativeQuery = true)
+    List<Catalog> getCatalogsByProductName(@Param("nameVal") String productName);
 }

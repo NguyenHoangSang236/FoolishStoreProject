@@ -200,7 +200,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 accountRepo.save(accountFromUI);
 
                 customer.setAccount(accountFromUI);
-                String formattedName = valueRenderUtils.formattedPersonFullName(customer.getName());
+                String formattedName = valueRenderUtils.capitalizeFirstLetterOfEachWord(customer.getName());
                 customer.setName(formattedName);
                 customerRepo.save(customer);
 

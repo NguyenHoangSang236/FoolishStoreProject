@@ -14,9 +14,8 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class CheckUtils {
     final CustomerRepository customerRepo;
-
     final AccountRepository accountRepo;
-
+    final ValueRenderUtils valueRenderUtils;
     final JwtUtils jwtUtils;
 
 
@@ -50,7 +49,7 @@ public class CheckUtils {
 
     //check if there is any space in a String
     public boolean isStringWithSpace(String content) {
-        char[] charArr = trimmedInputString(content).toCharArray();
+        char[] charArr = valueRenderUtils.fullyTrimmedString(content).toCharArray();
 
         for (char c : charArr) {
             if (Character.isWhitespace(c)) {
@@ -58,30 +57,6 @@ public class CheckUtils {
             }
         }
         return false;
-    }
-
-    //remove spaces at the beginning of the input text
-    public String trimmedInputString(String input) {
-        int count = 0;
-
-        char[] charArr = input.toCharArray();
-        char[] resultCharArr = new char[charArr.length];
-
-        for (int i = 0; i < charArr.length - 1; i++) {
-            if (i > 0) {
-                if (charArr[i] != ' ' || (charArr[i] == ' ' && charArr[i - 1] != ' ')) {
-                    resultCharArr[count] = charArr[i];
-                    count++;
-                }
-            } else {
-                if (charArr[i] != ' ') {
-                    resultCharArr[count] = charArr[i];
-                    count++;
-                }
-            }
-        }
-
-        return String.copyValueOf(resultCharArr).trim();
     }
 
     //check if the text has special sign

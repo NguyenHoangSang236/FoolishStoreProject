@@ -29,21 +29,40 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class ValueRenderUtils {
     final CustomQueryRepository customQueryRepo;
-
     final ProductRenderInfoRepository productRenderInfoRepo;
-
     final AccountRepository accountRepo;
-
     final JwtUtils jwtUtils;
-
-    final CheckUtils checkUtils;
-
     FilterFactory filterFactory;
 
 
+    //remove spaces at the beginning of the input text
+    public String fullyTrimmedString(String input) {
+        int count = 0;
+
+        char[] charArr = input.toCharArray();
+        char[] resultCharArr = new char[charArr.length];
+
+        for (int i = 0; i < charArr.length - 1; i++) {
+            if (i > 0) {
+                if (charArr[i] != ' ' || (charArr[i] == ' ' && charArr[i - 1] != ' ')) {
+                    resultCharArr[count] = charArr[i];
+                    count++;
+                }
+            } else {
+                if (charArr[i] != ' ') {
+                    resultCharArr[count] = charArr[i];
+                    count++;
+                }
+            }
+        }
+
+        return String.copyValueOf(resultCharArr).trim();
+    }
+
+
     //format person's full name (trim, remove unnecessary spaces and capitalize fist letters)
-    public String formattedPersonFullName(String name) {
-        name = checkUtils.trimmedInputString(name);
+    public String capitalizeFirstLetterOfEachWord(String name) {
+        name = fullyTrimmedString(name);
         char[] charArr = name.toCharArray();
         char[] resultCharArr = new char[charArr.length];
         int resultIndex = 0;
@@ -52,22 +71,19 @@ public class ValueRenderUtils {
             if (i == 0) {
                 if (Character.isLowerCase(charArr[i])) {
                     resultCharArr[resultIndex] = Character.toUpperCase(charArr[i]);
-                    resultIndex++;
+                } else {
+                    resultCharArr[resultIndex] = charArr[i];
                 }
+                resultIndex++;
             } else if (i < charArr.length - 1) {
                 if (!Character.isWhitespace(charArr[i - 1]) && Character.isUpperCase(charArr[i])) {
                     resultCharArr[resultIndex] = Character.toLowerCase(charArr[i]);
-                    resultIndex++;
-                } else if (!Character.isWhitespace(charArr[i - 1]) && Character.isLowerCase(charArr[i])) {
-                    resultCharArr[resultIndex] = charArr[i];
-                    resultIndex++;
                 } else if (Character.isWhitespace(charArr[i - 1]) && Character.isLowerCase(charArr[i])) {
                     resultCharArr[resultIndex] = Character.toUpperCase(charArr[i]);
-                    resultIndex++;
-                } else if (Character.isWhitespace(charArr[i]) && !Character.isWhitespace(charArr[i - 1])) {
-                    resultCharArr[resultIndex] = ' ';
-                    resultIndex++;
+                } else {
+                    resultCharArr[resultIndex] = charArr[i];
                 }
+                resultIndex++;
             } else {
                 if (Character.isUpperCase(charArr[i])) {
                     resultCharArr[resultIndex] = Character.toLowerCase(charArr[i]);
@@ -76,6 +92,7 @@ public class ValueRenderUtils {
                 }
             }
         }
+
         return String.valueOf(resultCharArr);
     }
 
