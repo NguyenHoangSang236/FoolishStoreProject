@@ -3,9 +3,7 @@ package com.backend.core.entities.tableentity;
 import com.backend.core.entities.requestdto.invoice.InvoicesWithProducts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
@@ -20,6 +18,8 @@ import java.util.List;
 @Setter
 @DynamicInsert
 @DynamicUpdate
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "invoice")
 public class Invoice {
     @Id
@@ -83,9 +83,6 @@ public class Invoice {
     private Staff staff;
 
 
-    public Invoice() {
-    }
-
     public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency,
                    String intent, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount,
                    String adminAcceptance, Delivery delivery, List<InvoicesWithProducts> invoicesWithProducts, Customer customer) {
@@ -106,14 +103,4 @@ public class Invoice {
         this.invoicesWithProducts = invoicesWithProducts;
         this.customer = customer;
     }
-
-
-    //    public String formattedTotalPrice() {
-//        return ValueRender.formatDoubleNumber(this.totalPrice);
-//    }
-
-//    public String formattedInvoiceDate() {
-//        return ValueRender.formatDateDMY(this.invoiceDate);
-//    }
-
 }

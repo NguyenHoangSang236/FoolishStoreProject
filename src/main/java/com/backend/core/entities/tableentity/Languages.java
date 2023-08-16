@@ -1,7 +1,9 @@
 package com.backend.core.entities.tableentity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -13,6 +15,8 @@ import java.util.Objects;
 @Setter
 @DynamicInsert
 @DynamicUpdate
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "languages")
 public class Languages {
     @Id
@@ -26,19 +30,9 @@ public class Languages {
     @Column(name = "name")
     String name;
 
-    @Column(name = "image_local_storage_path")
-    String imageLocalStoragePath;
+    @Column(name = "flag_image")
+    String flagImage;
 
-
-    public Languages(int id, String languageCode, String name, String imageLocalStoragePath) {
-        this.id = id;
-        this.languageCode = languageCode;
-        this.name = name;
-        this.imageLocalStoragePath = imageLocalStoragePath;
-    }
-
-    public Languages() {
-    }
 
 
     @Override
@@ -46,12 +40,12 @@ public class Languages {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Languages languages = (Languages) o;
-        return id == languages.id && Objects.equals(languageCode, languages.languageCode) && Objects.equals(name, languages.name) && Objects.equals(imageLocalStoragePath, languages.imageLocalStoragePath);
+        return id == languages.id && Objects.equals(languageCode, languages.languageCode) && Objects.equals(name, languages.name) && Objects.equals(flagImage, languages.flagImage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, languageCode, name, imageLocalStoragePath);
+        return Objects.hash(id, languageCode, name, flagImage);
     }
 
     @Override
@@ -60,7 +54,7 @@ public class Languages {
                 "id=" + id +
                 ", languageCode='" + languageCode + '\'' +
                 ", name='" + name + '\'' +
-                ", imageLocalStoragePath='" + imageLocalStoragePath + '\'' +
+                ", flagImage='" + flagImage + '\'' +
                 '}';
     }
 }
