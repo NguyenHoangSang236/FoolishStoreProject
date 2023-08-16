@@ -1,8 +1,6 @@
-package com.backend.core.entities.requestdto.invoice;
+package com.backend.core.entities.tableentity;
 
 import com.backend.core.entities.embededkey.InvoicesWithProductsPrimaryKeys;
-import com.backend.core.entities.tableentity.Invoice;
-import com.backend.core.entities.tableentity.ProductManagement;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;

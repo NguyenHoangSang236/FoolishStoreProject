@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query(value = "select id from products order by id desc limit 1", nativeQuery = true)
-    int getLastestProductId();
+    int getLatestProductId();
 
 
     @Query(value = "select * from products", nativeQuery = true)
@@ -21,6 +21,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     @Query(value = "select p from Product p where p.name like %:nameVal% group by name")
     List<Product> getProductsByName(@Param("nameVal") String productName);
+
+
+    @Query(value = "select p from Product p where p.name = :nameVal")
+    Product getProductByFullName(@Param("nameVal") String productName);
 
 
     @Query(value = "select size from products where name = :nameVal and color = :colorVal group by size;", nativeQuery = true)

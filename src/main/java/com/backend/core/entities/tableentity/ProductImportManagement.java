@@ -3,12 +3,15 @@ package com.backend.core.entities.tableentity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.annotation.Nullable;
 import java.util.Date;
 
 @Getter
@@ -17,24 +20,36 @@ import java.util.Date;
 @Entity
 @DynamicInsert
 @DynamicUpdate
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 public class ProductImportManagement {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    int id;
+
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     @Column(name = "import_quantity")
     int importQuantity;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_management_id")
     ProductManagement productManagement;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private int id;
+
     @Column(name = "import_date")
-    private Date importDate;
+    Date importDate;
+
+    @Nullable
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     @Column(name = "out_of_stock_date", nullable = true)
-    private Date outOfStockDate;
+    Date outOfStockDate;
 
 
+    public ProductImportManagement(int importQuantity, ProductManagement productManagement, Date importDate) {
+        this.importQuantity = importQuantity;
+        this.productManagement = productManagement;
+        this.importDate = importDate;
+    }
 }

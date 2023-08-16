@@ -14,12 +14,10 @@ import java.io.Serializable;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InvoicesWithProductsPrimaryKeys implements Serializable {
-    private static final long serialVersionUID = -3919178711820914812L;
+public class ProductImagesManagementPrimaryKeys implements Serializable {
+    @Column(name = "product_id", nullable = false)
+    int productId;
 
-    @Column(name = "product_management_id", nullable = false)
-    int productManagementId;
-
-    @Column(name = "invoice_id", nullable = false)
-    int invoiceId;
+    @Column(name = "color", nullable = false)
+    String color;
 }

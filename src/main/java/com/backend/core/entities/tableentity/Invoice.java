@@ -1,6 +1,5 @@
 package com.backend.core.entities.tableentity;
 
-import com.backend.core.entities.requestdto.invoice.InvoicesWithProducts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -66,12 +65,15 @@ public class Invoice {
 
     @Column(name = "admin_acceptance")
     String adminAcceptance;
+
     @JsonIgnore
     @OneToMany(mappedBy = "invoice", cascade = {CascadeType.ALL})
     List<InvoicesWithProducts> invoicesWithProducts;
+
     @OneToOne(mappedBy = "invoice")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Delivery delivery;
+
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")

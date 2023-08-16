@@ -1,6 +1,5 @@
 package com.backend.core.entities.tableentity;
 
-import com.backend.core.entities.requestdto.invoice.InvoicesWithProducts;
 import com.backend.core.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -80,7 +79,6 @@ public class ProductManagement implements Serializable {
     @OneToMany(mappedBy = "productManagement")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ProductImportManagement> productImportManagements;
-
 
 
     public void setTotalRatingNumber() {

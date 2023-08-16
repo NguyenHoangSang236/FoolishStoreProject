@@ -1,6 +1,6 @@
 package com.backend.core.service;
 
-import com.backend.core.entities.requestdto.invoice.InvoicesWithProducts;
+import com.backend.core.entities.tableentity.InvoicesWithProducts;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

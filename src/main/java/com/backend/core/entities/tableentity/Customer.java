@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -20,6 +22,8 @@ import java.util.Objects;
 @Table(name = "customers")
 @DynamicInsert
 @DynamicUpdate
+@AllArgsConstructor
+@NoArgsConstructor
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,10 +71,6 @@ public class Customer {
     @JsonBackReference
     @OneToMany(mappedBy = "customer", cascade = {CascadeType.ALL})
     private List<Comment> comments;
-
-
-    public Customer() {
-    }
 
 
     @Override

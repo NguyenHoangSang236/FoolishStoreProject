@@ -2,7 +2,7 @@ package com.backend.core.service;
 
 import com.backend.core.entities.requestdto.google.GoogleDriveFileDTO;
 import com.backend.core.entities.requestdto.google.GoogleDriveFoldersDTO;
-import com.backend.core.util.process.GoogleFileManager;
+import com.backend.core.util.process.GoogleDriveUtils;
 import com.backend.core.util.process.ValueRenderUtils;
 import com.google.api.services.drive.model.File;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +19,16 @@ import java.util.List;
 @Service
 public class GoogleDriveService {
     @Autowired
-    GoogleFileManager googleFileManager;
+    GoogleDriveUtils googleDriveUtils;
 
     @Autowired
     ValueRenderUtils valueRenderUtils;
 
+
     public List<GoogleDriveFileDTO> getAllFile() throws IOException, GeneralSecurityException {
 
         List<GoogleDriveFileDTO> responseList = null;
-        List<File> files = googleFileManager.listEverything();
+        List<File> files = googleDriveUtils.listEverything();
         GoogleDriveFileDTO dto = null;
 
         if (files != null) {
@@ -51,7 +52,7 @@ public class GoogleDriveService {
 
 
     public void deleteFile(String id) throws Exception {
-        googleFileManager.deleteFileOrFolder(id);
+        googleDriveUtils.deleteFileOrFolder(id);
     }
 
 
@@ -67,17 +68,17 @@ public class GoogleDriveService {
             type = "private";
             role = "private";
         }
-        return googleFileManager.uploadFile(file, filePath, type, role);
+        return googleDriveUtils.uploadFile(file, filePath, type, role);
     }
 
 
     public void downloadFile(String id, OutputStream outputStream) throws IOException, GeneralSecurityException {
-        googleFileManager.downloadFile(id, outputStream);
+        googleDriveUtils.downloadFile(id, outputStream);
     }
 
 
     public List<GoogleDriveFoldersDTO> getAllFolder() throws IOException, GeneralSecurityException {
-        List<File> files = googleFileManager.listFolderContent("root");
+        List<File> files = googleDriveUtils.listFolderContent("root");
         List<GoogleDriveFoldersDTO> responseList = null;
         GoogleDriveFoldersDTO dto = null;
 
@@ -95,11 +96,11 @@ public class GoogleDriveService {
     }
 
     public void createFolder(String folderName) throws Exception {
-        String folderId = googleFileManager.getFolderId(folderName);
+        String folderId = googleDriveUtils.getFolderId(folderName);
         System.out.println(folderId);
     }
 
     public void deleteFolder(String id) throws Exception {
-        googleFileManager.deleteFileOrFolder(id);
+        googleDriveUtils.deleteFileOrFolder(id);
     }
 }

@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class GoogleFileManager {
+public class GoogleDriveUtils {
     @Autowired
     private GoogleDriveConfig googleDriveConfig;
 
@@ -28,9 +28,11 @@ public class GoogleFileManager {
     public List<File> listEverything() throws IOException, GeneralSecurityException {
         googleDriveConfig = GoogleDriveConfig.getGgDriveConfigInstance();
         // Print the names and IDs for up to 10 files.
-        FileList result = googleDriveConfig.getInstance().files().list()
+        FileList result = googleDriveConfig.getInstance()
+                .files()
+                .list()
                 .setPageSize(1000)
-                .setFields("nextPageToken, files(id, name, size, thumbnailLink, shared)") // get field of google drive file
+                .setFields("nextPageToken, files(id, name, size, thumbnailLink, shared)") // get field of Google Drive file
                 .execute();
 
         return result.getFiles();
@@ -47,10 +49,12 @@ public class GoogleFileManager {
 
         String query = "'" + parentId + "' in parents";
 
-        FileList result = googleDriveConfig.getInstance().files().list()
+        FileList result = googleDriveConfig.getInstance()
+                .files()
+                .list()
                 .setQ(query)
                 .setPageSize(10)
-                .setFields("nextPageToken, files(id, name)") // get field of google drive folder
+                .setFields("nextPageToken, files(id, name)") // get field of Google Drive folder
                 .execute();
 
         return result.getFiles();
@@ -61,7 +65,6 @@ public class GoogleFileManager {
     public void downloadFile(String id, OutputStream outputStream) throws IOException, GeneralSecurityException {
         if (id != null) {
             googleDriveConfig = GoogleDriveConfig.getGgDriveConfigInstance();
-
             googleDriveConfig.getInstance().files().get(id).executeMediaAndDownloadTo(outputStream);
         }
     }
@@ -96,15 +99,23 @@ public class GoogleFileManager {
                 fileMetadata.setName(file.getOriginalFilename());
                 File uploadFile = googleDriveConfig.getInstance()
                         .files()
-                        .create(fileMetadata, new InputStreamContent(
-                                file.getContentType(),
-                                new ByteArrayInputStream(file.getBytes()))
+                        .create(
+                                fileMetadata,
+                                new InputStreamContent(
+                                        file.getContentType(),
+                                        new ByteArrayInputStream(file.getBytes())
+                                )
                         )
-                        .setFields("id").execute();
+                        .setFields("id")
+                        .execute();
 
                 if (!type.equals("private") && !role.equals("private")) {
                     // Call Set Permission drive
-                    googleDriveConfig.getInstance().permissions().create(uploadFile.getId(), setPermission(type, role)).execute();
+                    googleDriveConfig
+                            .getInstance()
+                            .permissions()
+                            .create(uploadFile.getId(), setPermission(type, role))
+                            .execute();
                 }
                 return uploadFile.getId();
             }
@@ -141,7 +152,7 @@ public class GoogleFileManager {
         if (folderId != null) {
             return folderId;
         }
-        //Folder dont exists, create it and return folderId
+        //Folder don't exist, create it and return folderId
         File fileMetadata = new File();
         fileMetadata.setMimeType("application/vnd.google-apps.folder");
         fileMetadata.setName(folderName);
@@ -190,7 +201,8 @@ public class GoogleFileManager {
     }
 
     public boolean checkExpiredAccessToken() {
-        return (GoogleDriveConfig.getGgDriveConfigInstance().googleCredential.getAccessToken() != null && GoogleDriveConfig.getGgDriveConfigInstance().googleCredential.getExpirationTimeMilliseconds() < System.currentTimeMillis());
+        return (GoogleDriveConfig.getGgDriveConfigInstance().googleCredential.getAccessToken() != null &&
+                GoogleDriveConfig.getGgDriveConfigInstance().googleCredential.getExpirationTimeMilliseconds() < System.currentTimeMillis());
     }
 }
 
