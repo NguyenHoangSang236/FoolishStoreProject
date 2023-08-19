@@ -150,10 +150,12 @@ public class InvoiceCrudServiceImpl implements CrudService {
         return null;
     }
 
+
     @Override
     public ResponseEntity removingResponseById(int id, HttpServletRequest httpRequest) {
         return null;
     }
+
 
     @Override
     public ResponseEntity updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
@@ -206,6 +208,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
         return new ResponseEntity(new ApiResponse("success", message), HttpStatus.OK);
     }
+
 
     @Override
     public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
@@ -287,6 +290,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
     @Override
     public ResponseEntity readingById(int invoiceId, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+
+        System.out.println(customerId);
 
         if (!isInvoiceOwner(customerId, invoiceId)) {
             return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);

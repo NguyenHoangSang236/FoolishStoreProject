@@ -26,7 +26,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
     List<Invoice> getAllInvoicesByCustomerId(@Param("idVal") int customerId, @Param("startLine") int startLine, @Param("limit") int limit);
 
 
-    @Query(value = "select count(*) from invoice i join customers c on i.customer_id = c.id where i.customer_id = :invoiceIdVal and c.id = :customerIdVal", nativeQuery = true)
+    @Query(value = "select count(*) from invoice i join customers c on i.customer_id = c.id where i.id = :invoiceIdVal and c.id = :customerIdVal", nativeQuery = true)
     int getInvoiceCountByInvoiceIdAndCustomerId(@Param("invoiceIdVal") int invoiceId, @Param("customerIdVal") int customerId);
 
 
