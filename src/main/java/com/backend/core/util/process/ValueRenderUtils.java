@@ -22,8 +22,10 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -515,5 +517,29 @@ public class ValueRenderUtils {
     // generate start line for query from limit and page
     public int getStartLineForQueryPagination(int limit, int page) {
         return (page - 1) * limit;
+    }
+
+
+    // generate a string List from an Array
+    public List<String> getStringListFromArray(String[] arr) {
+        List<String> result = new ArrayList<>();
+
+        for (String elem : arr) {
+            result.add(elem);
+        }
+
+        return result;
+    }
+
+
+    // generate an integer List from an Array
+    public List<Integer> getIntegerListFromArray(int[] arr) {
+        List<Integer> result = new ArrayList<>();
+
+        for (int elem : arr) {
+            result.add(elem);
+        }
+
+        return result;
     }
 }

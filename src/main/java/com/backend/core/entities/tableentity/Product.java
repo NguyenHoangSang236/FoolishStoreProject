@@ -1,6 +1,6 @@
 package com.backend.core.entities.tableentity;
 
-import com.backend.core.entities.requestdto.product.ProductAddingRequestDTO;
+import com.backend.core.entities.requestdto.product.ProductDetailsRequestDTO;
 import com.backend.core.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -109,7 +109,10 @@ public class Product implements Serializable {
     }
 
 
-    public void getProductFromProductAddingRequest(ProductAddingRequestDTO request) {
+    public void getProductFromProductDetailsRequest(ProductDetailsRequestDTO request) {
+        if (request.getId() > 0) {
+            this.id = request.getId();
+        }
         this.name = request.getName();
         this.sellingPrice = request.getSellingPrice();
         this.originalPrice = request.getOriginalPrice();

@@ -13,7 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProductAddingRequestDTO {
+public class ProductDetailsRequestDTO {
+    @JsonProperty("id")
+    int id;
+
     @JsonProperty("name")
     String name;
 

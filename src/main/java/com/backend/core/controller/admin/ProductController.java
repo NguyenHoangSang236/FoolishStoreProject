@@ -1,7 +1,7 @@
 package com.backend.core.controller.admin;
 
 import com.backend.core.abstractClasses.CrudController;
-import com.backend.core.entities.requestdto.product.ProductAddingRequestDTO;
+import com.backend.core.entities.requestdto.product.ProductDetailsRequestDTO;
 import com.backend.core.service.CrudService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,18 +29,22 @@ public class ProductController extends CrudController {
     @Override
     public ResponseEntity addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        ProductAddingRequestDTO productAddingRequest = objectMapper.readValue(json, ProductAddingRequestDTO.class);
-        return crudService.singleCreationalResponse(productAddingRequest, httpRequest);
+        ProductDetailsRequestDTO productDetailsRequest = objectMapper.readValue(json, ProductDetailsRequestDTO.class);
+        return crudService.singleCreationalResponse(productDetailsRequest, httpRequest);
     }
 
+    @PostMapping("/edit")
     @Override
-    public ResponseEntity updateItem(String json, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    public ResponseEntity updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductDetailsRequestDTO productDetailsRequest = objectMapper.readValue(json, ProductDetailsRequestDTO.class);
+        return crudService.updatingResponseByRequest(productDetailsRequest, httpRequest);
     }
 
+    @GetMapping("/product_id={id}")
     @Override
-    public ResponseEntity readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    public ResponseEntity readSelectedItemById(@PathVariable(value = "id") int id, HttpServletRequest httpRequest) throws IOException {
+        return crudService.readingById(id, httpRequest);
     }
 
     @Override

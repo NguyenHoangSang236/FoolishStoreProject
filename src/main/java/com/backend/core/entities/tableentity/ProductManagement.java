@@ -14,6 +14,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,6 +71,9 @@ public class ProductManagement implements Serializable {
 
     @Column(name = "overall_rating")
     private int overallRating;
+
+    @Column(name = "import_date")
+    private Date importDate;
 
     @JsonIgnore
     @OneToMany(mappedBy = "productManagement", cascade = CascadeType.ALL)
@@ -150,24 +154,26 @@ public class ProductManagement implements Serializable {
         return calculationService.getTotalPriceOfSingleProduct(this.product.getSellingPrice(), this.product.getDiscount());
     }
 
-
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductManagement that = (ProductManagement) o;
-        return id == that.id && availableQuantity == that.availableQuantity && soldQuantity == that.soldQuantity && oneStarQuantity == that.oneStarQuantity && twoStarQuantity == that.twoStarQuantity && threeStarQuantity == that.threeStarQuantity && fourStarQuantity == that.fourStarQuantity && fiveStarQuantity == that.fiveStarQuantity && color.equals(that.color) && size.equals(that.size) && product.equals(that.product) && Objects.equals(carts, that.carts) && productImportManagements.equals(that.productImportManagements);
+        return id == that.id && availableQuantity == that.availableQuantity && soldQuantity == that.soldQuantity && oneStarQuantity == that.oneStarQuantity && twoStarQuantity == that.twoStarQuantity && threeStarQuantity == that.threeStarQuantity && fourStarQuantity == that.fourStarQuantity && fiveStarQuantity == that.fiveStarQuantity && overallRating == that.overallRating && Objects.equals(product, that.product) && Objects.equals(invoicesWithProducts, that.invoicesWithProducts) && Objects.equals(color, that.color) && Objects.equals(size, that.size) && Objects.equals(importDate, that.importDate) && Objects.equals(carts, that.carts) && Objects.equals(productImportManagements, that.productImportManagements);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, color, size, availableQuantity, soldQuantity, oneStarQuantity, twoStarQuantity, threeStarQuantity, fourStarQuantity, fiveStarQuantity, product, carts, productImportManagements);
+        return Objects.hash(product, invoicesWithProducts, id, color, size, availableQuantity, soldQuantity, oneStarQuantity, twoStarQuantity, threeStarQuantity, fourStarQuantity, fiveStarQuantity, overallRating, importDate, carts, productImportManagements);
     }
 
     @Override
     public String toString() {
         return "ProductManagement{" +
-                "id=" + id +
+                "product=" + product +
+                ", invoicesWithProducts=" + invoicesWithProducts +
+                ", id=" + id +
                 ", color='" + color + '\'' +
                 ", size='" + size + '\'' +
                 ", availableQuantity=" + availableQuantity +
@@ -177,7 +183,8 @@ public class ProductManagement implements Serializable {
                 ", threeStarQuantity=" + threeStarQuantity +
                 ", fourStarQuantity=" + fourStarQuantity +
                 ", fiveStarQuantity=" + fiveStarQuantity +
-                ", product=" + product +
+                ", overallRating=" + overallRating +
+                ", importDate=" + importDate +
                 ", carts=" + carts +
                 ", productImportManagements=" + productImportManagements +
                 '}';

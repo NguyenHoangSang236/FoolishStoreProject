@@ -22,28 +22,34 @@ import java.util.Objects;
 public class ProductImagesManagement {
     @EmbeddedId
     ProductImagesManagementPrimaryKeys id;
+
     @JsonIgnore
     @ManyToOne
     @MapsId("productId")
     @JoinColumn(name = "product_id")
     Product product;
+
     @Column(name = "Image_1")
     private String image1;
+
     @Column(name = "Image_2")
     private String image2;
+
     @Column(name = "Image_3")
     private String image3;
+
     @Column(name = "Image_4")
     private String image4;
+
 
     public void getImagesFromList(String[] imageUrlArr) {
         final Field[] fields = ProductImagesManagement.class.getDeclaredFields();
 
         for (int i = 0; i < imageUrlArr.length; i++) {
-            fields[i + 1].setAccessible(true);
+            fields[i + 2].setAccessible(true);
 
             try {
-                fields[i + 1].set(this, imageUrlArr[i]);
+                fields[i + 2].set(this, imageUrlArr[i]);
             } catch (Exception e) {
                 e.printStackTrace();
             }

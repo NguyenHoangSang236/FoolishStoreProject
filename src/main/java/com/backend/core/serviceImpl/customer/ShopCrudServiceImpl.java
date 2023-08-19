@@ -172,20 +172,19 @@ public class ShopCrudServiceImpl implements CrudService {
     @Override
     public ResponseEntity readingById(int productId, HttpServletRequest httpRequest) {
         List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
-        String status = "failed";
 
         try {
             productDetails = productRenderInfoRepo.getProductDetails(productId);
 
             if (!productDetails.isEmpty()) {
-                status = "success";
+                return new ResponseEntity(new ApiResponse("success", productDetails), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
-            status = "failed";
             e.printStackTrace();
+            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
         }
-
-        return new ResponseEntity(new ApiResponse(status, productDetails), HttpStatus.OK);
     }
 
 

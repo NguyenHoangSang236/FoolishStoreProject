@@ -420,9 +420,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
         );
 
         // subtract available quantity
-        pm.subtractQuantity(ProductManagementQuantityTypeEnum.AVAILABLE_QUANTITY.name(), productQuantity);
+        pm.subtractQuantity(ProductManagementEnum.AVAILABLE_QUANTITY.name(), productQuantity);
         // add sold quantity
-        pm.addQuantity(ProductManagementQuantityTypeEnum.SOLD_QUANTITY.name(), productQuantity);
+        pm.addQuantity(ProductManagementEnum.SOLD_QUANTITY.name(), productQuantity);
 
         productManagementRepo.save(pm);
 
