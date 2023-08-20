@@ -6,6 +6,7 @@ import com.backend.core.entities.requestdto.PaginationDTO;
 import com.backend.core.entities.requestdto.account.AccountFilterDTO;
 import com.backend.core.entities.requestdto.cart.CartItemFilterDTO;
 import com.backend.core.entities.requestdto.comment.CommentRequestDTO;
+import com.backend.core.entities.requestdto.delivery.DeliveryFilterDTO;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterDTO;
 import com.backend.core.entities.requestdto.product.ProductFilterDTO;
 import com.backend.core.entities.tableentity.Account;
@@ -437,6 +438,57 @@ public class ValueRenderUtils {
     }
 
 
+    // create a query for delivery binding filter
+    public String deliveryFilterQuery(DeliveryFilterDTO deliveryFilter, PaginationDTO pagination, int shipperId) {
+        String result = "select * from delivery_info_for_ui where ";
+
+        String country = deliveryFilter.getCountry();
+        String address = deliveryFilter.getAddress();
+        String city = deliveryFilter.getCity();
+        String paymentStatus = deliveryFilter.getPaymentStatus();
+        String paymentMethod = deliveryFilter.getPaymentMethod();
+        String type = pagination.getType();
+        int limit = pagination.getLimit();
+        int page = pagination.getPage();
+
+        if (country != null && !country.isBlank()) {
+            result += "country = '" + country + "' and ";
+        }
+
+        if (address != null && !address.isBlank()) {
+            result += "address = '" + address + "' and ";
+        }
+
+        if (city != null && !city.isBlank()) {
+            result += "city = '" + city + "' and ";
+        }
+
+        if (paymentMethod != null && !paymentMethod.isBlank()) {
+            result += "payment_method = '" + paymentMethod + "' and ";
+        }
+
+        if (paymentStatus != null && !paymentStatus.isBlank()) {
+            result += "payment_status = '" + paymentStatus + "' and ";
+        }
+
+        switch (type.toUpperCase()) {
+            case "SHIP_HISTORY" -> result += "shipper_id = " + shipperId;
+            case "MY_ORDERS" ->
+                    result += "shipper_id = " + shipperId + " and (current_delivery_status = 'TAKE_ORDER' or current_delivery_status = 'SHIPPING') and shipper_id = " + shipperId;
+            case "MY_SUCCESSFUL_ORDERS" ->
+                    result += "(current_delivery_status = 'SHIPPED' and invoice_delivery_status = 'SHIPPED') and shipper_id = " + shipperId;
+            case "MY_FAILED_ORDERS" ->
+                    result += "(current_delivery_status = 'CUSTOMER_CANCEL' and invoice_delivery_status = 'CUSTOMER_CANCEL') and shipper_id = " + shipperId;
+        }
+
+        if (page != 0 && limit != 0) {
+            result += " ORDER BY id desc LIMIT " + (limit * (page - 1)) + ", " + limit;
+        }
+
+        return result;
+    }
+
+
     //create a random temporary password
     public String randomTemporaryPassword(String userName) {
         String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
@@ -461,8 +513,8 @@ public class ValueRenderUtils {
 
     // get list of data from filter
     public String getFilterQuery(FilterRequest paramObj, FilterTypeEnum filterType, HttpServletRequest request) {
-        // get current customer id
-        int customerId = getCustomerOrStaffIdFromRequest(request);
+        // get current customer or staff id
+        int userId = getCustomerOrStaffIdFromRequest(request);
 
         String filterQuery = ErrorTypeEnum.TECHNICAL_ERROR.name();
 
@@ -485,7 +537,7 @@ public class ValueRenderUtils {
             try {
                 switch (filterType) {
                     case INVOICE -> {
-                        filterQuery = invoiceFilterQuery(customerId, (InvoiceFilterDTO) filter, pagination);
+                        filterQuery = invoiceFilterQuery(userId, (InvoiceFilterDTO) filter, pagination);
                     }
                     case PRODUCT -> {
                         filterQuery = productFilterQuery((ProductFilterDTO) filter, pagination);
@@ -494,6 +546,7 @@ public class ValueRenderUtils {
                         filterQuery = cartItemFilterQuery((CartItemFilterDTO) filter, pagination);
                     }
                     case DELIVERY -> {
+                        filterQuery = deliveryFilterQuery((DeliveryFilterDTO) filter, pagination, userId);
                     }
                     case COMMENT -> {
                         filterQuery = commentFilterQuery((CommentRequestDTO) filter, pagination);

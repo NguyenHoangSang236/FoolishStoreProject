@@ -65,7 +65,6 @@ public class ProductRenderInfoDTO {
     private String description;
 
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

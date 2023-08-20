@@ -1,8 +1,10 @@
 package com.backend.core.enums;
 
-public enum PaymentMethodEnum {
+public enum PaymentEnum {
     COD,
     MOMO,
     PAYPAL,
     BANK_TRANSFER,
+    PAID,
+    UNPAID,
 }

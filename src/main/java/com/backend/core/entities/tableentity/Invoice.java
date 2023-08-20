@@ -36,7 +36,7 @@ public class Invoice {
     String deliveryStatus;
 
     @Column(name = "Payment_Status")
-    int paymentStatus;
+    String paymentStatus;
 
     @Column(name = "payment_method")
     String paymentMethod;
@@ -44,8 +44,8 @@ public class Invoice {
     @Column(name = "currency")
     String currency;
 
-    @Column(name = "intent")
-    String intent;
+    @Column(name = "note")
+    String note;
 
     @Column(name = "description")
     String description;
@@ -85,8 +85,8 @@ public class Invoice {
     private Staff staff;
 
 
-    public Invoice(int id, Date invoiceDate, String deliveryStatus, int paymentStatus, String paymentMethod, String currency,
-                   String intent, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount,
+    public Invoice(int id, Date invoiceDate, String deliveryStatus, String paymentStatus, String paymentMethod, String currency,
+                   String note, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount,
                    String adminAcceptance, Delivery delivery, List<InvoicesWithProducts> invoicesWithProducts, Customer customer) {
         this.id = id;
         this.invoiceDate = invoiceDate;
@@ -94,7 +94,7 @@ public class Invoice {
         this.paymentStatus = paymentStatus;
         this.paymentMethod = paymentMethod;
         this.currency = currency;
-        this.intent = intent;
+        this.note = note;
         this.description = description;
         this.refundPercentage = refundPercentage;
         this.totalPrice = totalPrice;

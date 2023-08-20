@@ -26,6 +26,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+enum RequestPurpose {
+    EDIT,
+    ADD,
+}
+
 @Service
 @Qualifier("ProductCrudServiceImpl")
 public class ProductCrudServiceImpl implements CrudService {
@@ -392,10 +397,4 @@ public class ProductCrudServiceImpl implements CrudService {
             return "Please input product's import date";
         } else return null;
     }
-}
-
-
-enum RequestPurpose {
-    EDIT,
-    ADD,
 }
