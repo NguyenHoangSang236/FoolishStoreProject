@@ -82,16 +82,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             loginAcc = accountRepo.getAccountByUserName(account.getUsername());
 
+            // check the status of the account is ALLOWED or BANNED
             if (loginAcc != null && loginAcc.getStatus().equals(AccountStatusEnum.ALLOWED.name())) {
                 jwt = jwtUtils.generateJwt(loginAcc);
                 loginAcc.setCurrentJwt(jwt);
                 accountRepo.save(loginAcc);
 
+                // when the account is Admin or Shipper
                 if (loginAcc.getRole().equals(RoleEnum.ADMIN.name()) || loginAcc.getRole().equals(RoleEnum.SHIPPER.name())) {
                     staffInfo = staffRenderInfoRepo.getStaffInfoByUserName(account.getUsername());
 
                     return new ResponseEntity<>(new ApiResponse("success", staffInfo, jwt), HttpStatus.OK);
-                } else if (loginAcc.getRole().equals(RoleEnum.CUSTOMER.name())) {
+                }
+                // when the account is Customer
+                else if (loginAcc.getRole().equals(RoleEnum.CUSTOMER.name())) {
                     customerInfo = customerRenderInfoRepo.getCustomerInfoByUserName(account.getUsername());
 
                     return new ResponseEntity<>(new ApiResponse("success", customerInfo, jwt), HttpStatus.OK);
@@ -117,11 +121,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             Account currentAccount = accountRepo.getAccountByUserName(username);
 
             if (currentAccount != null) {
-                if (currentAccount.getCustomer().getEmail().equals(email)) {
+                if (currentAccount.getStatus().equals(AccountStatusEnum.BANNED.name())) {
+                    return new ResponseEntity<>(new ApiResponse("failed", "This account has been banned"), responseHeaders, HttpStatus.BAD_REQUEST);
+                }
+                else if (currentAccount.getCustomer().getEmail().equals(email)) {
                     String newPassword = getNewTemporaryRandomPasswordMail(username, email);
 
-                    currentAccount.setPassword(newPassword);
+                    String newEncodedPassword = passwordEncoder.encode(newPassword);
+                    currentAccount.setPassword(newEncodedPassword);
                     accountRepo.save(currentAccount);
+
+                    return new ResponseEntity<>(new ApiResponse("success", "Change password successfully"), responseHeaders, HttpStatus.OK);
                 } else
                     return new ResponseEntity<>(new ApiResponse("failed", "This email does not belong to this account"), responseHeaders, HttpStatus.BAD_REQUEST);
             } else
@@ -130,8 +140,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), responseHeaders, HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>(new ApiResponse("success", "Change password successfully"), responseHeaders, HttpStatus.OK);
     }
 
 
@@ -231,15 +239,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     public String getNewTemporaryRandomPasswordMail(String userName, String email) {
-        String fromAddress = "nguyenhoangsang236@gmail.com";
-        String senderName = "Fool!st Fashion Store";
+        String fromAddress = "foolishstore2@gmail.com";
+        String senderName = "Fool!sh Fashion Store";
         String subject = "Your new temporary password";
         String newTempPassoword = valueRenderUtils.randomTemporaryPassword(userName);
         String content = "Dear [[name]],<br>"
                 + "Your new temporary password is " + newTempPassoword + "<br>"
-                + "Please rememder to change a new password for your new account because this temporary password will be changed after you close the website !!<br><br>"
+                + "Please remember to change a new password for your new account because this temporary password will be changed after you close the website !!<br><br>"
                 + "Thank you,<br>"
-                + "Fool!st Fashion Store";
+                + "Fool!sh Fashion Store";
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);

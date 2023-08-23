@@ -8,6 +8,7 @@ import com.backend.core.entities.requestdto.PaginationDTO;
 import com.backend.core.entities.requestdto.account.AccountFilterDTO;
 import com.backend.core.entities.requestdto.account.AccountFilterRequestDTO;
 import com.backend.core.entities.tableentity.Account;
+import com.backend.core.enums.AccountStatusEnum;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.RoleEnum;
 import com.backend.core.repository.account.AccountRepository;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.util.EnumUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,12 +95,19 @@ public class AccountCrudServiceImpl implements CrudService {
 
             // check if selected account is existed
             if (selectedAcc == null) {
-                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+            }
+
+            // check the status is correct or not
+            if (EnumUtils.findEnumInsensitiveCase(AccountStatusEnum.class, status) == null) {
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
             }
 
             // set status to CUSTOMER account and the status of it is DIFFERENT from request param's one
-            if (!selectedAcc.getStatus().equals(account.getStatus()) && !selectedAcc.getRole().equals(RoleEnum.ADMIN.name())) {
+            if (!selectedAcc.getStatus().equals(account.getStatus()) &&
+                    !selectedAcc.getRole().equals(RoleEnum.ADMIN.name())) {
                 selectedAcc.setStatus(status);
+                selectedAcc.setCurrentJwt(null);
                 accountRepo.save(selectedAcc);
 
                 return new ResponseEntity<>(new ApiResponse("success", "Update account successfully"), HttpStatus.OK);
