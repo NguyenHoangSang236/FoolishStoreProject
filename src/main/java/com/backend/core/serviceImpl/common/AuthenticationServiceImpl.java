@@ -5,6 +5,7 @@ import com.backend.core.entities.renderdto.StaffRenderInfoDTO;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.tableentity.Account;
 import com.backend.core.entities.tableentity.Customer;
+import com.backend.core.enums.AccountStatusEnum;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.RoleEnum;
 import com.backend.core.enums.StringTypeEnum;
@@ -81,7 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             loginAcc = accountRepo.getAccountByUserName(account.getUsername());
 
-            if (loginAcc != null) {
+            if (loginAcc != null && loginAcc.getStatus().equals(AccountStatusEnum.ALLOWED.name())) {
                 jwt = jwtUtils.generateJwt(loginAcc);
                 loginAcc.setCurrentJwt(jwt);
                 accountRepo.save(loginAcc);
@@ -135,21 +136,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public ResponseEntity logoutFromSystem(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse> logoutFromSystem(HttpServletRequest request) {
         try {
             String jwt = jwtUtils.getJwtFromRequest(request);
             jwtUtils.expireJwt(jwt);
 
-            return new ResponseEntity(new ApiResponse("success", "Logout successfully"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", "Logout successfully"), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
     @Override
-    public ResponseEntity registerNewAccount(Account accountFromUI, BindingResult bindingResult) {
+    public ResponseEntity<ApiResponse> registerNewAccount(Account accountFromUI, BindingResult bindingResult) {
         accountFromUI.setRole(RoleEnum.CUSTOMER.name());
         Customer customer = accountFromUI.getCustomer();
         customer.setImage("1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R");
@@ -157,20 +158,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             //check for null information
             if (bindingResult.hasErrors()) {
-                return new ResponseEntity(new ApiResponse("failed", BindExceptionHandler.getHandleBindException(new BindException(bindingResult))), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", BindExceptionHandler.getHandleBindException(new BindException(bindingResult))), HttpStatus.BAD_REQUEST);
             }
             //check for null password
             else if (accountFromUI.getPassword().isEmpty() || accountFromUI.getPassword().isBlank()) {
-                return new ResponseEntity(new ApiResponse("failed", "Password can not be null !!"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "Password can not be null !!"), HttpStatus.BAD_REQUEST);
             }
             //check valid username and password
-            else if (!checkUtils.checkValidStringType(accountFromUI.getUsername(), StringTypeEnum.HAS_NO_SPACE) ||
-                    !checkUtils.checkValidStringType(accountFromUI.getPassword(), StringTypeEnum.HAS_NO_SPACE)) {
-                return new ResponseEntity(new ApiResponse("failed", "Please remove all spaces in Username and Password !!"), HttpStatus.BAD_REQUEST);
+            else if (checkUtils.checkValidStringType(accountFromUI.getUsername(), StringTypeEnum.HAS_NO_SPACE) ||
+                    checkUtils.checkValidStringType(accountFromUI.getPassword(), StringTypeEnum.HAS_NO_SPACE)) {
+                return new ResponseEntity<>(new ApiResponse("failed", "Please remove all spaces in Username and Password !!"), HttpStatus.BAD_REQUEST);
             }
             //check for existed username
             else if (accountRepo.getAccountByUserName(accountFromUI.getUsername()) != null) {
-                return new ResponseEntity(new ApiResponse("failed", "This username has already been existed"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "This username has already been existed"), HttpStatus.BAD_REQUEST);
             }
 //            //check valid phone number
 //            else if (!checkUtils.isValidPhoneNumber(customer.getPhoneNumber())) {
@@ -178,19 +179,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 //            }
             //check valid VN phone number
             else if (customer.getPhoneNumber().length() != 10) {
-                return new ResponseEntity(new ApiResponse("failed", "Phone number must be 10-digit !!"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "Phone number must be 10-digit !!"), HttpStatus.BAD_REQUEST);
             }
             //check valid email
             else if (!checkUtils.isValidEmail(customer.getEmail())) {
-                return new ResponseEntity(new ApiResponse("failed", "This is not an email, please input again !!"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "This is not an email, please input again !!"), HttpStatus.BAD_REQUEST);
             }
             //check reused email
             else if (customerRepo.getCustomerByEmail(customer.getEmail()) != null) {
-                return new ResponseEntity(new ApiResponse("failed", "This email has been used !!"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "This email has been used !!"), HttpStatus.BAD_REQUEST);
             }
             //check valid customer full name
             else if (checkUtils.hasSpecialSign(customer.getName())) {
-                return new ResponseEntity(new ApiResponse("failed", "Full name can not have special signs !!"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "Full name can not have special signs !!"), HttpStatus.BAD_REQUEST);
             } else {
                 String jwt = jwtUtils.generateJwt(accountFromUI);
                 String newEncodedPassword = passwordEncoder.encode(accountFromUI.getPassword());
@@ -204,16 +205,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 customer.setName(formattedName);
                 customerRepo.save(customer);
 
-                return new ResponseEntity(new ApiResponse("success", "Register successfully"), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", "Register successfully"), HttpStatus.OK);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
-    public ResponseEntity updateProfile(CustomerRenderInfoDTO customerInfo, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse> updateProfile(CustomerRenderInfoDTO customerInfo, HttpServletRequest request) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(request);
 
         try {
@@ -221,10 +222,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             customer.setCustomerInfoFromRenderInfo(customerInfo);
             customerRepo.save(customer);
 
-            return new ResponseEntity(new ApiResponse("success", "Update profile successfully"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", "Update profile successfully"), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

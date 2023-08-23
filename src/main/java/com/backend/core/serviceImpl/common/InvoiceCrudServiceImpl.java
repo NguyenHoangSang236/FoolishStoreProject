@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.util.EnumUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,7 +77,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     @Override
-    public synchronized ResponseEntity singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
+    public synchronized ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
         String paymentMethod = (String) paramObj;
         String responseSuccessMessage = "New order has been created successfully";
@@ -126,63 +127,63 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 );
                 responseSuccessMessage += ", please transfer money to the given banking information for us to continue processing your order!";
             } else {
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
             }
 
             createNewInvoice(newInvoice, customerId);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity(new ApiResponse("success", responseSuccessMessage), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse("success", responseSuccessMessage), HttpStatus.OK);
     }
 
 
     @Override
-    public ResponseEntity listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ResponseEntity removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ResponseEntity removingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ResponseEntity updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ResponseEntity updatingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
         Invoice invoice = new Invoice();
         String message = "Cancel order successfully, ";
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         if (id == 0) {
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
         } else {
             try {
                 invoice = invoiceRepo.getInvoiceById(id);
 
                 // check if this customer is the owner or not
                 if (customerId != invoice.getCustomer().getId()) {
-                    return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
                 }
 
                 // if online payment and shipper has not accepted the order yet -> refund 50%
                 if (!invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) &&
-                        !invoice.getDeliveryStatus().equals(DeliveryStatusEnum.CUSTOMER_CANCEL.name()) &&
+                        !invoice.getDeliveryStatus().equals(DeliveryStatusEnum.FAILED.name()) &&
                         (invoice.getDeliveryStatus().equals(DeliveryStatusEnum.SHIPPER_WAITING.name()) ||
                                 invoice.getDeliveryStatus().equals(DeliveryStatusEnum.PACKING.name()) ||
                                 invoice.getDeliveryStatus().equals(DeliveryStatusEnum.PAYMENT_WAITING.name()))) {
@@ -192,26 +193,26 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 }
                 // if COD payment -> error
                 else if (invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
-                    return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
                 } else {
                     invoice.setReason("Customer cancels order, no refund");
                     message += "the shipper has already been on the way, so you will not have any refund!";
                 }
-                invoice.setDeliveryStatus(DeliveryStatusEnum.CUSTOMER_CANCEL.name());
+                invoice.setDeliveryStatus(DeliveryStatusEnum.FAILED.name());
                 invoiceRepo.save(invoice);
 
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
 
-        return new ResponseEntity(new ApiResponse("success", message), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse("success", message), HttpStatus.OK);
     }
 
 
     @Override
-    public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         try {
             OrderProcessDTO orderProcess = (OrderProcessDTO) paramObj;
 
@@ -219,8 +220,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
             int invoiceId = orderProcess.getId();
             Invoice invoice = invoiceRepo.getInvoiceById(invoiceId);
 
-            if (invoice == null)
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
+            if (invoice == null || EnumUtils.findEnumInsensitiveCase(AdminAcceptanceEnum.class, adminAction) == null)
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
 
             if ((adminAction.equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
                     adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) &&
@@ -244,20 +245,20 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTED.name())) {
                 invoice.setDeliveryStatus(DeliveryStatusEnum.SHIPPER_WAITING.name());
             } else
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
             invoiceRepo.save(invoice);
 
-            return new ResponseEntity(new ApiResponse("success", adminActionResult(adminAction)), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", adminActionResult(adminAction)), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
     @Override
-    public ResponseEntity readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         List<InvoiceRenderInfoDTO> invoiceRenderList = new ArrayList<>();
@@ -272,38 +273,38 @@ public class InvoiceCrudServiceImpl implements CrudService {
             return getReceiverBankInfo(paramInvoice);
         }
 
-        return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
 
 
     @Override
-    public ResponseEntity readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ResponseEntity readingResponse(String renderType, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ResponseEntity readingById(int invoiceId, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingById(int invoiceId, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         System.out.println(customerId);
 
         if (!isInvoiceOwner(customerId, invoiceId)) {
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
         } else {
             try {
                 List<InvoiceDetailRenderInfoDTO> invoiceItemsList = invoiceDetailsRenderInfoRepo.getInvoiceItemsByInvoiceId(invoiceId);
-                return new ResponseEntity(new ApiResponse("success", invoiceItemsList), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", invoiceItemsList), HttpStatus.OK);
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
@@ -324,27 +325,27 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     // filter invoices
-    public ResponseEntity filterInvoice(InvoiceFilterRequestDTO invoiceFilterRequest, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse> filterInvoice(InvoiceFilterRequestDTO invoiceFilterRequest, HttpServletRequest request) {
         try {
             String filterQuery = valueRenderUtils.getFilterQuery(invoiceFilterRequest, FilterTypeEnum.INVOICE, request);
 
             // get list from query
             List<InvoiceRenderInfoDTO> invoiceRenderList = customQueryRepo.getBindingFilteredList(filterQuery, InvoiceRenderInfoDTO.class);
 
-            return new ResponseEntity(new ApiResponse("success", invoiceRenderList), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", invoiceRenderList), HttpStatus.OK);
         } catch (StringIndexOutOfBoundsException e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }
 
 
     // get receiver banking info
-    public ResponseEntity getReceiverBankInfo(Invoice invoice) {
+    public ResponseEntity<ApiResponse> getReceiverBankInfo(Invoice invoice) {
         Invoice currentInvoice = invoiceRepo.getInvoiceById(invoice.getId());
         String currentPaymentMethod = invoice.getPaymentMethod();
         OnlinePaymentReceiverDTO receiver = new OnlinePaymentReceiverDTO();
@@ -371,7 +372,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             }
         }
 
-        return new ResponseEntity(new ApiResponse("success", receiver), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse("success", receiver), HttpStatus.OK);
     }
 
 

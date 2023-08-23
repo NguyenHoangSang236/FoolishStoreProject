@@ -22,10 +22,10 @@ public class CheckUtils {
     //check String has space or not
     public boolean checkValidStringType(String content, StringTypeEnum type) {
         if (type == StringTypeEnum.HAS_NO_SPACE) {
-            return !isStringWithSpace(content);
-        } else if (type == StringTypeEnum.HAS_SPACE) {
             return isStringWithSpace(content);
-        } else return false;
+        } else if (type == StringTypeEnum.HAS_SPACE) {
+            return !isStringWithSpace(content);
+        } else return true;
     }
 
 

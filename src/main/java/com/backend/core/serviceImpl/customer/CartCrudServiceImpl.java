@@ -62,7 +62,7 @@ public class CartCrudServiceImpl implements CrudService {
 
     // add a new item to cart
     @Override
-    public ResponseEntity singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
         CartItemDTO cartItemDTO = (CartItemDTO) paramObj;
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
         Cart newCartItem;
@@ -98,26 +98,26 @@ public class CartCrudServiceImpl implements CrudService {
                     );
                     cartRepo.save(newCartItem);
                 }
-                return new ResponseEntity(new ApiResponse("success", "Add successfully"), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", "Add successfully"), HttpStatus.OK);
             } else {
-                return new ResponseEntity(new ApiResponse("failed", "Do not have enough quantity for your order"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "Do not have enough quantity for your order"), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
     @Override
-    public ResponseEntity listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     // remove an item from cart
     @Override
-    public ResponseEntity removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         try {
@@ -132,26 +132,26 @@ public class CartCrudServiceImpl implements CrudService {
                     if (cart.getCustomer().getId() == customerId && cart.getBuyingStatus().equals(CartEnum.NOT_BOUGHT_YET.name())) {
                         customQueryRepo.deleteCartById(id);
                     } else
-                        return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
+                        return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
                 }
-                return new ResponseEntity(new ApiResponse("success", "Remove successfully"), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", "Remove successfully"), HttpStatus.OK);
             } else
-                return new ResponseEntity(new ApiResponse("failed", "Choose items to delete first"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "Choose items to delete first"), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
-    public ResponseEntity removingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     // update item info from cart
     @Override
-    public ResponseEntity updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         try {
@@ -175,7 +175,7 @@ public class CartCrudServiceImpl implements CrudService {
 
                     // check if updated cart quantity is higher than product's available quantity or not
                     if (pm.getAvailableQuantity() < cartItemDTO.getQuantity()) {
-                        return new ResponseEntity(new ApiResponse("failed", "We only have " + pm.getAvailableQuantity() + " items left!"), HttpStatus.BAD_REQUEST);
+                        return new ResponseEntity<>(new ApiResponse("failed", "We only have " + pm.getAvailableQuantity() + " items left!"), HttpStatus.BAD_REQUEST);
                     } else {
                         Cart cartItem = cartRepo.getCartItemByProductManagementIdAndCustomerId(pmId, customerId);
 
@@ -203,29 +203,29 @@ public class CartCrudServiceImpl implements CrudService {
                     }
                 }
 
-                return new ResponseEntity(new ApiResponse("success", "Update cart items successfully"), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", "Update cart items successfully"), HttpStatus.OK);
             } else
-                return new ResponseEntity(new ApiResponse("failed", "Please select items in cart to update"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "Please select items in cart to update"), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
-    public ResponseEntity updatingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     // get cart item list through pagination or filter
     @Override
-    public ResponseEntity readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
         List<CartRenderInfoDTO> cartItemList = new ArrayList<>();
 
@@ -241,7 +241,7 @@ public class CartCrudServiceImpl implements CrudService {
                 );
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
         // if the param is filter -> filter cart items
@@ -253,23 +253,23 @@ public class CartCrudServiceImpl implements CrudService {
                 cartItemList = customQueryRepo.getBindingFilteredList(filterQuery, CartRenderInfoDTO.class);
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
 
-        return new ResponseEntity(new ApiResponse("success", cartItemList), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse("success", cartItemList), HttpStatus.OK);
     }
 
 
     @Override
-    public ResponseEntity readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
 
         return null;
     }
 
 
     @Override
-    public ResponseEntity readingResponse(String renderType, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         // get cart item total quantity
@@ -279,9 +279,9 @@ public class CartCrudServiceImpl implements CrudService {
             try {
                 totalQuantity = cartRepo.getCartQuantityByCustomerId(customerId);
 
-                return new ResponseEntity(new ApiResponse("success", totalQuantity), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", totalQuantity), HttpStatus.OK);
             } catch (Exception e) {
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
         // get checkout info
@@ -300,18 +300,18 @@ public class CartCrudServiceImpl implements CrudService {
                 // init new checkout object
                 CartCheckoutDTO checkout = new CartCheckoutDTO(subtotal, shippingFee, subtotal + shippingFee);
 
-                return new ResponseEntity(new ApiResponse("success", checkout), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", checkout), HttpStatus.OK);
             } catch (Exception e) {
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
 
-        return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
     @Override
-    public ResponseEntity readingById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
         return null;
     }
 }

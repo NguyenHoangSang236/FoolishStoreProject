@@ -52,39 +52,39 @@ public class ShopCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ResponseEntity singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity removingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ResponseEntity updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity updatingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+
+    @Override
+    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         try {
             // convert param object to ProductRenderInfoDTO
             ProductRenderInfoDTO request = (ProductRenderInfoDTO) paramObj;
@@ -99,7 +99,7 @@ public class ShopCrudServiceImpl implements CrudService {
 
             // rating only from 1-5
             if (rating < 1 || rating > 5) {
-                return new ResponseEntity(new ApiResponse("failed", "Rate from one to five stars only"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "Rate from one to five stars only"), HttpStatus.BAD_REQUEST);
             }
 
             List<ProductManagement> pmList = productManagementRepo.getProductsManagementListByProductIDAndColor(productId, color);
@@ -114,16 +114,16 @@ public class ShopCrudServiceImpl implements CrudService {
                 productManagementRepo.save(pm);
             }
 
-            return new ResponseEntity(new ApiResponse("success", "Thanks for your rating!"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", "Thanks for your rating!"), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
     @Override
-    public ResponseEntity readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
         List<ProductRenderInfoDTO> productRenderList = null;
 
         // get products from filter request
@@ -134,18 +134,18 @@ public class ShopCrudServiceImpl implements CrudService {
         else if (paramObj instanceof PaginationDTO pagination) {
             return getProductFromPagination(pagination);
         } else
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
     @Override
-    public ResponseEntity readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ResponseEntity readingResponse(String renderType, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
         List<ProductRenderInfoDTO> productList = new ArrayList<ProductRenderInfoDTO>();
         String status = "failed";
 
@@ -162,61 +162,61 @@ public class ShopCrudServiceImpl implements CrudService {
         } catch (Exception e) {
             status = "failed";
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse(status, ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse(status, ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity(new ApiResponse(status, productList), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(status, productList), HttpStatus.OK);
     }
 
 
     @Override
-    public ResponseEntity readingById(int productId, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingById(int productId, HttpServletRequest httpRequest) {
         List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
 
         try {
             productDetails = productRenderInfoRepo.getProductDetails(productId);
 
             if (!productDetails.isEmpty()) {
-                return new ResponseEntity(new ApiResponse("success", productDetails), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
             } else {
-                return new ResponseEntity(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
         }
     }
 
 
     // filter products
-    public ResponseEntity filterProducts(ProductFilterRequestDTO productFilterRequest, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse> filterProducts(ProductFilterRequestDTO productFilterRequest, HttpServletRequest request) {
         try {
             String filterQuery = valueRenderUtils.getFilterQuery(productFilterRequest, FilterTypeEnum.PRODUCT, request);
 
             List<ProductRenderInfoDTO> productRenderList = customQueryRepo.getBindingFilteredList(filterQuery, ProductRenderInfoDTO.class);
 
-            return new ResponseEntity(new ApiResponse("success", productRenderList), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", productRenderList), HttpStatus.OK);
         } catch (StringIndexOutOfBoundsException e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
     // get product list from pagination
-    public ResponseEntity getProductFromPagination(PaginationDTO pagination) {
+    public ResponseEntity<ApiResponse> getProductFromPagination(PaginationDTO pagination) {
         try {
             List<ProductRenderInfoDTO> productRenderList = productRenderInfoRepo.getAllProducts(
                     valueRenderUtils.getStartLineForQueryPagination(pagination.getLimit(), pagination.getPage()),
                     pagination.getLimit()
             );
-            return new ResponseEntity(new ApiResponse("success", productRenderList), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", productRenderList), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

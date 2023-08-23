@@ -44,7 +44,7 @@ public class CommentCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ResponseEntity singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
         CommentRequestDTO request;
         request = (CommentRequestDTO) paramObj;
 
@@ -53,18 +53,18 @@ public class CommentCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ResponseEntity listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ResponseEntity removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity removingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
         Comment comment;
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
@@ -72,31 +72,31 @@ public class CommentCrudServiceImpl implements CrudService {
             comment = commentRepo.getCommentById(id);
 
             if (customerId != comment.getCustomer().getId()) {
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
             }
 
             commentRepo.deleteById(id);
 
-            return new ResponseEntity(new ApiResponse("success", "Update comment successfully"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", "Update comment successfully"), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
     @Override
-    public ResponseEntity updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity updatingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
         Comment comment;
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         if (id == 0) {
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
         } else {
             try {
                 comment = commentRepo.getCommentById(id);
@@ -104,16 +104,16 @@ public class CommentCrudServiceImpl implements CrudService {
                 comment.likeComment();
                 commentRepo.save(comment);
 
-                return new ResponseEntity(new ApiResponse("success", "Like comment successfully"), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", "Like comment successfully"), HttpStatus.OK);
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
 
     @Override
-    public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         CommentRequestDTO request;
         Comment comment;
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
@@ -123,7 +123,7 @@ public class CommentCrudServiceImpl implements CrudService {
             comment = commentRepo.getCommentById(request.getId());
 
             if (customerId != comment.getCustomer().getId()) {
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
             }
 
             comment.setCommentContent(request.getCommentContent());
@@ -131,16 +131,16 @@ public class CommentCrudServiceImpl implements CrudService {
 
             commentRepo.save(comment);
 
-            return new ResponseEntity(new ApiResponse("success", "Delete comment successfully"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", "Delete comment successfully"), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
     @Override
-    public ResponseEntity readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
         try {
             CommentFilterRequestDTO commentFilterRequest = (CommentFilterRequestDTO) paramObj;
 
@@ -148,34 +148,34 @@ public class CommentCrudServiceImpl implements CrudService {
 
             List<Comment> commentList = customQueryRepo.getBindingFilteredList(filterQuery, Comment.class);
 
-            return new ResponseEntity(new ApiResponse("success", commentList), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", commentList), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
     @Override
-    public ResponseEntity readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ResponseEntity readingResponse(String renderType, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     @Override
-    public ResponseEntity readingById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
         return null;
     }
 
 
     // add new comment process
-    public ResponseEntity addNewComment(CommentRequestDTO request, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<ApiResponse> addNewComment(CommentRequestDTO request, HttpServletRequest httpServletRequest) {
         Comment newComment = new Comment();
         Product product;
         int customerId;
@@ -192,10 +192,10 @@ public class CommentCrudServiceImpl implements CrudService {
             newComment.setReplyOn(request.getReplyOn());
             commentRepo.save(newComment);
 
-            return new ResponseEntity(new ApiResponse("success", "Add new comment successfully"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", "Add new comment successfully"), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

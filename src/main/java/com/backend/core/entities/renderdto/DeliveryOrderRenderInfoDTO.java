@@ -43,6 +43,9 @@ public class DeliveryOrderRenderInfoDTO {
     @Column(name = "delivery_date")
     Date deliveryDate;
 
+    @Column(name = "expected_delivery_date")
+    Date expectedDeliveryDate;
+
     @Column(name = "invoice_delivery_status")
     String invoiceDeliveryStatus;
 

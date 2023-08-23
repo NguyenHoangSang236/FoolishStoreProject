@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface FilterRequest {
-    public abstract Object getFilter();
+    Object getFilter();
 
-    public abstract void setFilter(Object filter) throws JsonProcessingException;
+    void setFilter(Object filter) throws JsonProcessingException;
 
-    public abstract PaginationDTO getPagination();
+    PaginationDTO getPagination();
 
-    public abstract void setPagination(PaginationDTO paginationDTO);
+    void setPagination(PaginationDTO paginationDTO);
 }

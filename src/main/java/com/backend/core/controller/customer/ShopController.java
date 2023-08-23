@@ -2,6 +2,7 @@ package com.backend.core.controller.customer;
 
 import com.backend.core.abstractClasses.CrudController;
 import com.backend.core.entities.renderdto.ProductRenderInfoDTO;
+import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.PaginationDTO;
 import com.backend.core.entities.requestdto.product.ProductFilterRequestDTO;
 import com.backend.core.enums.RenderTypeEnum;
@@ -38,14 +39,14 @@ public class ShopController extends CrudController {
 
 
     @Override
-    public ResponseEntity addNewItem(String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> addNewItem(String json, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
 
     @Override
     @PostMapping("auth/shop/rateProduct")
-    public ResponseEntity updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProductRenderInfoDTO request = objectMapper.readValue(json, ProductRenderInfoDTO.class);
 
@@ -54,25 +55,25 @@ public class ShopController extends CrudController {
 
     @Override
     @GetMapping("/unauthen/shop/product_id={productId}")
-    public ResponseEntity readSelectedItemById(@PathVariable(value = "productId") int productId, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> readSelectedItemById(@PathVariable(value = "productId") int productId, HttpServletRequest httpRequest) throws IOException {
         return crudService.readingById(productId, httpRequest);
     }
 
 
     @Override
-    public ResponseEntity deleteSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> deleteSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
     @Override
-    public ResponseEntity updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
 
     @Override
     @PostMapping("/unauthen/shop/allProducts")
-    public ResponseEntity getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         PaginationDTO pagination = objectMapper.readValue(json, PaginationDTO.class);
         return crudService.readingFromSingleRequest(pagination, httpRequest);
@@ -80,7 +81,7 @@ public class ShopController extends CrudController {
 
     @Override
     @PostMapping("/unauthen/shop/filterProducts")
-    public ResponseEntity getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProductFilterRequestDTO productFilterRequest = objectMapper.readValue(json, ProductFilterRequestDTO.class);
         return crudService.readingFromSingleRequest(productFilterRequest, httpRequest);
@@ -88,19 +89,19 @@ public class ShopController extends CrudController {
 
 
     @GetMapping("/unauthen/shop/top8BestSellers")
-    public ResponseEntity getTop8BestSellers(String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getTop8BestSellers(String json, HttpServletRequest httpRequest) throws IOException {
         return crudService.readingResponse(RenderTypeEnum.TOP_8_BEST_SELL_PRODUCTS.name(), httpRequest);
     }
 
 
     @GetMapping("/unauthen/shop/newArrivalProducts")
-    public ResponseEntity getNewArrivalProducts(String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getNewArrivalProducts(String json, HttpServletRequest httpRequest) throws IOException {
         return crudService.readingResponse(RenderTypeEnum.NEW_ARRIVAL_PRODUCTS.name(), httpRequest);
     }
 
 
     @GetMapping("/unauthen/shop/hotDiscountProducts")
-    public ResponseEntity getHotDiscountProducts(String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getHotDiscountProducts(String json, HttpServletRequest httpRequest) throws IOException {
         return crudService.readingResponse(RenderTypeEnum.HOT_DISCOUNT_PRODUCTS.name(), httpRequest);
     }
 }

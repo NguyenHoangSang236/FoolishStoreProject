@@ -1,6 +1,7 @@
 package com.backend.core.controller.common;
 
 import com.backend.core.abstractClasses.CrudController;
+import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.tableentity.Catalog;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.service.CrudService;
@@ -28,7 +29,7 @@ public class CategoryController extends CrudController {
     @PostMapping("/authen/category/add")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public ResponseEntity addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Catalog catalog = objectMapper.readValue(json, Catalog.class);
         return crudService.singleCreationalResponse(catalog, httpRequest);
@@ -37,37 +38,37 @@ public class CategoryController extends CrudController {
     @PostMapping("/authen/category/update")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public ResponseEntity updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Catalog catalog = objectMapper.readValue(json, Catalog.class);
         return crudService.updatingResponseByRequest(catalog, httpRequest);
     }
 
     @Override
-    public ResponseEntity readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
     @GetMapping("authen/category/delete_category_id={id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public ResponseEntity deleteSelectedItemById(@PathVariable int id, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> deleteSelectedItemById(@PathVariable int id, HttpServletRequest httpRequest) throws IOException {
         return crudService.removingResponseById(id, httpRequest);
     }
 
     @Override
-    public ResponseEntity updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
     @Override
     @GetMapping("/unauthen/category/allCategories")
-    public ResponseEntity getListOfItems(String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getListOfItems(String json, HttpServletRequest httpRequest) throws IOException {
         return crudService.readingResponse(RenderTypeEnum.ALL_CATEGORIES.name(), httpRequest);
     }
 
     @Override
-    public ResponseEntity getListOfItemsFromFilter(String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getListOfItemsFromFilter(String json, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 }

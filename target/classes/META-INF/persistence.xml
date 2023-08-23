@@ -8,18 +8,18 @@
         <description>Hibernate Entity Manager Example</description>
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
-<!--            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />-->
-<!--            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/fashionstorewebsite" />-->
-<!--            <property name="jakarta.persistence.jdbc.user" value="root" />-->
-<!--            <property name="jakarta.persistence.jdbc.password" value="123456" />-->
-<!--            <property name="hibernate.show_sql" value="true" />-->
-
-
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://root:Ldml8s3dDYE1I28tLnT0@containers-us-west-29.railway.app:7640/fashionstorewebsite" />
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/fashionstorewebsite" />
             <property name="jakarta.persistence.jdbc.user" value="root" />
-            <property name="jakarta.persistence.jdbc.password" value="Ldml8s3dDYE1I28tLnT0" />
+            <property name="jakarta.persistence.jdbc.password" value="hoangsang236" />
             <property name="hibernate.show_sql" value="true" />
+
+
+<!--            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />-->
+<!--            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://root:Ldml8s3dDYE1I28tLnT0@containers-us-west-29.railway.app:7640/fashionstorewebsite" />-->
+<!--            <property name="jakarta.persistence.jdbc.user" value="root" />-->
+<!--            <property name="jakarta.persistence.jdbc.password" value="Ldml8s3dDYE1I28tLnT0" />-->
+<!--            <property name="hibernate.show_sql" value="true" />-->
         </properties>
     </persistence-unit>
 
