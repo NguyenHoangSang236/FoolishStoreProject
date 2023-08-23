@@ -1,6 +1,7 @@
 package com.backend.core.controller.customer;
 
 import com.backend.core.abstractClasses.CrudController;
+import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.PaginationDTO;
 import com.backend.core.entities.requestdto.cart.CartItemDTO;
@@ -31,7 +32,7 @@ public class CartController extends CrudController {
 
 
     @PostMapping("/remove")
-    public ResponseEntity updateCart(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
+    public ResponseEntity<ApiResponse> updateCart(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         ListRequestDTO requestDTO = objectMapper.readValue(json, ListRequestDTO.class);
 
@@ -41,7 +42,7 @@ public class CartController extends CrudController {
 
     @PostMapping("/add")
     @Override
-    public ResponseEntity addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CartItemDTO cartItemDTO = objectMapper.readValue(json, CartItemDTO.class);
 
@@ -51,7 +52,7 @@ public class CartController extends CrudController {
 
     @PostMapping("/update")
     @Override
-    public ResponseEntity updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ListRequestDTO requestDTO = objectMapper.readValue(json, ListRequestDTO.class);
 
@@ -59,26 +60,26 @@ public class CartController extends CrudController {
     }
 
     @Override
-    public ResponseEntity readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
 
     @Override
-    public ResponseEntity deleteSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> deleteSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
 
     @Override
-    public ResponseEntity updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
 
     @PostMapping("/showFullCart")
     @Override
-    public ResponseEntity getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         PaginationDTO pagination = objectMapper.readValue(json, PaginationDTO.class);
         return crudService.readingFromSingleRequest(pagination, httpRequest);
@@ -87,7 +88,7 @@ public class CartController extends CrudController {
 
     @PostMapping("/filterCartItems")
     @Override
-    public ResponseEntity getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CartItemFilterRequestDTO filterRequest = objectMapper.readValue(json, CartItemFilterRequestDTO.class);
         return crudService.readingFromSingleRequest(filterRequest, httpRequest);
@@ -95,13 +96,13 @@ public class CartController extends CrudController {
 
 
     @GetMapping("/totalCartItemQuantity")
-    public ResponseEntity getTotalCartItemQuantity(HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> getTotalCartItemQuantity(HttpServletRequest httpRequest) {
         return crudService.readingResponse(RenderTypeEnum.TOTAL_CART_ITEM_QUANTITY.name(), httpRequest);
     }
 
 
     @GetMapping("/checkout")
-    public ResponseEntity getCartCheckout(HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> getCartCheckout(HttpServletRequest httpRequest) {
         return crudService.readingResponse(RenderTypeEnum.CART_CHECKOUT.name(), httpRequest);
     }
 }

@@ -1,6 +1,7 @@
 package com.backend.core.controller.admin;
 
 import com.backend.core.abstractClasses.CrudController;
+import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.product.ProductDetailsRequestDTO;
 import com.backend.core.service.CrudService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +28,7 @@ public class ProductController extends CrudController {
 
     @PostMapping("/add")
     @Override
-    public ResponseEntity addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProductDetailsRequestDTO productDetailsRequest = objectMapper.readValue(json, ProductDetailsRequestDTO.class);
         return crudService.singleCreationalResponse(productDetailsRequest, httpRequest);
@@ -35,7 +36,7 @@ public class ProductController extends CrudController {
 
     @PostMapping("/edit")
     @Override
-    public ResponseEntity updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProductDetailsRequestDTO productDetailsRequest = objectMapper.readValue(json, ProductDetailsRequestDTO.class);
         return crudService.updatingResponseByRequest(productDetailsRequest, httpRequest);
@@ -43,27 +44,27 @@ public class ProductController extends CrudController {
 
     @GetMapping("/product_id={id}")
     @Override
-    public ResponseEntity readSelectedItemById(@PathVariable(value = "id") int id, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> readSelectedItemById(@PathVariable(value = "id") int id, HttpServletRequest httpRequest) throws IOException {
         return crudService.readingById(id, httpRequest);
     }
 
     @Override
-    public ResponseEntity deleteSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> deleteSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
     @Override
-    public ResponseEntity updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
     @Override
-    public ResponseEntity getListOfItems(String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getListOfItems(String json, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
     @Override
-    public ResponseEntity getListOfItemsFromFilter(String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getListOfItemsFromFilter(String json, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Service
 public interface CalculationService {
-    public double getTotalPriceOfSingleProduct(double price, double discount);
+    double getTotalPriceOfSingleProduct(double price, double discount);
 
-    public double getTotalPriceFromProductsList(List<InvoicesWithProducts> invoiceProductsList);
+    double getTotalPriceFromProductsList(List<InvoicesWithProducts> invoiceProductsList);
 }

@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `fashionstorewebsite` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `fashionstorewebsite`;
--- MySQL dump 10.13  Distrib 8.0.32, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
 --
 -- Host: localhost    Database: fashionstorewebsite
 -- ------------------------------------------------------
--- Server version	8.0.33-0ubuntu0.22.04.2
+-- Server version	8.0.32
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -227,6 +227,7 @@ CREATE TABLE `delivery` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `invoice_id` bigint NOT NULL,
   `shipper_id` bigint NOT NULL,
+  `expected_delivery_date` date DEFAULT NULL,
   `delivery_date` date DEFAULT NULL,
   `current_status` varchar(20) NOT NULL,
   `additional_shipper_comment` text,
@@ -245,7 +246,7 @@ CREATE TABLE `delivery` (
 
 LOCK TABLES `delivery` WRITE;
 /*!40000 ALTER TABLE `delivery` DISABLE KEYS */;
-INSERT INTO `delivery` VALUES (1,8,2,NULL,'TAKE_ORDER',NULL,NULL),(2,11,2,NULL,'SHIPPING','',NULL),(3,6,2,'2023-08-20','SHIPPED','So easy !! ','https://www.google.com/imgres?imgurl=https%3A%2F%2Fblog.uber-cdn.com%2Fcdn-cgi%2Fimage%2Fwidth%3D2160%2Cheight%3D1080%2Cquality%3D80%2Conerror%3Dredirect%2Cformat%3Dauto%2Fwp-content%2Fuploads%2F2021%2F04%2FGettyImages-1020173734-1.jpg&tbnid=UMyi5UvbUTrpyM&vet=12ahUKEwi4q5u3kOuAAxVvbfUHHRcaDwYQMygCegQIARBW..i&imgrefurl=https%3A%2F%2Fwww.uber.com%2Fen-AU%2Fblog%2Fin-app-package-delivery%2F&docid=0VcYXaPLPytU6M&w=2160&h=1080&q=package&client=ubuntu-sn&ved=2ahUKEwi4q5u3kOuAAxVvbfUHHRcaDwYQMygCegQIARBW'),(4,10,2,'2023-08-19','CUSTOMER_CANCEL','Could not contact with customer','https://www.google.com/imgres?imgurl=https%3A%2F%2Fres.cloudinary.com%2Fsagacity%2Fimage%2Fupload%2Fc_crop%2Ch_3184%2Cw_5712%2Cx_0%2Cy_0%2Fc_limit%2Cdpr_auto%2Cf_auto%2Cfl_lossy%2Cq_80%2Cw_1080%2Fshutterstock_1831476562_ywxzg6.jpg&tbnid=PCG8JrJA2rbp8M&vet=12ahUKEwi4q5u3kOuAAxVvbfUHHRcaDwYQMygBegQIARBU..i&imgrefurl=https%3A%2F%2Fwww.houstoniamag.com%2Fnews-and-city-life%2F2021%2F12%2Fsafe-package-tips-delivery-holiday-season&docid=YLSO0XgCECCHRM&w=1080&h=602&q=package&client=ubuntu-sn&ved=2ahUKEwi4q5u3kOuAAxVvbfUHHRcaDwYQMygBegQIARBU');
+INSERT INTO `delivery` VALUES (1,8,2,NULL,NULL,'TAKE_ORDER',NULL,NULL),(2,11,2,'2022-02-09',NULL,'FIRST_ATTEMPT_FAILED','Customer did not get the package!',NULL),(3,6,2,'2023-08-20','2023-08-20','SHIPPED','So easy !! ','https://www.google.com/imgres?imgurl=https%3A%2F%2Fblog.uber-cdn.com%2Fcdn-cgi%2Fimage%2Fwidth%3D2160%2Cheight%3D1080%2Cquality%3D80%2Conerror%3Dredirect%2Cformat%3Dauto%2Fwp-content%2Fuploads%2F2021%2F04%2FGettyImages-1020173734-1.jpg&tbnid=UMyi5UvbUTrpyM&vet=12ahUKEwi4q5u3kOuAAxVvbfUHHRcaDwYQMygCegQIARBW..i&imgrefurl=https%3A%2F%2Fwww.uber.com%2Fen-AU%2Fblog%2Fin-app-package-delivery%2F&docid=0VcYXaPLPytU6M&w=2160&h=1080&q=package&client=ubuntu-sn&ved=2ahUKEwi4q5u3kOuAAxVvbfUHHRcaDwYQMygCegQIARBW'),(4,10,2,'2023-08-19','2023-08-19','CUSTOMER_CANCEL','Could not contact with customer','https://www.google.com/imgres?imgurl=https%3A%2F%2Fres.cloudinary.com%2Fsagacity%2Fimage%2Fupload%2Fc_crop%2Ch_3184%2Cw_5712%2Cx_0%2Cy_0%2Fc_limit%2Cdpr_auto%2Cf_auto%2Cfl_lossy%2Cq_80%2Cw_1080%2Fshutterstock_1831476562_ywxzg6.jpg&tbnid=PCG8JrJA2rbp8M&vet=12ahUKEwi4q5u3kOuAAxVvbfUHHRcaDwYQMygBegQIARBU..i&imgrefurl=https%3A%2F%2Fwww.houstoniamag.com%2Fnews-and-city-life%2F2021%2F12%2Fsafe-package-tips-delivery-holiday-season&docid=YLSO0XgCECCHRM&w=1080&h=602&q=package&client=ubuntu-sn&ved=2ahUKEwi4q5u3kOuAAxVvbfUHHRcaDwYQMygBegQIARBU');
 /*!40000 ALTER TABLE `delivery` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -266,6 +267,7 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `invoice_id`,
  1 AS `invoice_date`,
  1 AS `delivery_date`,
+ 1 AS `expected_delivery_date`,
  1 AS `invoice_delivery_status`,
  1 AS `current_delivery_status`,
  1 AS `payment_status`,
@@ -349,7 +351,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice` VALUES (1,1,'2023-03-10',NULL,'PAID','REFUSED','NOT_SHIPPED','COD',NULL,0,'USD',NULL,0,'sb-2437s98400372@personal.example.com',1,NULL,NULL),(2,1,'2023-03-09',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','CUSTOMER_CANCEL','VNPAY','Customer cancels order before shipper takes over, refund 50%',50,'USD',NULL,0,NULL,1,NULL,NULL),(3,1,'2023-03-10',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPER_WAITING','BANK_TRANSFER','',0,'USD','alo alo',0,NULL,1,NULL,NULL),(4,1,'2023-03-10',NULL,'UNPAID','REFUSED','CANCEL','COD','The shop caught fire !!',0,'USD','alo alo',0,NULL,1,NULL,NULL),(5,2,'2023-03-10',NULL,'UNPAID','PAYMENT_WAITING','ACCEPTANCE_WAITING','BANK_TRANSFER',NULL,0,'USD','nguyen quynh nhu',0,NULL,1,NULL,NULL),(6,1,'2023-03-10',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPED','PAYPAL','shipper comments are written here...',0,'USD','alo alo',0,'sb-2437s98400372@personal.example.com',1,NULL,NULL),(7,1,'2023-03-10',NULL,'UNPAID','ACCEPTED','PACKING','COD',NULL,0,'USD','alo alo',0,NULL,1,NULL,NULL),(8,2,'2023-03-10',NULL,'UNPAID','ACCEPTED','SHIPPING','COD',NULL,0,'USD','huhuhuhuu',0,NULL,1,NULL,NULL),(9,2,'2023-03-10',NULL,'UNPAID','WAITING','NOT_SHIPPED','COD','customer canceled order before admin accept',0,'USD','huhuhuhuu',0,'',0,NULL,NULL),(10,1,'2023-03-17',NULL,'UNPAID','ACCEPTED','CUSTOMER_CANCEL','COD','Customer refuse to take the package ',0,'USD','alo alo',0,'',1,NULL,NULL),(11,2,'2023-03-17',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPING','PAYPAL','',0,'USD','duc ngu',0,'sb-2437s98400372@personal.example.com',1,NULL,NULL);
+INSERT INTO `invoice` VALUES (1,1,'2023-03-10',NULL,'PAID','REFUSED','NOT_SHIPPED','COD',NULL,0,'USD',NULL,0,'sb-2437s98400372@personal.example.com',1,NULL,NULL),(2,1,'2023-03-09',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','CUSTOMER_CANCEL','VNPAY','Customer cancels order before shipper takes over, refund 50%',50,'USD',NULL,0,NULL,1,NULL,NULL),(3,1,'2023-03-10',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPER_WAITING','BANK_TRANSFER','',0,'USD','alo alo',0,NULL,1,NULL,NULL),(4,1,'2023-03-10',NULL,'UNPAID','REFUSED','NOT_SHIPPED','COD','The shop caught fire !!',0,'USD','alo alo',0,NULL,1,NULL,NULL),(5,2,'2023-03-10',NULL,'UNPAID','PAYMENT_WAITING','ACCEPTANCE_WAITING','BANK_TRANSFER',NULL,0,'USD','nguyen quynh nhu',0,NULL,1,NULL,NULL),(6,1,'2023-03-10',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPED','PAYPAL','shipper comments are written here...',0,'USD','alo alo',0,'sb-2437s98400372@personal.example.com',1,NULL,NULL),(7,1,'2023-03-10',NULL,'UNPAID','ACCEPTED','PACKING','COD',NULL,0,'USD','alo alo',0,NULL,1,NULL,NULL),(8,2,'2023-03-10',NULL,'UNPAID','ACCEPTED','SHIPPING','COD',NULL,0,'USD','huhuhuhuu',0,NULL,1,NULL,NULL),(9,2,'2023-03-10',NULL,'UNPAID','WAITING','NOT_SHIPPED','COD','customer canceled order before admin accept',0,'USD','huhuhuhuu',0,'',0,NULL,NULL),(10,1,'2023-03-17',NULL,'UNPAID','ACCEPTED','FAILED','COD','Customer refuse to take the package ',0,'USD','alo alo',0,'',1,NULL,NULL),(11,2,'2023-03-17',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPING','PAYPAL','',0,'USD','duc ngu',0,'sb-2437s98400372@personal.example.com',1,NULL,NULL);
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -460,7 +462,7 @@ CREATE TABLE `login_accounts` (
 
 LOCK TABLES `login_accounts` WRITE;
 /*!40000 ALTER TABLE `login_accounts` DISABLE KEYS */;
-INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5MjQ0MDY5NCwiZXhwIjoxNjkyNTI3MDk0fQ.fO80We2VpwB5OgT8ihgySoCisoPNyxCydhHz3ScjKUU'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkyNDQwNzI5LCJleHAiOjE2OTI1MjcxMjl9.e3H-6dxQd92ovQZJ2bEi75kX0W5EEOIH60Et7s14rEU'),(3,'nhu0707','B1czXA9LT3','CUSTOMER','ALLOWED',NULL),(7,'sang236','123','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyNTQzNzI3LCJleHAiOjE2OTI2MzAxMjd9.hQJAzVg3ieGBuD4rXZeCKQR7yT_JS9siEsEnNpxM3aE'),(9,'tester','123','CUSTOMER','ALLOWED',NULL),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(44,'manhngu','123','CUSTOMER','ALLOWED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL);
+INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5MjQ0MDY5NCwiZXhwIjoxNjkyNTI3MDk0fQ.fO80We2VpwB5OgT8ihgySoCisoPNyxCydhHz3ScjKUU'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkyNzg4OTY0LCJleHAiOjE2OTI4NzUzNjR9.ArwZ-jjN3Jd07870oMHCejkYGpNDbYaiTmilV0SUFnY'),(3,'nhu0707','B1czXA9LT3','CUSTOMER','ALLOWED',NULL),(7,'sang236','123','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyNzg4OTcxLCJleHAiOjE2OTI4NzUzNzF9.MQhzPMHpVyz1U1WhSRdvlTLjXE-ZP3LsvIoSmOczvIw'),(9,'tester','123','CUSTOMER','ALLOWED',NULL),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(44,'manhngu','123','CUSTOMER','ALLOWED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL);
 /*!40000 ALTER TABLE `login_accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -694,7 +696,7 @@ CREATE TABLE `staffs` (
 
 LOCK TABLES `staffs` WRITE;
 /*!40000 ALTER TABLE `staffs` DISABLE KEYS */;
-INSERT INTO `staffs` VALUES (1,'Nguyen Hoang Sang','hcm','ADMIN','2001-06-23','nguyenhoangsang236@gmail.com','0123456987',1,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(2,'Nguyen Anh Duc','hcm','SHIPPER','2001-02-02','ducnguvcl@gmail.com','0321654987',8,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(5,'uknown','abc','ADMIN','1900-02-02','aasfasfasf','0111111111',0,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU');
+INSERT INTO `staffs` VALUES (0,'uknown','abc','ADMIN','1900-02-02','aasfasfasf','0111111111',0,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(1,'Nguyen Hoang Sang','hcm','ADMIN','2001-06-23','nguyenhoangsang236@gmail.com','0123456987',1,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU'),(2,'Nguyen Anh Duc','hcm','SHIPPER','2001-02-02','ducnguvcl@gmail.com','0321654987',8,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaiHNXjxQrlFFFHdMGtUpH1nLDjHzyfTms6A&usqp=CAU');
 /*!40000 ALTER TABLE `staffs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -773,7 +775,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `delivery_info_for_ui` AS select `d`.`id` AS `id`,`stf`.`name` AS `shipper_name`,`stf`.`id` AS `shipper_id`,`stf`.`phone_number` AS `shipper_phone_number`,`stf`.`avatar` AS `shipper_avatar`,`d`.`invoice_id` AS `invoice_id`,`i`.`Invoice_Date` AS `invoice_date`,`d`.`delivery_date` AS `delivery_date`,`i`.`Delivery_Status` AS `invoice_delivery_status`,`d`.`current_status` AS `current_delivery_status`,`i`.`Payment_Status` AS `payment_status`,`i`.`Payment_Method` AS `payment_method`,`i`.`Description` AS `description`,`i`.`total_price` AS `total_price`,`i`.`note` AS `note`,`c`.`id` AS `customer_id`,`c`.`name` AS `customer_name`,`c`.`phone_number` AS `customer_phone_number`,`c`.`address` AS `address`,`c`.`city` AS `city`,`c`.`country` AS `country`,`c`.`avatar` AS `customer_avatar`,`d`.`additional_shipper_comment` AS `additional_shipper_comment`,`d`.`evidence_image` AS `evidence_image` from ((`invoice` `i` join (`delivery` `d` join `staffs` `stf` on((`d`.`shipper_id` = `stf`.`id`))) on((`i`.`ID` = `d`.`invoice_id`))) join `customers` `c` on((`i`.`Customer_ID` = `c`.`id`))) */;
+/*!50001 VIEW `delivery_info_for_ui` AS select `d`.`id` AS `id`,`stf`.`name` AS `shipper_name`,`stf`.`id` AS `shipper_id`,`stf`.`phone_number` AS `shipper_phone_number`,`stf`.`avatar` AS `shipper_avatar`,`d`.`invoice_id` AS `invoice_id`,`i`.`Invoice_Date` AS `invoice_date`,`d`.`delivery_date` AS `delivery_date`,`d`.`expected_delivery_date` AS `expected_delivery_date`,`i`.`Delivery_Status` AS `invoice_delivery_status`,`d`.`current_status` AS `current_delivery_status`,`i`.`Payment_Status` AS `payment_status`,`i`.`Payment_Method` AS `payment_method`,`i`.`Description` AS `description`,`i`.`total_price` AS `total_price`,`i`.`note` AS `note`,`c`.`id` AS `customer_id`,`c`.`name` AS `customer_name`,`c`.`phone_number` AS `customer_phone_number`,`c`.`address` AS `address`,`c`.`city` AS `city`,`c`.`country` AS `country`,`c`.`avatar` AS `customer_avatar`,`d`.`additional_shipper_comment` AS `additional_shipper_comment`,`d`.`evidence_image` AS `evidence_image` from ((`invoice` `i` join (`delivery` `d` join `staffs` `stf` on((`d`.`shipper_id` = `stf`.`id`))) on((`i`.`ID` = `d`.`invoice_id`))) join `customers` `c` on((`i`.`Customer_ID` = `c`.`id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -895,4 +897,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-20 23:58:10
+-- Dump completed on 2023-08-23 18:56:12

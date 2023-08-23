@@ -1,6 +1,7 @@
 package com.backend.core.controller.common;
 
 import com.backend.core.abstractClasses.CrudController;
+import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterRequestDTO;
 import com.backend.core.entities.requestdto.invoice.OrderProcessDTO;
 import com.backend.core.entities.tableentity.Invoice;
@@ -31,7 +32,7 @@ public class InvoiceController extends CrudController {
     @Override
     @PostMapping("/addNewOrder")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    public ResponseEntity addNewItem(@RequestBody String json, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) {
         Gson gson = new Gson();
         Map<String, String> request = gson.fromJson(json, Map.class);
 
@@ -42,7 +43,7 @@ public class InvoiceController extends CrudController {
     @PostMapping("/processOrder")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public ResponseEntity updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         OrderProcessDTO orderProcess = objectMapper.readValue(json, OrderProcessDTO.class);
 
@@ -52,13 +53,13 @@ public class InvoiceController extends CrudController {
 
     @Override
     @GetMapping("/invoice_id={id}")
-    public ResponseEntity readSelectedItemById(@PathVariable(value = "id") int invoiceId, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readSelectedItemById(@PathVariable(value = "id") int invoiceId, HttpServletRequest httpRequest) {
         return crudService.readingById(invoiceId, httpRequest);
     }
 
 
     @Override
-    public ResponseEntity deleteSelectedItemById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> deleteSelectedItemById(int id, HttpServletRequest httpRequest) {
         return null;
     }
 
@@ -66,7 +67,7 @@ public class InvoiceController extends CrudController {
     @Override
     @GetMapping("/cancel_order_id={id}")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    public ResponseEntity updateSelectedItemById(@PathVariable(value = "id") int invoiceId, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updateSelectedItemById(@PathVariable(value = "id") int invoiceId, HttpServletRequest httpRequest) {
         return crudService.updatingResponseById(invoiceId, httpRequest);
     }
 
@@ -74,7 +75,7 @@ public class InvoiceController extends CrudController {
     @PostMapping("/onlinePayment")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Override
-    public ResponseEntity getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         Invoice invoice = objectMapper.readValue(json, Invoice.class);
         return crudService.readingFromSingleRequest(invoice, httpRequest);
@@ -83,7 +84,7 @@ public class InvoiceController extends CrudController {
 
     @Override
     @PostMapping("/filterOrders")
-    public ResponseEntity getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         InvoiceFilterRequestDTO invoiceFilterRequestDTO = objectMapper.readValue(json, InvoiceFilterRequestDTO.class);
         return crudService.readingFromSingleRequest(invoiceFilterRequestDTO, httpRequest);
