@@ -8,13 +8,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class GoogleTranslateService {
     public static String translate(String langFrom, String langTo, String text) throws IOException {
         // INSERT YOUR URL HERE
         String urlStr = "https://script.google.com/macros/s/AKfycbzTHvQ4X9u0ROHPE_Q_VtYlki3wFrwyKLsu3gahDhesPA3ESnVNrT6IsZ-1iCdFVBq7/exec" +
-                "?q=" + URLEncoder.encode(text, "UTF-8") +
+                "?q=" + URLEncoder.encode(text, StandardCharsets.UTF_8) +
                 "&target=" + langTo +
                 "&source=" + langFrom;
 

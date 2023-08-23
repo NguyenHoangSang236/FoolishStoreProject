@@ -50,37 +50,37 @@ public class AccountCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ResponseEntity singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity removingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity updatingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         try {
             // convert request param into Account
             Account account = (Account) paramObj;
@@ -93,7 +93,7 @@ public class AccountCrudServiceImpl implements CrudService {
 
             // check if selected account is existed
             if (selectedAcc == null) {
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
             }
 
             // set status to CUSTOMER account and the status of it is DIFFERENT from request param's one
@@ -101,18 +101,18 @@ public class AccountCrudServiceImpl implements CrudService {
                 selectedAcc.setStatus(status);
                 accountRepo.save(selectedAcc);
 
-                return new ResponseEntity(new ApiResponse("success", "Update account successfully"), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", "Update account successfully"), HttpStatus.OK);
             } else {
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
-    public ResponseEntity readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
         if (paramObj instanceof PaginationDTO) {
             try {
                 // convert request param into PaginationDTO
@@ -132,7 +132,7 @@ public class AccountCrudServiceImpl implements CrudService {
                             limit
                     );
 
-                    return new ResponseEntity(new ApiResponse("success", customerList), HttpStatus.OK);
+                    return new ResponseEntity<>(new ApiResponse("success", customerList), HttpStatus.OK);
                 } else if (type.equals(RoleEnum.SHIPPER.name())) {
                     List<StaffRenderInfoDTO> shipperList = new ArrayList<>();
 
@@ -142,7 +142,7 @@ public class AccountCrudServiceImpl implements CrudService {
                             limit
                     );
 
-                    return new ResponseEntity(new ApiResponse("success", shipperList), HttpStatus.OK);
+                    return new ResponseEntity<>(new ApiResponse("success", shipperList), HttpStatus.OK);
                 } else if (type.equals(RoleEnum.ADMIN.name())) {
                     List<StaffRenderInfoDTO> adminList = new ArrayList<>();
 
@@ -152,12 +152,12 @@ public class AccountCrudServiceImpl implements CrudService {
                             limit
                     );
 
-                    return new ResponseEntity(new ApiResponse("success", adminList), HttpStatus.OK);
+                    return new ResponseEntity<>(new ApiResponse("success", adminList), HttpStatus.OK);
                 } else
-                    return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else if (paramObj instanceof AccountFilterRequestDTO) {
             try {
@@ -171,51 +171,51 @@ public class AccountCrudServiceImpl implements CrudService {
                         accountFilterRequest.getPagination().getType().equals(RoleEnum.SHIPPER.name())) {
                     List<StaffRenderInfoDTO> staffInfoList = customQueryRepo.getBindingFilteredList(filterQuery, StaffRenderInfoDTO.class);
 
-                    return new ResponseEntity(new ApiResponse("success", staffInfoList), HttpStatus.OK);
+                    return new ResponseEntity<>(new ApiResponse("success", staffInfoList), HttpStatus.OK);
                 } else if (accountFilterRequest.getPagination().getType().equals(RoleEnum.CUSTOMER.name())) {
                     List<CustomerRenderInfoDTO> customerInfoList = customQueryRepo.getBindingFilteredList(filterQuery, CustomerRenderInfoDTO.class);
 
-                    return new ResponseEntity(new ApiResponse("success", customerInfoList), HttpStatus.OK);
+                    return new ResponseEntity<>(new ApiResponse("success", customerInfoList), HttpStatus.OK);
                 } else
-                    return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
 
-        return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
-    public ResponseEntity readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity readingResponse(String renderType, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity readingById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
         try {
             if (id < 1) {
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
             }
 
             CustomerRenderInfoDTO customerRenderInfo = customerRenderInfoRepo.getCustomerInfoByAccountId(id);
             StaffRenderInfoDTO staffRenderInfo = staffRenderInfoRepo.getStaffInfoByAccountId(id);
 
             if (customerRenderInfo != null) {
-                return new ResponseEntity(new ApiResponse("success", customerRenderInfo), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", customerRenderInfo), HttpStatus.OK);
             } else if (staffRenderInfo != null) {
-                return new ResponseEntity(new ApiResponse("success", staffRenderInfo), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", staffRenderInfo), HttpStatus.OK);
             } else
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

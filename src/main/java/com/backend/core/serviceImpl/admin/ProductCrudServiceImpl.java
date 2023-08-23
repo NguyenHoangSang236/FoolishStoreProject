@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,98 +58,98 @@ public class ProductCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ResponseEntity singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
         try {
             ProductDetailsRequestDTO request = (ProductDetailsRequestDTO) paramObj;
             String unqualifiedRequestMsg = messageForUnqualifiedAddingRequest(request, RequestPurpose.ADD);
 
             if (unqualifiedRequestMsg != null) {
-                return new ResponseEntity(new ApiResponse("failed", unqualifiedRequestMsg), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", unqualifiedRequestMsg), HttpStatus.BAD_REQUEST);
             } else
                 return saveProductProcess(request, RequestPurpose.ADD);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
-    public ResponseEntity listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity removingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity updatingResponseById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         try {
             ProductDetailsRequestDTO request = (ProductDetailsRequestDTO) paramObj;
             String unqualifiedRequestMsg = messageForUnqualifiedAddingRequest(request, RequestPurpose.EDIT);
 
             if (unqualifiedRequestMsg != null) {
-                return new ResponseEntity(new ApiResponse("failed", unqualifiedRequestMsg), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", unqualifiedRequestMsg), HttpStatus.BAD_REQUEST);
             } else
                 return saveProductProcess(request, RequestPurpose.EDIT);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
-    public ResponseEntity readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity readingResponse(String renderType, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
         return null;
     }
 
     @Override
-    public ResponseEntity readingById(int id, HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
         List<AuthenProductRenderInfoDTO> productDetails = new ArrayList<>();
 
         try {
             productDetails = authenProductRenderInfoRepo.getAuthenProductDetails(id);
 
             if (!productDetails.isEmpty()) {
-                return new ResponseEntity(new ApiResponse("success", productDetails), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
             } else {
-                return new ResponseEntity(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
         }
     }
 
 
     // save new product process
-    public ResponseEntity saveProductProcess(ProductDetailsRequestDTO request, RequestPurpose purpose) {
+    public ResponseEntity<ApiResponse> saveProductProcess(ProductDetailsRequestDTO request, RequestPurpose purpose) {
         // todo: save product first
         Product product = new Product();
         Product existedProduct = (purpose.equals(RequestPurpose.ADD))
@@ -157,11 +158,11 @@ public class ProductCrudServiceImpl implements CrudService {
 
         // if this product is existed and the API is for adding -> error
         if (existedProduct != null && purpose.equals(RequestPurpose.ADD)) {
-            return new ResponseEntity(new ApiResponse("failed", "This product has been existed"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse("failed", "This product has been existed"), HttpStatus.BAD_REQUEST);
         }
         // if this product is not existed and the API is for editing -> error
         else if (existedProduct == null && purpose.equals(RequestPurpose.EDIT)) {
-            return new ResponseEntity(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
         }
 
         // build Product from ProductAddingRequestDTO
@@ -173,13 +174,13 @@ public class ProductCrudServiceImpl implements CrudService {
 
 
     // save data to other tables process
-    public ResponseEntity saveOtherTables(ProductDetailsRequestDTO request, Product product, RequestPurpose purpose) {
+    public ResponseEntity<ApiResponse> saveOtherTables(ProductDetailsRequestDTO request, Product product, RequestPurpose purpose) {
         List<ProductAttribute> attributes = request.getAttributes();
         String unqualifiedAttrMsg = messageForUnqualifiedAttribute(attributes);
 
         // check if every attribute is qualified to proceed
         if (unqualifiedAttrMsg != null) {
-            return new ResponseEntity(new ApiResponse("failed", unqualifiedAttrMsg), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse("failed", unqualifiedAttrMsg), HttpStatus.BAD_REQUEST);
         } else {
             productRepo.save(product);
 
@@ -196,8 +197,8 @@ public class ProductCrudServiceImpl implements CrudService {
             }
 
             if (purpose.equals(RequestPurpose.ADD)) {
-                return new ResponseEntity(new ApiResponse("success", "Add new product successfully"), HttpStatus.OK);
-            } else return new ResponseEntity(new ApiResponse("success", "Edit product successfully"), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", "Add new product successfully"), HttpStatus.OK);
+            } else return new ResponseEntity<>(new ApiResponse("success", "Edit product successfully"), HttpStatus.OK);
         }
     }
 
@@ -272,9 +273,7 @@ public class ProductCrudServiceImpl implements CrudService {
                 List<String> tblSizeList = pmList.stream().map(pm -> pm.getSize()).collect(Collectors.toList());
                 List<String> rqSizeList = new ArrayList<>();
 
-                for (String elem : attribute.getSizes()) {
-                    rqSizeList.add(elem);
-                }
+                Collections.addAll(rqSizeList, attribute.getSizes());
 
                 for (int elem : attribute.getQuantity()) {
                     rqQuantityList.add(elem);
@@ -309,7 +308,7 @@ public class ProductCrudServiceImpl implements CrudService {
                         }
 
                         // the size in table does not match with any in request's -> set available quantity = 0 - >sold out
-                        if (isDuplicate == false) {
+                        if (!isDuplicate) {
                             ProductManagement pm = productManagementRepo.getProductManagementById(
                                     pmList.get(i).getId()
                             );

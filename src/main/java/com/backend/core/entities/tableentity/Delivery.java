@@ -23,6 +23,9 @@ public class Delivery {
     @Column(name = "delivery_date")
     Date deliveryDate;
 
+    @Column(name = "expected_delivery_date")
+    Date expectedDeliveryDate;
+
     @Column(name = "current_status")
     String currentStatus;
 

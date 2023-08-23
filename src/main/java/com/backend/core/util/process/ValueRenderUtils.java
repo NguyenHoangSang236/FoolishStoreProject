@@ -23,10 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -478,7 +475,7 @@ public class ValueRenderUtils {
             case "MY_SUCCESSFUL_ORDERS" ->
                     result += "(current_delivery_status = 'SHIPPED' and invoice_delivery_status = 'SHIPPED') and shipper_id = " + shipperId;
             case "MY_FAILED_ORDERS" ->
-                    result += "(current_delivery_status = 'CUSTOMER_CANCEL' and invoice_delivery_status = 'CUSTOMER_CANCEL') and shipper_id = " + shipperId;
+                    result += "(current_delivery_status = 'FAILED' and invoice_delivery_status = 'FAILED') and shipper_id = " + shipperId;
         }
 
         if (page != 0 && limit != 0) {
@@ -519,7 +516,7 @@ public class ValueRenderUtils {
         String filterQuery = ErrorTypeEnum.TECHNICAL_ERROR.name();
 
         // initiate filter type
-        FilterRequest filterRequest = filterFactory.getFilterRequest(filterType);
+        FilterRequest filterRequest = FilterFactory.getFilterRequest(filterType);
 
         // determine filter request class type
         Class<? extends FilterRequest> filterRequestEntity = filterRequest.getClass();
@@ -577,9 +574,7 @@ public class ValueRenderUtils {
     public List<String> getStringListFromArray(String[] arr) {
         List<String> result = new ArrayList<>();
 
-        for (String elem : arr) {
-            result.add(elem);
-        }
+        Collections.addAll(result, arr);
 
         return result;
     }

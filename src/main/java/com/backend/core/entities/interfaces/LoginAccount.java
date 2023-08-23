@@ -1,7 +1,7 @@
 package com.backend.core.entities.interfaces;
 
 public interface LoginAccount {
-    public String encodePassword();
+    String encodePassword();
 
-    public String decodePassword();
+    String decodePassword();
 }

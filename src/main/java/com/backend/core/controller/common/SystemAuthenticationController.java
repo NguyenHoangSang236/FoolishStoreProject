@@ -2,6 +2,7 @@ package com.backend.core.controller.common;
 
 import com.backend.core.abstractClasses.AuthenticationController;
 import com.backend.core.entities.renderdto.CustomerRenderInfoDTO;
+import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.tableentity.Account;
 import com.backend.core.service.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,34 +29,34 @@ public class SystemAuthenticationController extends AuthenticationController {
 
     @Override
     @PostMapping("/unauthen/systemAuthentication/login")
-    public ResponseEntity loginIntoSystem(@RequestBody Account accountFromUI, HttpServletRequest request) throws URISyntaxException {
+    public ResponseEntity<ApiResponse> loginIntoSystem(@RequestBody Account accountFromUI, HttpServletRequest request) throws URISyntaxException {
         return authenticationService.loginIntoSystem(accountFromUI, request);
     }
 
 
     @Override
     @GetMapping("/authen/systemAuthentication/logout")
-    public ResponseEntity logoutFromSystem(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse> logoutFromSystem(HttpServletRequest request) {
         return authenticationService.logoutFromSystem(request);
     }
 
     @Override
     @PostMapping("/unauthen/systemAuthentication/updateProfile")
-    public ResponseEntity updateProfile(@RequestBody CustomerRenderInfoDTO customerRenderInfoDTO, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse> updateProfile(@RequestBody CustomerRenderInfoDTO customerRenderInfoDTO, HttpServletRequest request) {
         return authenticationService.updateProfile(customerRenderInfoDTO, request);
     }
 
 
     @Override
     @PostMapping("/unauthen/systemAuthentication/register")
-    public ResponseEntity registerNewAccount(@Validated @RequestBody Account account, BindingResult bindingResult) {
+    public ResponseEntity<ApiResponse> registerNewAccount(@Validated @RequestBody Account account, BindingResult bindingResult) {
         return authenticationService.registerNewAccount(account, bindingResult);
     }
 
 
     @Override
     @PostMapping("/unauthen/systemAuthentication/forgotPassword")
-    public ResponseEntity forgotPassword(@Validated @RequestBody String accJson, BindingResult bindingResult) throws JsonProcessingException, URISyntaxException {
+    public ResponseEntity<ApiResponse> forgotPassword(@Validated @RequestBody String accJson, BindingResult bindingResult) throws JsonProcessingException, URISyntaxException {
         ObjectMapper objMapper = new ObjectMapper();
         HashMap<String, Object> map = objMapper.readValue(accJson, new TypeReference<HashMap<String, Object>>() {
         });
