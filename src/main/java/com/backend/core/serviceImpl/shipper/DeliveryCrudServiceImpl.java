@@ -84,10 +84,10 @@ public class DeliveryCrudServiceImpl implements CrudService {
         try {
             DeliveryFilterRequestDTO deliveryFilterRequest = (DeliveryFilterRequestDTO)paramObj;
             List<DeliveryOrderRenderInfoDTO> deliveryOrderList = this.customQueryRepo.getBindingFilteredList(this.valueRenderUtils.getFilterQuery(deliveryFilterRequest, FilterTypeEnum.DELIVERY, httpRequest), DeliveryOrderRenderInfoDTO.class);
-            return new ResponseEntity(new ApiResponse("success", deliveryOrderList), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", deliveryOrderList), HttpStatus.OK);
         } catch (Exception var5) {
             var5.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -105,7 +105,7 @@ public class DeliveryCrudServiceImpl implements CrudService {
             return deliveryRenderInfo == null ? new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST) : new ResponseEntity(new ApiResponse("success", deliveryRenderInfo), HttpStatus.OK);
         } catch (Exception var4) {
             var4.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -115,7 +115,7 @@ public class DeliveryCrudServiceImpl implements CrudService {
             String action = actionOnOrder.getAction();
             Invoice invoice = this.invoiceRepo.getInvoiceById(invoiceId);
             if (invoice == null) {
-                return new ResponseEntity(new ApiResponse("failed", "This invoice does not exist"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "This invoice does not exist"), HttpStatus.BAD_REQUEST);
             } else {
                 Delivery delivery;
                 if (action.equals(ShipperActionEnum.TAKE_ORDER.name()) && invoice.getDeliveryStatus().equals(DeliveryStatusEnum.SHIPPER_WAITING.name())) {
@@ -128,20 +128,20 @@ public class DeliveryCrudServiceImpl implements CrudService {
                     delivery.setStaff(shipper);
                     delivery.setCurrentStatus(action);
                     this.deliveryRepo.save(delivery);
-                    return new ResponseEntity(new ApiResponse("success", "Take order " + invoiceId + " successfully"), HttpStatus.OK);
+                    return new ResponseEntity<>(new ApiResponse("success", "Take order " + invoiceId + " successfully"), HttpStatus.OK);
                 } else if (action.equals(ShipperActionEnum.CANCEL_ORDER.name()) && invoice.getDeliveryStatus().equals(DeliveryStatusEnum.SHIPPING.name())) {
                     invoice.setDeliveryStatus(DeliveryStatusEnum.SHIPPER_WAITING.name());
                     this.invoiceRepo.save(invoice);
                     delivery = this.deliveryRepo.getDeliveryByInvoiceId(invoiceId);
                     this.deliveryRepo.deleteById(delivery.getId());
-                    return new ResponseEntity(new ApiResponse("success", "Cancel order " + invoiceId + " successfully"), HttpStatus.OK);
+                    return new ResponseEntity<>(new ApiResponse("success", "Cancel order " + invoiceId + " successfully"), HttpStatus.OK);
                 } else {
-                    return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
                 }
             }
         } catch (Exception var9) {
             var9.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -156,7 +156,7 @@ public class DeliveryCrudServiceImpl implements CrudService {
                 if (currentDeliveryStatus.equals(DeliveryStatusEnum.SHIPPED.name()) || shipperCmt != null && !shipperCmt.isBlank()) {
                     if (currentDeliveryStatus.equals(DeliveryStatusEnum.SHIPPED.name()) || currentDeliveryStatus.equals(DeliveryStatusEnum.FAILED.name())) {
                         if (deliveryDate == null) {
-                            return new ResponseEntity(new ApiResponse("failed", "Must have delivery date"), HttpStatus.BAD_REQUEST);
+                            return new ResponseEntity<>(new ApiResponse("failed", "Must have delivery date"), HttpStatus.BAD_REQUEST);
                         }
 
                         Invoice invoice = delivery.getInvoice();
@@ -166,23 +166,23 @@ public class DeliveryCrudServiceImpl implements CrudService {
                     }
 
                     if (expDeliveryDate == null) {
-                        return new ResponseEntity(new ApiResponse("failed", "Must have expected delivery date"), HttpStatus.BAD_REQUEST);
+                        return new ResponseEntity<>(new ApiResponse("failed", "Must have expected delivery date"), HttpStatus.BAD_REQUEST);
                     } else {
                         delivery.setExpectedDeliveryDate(expDeliveryDate);
                         delivery.setAdditionalShipperComment(shipperCmt);
                         delivery.setCurrentStatus(currentDeliveryStatus);
                         this.deliveryRepo.save(delivery);
-                        return new ResponseEntity(new ApiResponse("success", "Report delivery status successfully"), HttpStatus.OK);
+                        return new ResponseEntity<>(new ApiResponse("success", "Report delivery status successfully"), HttpStatus.OK);
                     }
                 } else {
-                    return new ResponseEntity(new ApiResponse("failed", "Must have comment about the reason of the failed order"), HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(new ApiResponse("failed", "Must have comment about the reason of the failed order"), HttpStatus.BAD_REQUEST);
                 }
             } else {
-                return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
             }
         } catch (Exception var9) {
             var9.printStackTrace();
-            return new ResponseEntity(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
