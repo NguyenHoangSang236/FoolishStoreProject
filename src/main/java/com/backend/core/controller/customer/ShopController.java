@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@PreAuthorize("hasAuthority('CUSTOMER')")
+//@PreAuthorize("hasAuthority('CUSTOMER')")
 @RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ShopController extends CrudController {
@@ -32,7 +32,7 @@ public class ShopController extends CrudController {
     private ProductRepository productRepo;
 
 
-    public ShopController(@Autowired @Qualifier("ProductCrudServiceImpl") CrudService productCrudServiceImpl) {
+    public ShopController(@Autowired @Qualifier("ShopCrudServiceImpl") CrudService productCrudServiceImpl) {
         super(productCrudServiceImpl);
         super.crudService = productCrudServiceImpl;
     }
@@ -45,7 +45,8 @@ public class ShopController extends CrudController {
 
 
     @Override
-    @PostMapping("auth/shop/rateProduct")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    @PostMapping("/authen/shop/rateProduct")
     public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProductRenderInfoDTO request = objectMapper.readValue(json, ProductRenderInfoDTO.class);

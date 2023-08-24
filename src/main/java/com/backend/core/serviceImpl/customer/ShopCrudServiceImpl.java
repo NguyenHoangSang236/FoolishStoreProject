@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Qualifier("ProductCrudServiceImpl")
+@Qualifier("ShopCrudServiceImpl")
 public class ShopCrudServiceImpl implements CrudService {
     @Autowired
     CalculationService calculationService;
@@ -154,8 +154,11 @@ public class ShopCrudServiceImpl implements CrudService {
                 case "NEW_ARRIVAL_PRODUCTS" -> productList = productRenderInfoRepo.get8NewArrivalProducts();
                 case "HOT_DISCOUNT_PRODUCTS" -> productList = productRenderInfoRepo.get8HotDiscountProducts();
                 case "TOP_8_BEST_SELL_PRODUCTS" -> productList = productRenderInfoRepo.getTop8BestSellProducts();
-                default -> new ApiResponse("failed", "Wrong render type");
+                default -> {
+                    return new ResponseEntity<>(new ApiResponse(status, ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+                }
             }
+
             if (productList != null) {
                 status = "success";
             }
