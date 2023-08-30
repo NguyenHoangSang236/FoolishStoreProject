@@ -93,10 +93,6 @@ public class ShopCrudServiceImpl implements CrudService {
             int rating = request.getOverallRating();
             String color = request.getColor();
 
-            System.out.println(productId);
-            System.out.println(rating);
-            System.out.println(color);
-
             // rating only from 1-5
             if (rating < 1 || rating > 5) {
                 return new ResponseEntity<>(new ApiResponse("failed", "Rate from one to five stars only"), HttpStatus.BAD_REQUEST);
@@ -104,14 +100,18 @@ public class ShopCrudServiceImpl implements CrudService {
 
             List<ProductManagement> pmList = productManagementRepo.getProductsManagementListByProductIDAndColor(productId, color);
 
-            // save rating stars column in each data of product_management table
-            for (ProductManagement pm : pmList) {
-                // add rating star in column
-                pm.addRatingStars(rating);
-                // get total rating star
-                pm.setTotalRatingNumber();
+            if (pmList.isEmpty()) {
+                return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
+            } else {
+                // save rating stars column in each data of product_management table
+                for (ProductManagement pm : pmList) {
+                    // add rating star in column
+                    pm.addRatingStars(rating);
+                    // get total rating star
+                    pm.setTotalRatingNumber();
 
-                productManagementRepo.save(pm);
+                    productManagementRepo.save(pm);
+                }
             }
 
             return new ResponseEntity<>(new ApiResponse("success", "Thanks for your rating!"), HttpStatus.OK);
@@ -194,7 +194,7 @@ public class ShopCrudServiceImpl implements CrudService {
     // filter products
     public ResponseEntity<ApiResponse> filterProducts(ProductFilterRequestDTO productFilterRequest, HttpServletRequest request) {
         try {
-            String filterQuery = valueRenderUtils.getFilterQuery(productFilterRequest, FilterTypeEnum.PRODUCT, request);
+            String filterQuery = valueRenderUtils.getFilterQuery(productFilterRequest, FilterTypeEnum.PRODUCT, request, false);
 
             List<ProductRenderInfoDTO> productRenderList = customQueryRepo.getBindingFilteredList(filterQuery, ProductRenderInfoDTO.class);
 

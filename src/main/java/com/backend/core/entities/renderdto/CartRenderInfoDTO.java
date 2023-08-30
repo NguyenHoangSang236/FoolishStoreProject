@@ -4,7 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
@@ -14,6 +16,8 @@ import java.util.Objects;
 @Table(name = "cart_item_info_for_ui")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CartRenderInfoDTO {
     @Id
     @Column(name = "id", unique = true)
@@ -58,26 +62,6 @@ public class CartRenderInfoDTO {
     @Column(name = "image_1")
     String image1;
 
-
-    public CartRenderInfoDTO() {
-    }
-
-    public CartRenderInfoDTO(int id, int customerId, int productManagementId, int quantity, String buyingStatus, int selectStatus, int productId, String color, String size, String name, String brand, double sellingPrice, double discount, String image1) {
-        this.id = id;
-        this.customerId = customerId;
-        this.productManagementId = productManagementId;
-        this.quantity = quantity;
-        this.buyingStatus = buyingStatus;
-        this.selectStatus = selectStatus;
-        this.productId = productId;
-        this.color = color;
-        this.size = size;
-        this.name = name;
-        this.brand = brand;
-        this.sellingPrice = sellingPrice;
-        this.discount = discount;
-        this.image1 = image1;
-    }
 
     @Override
     public boolean equals(Object o) {
