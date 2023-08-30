@@ -248,7 +248,7 @@ public class CartCrudServiceImpl implements CrudService {
         else if (paramObj instanceof CartItemFilterRequestDTO) {
             try {
                 CartItemFilterRequestDTO cartItemFilterRequest = (CartItemFilterRequestDTO) paramObj;
-                String filterQuery = valueRenderUtils.getFilterQuery(cartItemFilterRequest, FilterTypeEnum.CART_ITEMS, httpRequest);
+                String filterQuery = valueRenderUtils.getFilterQuery(cartItemFilterRequest, FilterTypeEnum.CART_ITEMS, httpRequest, true);
 
                 cartItemList = customQueryRepo.getBindingFilteredList(filterQuery, CartRenderInfoDTO.class);
             } catch (Exception e) {

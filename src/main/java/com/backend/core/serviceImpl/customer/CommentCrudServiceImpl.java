@@ -1,5 +1,6 @@
 package com.backend.core.serviceImpl.customer;
 
+import com.backend.core.entities.renderdto.CommentRenderInfoDTO;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.comment.CommentFilterRequestDTO;
@@ -144,9 +145,9 @@ public class CommentCrudServiceImpl implements CrudService {
         try {
             CommentFilterRequestDTO commentFilterRequest = (CommentFilterRequestDTO) paramObj;
 
-            String filterQuery = valueRenderUtils.getFilterQuery(commentFilterRequest, FilterTypeEnum.COMMENT, httpRequest);
+            String filterQuery = valueRenderUtils.getFilterQuery(commentFilterRequest, FilterTypeEnum.COMMENT, httpRequest, false);
 
-            List<Comment> commentList = customQueryRepo.getBindingFilteredList(filterQuery, Comment.class);
+            List<CommentRenderInfoDTO> commentList = customQueryRepo.getBindingFilteredList(filterQuery, CommentRenderInfoDTO.class);
 
             return new ResponseEntity<>(new ApiResponse("success", commentList), HttpStatus.OK);
         } catch (Exception e) {

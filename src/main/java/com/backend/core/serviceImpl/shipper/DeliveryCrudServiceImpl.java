@@ -86,7 +86,14 @@ public class DeliveryCrudServiceImpl implements CrudService {
     public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
         try {
             DeliveryFilterRequestDTO deliveryFilterRequest = (DeliveryFilterRequestDTO) paramObj;
-            List<DeliveryOrderRenderInfoDTO> deliveryOrderList = this.customQueryRepo.getBindingFilteredList(this.valueRenderUtils.getFilterQuery(deliveryFilterRequest, FilterTypeEnum.DELIVERY, httpRequest), DeliveryOrderRenderInfoDTO.class);
+            List<DeliveryOrderRenderInfoDTO> deliveryOrderList = this.customQueryRepo.getBindingFilteredList(
+                    this.valueRenderUtils.getFilterQuery(
+                            deliveryFilterRequest,
+                            FilterTypeEnum.DELIVERY,
+                            httpRequest, true
+                    ),
+                    DeliveryOrderRenderInfoDTO.class
+            );
 
             return new ResponseEntity<>(new ApiResponse("success", deliveryOrderList), HttpStatus.OK);
         } catch (Exception e) {

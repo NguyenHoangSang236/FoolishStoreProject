@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping(value = "/authen/comment", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-@PreAuthorize("hasAuthority('CUSTOMER')")
+@RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CommentController extends CrudController {
     public CommentController(@Autowired @Qualifier("CommentCrudServiceImpl") CrudService commentCrudServiceImpl) {
@@ -27,7 +26,8 @@ public class CommentController extends CrudController {
     }
 
 
-    @PostMapping("/add")
+    @PostMapping("/authen/comment/add")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     @Override
     public ResponseEntity<ApiResponse> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -36,7 +36,8 @@ public class CommentController extends CrudController {
         return crudService.singleCreationalResponse(commentRequest, httpRequest);
     }
 
-    @PostMapping("/update")
+    @PostMapping("/authen/comment/update")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     @Override
     public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -50,19 +51,21 @@ public class CommentController extends CrudController {
         return null;
     }
 
-    @GetMapping("/delete_comment_id={id}")
+    @GetMapping("/authen/comment/delete_comment_id={id}")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     @Override
     public ResponseEntity<ApiResponse> deleteSelectedItemById(@PathVariable int id, HttpServletRequest httpRequest) {
         return crudService.removingResponseById(id, httpRequest);
     }
 
-    @GetMapping("/like_comment_id={id}")
+    @GetMapping("/authen/comment/like_comment_id={id}")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     @Override
     public ResponseEntity<ApiResponse> updateSelectedItemById(@PathVariable int id, HttpServletRequest httpRequest) throws IOException {
         return crudService.updatingResponseById(id, httpRequest);
     }
 
-    @PostMapping("/commentList")
+    @PostMapping("/unauthen/comment/commentList")
     @Override
     public ResponseEntity<ApiResponse> getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();

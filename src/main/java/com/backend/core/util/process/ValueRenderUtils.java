@@ -262,7 +262,7 @@ public class ValueRenderUtils {
 
     // create a query for comments binding filter
     public String commentFilterQuery(CommentRequestDTO commentRequest, PaginationDTO pagination) {
-        String result = "select * from comments where ";
+        String result = "select * from comment_info_for_ui where ";
         int productId = commentRequest.getProductId();
         int replyOn = commentRequest.getReplyOn();
         String productColor = commentRequest.getProductColor();
@@ -307,12 +307,16 @@ public class ValueRenderUtils {
         }
 
         for (int i = 0; i < catalogsLength; i++) {
-            if (i == 0) {
-                result += "(c.name = '" + catalogs[i] + "' or ";
-            } else if (i == catalogsLength - 1) {
-                result += "c.name = '" + catalogs[i] + "') and ";
+            if (catalogsLength >= 2) {
+                if (i == 0) {
+                    result += "(c.name = '" + catalogs[i] + "' or ";
+                } else if (i == catalogsLength - 1) {
+                    result += "c.name = '" + catalogs[i] + "') and ";
+                } else {
+                    result += "c.name = '" + catalogs[i] + "' or ";
+                }
             } else {
-                result += "c.name = '" + catalogs[i] + "' or ";
+                result += "c.name = '" + catalogs[i] + "' and ";
             }
         }
 
@@ -509,10 +513,7 @@ public class ValueRenderUtils {
 
 
     // get list of data from filter
-    public String getFilterQuery(FilterRequest paramObj, FilterTypeEnum filterType, HttpServletRequest request) {
-        // get current customer or staff id
-        int userId = getCustomerOrStaffIdFromRequest(request);
-
+    public String getFilterQuery(FilterRequest paramObj, FilterTypeEnum filterType, HttpServletRequest request, boolean authen) {
         String filterQuery = ErrorTypeEnum.TECHNICAL_ERROR.name();
 
         // initiate filter type
@@ -530,6 +531,13 @@ public class ValueRenderUtils {
             PaginationDTO pagination = filterRequest.getPagination();
             int page = filterRequest.getPagination().getPage();
             int limit = filterRequest.getPagination().getLimit();
+
+            int userId = 0;
+
+            if (authen) {
+                // get current customer or staff id
+                userId = getCustomerOrStaffIdFromRequest(request);
+            }
 
             try {
                 switch (filterType) {

@@ -1,5 +1,6 @@
 package com.backend.core.entities.tableentity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class Comment {
     int id;
 
     @ManyToOne
+    @JsonIgnore
     @JsonManagedReference
     @JoinColumn(name = "product_id")
     Product product;
