@@ -7,11 +7,15 @@ import com.backend.core.entities.requestdto.comment.CommentFilterRequestDTO;
 import com.backend.core.entities.requestdto.comment.CommentRequestDTO;
 import com.backend.core.entities.tableentity.Comment;
 import com.backend.core.entities.tableentity.Product;
+import com.backend.core.entities.tableentity.ProductManagement;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
+import com.backend.core.repository.comment.CommentLikeRepository;
+import com.backend.core.repository.comment.CommentRenderInfoRepo;
 import com.backend.core.repository.comment.CommentRepository;
 import com.backend.core.repository.customQuery.CustomQueryRepository;
 import com.backend.core.repository.customer.CustomerRepository;
+import com.backend.core.repository.product.ProductManagementRepository;
 import com.backend.core.repository.product.ProductRepository;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.process.ValueRenderUtils;
@@ -22,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +46,16 @@ public class CommentCrudServiceImpl implements CrudService {
     CustomQueryRepository customQueryRepo;
 
     @Autowired
+    ProductManagementRepository productManagementRepo;
+
+    @Autowired
+    CommentLikeRepository commentLikeRepo;
+
+    @Autowired
     ValueRenderUtils valueRenderUtils;
+
+    @Autowired
+    private CommentRenderInfoRepo commentRenderInfoRepo;
 
 
     @Override
@@ -143,13 +157,29 @@ public class CommentCrudServiceImpl implements CrudService {
     @Override
     public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
         try {
-            CommentFilterRequestDTO commentFilterRequest = (CommentFilterRequestDTO) paramObj;
+            if (paramObj instanceof CommentFilterRequestDTO) {
+                CommentFilterRequestDTO commentFilterRequest = (CommentFilterRequestDTO) paramObj;
 
-            String filterQuery = valueRenderUtils.getFilterQuery(commentFilterRequest, FilterTypeEnum.COMMENT, httpRequest, false);
+                String filterQuery = valueRenderUtils.getFilterQuery(commentFilterRequest, FilterTypeEnum.COMMENT, httpRequest, false);
 
-            List<CommentRenderInfoDTO> commentList = customQueryRepo.getBindingFilteredList(filterQuery, CommentRenderInfoDTO.class);
+                List<CommentRenderInfoDTO> commentList = customQueryRepo.getBindingFilteredList(filterQuery, CommentRenderInfoDTO.class);
+                Collections.reverse(commentList);
 
-            return new ResponseEntity<>(new ApiResponse("success", commentList), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", commentList), HttpStatus.OK);
+            } else if (paramObj instanceof CommentRequestDTO) {
+                CommentRequestDTO comment = (CommentRequestDTO) paramObj;
+                int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+
+                List<Integer> commentIdList = commentLikeRepo.getCommentIdListByCustomerIdAndProductColorAndProductId(
+                        customerId,
+                        comment.getProductColor(),
+                        comment.getProductId()
+                );
+
+                return new ResponseEntity<>(new ApiResponse("success", commentIdList), HttpStatus.OK);
+            }
+
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -184,19 +214,49 @@ public class CommentCrudServiceImpl implements CrudService {
         try {
             customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpServletRequest);
             product = productRepo.getProductById(request.getProductId());
+            int replyOn = request.getReplyOn();
+            List<ProductManagement> pmList = productManagementRepo.getProductsManagementListByProductIDAndColor(
+                    request.getProductId(),
+                    request.getProductColor()
+            );
+
+            if (replyOn < 0 || product == null || pmList.isEmpty() || request.getCommentContent().isBlank()) {
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
+            }
+
+            int orgCommentId = request.getReplyOn() > 0
+                    ? getOriginalCommentId(replyOn)
+                    : replyOn;
 
             newComment.setProduct(product);
             newComment.setCommentContent(request.getCommentContent());
             newComment.setProductColor(request.getProductColor());
             newComment.setCustomer(customerRepo.getCustomerById(customerId));
             newComment.setCommentDate(new Date());
-            newComment.setReplyOn(request.getReplyOn());
+            newComment.setReplyOn(orgCommentId);
             commentRepo.save(newComment);
+
+            if (request.getReplyOn() > 0) {
+                Comment comment = commentRepo.getCommentById(orgCommentId);
+                comment.replyComment();
+                commentRepo.save(comment);
+            }
 
             return new ResponseEntity<>(new ApiResponse("success", "Add new comment successfully"), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // get original comment id that other comments reply on
+    public int getOriginalCommentId(int commentId) {
+        CommentRenderInfoDTO commentRenderInfo = commentRenderInfoRepo.getCommentById(commentId);
+
+        if (commentRenderInfo.getReplyOn() == 0) {
+            return commentRenderInfo.getId();
+        } else {
+            return getOriginalCommentId(commentRenderInfo.getReplyOn());
         }
     }
 }

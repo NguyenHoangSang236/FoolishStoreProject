@@ -65,17 +65,19 @@ public class CommentController extends CrudController {
         return crudService.updatingResponseById(id, httpRequest);
     }
 
-    @PostMapping("/unauthen/comment/commentList")
+    @PostMapping("/authen/comment/commentsYouLiked")
     @Override
     public ResponseEntity<ApiResponse> getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        CommentFilterRequestDTO commentFilterRequest = objectMapper.readValue(json, CommentFilterRequestDTO.class);
-
-        return crudService.readingFromSingleRequest(commentFilterRequest, httpRequest);
+        CommentRequestDTO comment = objectMapper.readValue(json, CommentRequestDTO.class);
+        return crudService.readingFromSingleRequest(comment, httpRequest);
     }
 
+    @PostMapping("/unauthen/comment/commentList")
     @Override
-    public ResponseEntity<ApiResponse> getListOfItemsFromFilter(String json, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    public ResponseEntity<ApiResponse> getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        CommentFilterRequestDTO commentFilterRequest = objectMapper.readValue(json, CommentFilterRequestDTO.class);
+        return crudService.readingFromSingleRequest(commentFilterRequest, httpRequest);
     }
 }

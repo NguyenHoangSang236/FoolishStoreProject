@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "comment_info_for_ui")
 @Getter
@@ -41,6 +43,12 @@ public class CommentRenderInfoDTO {
     @Column(name = "like_quantity")
     int likeQuantity;
 
+    @Column(name = "comment_date")
+    Date commentDate;
+
     @Column(name = "reply_on")
     int replyOn;
+
+    @Column(name = "reply_quantity")
+    int replyQuantity;
 }

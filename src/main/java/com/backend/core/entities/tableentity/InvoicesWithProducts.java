@@ -2,9 +2,7 @@ package com.backend.core.entities.tableentity;
 
 import com.backend.core.entities.embededkey.InvoicesWithProductsPrimaryKeys;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
@@ -12,6 +10,8 @@ import java.util.Objects;
 @Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "invoices_with_products")
 public class InvoicesWithProducts {
     @EmbeddedId
@@ -29,17 +29,6 @@ public class InvoicesWithProducts {
 
     @Column(name = "quantity")
     int quantity;
-
-
-    public InvoicesWithProducts() {
-    }
-
-    public InvoicesWithProducts(InvoicesWithProductsPrimaryKeys id, ProductManagement productManagement, Invoice invoice, int quantity) {
-        this.id = id;
-        this.productManagement = productManagement;
-        this.invoice = invoice;
-        this.quantity = quantity;
-    }
 
     @Override
     public boolean equals(Object o) {
