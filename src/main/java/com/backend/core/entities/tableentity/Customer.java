@@ -68,6 +68,10 @@ public class Customer {
     private List<Cart> carts;
 
     @JsonIgnore
+    @OneToMany(mappedBy = "customer", cascade = {CascadeType.ALL})
+    private List<CommentLike> commentLikes;
+
+    @JsonIgnore
     @JsonBackReference
     @OneToMany(mappedBy = "customer", cascade = {CascadeType.ALL})
     private List<Comment> comments;

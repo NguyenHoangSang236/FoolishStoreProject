@@ -3,12 +3,15 @@ package com.backend.core.entities.tableentity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,6 +19,8 @@ import java.util.Date;
 @Table(name = "comments")
 @DynamicInsert
 @DynamicUpdate
+@AllArgsConstructor
+@NoArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,22 +53,20 @@ public class Comment {
     @Column(name = "reply_on")
     int replyOn;
 
+    @Column(name = "reply_quantity")
+    int replyQuantity;
 
-    public Comment() {
-    }
+    @JsonIgnore
+    @OneToMany(mappedBy = "comment", cascade = {CascadeType.ALL})
+    List<CommentLike> commentLike;
 
-    public Comment(int id, Product product, String productColor, Customer customer, String commentContent, Date commentDate, int likeQuantity, int replyOn) {
-        this.id = id;
-        this.product = product;
-        this.productColor = productColor;
-        this.customer = customer;
-        this.commentContent = commentContent;
-        this.commentDate = commentDate;
-        this.likeQuantity = likeQuantity;
-        this.replyOn = replyOn;
-    }
+
 
     public void likeComment() {
         this.likeQuantity++;
+    }
+
+    public void replyComment() {
+        this.replyQuantity++;
     }
 }

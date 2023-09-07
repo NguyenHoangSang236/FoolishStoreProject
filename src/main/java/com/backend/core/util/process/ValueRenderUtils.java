@@ -277,7 +277,7 @@ public class ValueRenderUtils {
             result += "product_id = " + productId + " and ";
         }
 
-        result += "reply_on = " + replyOn + " limit " + (limit * (page - 1)) + ", " + limit;
+        result += "reply_on = " + replyOn + " limit 0, " + limit * page;
 
         return result;
     }
