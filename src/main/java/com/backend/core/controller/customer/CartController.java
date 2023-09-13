@@ -102,7 +102,7 @@ public class CartController extends CrudController {
 
 
     @GetMapping("/checkout")
-    public ResponseEntity<ApiResponse> getCartCheckout(HttpServletRequest httpRequest) {
-        return crudService.readingResponse(RenderTypeEnum.CART_CHECKOUT.name(), httpRequest);
+    public ResponseEntity<ApiResponse> getCartCheckout(@RequestParam(value = "delivery_type") String deliveryType, HttpServletRequest httpRequest) {
+        return crudService.readingFromSingleRequest(deliveryType, httpRequest);
     }
 }

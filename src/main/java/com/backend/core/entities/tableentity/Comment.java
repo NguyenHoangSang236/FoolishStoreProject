@@ -61,9 +61,12 @@ public class Comment {
     List<CommentLike> commentLike;
 
 
-
     public void likeComment() {
         this.likeQuantity++;
+    }
+
+    public void unlikeComment() {
+        this.likeQuantity--;
     }
 
     public void replyComment() {

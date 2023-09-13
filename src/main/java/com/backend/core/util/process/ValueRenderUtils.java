@@ -187,13 +187,13 @@ public class ValueRenderUtils {
         if (size < n) {
             s = size + " Bytes";
         } else if (size >= n && size < (n * n)) {
-            s = String.format("%.1f", kb) + " KB";
+            s = String.format("%.1f", Double.valueOf(kb)) + " KB";
         } else if (size >= (n * n) && size < (n * n * n)) {
-            s = String.format("%.1f", mb) + " MB";
+            s = String.format("%.1f", Double.valueOf(mb)) + " MB";
         } else if (size >= (n * n * n) && size < (n * n * n * n)) {
-            s = String.format("%.2f", gb) + " GB";
+            s = String.format("%.2f", Double.valueOf(gb)) + " GB";
         } else if (size >= (n * n * n * n)) {
-            s = String.format("%.2f", tb) + " TB";
+            s = String.format("%.2f", Double.valueOf(tb)) + " TB";
         }
         return s;
     }
@@ -404,7 +404,7 @@ public class ValueRenderUtils {
 
     // create a query for cart items binding filter
     public String cartItemFilterQuery(CartItemFilterDTO cartItemFilter, PaginationDTO pagination) {
-        String result = "select * from cart_item_info_for_ui where ";
+        String result = "select * from cart_item_info_for_ui where buying_status = 'NOT_BOUGHT_YET' and ";
         String brand = cartItemFilter.getBrand();
         String name = cartItemFilter.getName();
         String[] status = cartItemFilter.getStatus();
@@ -593,7 +593,7 @@ public class ValueRenderUtils {
         List<Integer> result = new ArrayList<>();
 
         for (int elem : arr) {
-            result.add(elem);
+            result.add(Integer.valueOf(elem));
         }
 
         return result;

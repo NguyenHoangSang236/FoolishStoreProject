@@ -1,6 +1,6 @@
 package com.backend.core.enums;
 
-public enum DeliveryStatusEnum {
+public enum DeliveryEnum {
     SHIPPED,
     SHIPPING,
     NOT_SHIPPED,
@@ -12,4 +12,6 @@ public enum DeliveryStatusEnum {
     SHIPPER_WAITING,
     FIRST_ATTEMPT_FAILED,
     SECOND_ATTEMPT_FAILED,
+    EXPRESS_DELIVERY,
+    NORMAL_DELIVERY,
 }

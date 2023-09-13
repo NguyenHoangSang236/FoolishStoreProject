@@ -8,7 +8,7 @@ import com.backend.core.entities.requestdto.delivery.DeliveryFilterRequestDTO;
 import com.backend.core.entities.tableentity.Delivery;
 import com.backend.core.entities.tableentity.Invoice;
 import com.backend.core.entities.tableentity.Staff;
-import com.backend.core.enums.DeliveryStatusEnum;
+import com.backend.core.enums.DeliveryEnum;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
 import com.backend.core.enums.ShipperActionEnum;
@@ -135,8 +135,8 @@ public class DeliveryCrudServiceImpl implements CrudService {
                 Delivery delivery = new Delivery();
 
                 // when shipper takes order
-                if (action.equals(ShipperActionEnum.TAKE_ORDER.name()) && invoice.getDeliveryStatus().equals(DeliveryStatusEnum.SHIPPER_WAITING.name())) {
-                    invoice.setDeliveryStatus(DeliveryStatusEnum.SHIPPING.name());
+                if (action.equals(ShipperActionEnum.TAKE_ORDER.name()) && invoice.getDeliveryStatus().equals(DeliveryEnum.SHIPPER_WAITING.name())) {
+                    invoice.setDeliveryStatus(DeliveryEnum.SHIPPING.name());
                     this.invoiceRepo.save(invoice);
 
                     int shipperId = this.valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
@@ -150,8 +150,8 @@ public class DeliveryCrudServiceImpl implements CrudService {
                     return new ResponseEntity<>(new ApiResponse("success", "Take order " + invoiceId + " successfully"), HttpStatus.OK);
                 }
                 // when shipper cancels order
-                else if (action.equals(ShipperActionEnum.CANCEL_ORDER.name()) && invoice.getDeliveryStatus().equals(DeliveryStatusEnum.SHIPPING.name())) {
-                    invoice.setDeliveryStatus(DeliveryStatusEnum.SHIPPER_WAITING.name());
+                else if (action.equals(ShipperActionEnum.CANCEL_ORDER.name()) && invoice.getDeliveryStatus().equals(DeliveryEnum.SHIPPING.name())) {
+                    invoice.setDeliveryStatus(DeliveryEnum.SHIPPER_WAITING.name());
                     this.invoiceRepo.save(invoice);
                     delivery = this.deliveryRepo.getDeliveryByInvoiceId(invoiceId);
                     this.deliveryRepo.deleteById(delivery.getId());
@@ -172,20 +172,20 @@ public class DeliveryCrudServiceImpl implements CrudService {
             String currentDeliveryStatus = deliveryReport.getCurrentDeliveryStatus();
 
             // check this delivery data and delivery status exist or not
-            if (delivery != null && EnumUtils.findEnumInsensitiveCase(DeliveryStatusEnum.class, currentDeliveryStatus) != null) {
+            if (delivery != null && EnumUtils.findEnumInsensitiveCase(DeliveryEnum.class, currentDeliveryStatus) != null) {
                 Date deliveryDate = deliveryReport.getDeliveryDate();
                 Date expDeliveryDate = deliveryReport.getExpectedDeliveryDate();
                 String shipperCmt = deliveryReport.getAdditionalShipperComment();
 
                 // it must have comment from shipper when the order is failed
                 if ((shipperCmt == null || shipperCmt.isBlank()) &&
-                        currentDeliveryStatus.equals(DeliveryStatusEnum.SHIPPED.name())) {
+                        currentDeliveryStatus.equals(DeliveryEnum.SHIPPED.name())) {
                     return new ResponseEntity<>(new ApiResponse("failed", "Must have comment about the reason of the failed order"), HttpStatus.BAD_REQUEST);
                 }
 
                 // change delivery value of invoice when delivery is done or failed
-                if (currentDeliveryStatus.equals(DeliveryStatusEnum.SHIPPED.name()) ||
-                        currentDeliveryStatus.equals(DeliveryStatusEnum.FAILED.name())) {
+                if (currentDeliveryStatus.equals(DeliveryEnum.SHIPPED.name()) ||
+                        currentDeliveryStatus.equals(DeliveryEnum.FAILED.name())) {
                     // it must have delivery date when the delivery is finished
                     if (deliveryDate == null) {
                         return new ResponseEntity<>(new ApiResponse("failed", "Must have delivery date"), HttpStatus.BAD_REQUEST);
@@ -193,7 +193,7 @@ public class DeliveryCrudServiceImpl implements CrudService {
 
                     Invoice invoice = delivery.getInvoice();
                     invoice.setDeliveryStatus(currentDeliveryStatus);
-                    invoice.setReason(currentDeliveryStatus.equals(DeliveryStatusEnum.FAILED.name()) ? shipperCmt : "");
+                    invoice.setReason(currentDeliveryStatus.equals(DeliveryEnum.FAILED.name()) ? shipperCmt : "");
                     this.invoiceRepo.save(invoice);
                 }
 

@@ -25,6 +25,7 @@ import com.backend.core.repository.product.ProductManagementRepository;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.process.CheckUtils;
 import com.backend.core.util.process.ValueRenderUtils;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,10 +34,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.util.EnumUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Qualifier("InvoiceCrudServiceImpl")
@@ -79,18 +77,26 @@ public class InvoiceCrudServiceImpl implements CrudService {
     @Override
     public synchronized ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
-        String paymentMethod = (String) paramObj;
+        Gson gson = new Gson();
+        Map<String, String> request = gson.fromJson((String) paramObj, Map.class);
+        String paymentMethod = request.get("paymentMethod");
+        String deliveryType = request.get("deliveryType");
         String responseSuccessMessage = "New order has been created successfully";
         Invoice newInvoice;
 
         try {
+            if (deliveryType.equals(DeliveryEnum.EXPRESS_DELIVERY) && deliveryType.equals(DeliveryEnum.NORMAL_DELIVERY)) {
+                return new ResponseEntity<>(new ApiResponse("failed", "This delivery type does not existed"), HttpStatus.BAD_REQUEST);
+            }
+
             int newInvoiceId = invoiceRepo.getLastestInvoiceId() + 1;
 
             if (paymentMethod.equals(PaymentEnum.COD.name())) {
                 newInvoice = new Invoice(
                         newInvoiceId,
                         new Date(),
-                        DeliveryStatusEnum.ACCEPTANCE_WAITING.name(),
+                        DeliveryEnum.ACCEPTANCE_WAITING.name(),
+                        deliveryType,
                         PaymentEnum.UNPAID.name(),
                         paymentMethod,
                         CurrencyEnum.USD.name(),
@@ -110,7 +116,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 newInvoice = new Invoice(
                         newInvoiceId,
                         new Date(),
-                        DeliveryStatusEnum.PAYMENT_WAITING.name(),
+                        DeliveryEnum.PAYMENT_WAITING.name(),
+                        deliveryType,
                         PaymentEnum.UNPAID.name(),
                         paymentMethod,
                         CurrencyEnum.USD.name(),
@@ -183,10 +190,10 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
                 // if online payment and shipper has not accepted the order yet -> refund 50%
                 if (!invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) &&
-                        !invoice.getDeliveryStatus().equals(DeliveryStatusEnum.FAILED.name()) &&
-                        (invoice.getDeliveryStatus().equals(DeliveryStatusEnum.SHIPPER_WAITING.name()) ||
-                                invoice.getDeliveryStatus().equals(DeliveryStatusEnum.PACKING.name()) ||
-                                invoice.getDeliveryStatus().equals(DeliveryStatusEnum.PAYMENT_WAITING.name()))) {
+                        !invoice.getDeliveryStatus().equals(DeliveryEnum.FAILED.name()) &&
+                        (invoice.getDeliveryStatus().equals(DeliveryEnum.SHIPPER_WAITING.name()) ||
+                                invoice.getDeliveryStatus().equals(DeliveryEnum.PACKING.name()) ||
+                                invoice.getDeliveryStatus().equals(DeliveryEnum.PAYMENT_WAITING.name()))) {
                     invoice.setRefundPercentage(50);
                     invoice.setReason("Customer cancels order before shipper takes over, refund 50%");
                     message += "you will be refunded 50% of the total order value, we will send it within 24 hours!";
@@ -198,7 +205,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     invoice.setReason("Customer cancels order, no refund");
                     message += "the shipper has already been on the way, so you will not have any refund!";
                 }
-                invoice.setDeliveryStatus(DeliveryStatusEnum.FAILED.name());
+                invoice.setDeliveryStatus(DeliveryEnum.FAILED.name());
                 invoiceRepo.save(invoice);
 
             } catch (Exception e) {
@@ -226,24 +233,24 @@ public class InvoiceCrudServiceImpl implements CrudService {
             if ((adminAction.equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
                     adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.WAITING.name()) &&
-                    invoice.getDeliveryStatus().equals(DeliveryStatusEnum.ACCEPTANCE_WAITING.name()) &&
+                    invoice.getDeliveryStatus().equals(DeliveryEnum.ACCEPTANCE_WAITING.name()) &&
                     invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
                 invoice.setAdminAcceptance(adminAction);
                 if (adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) {
-                    invoice.setDeliveryStatus(DeliveryStatusEnum.NOT_SHIPPED.name());
+                    invoice.setDeliveryStatus(DeliveryEnum.NOT_SHIPPED.name());
                 } else {
-                    invoice.setDeliveryStatus(DeliveryStatusEnum.PACKING.name());
+                    invoice.setDeliveryStatus(DeliveryEnum.PACKING.name());
                 }
             } else if (adminAction.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name()) &&
-                    invoice.getDeliveryStatus().equals(DeliveryStatusEnum.ACCEPTANCE_WAITING.name()) &&
+                    invoice.getDeliveryStatus().equals(DeliveryEnum.ACCEPTANCE_WAITING.name()) &&
                     !invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
                 invoice.setAdminAcceptance(adminAction);
-                invoice.setDeliveryStatus(DeliveryStatusEnum.PACKING.name());
+                invoice.setDeliveryStatus(DeliveryEnum.PACKING.name());
             } else if (adminAction.equals(AdminAcceptanceEnum.FINISH_PACKING.name()) &&
-                    invoice.getDeliveryStatus().equals(DeliveryStatusEnum.PACKING.name()) &&
+                    invoice.getDeliveryStatus().equals(DeliveryEnum.PACKING.name()) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTED.name())) {
-                invoice.setDeliveryStatus(DeliveryStatusEnum.SHIPPER_WAITING.name());
+                invoice.setDeliveryStatus(DeliveryEnum.SHIPPER_WAITING.name());
             } else
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
@@ -351,7 +358,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
         OnlinePaymentReceiverDTO receiver = new OnlinePaymentReceiverDTO();
 
         if (currentInvoice.getPaymentStatus().equals(PaymentEnum.UNPAID.name()) &&
-                currentInvoice.getDeliveryStatus().equals(DeliveryStatusEnum.PAYMENT_WAITING.name()) &&
+                currentInvoice.getDeliveryStatus().equals(DeliveryEnum.PAYMENT_WAITING.name()) &&
                 currentInvoice.getAdminAcceptance().equals(AdminAcceptanceEnum.WAITING.name())) {
             if (currentPaymentMethod.equals(PaymentEnum.PAYPAL.name())) {
                 receiver = new OnlinePaymentReceiverDTO(
