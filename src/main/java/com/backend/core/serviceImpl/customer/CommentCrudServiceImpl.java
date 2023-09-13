@@ -1,13 +1,12 @@
 package com.backend.core.serviceImpl.customer;
 
+import com.backend.core.entities.embededkey.CommentLikePrimaryKeys;
 import com.backend.core.entities.renderdto.CommentRenderInfoDTO;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.comment.CommentFilterRequestDTO;
 import com.backend.core.entities.requestdto.comment.CommentRequestDTO;
-import com.backend.core.entities.tableentity.Comment;
-import com.backend.core.entities.tableentity.Product;
-import com.backend.core.entities.tableentity.ProductManagement;
+import com.backend.core.entities.tableentity.*;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
 import com.backend.core.repository.comment.CommentLikeRepository;
@@ -116,10 +115,33 @@ public class CommentCrudServiceImpl implements CrudService {
             try {
                 comment = commentRepo.getCommentById(id);
 
-                comment.likeComment();
-                commentRepo.save(comment);
+                Customer currentCustomer = customerRepo.getCustomerById(customerId);
 
-                return new ResponseEntity<>(new ApiResponse("success", "Like comment successfully"), HttpStatus.OK);
+                if (comment != null && currentCustomer != null) {
+                    CommentLike existedCommentLike = commentLikeRepo.getCommentLikeByCustomerIdAndCommentId(customerId, comment.getId());
+
+                    if (existedCommentLike == null) {
+                        comment.likeComment();
+                        commentRepo.save(comment);
+
+                        commentLikeRepo.save(new CommentLike(
+                                new CommentLikePrimaryKeys(comment.getId(), customerId),
+                                currentCustomer,
+                                comment
+                        ));
+
+                        return new ResponseEntity<>(new ApiResponse("success", "Like comment successfully"), HttpStatus.OK);
+                    } else {
+                        comment.unlikeComment();
+                        commentRepo.save(comment);
+
+                        commentLikeRepo.deleteById(new CommentLikePrimaryKeys(comment.getId(), customerId));
+
+                        return new ResponseEntity<>(new ApiResponse("success", "Unlike comment successfully"), HttpStatus.OK);
+                    }
+                } else {
+                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);

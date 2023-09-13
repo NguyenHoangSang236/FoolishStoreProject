@@ -13,4 +13,7 @@ import java.util.List;
 public interface CommentLikeRepository extends JpaRepository<CommentLike, CommentLikePrimaryKeys> {
     @Query(value = "select comment_id from comment_like ck join comments c on c.id = ck.comment_id where ck.customer_id = :customerId and product_color = :productColor and product_id = :productId", nativeQuery = true)
     List<Integer> getCommentIdListByCustomerIdAndProductColorAndProductId(@Param("customerId") int customerId, @Param("productColor") String productColor, @Param("productId") int productId);
+
+    @Query(value = "select * from comment_like where customer_id = :customerId and comment_id = :commentId", nativeQuery = true)
+    CommentLike getCommentLikeByCustomerIdAndCommentId(@Param("customerId") int customerId, @Param("commentId") int commentId);
 }

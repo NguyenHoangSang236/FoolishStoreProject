@@ -256,6 +256,32 @@ public class CartCrudServiceImpl implements CrudService {
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+        // if the param is a String -> checkout cart
+        else if (paramObj instanceof String) {
+            try {
+                List<CartRenderInfoDTO> selectedCartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
+
+                // get shipping fee from request URL variable
+                double shippingFee = CartRenderInfoDTO.getShipFee((String) paramObj);
+                double subtotal = 0;
+
+                if (shippingFee == 0) {
+                    return new ResponseEntity<>(new ApiResponse("failed", "This delivery type does not exist"), HttpStatus.BAD_REQUEST);
+                }
+
+                // calculate subtotal price
+                for (CartRenderInfoDTO cartRenderInfoDTO : selectedCartItemList) {
+                    subtotal += cartRenderInfoDTO.getTotalPrice();
+                }
+
+                // init new checkout object
+                CartCheckoutDTO checkout = new CartCheckoutDTO(subtotal, shippingFee, subtotal + shippingFee);
+
+                return new ResponseEntity<>(new ApiResponse("success", checkout), HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
 
         return new ResponseEntity<>(new ApiResponse("success", cartItemList), HttpStatus.OK);
     }
@@ -280,27 +306,6 @@ public class CartCrudServiceImpl implements CrudService {
                 totalQuantity = cartRepo.getCartQuantityByCustomerId(customerId);
 
                 return new ResponseEntity<>(new ApiResponse("success", totalQuantity), HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-        // get checkout info
-        else if (renderType.equals(RenderTypeEnum.CART_CHECKOUT.name())) {
-            try {
-                List<CartRenderInfoDTO> selectedCartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
-
-                double subtotal = 0;
-                double shippingFee = 3;
-
-                // calculate subtotal price
-                for (CartRenderInfoDTO cartRenderInfoDTO : selectedCartItemList) {
-                    subtotal += cartRenderInfoDTO.getTotalPrice();
-                }
-
-                // init new checkout object
-                CartCheckoutDTO checkout = new CartCheckoutDTO(subtotal, shippingFee, subtotal + shippingFee);
-
-                return new ResponseEntity<>(new ApiResponse("success", checkout), HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }

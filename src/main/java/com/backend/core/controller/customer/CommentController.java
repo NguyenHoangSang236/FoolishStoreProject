@@ -58,7 +58,7 @@ public class CommentController extends CrudController {
         return crudService.removingResponseById(id, httpRequest);
     }
 
-    @GetMapping("/authen/comment/like_comment_id={id}")
+    @GetMapping("/authen/comment/react_comment_id={id}")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Override
     public ResponseEntity<ApiResponse> updateSelectedItemById(@PathVariable int id, HttpServletRequest httpRequest) throws IOException {

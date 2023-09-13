@@ -7,7 +7,6 @@ import com.backend.core.entities.requestdto.invoice.OrderProcessDTO;
 import com.backend.core.entities.tableentity.Invoice;
 import com.backend.core.service.CrudService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,7 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/authen/invoice", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -33,10 +31,7 @@ public class InvoiceController extends CrudController {
     @PostMapping("/addNewOrder")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     public ResponseEntity<ApiResponse> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) {
-        Gson gson = new Gson();
-        Map<String, String> request = gson.fromJson(json, Map.class);
-
-        return crudService.singleCreationalResponse(request.get("paymentMethod"), httpRequest);
+        return crudService.singleCreationalResponse(json, httpRequest);
     }
 
 
