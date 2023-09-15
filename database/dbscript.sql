@@ -45,7 +45,7 @@ CREATE TABLE `cart` (
 
 LOCK TABLES `cart` WRITE;
 /*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-INSERT INTO `cart` VALUES (1,1,3,2,'NOT_BOUGHT_YET',1),(5,1,4,6,'BOUGHT',1),(9,1,25,5,'NOT_BOUGHT_YET',1),(19,1,22,2,'NOT_BOUGHT_YET',1),(23,1,13,4,'NOT_BOUGHT_YET',0),(27,1,27,2,'NOT_BOUGHT_YET',0),(28,1,7,1,'NOT_BOUGHT_YET',0),(29,1,8,1,'NOT_BOUGHT_YET',0),(30,1,24,1,'NOT_BOUGHT_YET',0),(31,1,26,1,'NOT_BOUGHT_YET',0),(32,1,28,1,'NOT_BOUGHT_YET',0),(33,1,17,1,'NOT_BOUGHT_YET',1),(34,1,11,1,'NOT_BOUGHT_YET',0);
+INSERT INTO `cart` VALUES (1,1,3,2,'NOT_BOUGHT_YET',1),(5,1,4,6,'BOUGHT',1),(9,1,25,5,'NOT_BOUGHT_YET',1),(19,1,22,2,'NOT_BOUGHT_YET',1),(23,1,13,4,'NOT_BOUGHT_YET',1),(27,1,27,2,'NOT_BOUGHT_YET',1),(28,1,7,1,'NOT_BOUGHT_YET',1),(29,1,8,1,'NOT_BOUGHT_YET',0),(30,1,24,1,'NOT_BOUGHT_YET',0),(31,1,26,1,'NOT_BOUGHT_YET',0),(32,1,28,1,'NOT_BOUGHT_YET',0),(33,1,17,1,'NOT_BOUGHT_YET',1),(34,1,11,1,'NOT_BOUGHT_YET',0);
 /*!40000 ALTER TABLE `cart` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -388,11 +388,14 @@ CREATE TABLE `invoice` (
   `admin_in_charge_id` bigint NOT NULL DEFAULT '0',
   `note` text,
   `intent` varchar(255) DEFAULT NULL,
+  `receiver_account_id` int DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `FK_customer_invoice` (`Customer_ID`),
   KEY `FK_staff_invoice` (`admin_in_charge_id`),
+  KEY `receiver_account_id` (`receiver_account_id`),
   CONSTRAINT `FK_customer_invoice` FOREIGN KEY (`Customer_ID`) REFERENCES `customers` (`id`),
-  CONSTRAINT `FK_staff_invoice` FOREIGN KEY (`admin_in_charge_id`) REFERENCES `staffs` (`id`)
+  CONSTRAINT `FK_staff_invoice` FOREIGN KEY (`admin_in_charge_id`) REFERENCES `staffs` (`id`),
+  CONSTRAINT `invoice_ibfk_1` FOREIGN KEY (`receiver_account_id`) REFERENCES `online_payment_accounts` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -402,7 +405,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice` VALUES (1,1,'2023-03-10',NULL,'PAID','REFUSED','NOT_SHIPPED','NORMAL_DELIVERY','COD',NULL,0,'USD',NULL,0,'sb-2437s98400372@personal.example.com',1,NULL,NULL),(2,1,'2023-03-09',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','CUSTOMER_CANCEL','NORMAL_DELIVERY','VNPAY','Customer cancels order before shipper takes over, refund 50%',50,'USD',NULL,0,NULL,1,NULL,NULL),(3,1,'2023-03-10',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPER_WAITING','NORMAL_DELIVERY','BANK_TRANSFER','',0,'USD','alo alo',0,NULL,1,NULL,NULL),(4,1,'2023-03-10',NULL,'UNPAID','REFUSED','NOT_SHIPPED','EXPRESS_DELIVERY','COD','The shop caught fire !!',0,'USD','alo alo',0,NULL,1,NULL,NULL),(5,2,'2023-03-10',NULL,'UNPAID','PAYMENT_WAITING','ACCEPTANCE_WAITING','NORMAL_DELIVERY','BANK_TRANSFER',NULL,0,'USD','nguyen quynh nhu',0,NULL,1,NULL,NULL),(6,1,'2023-03-10',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPED','EXPRESS_DELIVERY','PAYPAL','shipper comments are written here...',0,'USD','alo alo',0,'sb-2437s98400372@personal.example.com',1,NULL,NULL),(7,1,'2023-03-10',NULL,'UNPAID','ACCEPTED','PACKING','NORMAL_DELIVERY','COD',NULL,0,'USD','alo alo',0,NULL,1,NULL,NULL),(8,2,'2023-03-10',NULL,'UNPAID','ACCEPTED','SHIPPING','EXPRESS_DELIVERY','COD',NULL,0,'USD','huhuhuhuu',0,NULL,1,NULL,NULL),(9,2,'2023-03-10',NULL,'UNPAID','WAITING','NOT_SHIPPED','NORMAL_DELIVERY','COD','customer canceled order before admin accept',0,'USD','huhuhuhuu',0,'',0,NULL,NULL),(10,1,'2023-03-17',NULL,'UNPAID','ACCEPTED','FAILED','NORMAL_DELIVERY','COD','Customer refuse to take the package ',0,'USD','alo alo',0,'',1,NULL,NULL),(11,2,'2023-03-17',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPING','NORMAL_DELIVERY','PAYPAL','',0,'USD','duc ngu',0,'sb-2437s98400372@personal.example.com',1,NULL,NULL);
+INSERT INTO `invoice` VALUES (1,1,'2023-03-10',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','CUSTOMER_CANCEL','NORMAL_DELIVERY','PAYPAL','Customer cancels order before shipper takes over, refund 50%',50,'USD',NULL,0,'sb-2437s98400372@personal.example.com',1,NULL,NULL,NULL),(2,1,'2023-03-09',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','CUSTOMER_CANCEL','NORMAL_DELIVERY','VNPAY','Customer cancels order before shipper takes over, refund 50%',50,'USD',NULL,0,NULL,1,NULL,NULL,NULL),(3,1,'2023-03-10',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPER_WAITING','NORMAL_DELIVERY','BANK_TRANSFER','',0,'USD','alo alo',0,NULL,1,NULL,NULL,NULL),(4,1,'2023-03-10',NULL,'UNPAID','REFUSED','NOT_SHIPPED','EXPRESS_DELIVERY','COD','The shop caught fire !!',0,'USD','alo alo',0,NULL,1,NULL,NULL,NULL),(5,2,'2023-03-10',NULL,'UNPAID','PAYMENT_WAITING','PAYMENT_WAITING','NORMAL_DELIVERY','BANK_TRANSFER',NULL,0,'USD','nguyen quynh nhu',0,NULL,1,NULL,NULL,NULL),(6,1,'2023-03-10',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPED','EXPRESS_DELIVERY','PAYPAL','shipper comments are written here...',0,'USD','alo alo',0,'sb-2437s98400372@personal.example.com',1,NULL,NULL,NULL),(7,1,'2023-03-10',NULL,'UNPAID','ACCEPTED','PACKING','NORMAL_DELIVERY','COD',NULL,0,'USD','alo alo',0,NULL,1,NULL,NULL,NULL),(8,2,'2023-03-10',NULL,'UNPAID','ACCEPTED','SHIPPING','EXPRESS_DELIVERY','COD',NULL,0,'USD','huhuhuhuu',0,NULL,1,NULL,NULL,NULL),(9,2,'2023-03-10',NULL,'UNPAID','ACCEPTANCE_WAITING','NOT_SHIPPED','NORMAL_DELIVERY','COD','customer canceled order before admin accept',0,'USD','huhuhuhuu',0,'',0,NULL,NULL,NULL),(10,1,'2023-03-17',NULL,'UNPAID','ACCEPTED','FAILED','NORMAL_DELIVERY','COD','Customer refuse to take the package ',0,'USD','alo alo',0,'',1,NULL,NULL,NULL),(11,2,'2023-03-17',NULL,'PAID','CONFIRMED_ONLINE_PAYMENT','SHIPPING','NORMAL_DELIVERY','PAYPAL','',0,'USD','duc ngu',0,'sb-2437s98400372@personal.example.com',1,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -513,7 +516,7 @@ CREATE TABLE `login_accounts` (
 
 LOCK TABLES `login_accounts` WRITE;
 /*!40000 ALTER TABLE `login_accounts` DISABLE KEYS */;
-INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5MjgwMzAzNywiZXhwIjoxNjkyODg5NDM3fQ.R-OLG3x6Z40q8_iMsYqgiMAnKH-oxWOYzdXDXmpS708'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjk0NjI2MjYzLCJleHAiOjE2OTQ3MTI2NjN9.izu1UFKQC3T0zoQECWo3oRgH-XO1UrIiXK0Mm28IlRw'),(3,'nhu0707','$2a$10$yxb/nc9OxKsSgSCGUH6n6.t.EoHeJqWclVL8V9OF8hSFQmDdHH89u','CUSTOMER','ALLOWED',NULL),(7,'sang236','123','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyODk3MTA1LCJleHAiOjE2OTI5ODM1MDV9.7so_xwVTJfYtuAXNgvhFYSQXZSDEQWxhHWJqUL9ds7s'),(9,'tester','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXIiLCJpYXQiOjE2OTI4MDI4MzMsImV4cCI6MTY5Mjg4OTIzM30.LLZJ_PKOBvcYv8SWoaOGMLW7USOvSYjIH7u-GIgKaSU'),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL),(64,'user3','$2a$10$es2Ds7Q3fdP8PEyYh24d5eSbDBSTeg787rtM6jgAtAu71ZGqGVpD6','CUSTOMER','ALLOWED',NULL);
+INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDc3OTA4NSwiZXhwIjoxNjk0ODY1NDg1fQ.7A7-tlx2kxgFiZ4P8V0x3Hn9uGpkj9UDyLdDwovvOdA'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjk0Nzc5MjkxLCJleHAiOjE2OTQ4NjU2OTF9.BqT7bYRvFnmmTgw4RLh6A9CqXML59SZPCYCa0shgkkU'),(3,'nhu0707','$2a$10$yxb/nc9OxKsSgSCGUH6n6.t.EoHeJqWclVL8V9OF8hSFQmDdHH89u','CUSTOMER','ALLOWED',NULL),(7,'sang236','123','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyODk3MTA1LCJleHAiOjE2OTI5ODM1MDV9.7so_xwVTJfYtuAXNgvhFYSQXZSDEQWxhHWJqUL9ds7s'),(9,'tester','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXIiLCJpYXQiOjE2OTI4MDI4MzMsImV4cCI6MTY5Mjg4OTIzM30.LLZJ_PKOBvcYv8SWoaOGMLW7USOvSYjIH7u-GIgKaSU'),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL),(64,'user3','$2a$10$es2Ds7Q3fdP8PEyYh24d5eSbDBSTeg787rtM6jgAtAu71ZGqGVpD6','CUSTOMER','ALLOWED',NULL);
 /*!40000 ALTER TABLE `login_accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -542,6 +545,34 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `overall_rating`,
  1 AS `description`*/;
 SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `online_payment_accounts`
+--
+
+DROP TABLE IF EXISTS `online_payment_accounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `online_payment_accounts` (
+  `id` int NOT NULL,
+  `receiver_account` varchar(100) NOT NULL,
+  `receiver_name` varchar(50) NOT NULL,
+  `additional_info` varchar(50) DEFAULT NULL,
+  `type` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `receiver_account` (`receiver_account`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `online_payment_accounts`
+--
+
+LOCK TABLES `online_payment_accounts` WRITE;
+/*!40000 ALTER TABLE `online_payment_accounts` DISABLE KEYS */;
+INSERT INTO `online_payment_accounts` VALUES (1,'0977815809','NGUYEN HOANG SANG','','MOMO'),(2,'03365672301','NGUYEN HOANG SANG','TpBank','BANK_TRANSFER'),(3,'0123456789','NGUYEN HOANG SANG','','PAYPAL');
+/*!40000 ALTER TABLE `online_payment_accounts` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `product_images_management`
@@ -966,4 +997,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-14  0:40:52
+-- Dump completed on 2023-09-15 23:05:55
