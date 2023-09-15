@@ -22,7 +22,7 @@ import java.util.List;
 @Table(name = "invoice")
 public class Invoice {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)
     int id;
 
@@ -86,6 +86,10 @@ public class Invoice {
     @ManyToOne
     @JoinColumn(name = "admin_in_charge_id")
     private Staff staff;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_account_id")
+    private OnlinePaymentAccount receiverPaymentAccount;
 
 
     public Invoice(int id, Date invoiceDate, String deliveryStatus, String deliveryType, String paymentStatus, String paymentMethod, String currency,

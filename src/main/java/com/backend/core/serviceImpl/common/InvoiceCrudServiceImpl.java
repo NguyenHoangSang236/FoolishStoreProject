@@ -4,10 +4,10 @@ import com.backend.core.entities.embededkey.InvoicesWithProductsPrimaryKeys;
 import com.backend.core.entities.renderdto.CartRenderInfoDTO;
 import com.backend.core.entities.renderdto.InvoiceDetailRenderInfoDTO;
 import com.backend.core.entities.renderdto.InvoiceRenderInfoDTO;
+import com.backend.core.entities.renderdto.OnlinePaymentInfoDTO;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterRequestDTO;
-import com.backend.core.entities.requestdto.invoice.OnlinePaymentReceiverDTO;
 import com.backend.core.entities.requestdto.invoice.OrderProcessDTO;
 import com.backend.core.entities.tableentity.*;
 import com.backend.core.enums.*;
@@ -18,6 +18,7 @@ import com.backend.core.repository.customer.CustomerRepository;
 import com.backend.core.repository.invoice.InvoiceDetailsRenderInfoRepository;
 import com.backend.core.repository.invoice.InvoiceRepository;
 import com.backend.core.repository.invoice.InvoicesWithProductsRepository;
+import com.backend.core.repository.onlinePayment.OnlinePaymentAccountRepository;
 import com.backend.core.repository.product.ProductManagementRepository;
 import com.backend.core.repository.staff.StaffRepository;
 import com.backend.core.service.CrudService;
@@ -63,6 +64,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Autowired
     CartRenderInfoRepository cartRenderInfoRepo;
+
+    @Autowired
+    OnlinePaymentAccountRepository onlinePaymentAccountRepo;
 
     @Autowired
     CheckUtils checkUtils;
@@ -297,7 +301,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             return getReceiverBankInfo(paramInvoice);
         }
 
-        return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
     }
 
@@ -372,31 +376,21 @@ public class InvoiceCrudServiceImpl implements CrudService {
     public ResponseEntity<ApiResponse> getReceiverBankInfo(Invoice invoice) {
         Invoice currentInvoice = invoiceRepo.getInvoiceById(invoice.getId());
         String currentPaymentMethod = invoice.getPaymentMethod();
-        OnlinePaymentReceiverDTO receiver = new OnlinePaymentReceiverDTO();
+        OnlinePaymentAccount receiverInfo = onlinePaymentAccountRepo.getOnlinePaymentAccountByType(currentPaymentMethod);
+        OnlinePaymentInfoDTO receiver = new OnlinePaymentInfoDTO();
 
         if (currentInvoice.getPaymentStatus().equals(PaymentEnum.UNPAID.name()) &&
                 currentInvoice.getDeliveryStatus().equals(DeliveryEnum.PAYMENT_WAITING.name()) &&
-                currentInvoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTANCE_WAITING.name())) {
-            if (currentPaymentMethod.equals(PaymentEnum.PAYPAL.name())) {
-                receiver = new OnlinePaymentReceiverDTO(
-                        "Pay for invoice " + currentInvoice.getId(),
-                        "03365672301",
-                        "NGUYEN HOANG SANG",
-                        "TP BANK - Tien Phong Bank",
-                        currentInvoice.getTotalPrice()
-                );
-            } else if (currentPaymentMethod.equals(PaymentEnum.MOMO.name())) {
-                receiver = new OnlinePaymentReceiverDTO(
-                        "Pay for invoice " + currentInvoice.getId(),
-                        "0977815809",
-                        "NGUYEN HOANG SANG",
-                        "",
-                        currentInvoice.getTotalPrice()
-                );
-            }
-        }
+                currentInvoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name())) {
+            receiver = new OnlinePaymentInfoDTO(
+                    "Pay for invoice " + invoice.getId(),
+                    invoice.getTotalPrice(),
+                    receiverInfo
+            );
 
-        return new ResponseEntity<>(new ApiResponse("success", receiver), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("success", receiver), HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
     }
 
 
