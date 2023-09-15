@@ -1,7 +1,7 @@
 package com.backend.core.enums;
 
 public enum AdminAcceptanceEnum {
-    WAITING,
+    ACCEPTANCE_WAITING,
     PAYMENT_WAITING,
     ACCEPTED,
     REFUSED,

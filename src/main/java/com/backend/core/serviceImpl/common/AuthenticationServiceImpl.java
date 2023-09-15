@@ -123,8 +123,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (currentAccount != null) {
                 if (currentAccount.getStatus().equals(AccountStatusEnum.BANNED.name())) {
                     return new ResponseEntity<>(new ApiResponse("failed", "This account has been banned"), responseHeaders, HttpStatus.BAD_REQUEST);
-                }
-                else if (currentAccount.getCustomer().getEmail().equals(email)) {
+                } else if (currentAccount.getCustomer().getEmail().equals(email)) {
                     String newPassword = getNewTemporaryRandomPasswordMail(username, email);
 
                     String newEncodedPassword = passwordEncoder.encode(newPassword);
