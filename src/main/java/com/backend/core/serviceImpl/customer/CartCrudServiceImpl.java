@@ -275,7 +275,7 @@ public class CartCrudServiceImpl implements CrudService {
                 }
 
                 // init new checkout object
-                CartCheckoutDTO checkout = new CartCheckoutDTO(subtotal, shippingFee, subtotal + shippingFee);
+                CartCheckoutDTO checkout = new CartCheckoutDTO(subtotal, subtotal + shippingFee, shippingFee);
 
                 return new ResponseEntity<>(new ApiResponse("success", checkout), HttpStatus.OK);
             } catch (Exception e) {

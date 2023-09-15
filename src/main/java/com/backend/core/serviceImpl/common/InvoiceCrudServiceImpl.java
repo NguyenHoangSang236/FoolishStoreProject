@@ -9,10 +9,7 @@ import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterRequestDTO;
 import com.backend.core.entities.requestdto.invoice.OnlinePaymentReceiverDTO;
 import com.backend.core.entities.requestdto.invoice.OrderProcessDTO;
-import com.backend.core.entities.tableentity.Cart;
-import com.backend.core.entities.tableentity.Invoice;
-import com.backend.core.entities.tableentity.InvoicesWithProducts;
-import com.backend.core.entities.tableentity.ProductManagement;
+import com.backend.core.entities.tableentity.*;
 import com.backend.core.enums.*;
 import com.backend.core.repository.cart.CartRenderInfoRepository;
 import com.backend.core.repository.cart.CartRepository;
@@ -22,6 +19,7 @@ import com.backend.core.repository.invoice.InvoiceDetailsRenderInfoRepository;
 import com.backend.core.repository.invoice.InvoiceRepository;
 import com.backend.core.repository.invoice.InvoicesWithProductsRepository;
 import com.backend.core.repository.product.ProductManagementRepository;
+import com.backend.core.repository.staff.StaffRepository;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.process.CheckUtils;
 import com.backend.core.util.process.ValueRenderUtils;
@@ -61,6 +59,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
     CartRepository cartRepo;
 
     @Autowired
+    StaffRepository staffRepo;
+
+    @Autowired
     CartRenderInfoRepository cartRenderInfoRepo;
 
     @Autowired
@@ -85,7 +86,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
         Invoice newInvoice;
 
         try {
-            if (deliveryType.equals(DeliveryEnum.EXPRESS_DELIVERY) && deliveryType.equals(DeliveryEnum.NORMAL_DELIVERY)) {
+            if (!deliveryType.equals(DeliveryEnum.EXPRESS_DELIVERY.name()) && !deliveryType.equals(DeliveryEnum.NORMAL_DELIVERY.name())) {
                 return new ResponseEntity<>(new ApiResponse("failed", "This delivery type does not existed"), HttpStatus.BAD_REQUEST);
             }
 
@@ -106,7 +107,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                         0,
                         "",
                         "",
-                        AdminAcceptanceEnum.WAITING.name(),
+                        AdminAcceptanceEnum.ACCEPTANCE_WAITING.name(),
                         null,
                         null,
                         customerRepo.getCustomerById(customerId)
@@ -183,6 +184,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
             try {
                 invoice = invoiceRepo.getInvoiceById(id);
 
+                // check if this invoice exists or not
+                if (invoice == null) {
+                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+                }
+
                 // check if this customer is the owner or not
                 if (customerId != invoice.getCustomer().getId()) {
                     return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
@@ -200,14 +206,16 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 }
                 // if COD payment -> error
                 else if (invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
-                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity<>(new ApiResponse("failed", "Can not cancel this order"), HttpStatus.BAD_REQUEST);
                 } else {
                     invoice.setReason("Customer cancels order, no refund");
                     message += "the shipper has already been on the way, so you will not have any refund!";
                 }
-                invoice.setDeliveryStatus(DeliveryEnum.FAILED.name());
+                invoice.setDeliveryStatus(DeliveryEnum.CUSTOMER_CANCEL.name());
                 invoiceRepo.save(invoice);
 
+                // retrieve product quantity from this invoice
+                productQuantityProcess(DeliveryEnum.CUSTOMER_CANCEL.name(), invoice);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -222,6 +230,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
     public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         try {
             OrderProcessDTO orderProcess = (OrderProcessDTO) paramObj;
+            int adminId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+            Staff adminInCharge = staffRepo.getStaffById(adminId);
 
             String adminAction = orderProcess.getAdminAction();
             int invoiceId = orderProcess.getId();
@@ -232,14 +242,18 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
             if ((adminAction.equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
                     adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) &&
-                    invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.WAITING.name()) &&
+                    invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTANCE_WAITING.name()) &&
                     invoice.getDeliveryStatus().equals(DeliveryEnum.ACCEPTANCE_WAITING.name()) &&
                     invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
                 invoice.setAdminAcceptance(adminAction);
+                invoice.setStaff(adminInCharge);
+
                 if (adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) {
                     invoice.setDeliveryStatus(DeliveryEnum.NOT_SHIPPED.name());
                 } else {
                     invoice.setDeliveryStatus(DeliveryEnum.PACKING.name());
+                    // add sold quantity and subtract in-stock quantity of products from this invoice
+                    productQuantityProcess(adminAction, invoice);
                 }
             } else if (adminAction.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name()) &&
@@ -247,7 +261,10 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     !invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
                 invoice.setAdminAcceptance(adminAction);
                 invoice.setDeliveryStatus(DeliveryEnum.PACKING.name());
+                // add sold quantity and subtract in-stock quantity of products from this invoice
+                productQuantityProcess(adminAction, invoice);
             } else if (adminAction.equals(AdminAcceptanceEnum.FINISH_PACKING.name()) &&
+                    invoice.getStaff().getId() == adminId &&
                     invoice.getDeliveryStatus().equals(DeliveryEnum.PACKING.name()) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTED.name())) {
                 invoice.setDeliveryStatus(DeliveryEnum.SHIPPER_WAITING.name());
@@ -359,7 +376,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
         if (currentInvoice.getPaymentStatus().equals(PaymentEnum.UNPAID.name()) &&
                 currentInvoice.getDeliveryStatus().equals(DeliveryEnum.PAYMENT_WAITING.name()) &&
-                currentInvoice.getAdminAcceptance().equals(AdminAcceptanceEnum.WAITING.name())) {
+                currentInvoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTANCE_WAITING.name())) {
             if (currentPaymentMethod.equals(PaymentEnum.PAYPAL.name())) {
                 receiver = new OnlinePaymentReceiverDTO(
                         "Pay for invoice " + currentInvoice.getId(),
@@ -426,21 +443,29 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     // subtract available quantity and add sold quantity of the product
-    public void soldProductQuantityProcess(int productId, String productColor, String productSize, int productQuantity) {
-        // get ProductManagement by id, color and size
-        ProductManagement pm = productManagementRepo.getProductsManagementByProductIDAndColorAndSize(
-                productId,
-                productColor,
-                productSize
-        );
+    public void productQuantityProcess(String reason, Invoice invoice) {
+        List<InvoicesWithProducts> invoiceProductList = invoice.getInvoicesWithProducts();
 
-        // subtract available quantity
-        pm.subtractQuantity(ProductManagementEnum.AVAILABLE_QUANTITY.name(), productQuantity);
-        // add sold quantity
-        pm.addQuantity(ProductManagementEnum.SOLD_QUANTITY.name(), productQuantity);
+        for (InvoicesWithProducts invoiceProduct : invoiceProductList) {
+            ProductManagement pm = invoiceProduct.getProductManagement();
+            int quantity = invoiceProduct.getQuantity();
 
-        productManagementRepo.save(pm);
+            if (reason.equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
+                    reason.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name())) {
+                // subtract available quantity
+                pm.subtractQuantity(ProductManagementEnum.AVAILABLE_QUANTITY.name(), quantity);
+                // add sold quantity
+                pm.addQuantity(ProductManagementEnum.SOLD_QUANTITY.name(), quantity);
+            } else if (reason.equals(AdminAcceptanceEnum.REFUSED.name()) ||
+                    reason.equals(DeliveryEnum.CUSTOMER_CANCEL.name())) {
+                // subtract available quantity
+                pm.subtractQuantity(ProductManagementEnum.SOLD_QUANTITY.name(), quantity);
+                // add sold quantity
+                pm.addQuantity(ProductManagementEnum.AVAILABLE_QUANTITY.name(), quantity);
+            }
 
+            productManagementRepo.save(pm);
+        }
     }
 
 
