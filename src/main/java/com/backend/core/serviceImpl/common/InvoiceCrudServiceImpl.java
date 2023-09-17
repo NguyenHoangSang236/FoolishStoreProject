@@ -33,7 +33,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.util.EnumUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Qualifier("InvoiceCrudServiceImpl")
@@ -259,6 +262,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     // add sold quantity and subtract in-stock quantity of products from this invoice
                     productQuantityProcess(adminAction, invoice);
                 }
+
+                updateCartItemBuyingStatusOnAdminAcceptance(adminAction, invoice);
             } else if (adminAction.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name()) &&
                     invoice.getDeliveryStatus().equals(DeliveryEnum.ACCEPTANCE_WAITING.name()) &&
@@ -344,11 +349,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     public boolean isOnlinePaymentMethod(String method) {
-        List choices = Arrays.asList(PaymentEnum.values());
-
-        return (choices.contains(PaymentEnum.MOMO.name()) ||
-                choices.contains(PaymentEnum.BANK_TRANSFER.name()) ||
-                choices.contains(PaymentEnum.PAYPAL.name()));
+        return method.equals(PaymentEnum.MOMO.name()) || method.equals(PaymentEnum.BANK_TRANSFER.name()) || method.equals(PaymentEnum.PAYPAL.name());
     }
 
 
@@ -410,7 +411,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
             // set cart item from Cart table to buying_status = BOUGHT and select_status = 0
             tblCart.setSelectStatus(0);
-            tblCart.setBuyingStatus(CartEnum.BOUGHT.name());
+            tblCart.setBuyingStatus(CartEnum.PENDING.name());
             cartRepo.save(tblCart);
 
             // get ProductManagement by id, color and size
@@ -419,6 +420,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     item.getColor(),
                     item.getSize()
             );
+
 
             InvoicesWithProducts invoicesWithProducts = new InvoicesWithProducts(
                     new InvoicesWithProductsPrimaryKeys(pm.getId(), newInvoice.getId()),
@@ -481,4 +483,23 @@ public class InvoiceCrudServiceImpl implements CrudService {
         }
     }
 
+
+    // update buying status of cart item when admin accept or refuse the order
+    public void updateCartItemBuyingStatusOnAdminAcceptance(String adminAcceptance, Invoice invoice) {
+        List<InvoicesWithProducts> invoiceProductList = invoice.getInvoicesWithProducts();
+
+        for (InvoicesWithProducts invoiceProduct : invoiceProductList) {
+            Cart cartItem = cartRepo.getCartItemByProductManagementIdAndCustomerId(
+                    invoiceProduct.getProductManagement().getId(),
+                    invoice.getCustomer().getId()
+            );
+
+            cartItem.setBuyingStatus(
+                    adminAcceptance.equals(AdminAcceptanceEnum.ACCEPTED.name())
+                            ? CartEnum.BOUGHT.name()
+                            : CartEnum.NOT_BOUGHT_YET.name()
+            );
+            cartRepo.save(cartItem);
+        }
+    }
 }

@@ -22,7 +22,6 @@ import java.util.List;
 @Table(name = "invoice")
 public class Invoice {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)
     int id;
 

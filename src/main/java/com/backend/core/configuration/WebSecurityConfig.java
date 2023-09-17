@@ -1,6 +1,10 @@
 package com.backend.core.configuration;
 
+import com.backend.core.entities.requestdto.ApiResponse;
+import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.util.process.JwtAuthenticationFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +37,18 @@ public class WebSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(((request, response, authException) -> {
+                    ApiResponse apiResponse = new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
+
+                    String jsonErrorResponse = new ObjectMapper().writeValueAsString(apiResponse);
+
+                    response.setContentType("application/json");
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.getWriter().write(jsonErrorResponse);
+                }))
+        ;
 
         return httpSecurity.build();
     }
