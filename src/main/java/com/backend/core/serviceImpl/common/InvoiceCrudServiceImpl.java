@@ -89,7 +89,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
         Map<String, String> request = gson.fromJson((String) paramObj, Map.class);
         String paymentMethod = request.get("paymentMethod");
         String deliveryType = request.get("deliveryType");
-        String responseSuccessMessage = "New order has been created successfully";
+        String responseSuccessMessage = "New order with ID --- has been created successfully";
         Invoice newInvoice;
 
         try {
@@ -146,6 +146,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
             }
 
             createNewInvoice(newInvoice, customerId);
+
+            responseSuccessMessage = responseSuccessMessage.replace("---", String.valueOf(newInvoiceId));
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -385,7 +387,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 currentInvoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name())) {
             receiver = new OnlinePaymentInfoDTO(
                     "Pay for invoice " + invoice.getId(),
-                    invoice.getTotalPrice(),
+                    currentInvoice.getTotalPrice(),
                     receiverInfo
             );
 
@@ -410,7 +412,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             Cart tblCart = cartRepo.getCartById(item.getId());
 
             // set cart item from Cart table to buying_status = BOUGHT and select_status = 0
-            tblCart.setSelectStatus(0);
+            tblCart.setSelectStatus(1);
             tblCart.setBuyingStatus(CartEnum.PENDING.name());
             cartRepo.save(tblCart);
 
