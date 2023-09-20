@@ -39,7 +39,7 @@ public class WebSecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
-                .authenticationEntryPoint(((request, response, authException) -> {
+                .authenticationEntryPoint((request, response, authException) -> {
                     ApiResponse apiResponse = new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
 
                     String jsonErrorResponse = new ObjectMapper().writeValueAsString(apiResponse);
@@ -47,7 +47,7 @@ public class WebSecurityConfig {
                     response.setContentType("application/json");
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     response.getWriter().write(jsonErrorResponse);
-                }))
+                })
         ;
 
         return httpSecurity.build();

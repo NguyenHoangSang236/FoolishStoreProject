@@ -1,9 +1,7 @@
 package com.backend.core.entities.renderdto;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -11,6 +9,8 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "invoice")
 public class InvoiceRenderInfoDTO {
     @Id
@@ -28,7 +28,7 @@ public class InvoiceRenderInfoDTO {
     String deliveryStatus;
 
     @Column(name = "Payment_Status")
-    int paymentStatus;
+    String paymentStatus;
 
     @Column(name = "payment_method")
     String paymentMethod;
@@ -56,24 +56,4 @@ public class InvoiceRenderInfoDTO {
 
     @Column(name = "admin_acceptance")
     String adminAcceptance;
-
-    public InvoiceRenderInfoDTO(int id, int customerId, Date invoiceDate, int paymentStatus, String deliveryStatus, double refundPercentage, String reason, String currency, String paymentMethod, String description, String intent, String adminAcceptance, double totalPrice, String onlinePaymentAccount) {
-        this.id = id;
-        this.customerId = customerId;
-        this.invoiceDate = invoiceDate;
-        this.deliveryStatus = deliveryStatus;
-        this.paymentStatus = paymentStatus;
-        this.paymentMethod = paymentMethod;
-        this.currency = currency;
-        this.intent = intent;
-        this.description = description;
-        this.refundPercentage = refundPercentage;
-        this.totalPrice = totalPrice;
-        this.reason = reason;
-        this.onlinePaymentAccount = onlinePaymentAccount;
-        this.adminAcceptance = adminAcceptance;
-    }
-
-    public InvoiceRenderInfoDTO() {
-    }
 }

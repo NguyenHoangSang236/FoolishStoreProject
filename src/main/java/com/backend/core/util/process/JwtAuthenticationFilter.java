@@ -1,11 +1,15 @@
 package com.backend.core.util.process;
 
+import com.backend.core.entities.requestdto.ApiResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,39 +36,53 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String userName;
 
-        // if header is not null and starts with word 'Bearer' -> proceed filter
-        if (authHeader != null && authHeader.startsWith("Bearer")) {
-            // get jwt from header ('Bearer' length is 7 => get jwt after index 7 of header)
-            jwt = jwtUtils.getJwtFromRequest(request);
+        try {
+            // if header is not null and starts with word 'Bearer' -> proceed filter
+            if (authHeader != null && authHeader.startsWith("Bearer")) {
+                // get jwt from header ('Bearer' length is 7 => get jwt after index 7 of header)
+                jwt = jwtUtils.getJwtFromRequest(request);
 
-            // get username from jwt
-            userName = jwtUtils.getUserNameFromJwt(jwt);
+                // get username from jwt
+                userName = jwtUtils.getUserNameFromJwt(jwt);
 
-            // if this account has logged in yet -> proceed filter
-            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+                // if this account has logged in yet -> proceed filter
+                if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
 
-                // if jwt is valid -> proceed
-                if (jwtUtils.isJwtValid(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails.getUsername(),
-                            null,
-                            userDetails.getAuthorities()
-                    );
+                    // if jwt is valid -> proceed
+                    if (jwtUtils.isJwtValid(jwt, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                userDetails.getUsername(),
+                                null,
+                                userDetails.getAuthorities()
+                        );
 
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
                 }
             }
-        }
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setContentType("application/json");
+            response.getWriter().write(convertObjectToJson(new ApiResponse("failed", e.getMessage())));
+        }
     }
 
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return request.getRequestURI().contains("/authen") == false;
+    }
+
+    public String convertObjectToJson(Object object) throws JsonProcessingException {
+        if (object == null) {
+            return null;
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(object);
     }
 }
