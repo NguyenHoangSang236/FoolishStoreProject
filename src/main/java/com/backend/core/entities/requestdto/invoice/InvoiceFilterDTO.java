@@ -1,19 +1,23 @@
 package com.backend.core.entities.requestdto.invoice;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class InvoiceFilterDTO {
     @JsonProperty("adminAcceptance")
     String adminAcceptance;
 
     @JsonProperty("paymentStatus")
-    int paymentStatus;
+    String paymentStatus;
 
     @JsonProperty("deliveryStatus")
     String deliveryStatus;
@@ -29,18 +33,4 @@ public class InvoiceFilterDTO {
 
     @JsonProperty("type")
     String type;
-
-
-    public InvoiceFilterDTO(String adminAcceptance, int paymentStatus, String deliveryStatus, Date startInvoiceDate, Date endInvoiceDate, String paymentMethod, String type) {
-        this.adminAcceptance = adminAcceptance;
-        this.paymentStatus = paymentStatus;
-        this.deliveryStatus = deliveryStatus;
-        this.startInvoiceDate = startInvoiceDate;
-        this.endInvoiceDate = endInvoiceDate;
-        this.paymentMethod = paymentMethod;
-        this.type = type;
-    }
-
-    public InvoiceFilterDTO() {
-    }
 }

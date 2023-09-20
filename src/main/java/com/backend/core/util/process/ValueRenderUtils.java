@@ -223,7 +223,7 @@ public class ValueRenderUtils {
 
     //create a query for invoice binding filter
     public String invoiceFilterQuery(int customerId, InvoiceFilterDTO invoiceFilter, PaginationDTO pagination) {
-        int paymentStatus = invoiceFilter.getPaymentStatus();
+        String paymentStatus = invoiceFilter.getPaymentStatus();
         String adminAcceptance = invoiceFilter.getAdminAcceptance();
         String deliveryStatus = invoiceFilter.getDeliveryStatus();
         String paymentMethod = invoiceFilter.getPaymentMethod();
@@ -232,31 +232,35 @@ public class ValueRenderUtils {
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
-        String result = "select * from invoice where Customer_ID = " + customerId + " and Payment_Status = " + paymentStatus;
+        String result = "select * from invoice where Customer_ID = " + customerId + " ";
+
+        if (paymentStatus != null) {
+            result += " and Payment_Status = '" + paymentStatus + "' ";
+        }
 
         if (adminAcceptance != null) {
-            result += " and Admin_Acceptance = '" + adminAcceptance + "' ";
+            result += "and Admin_Acceptance = '" + adminAcceptance + "' ";
         }
 
         if (deliveryStatus != null) {
-            result += " and Delivery_Status = '" + deliveryStatus + "' ";
+            result += "and Delivery_Status = '" + deliveryStatus + "' ";
         }
 
         if (paymentMethod != null) {
-            result += " and Payment_Method = '" + paymentMethod + "' ";
+            result += "and Payment_Method = '" + paymentMethod + "' ";
         }
 
         if (startInvoiceDate != null) {
-            result += " and Invoice_Date >= '" + formatDateToString(startInvoiceDate, "yyyy-MM-dd") + "' ";
+            result += "and Invoice_Date >= '" + formatDateToString(startInvoiceDate, "yyyy-MM-dd") + "' ";
         }
 
         if (endInvoiceDate != null) {
-            result += " and Invoice_Date <= '" + formatDateToString(endInvoiceDate, "yyyy-MM-dd") + "' ";
+            result += "and Invoice_Date <= '" + formatDateToString(endInvoiceDate, "yyyy-MM-dd") + "' ";
         }
 
         result += "limit " + (limit * (page - 1)) + ", " + limit;
 
-        return result + ';';
+        return result;
     }
 
 

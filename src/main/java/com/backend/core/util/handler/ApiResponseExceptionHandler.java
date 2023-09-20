@@ -2,6 +2,7 @@ package com.backend.core.util.handler;
 
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.enums.ErrorTypeEnum;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -29,5 +30,11 @@ public class ApiResponseExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler(HttpClientErrorException.BadRequest.class)
     public ResponseEntity<ApiResponse> handleBadRequestException(HttpClientErrorException.BadRequest ex) {
         return new ResponseEntity<>(new ApiResponse("failed", ex.getStatusText()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ApiResponse> handleExpiredJwtException(ExpiredJwtException ex) {
+        return new ResponseEntity<>(new ApiResponse("failed", ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }
