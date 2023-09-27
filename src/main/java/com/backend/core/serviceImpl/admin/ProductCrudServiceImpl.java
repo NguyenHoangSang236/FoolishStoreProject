@@ -1,11 +1,11 @@
 package com.backend.core.serviceImpl.admin;
 
 import com.backend.core.entities.embededkey.ProductImagesManagementPrimaryKeys;
-import com.backend.core.entities.renderdto.AuthenProductRenderInfoDTO;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.product.ProductAttribute;
 import com.backend.core.entities.requestdto.product.ProductDetailsRequestDTO;
+import com.backend.core.entities.responsedto.AuthenProductRenderInfoDTO;
 import com.backend.core.entities.tableentity.Product;
 import com.backend.core.entities.tableentity.ProductImagesManagement;
 import com.backend.core.entities.tableentity.ProductImportManagement;

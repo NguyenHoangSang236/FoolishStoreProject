@@ -1,6 +1,6 @@
 package com.backend.core.abstractClasses;
 
-import com.backend.core.entities.renderdto.CustomerRenderInfoDTO;
+import com.backend.core.entities.responsedto.CustomerRenderInfoDTO;
 import com.backend.core.entities.tableentity.Account;
 import com.backend.core.service.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;

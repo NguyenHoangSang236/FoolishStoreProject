@@ -1,6 +1,6 @@
 package com.backend.core.repository.comment;
 
-import com.backend.core.entities.renderdto.CommentRenderInfoDTO;
+import com.backend.core.entities.responsedto.CommentRenderInfoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

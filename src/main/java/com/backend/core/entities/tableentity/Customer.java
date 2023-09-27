@@ -1,6 +1,6 @@
 package com.backend.core.entities.tableentity;
 
-import com.backend.core.entities.renderdto.CustomerRenderInfoDTO;
+import com.backend.core.entities.responsedto.CustomerRenderInfoDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

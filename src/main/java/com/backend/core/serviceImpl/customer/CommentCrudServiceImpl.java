@@ -1,11 +1,11 @@
 package com.backend.core.serviceImpl.customer;
 
 import com.backend.core.entities.embededkey.CommentLikePrimaryKeys;
-import com.backend.core.entities.renderdto.CommentRenderInfoDTO;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.comment.CommentFilterRequestDTO;
 import com.backend.core.entities.requestdto.comment.CommentRequestDTO;
+import com.backend.core.entities.responsedto.CommentRenderInfoDTO;
 import com.backend.core.entities.tableentity.*;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;

@@ -1,10 +1,10 @@
 package com.backend.core.serviceImpl.shipper;
 
-import com.backend.core.entities.renderdto.DeliveryOrderRenderInfoDTO;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.delivery.DeliveryActionOnOrderDTO;
 import com.backend.core.entities.requestdto.delivery.DeliveryFilterRequestDTO;
+import com.backend.core.entities.responsedto.DeliveryOrderRenderInfoDTO;
 import com.backend.core.entities.tableentity.Delivery;
 import com.backend.core.entities.tableentity.Invoice;
 import com.backend.core.entities.tableentity.Staff;

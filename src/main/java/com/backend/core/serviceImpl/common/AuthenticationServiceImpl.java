@@ -1,8 +1,8 @@
 package com.backend.core.serviceImpl.common;
 
-import com.backend.core.entities.renderdto.CustomerRenderInfoDTO;
-import com.backend.core.entities.renderdto.StaffRenderInfoDTO;
 import com.backend.core.entities.requestdto.ApiResponse;
+import com.backend.core.entities.responsedto.CustomerRenderInfoDTO;
+import com.backend.core.entities.responsedto.StaffRenderInfoDTO;
 import com.backend.core.entities.tableentity.Account;
 import com.backend.core.entities.tableentity.Customer;
 import com.backend.core.enums.AccountStatusEnum;

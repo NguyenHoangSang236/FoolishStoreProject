@@ -6,6 +6,7 @@ import com.backend.core.util.process.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -28,10 +29,11 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf().disable().cors().disable()
+                .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/unauthen/**", "/error").permitAll()
-                .anyRequest().authenticated()
+//                .requestMatchers("/unauthen/**", "/error", "/wsNotificationEndPoint").permitAll()
+//                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -61,4 +63,30 @@ public class WebSecurityConfig {
 
         return handler;
     }
+
+    @Bean
+    public CookieSameSiteSupplier cookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.ofNone();
+    }
+
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration config = new CorsConfiguration();
+////        config.setAllowedOrigins(ImmutableList.of("*"));
+////        config.setAllowCredentials(true);
+////        config.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
+////        config.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
+//        config.addAllowedOrigin("*"); // Thay * bằng domain của bạn nếu bạn chỉ muốn cho phép từ một domain cụ thể.
+//        config.addAllowedMethod("*");
+//        config.addAllowedHeader("*");
+//        config.setAllowCredentials(true);
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", config);
+//        return source;
+//    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+//        return authConfig.getAuthenticationManager();
+//    }
 }
