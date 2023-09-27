@@ -1,6 +1,6 @@
 package com.backend.core.repository.cart;
 
-import com.backend.core.entities.renderdto.CartRenderInfoDTO;
+import com.backend.core.entities.responsedto.CartRenderInfoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -258,7 +258,7 @@ public class ValueRenderUtils {
             result += "and Invoice_Date <= '" + formatDateToString(endInvoiceDate, "yyyy-MM-dd") + "' ";
         }
 
-        result += "limit " + (limit * (page - 1)) + ", " + limit;
+        result += "order by id desc limit " + (limit * (page - 1)) + ", " + limit;
 
         return result;
     }

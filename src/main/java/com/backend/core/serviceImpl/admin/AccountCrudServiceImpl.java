@@ -1,12 +1,12 @@
 package com.backend.core.serviceImpl.admin;
 
-import com.backend.core.entities.renderdto.CustomerRenderInfoDTO;
-import com.backend.core.entities.renderdto.StaffRenderInfoDTO;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.PaginationDTO;
 import com.backend.core.entities.requestdto.account.AccountFilterDTO;
 import com.backend.core.entities.requestdto.account.AccountFilterRequestDTO;
+import com.backend.core.entities.responsedto.CustomerRenderInfoDTO;
+import com.backend.core.entities.responsedto.StaffRenderInfoDTO;
 import com.backend.core.entities.tableentity.Account;
 import com.backend.core.enums.AccountStatusEnum;
 import com.backend.core.enums.ErrorTypeEnum;
