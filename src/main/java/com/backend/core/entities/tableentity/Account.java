@@ -52,6 +52,10 @@ public class Account implements UserDetails {
     @Valid
     Staff staff;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
+    List<Notification> notifications;
+
 
     public Account() {
     }

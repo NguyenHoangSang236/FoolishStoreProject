@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.Date;
+
 @Entity
 @Getter
 @Setter
@@ -30,4 +32,11 @@ public class Notification {
 
     @Column(name = "additional_data")
     String additionalData;
+
+    @Column(name = "notification_date")
+    Date notificationDate;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "receiver_login_account_id")
+    private Account account;
 }

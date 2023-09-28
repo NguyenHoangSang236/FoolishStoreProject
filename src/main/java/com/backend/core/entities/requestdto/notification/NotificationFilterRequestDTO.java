@@ -1,4 +1,4 @@
-package com.backend.core.entities.requestdto.invoice;
+package com.backend.core.entities.requestdto.notification;
 
 import com.backend.core.entities.interfaces.FilterRequest;
 import com.backend.core.entities.requestdto.PaginationDTO;
@@ -10,16 +10,15 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Component
-public class InvoiceFilterRequestDTO implements FilterRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+public class NotificationFilterRequestDTO implements FilterRequest {
     @JsonProperty("filter")
-    InvoiceFilterDTO filter;
+    NotificationFilterDTO filter;
 
     @JsonProperty("pagination")
     PaginationDTO pagination;
-
 
     @Override
     public Object getFilter() {
@@ -30,7 +29,7 @@ public class InvoiceFilterRequestDTO implements FilterRequest {
     public void setFilter(Object filter) {
         LinkedHashMap<String, Object> filterMap = (LinkedHashMap<String, Object>) filter;
         ObjectMapper objectMapper = new ObjectMapper();
-        this.filter = objectMapper.convertValue(filterMap, InvoiceFilterDTO.class);
+        this.filter = objectMapper.convertValue(filterMap, NotificationFilterDTO.class);
     }
 
     @Override
