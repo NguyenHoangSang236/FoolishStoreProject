@@ -34,7 +34,7 @@ function connect(event) {
 
 function onConnected() {
     // Subscribe to the Public Topic
-    stompClient.subscribe('/unauthen/notification/showAllNotifications', onMessageReceived);
+    stompClient.subscribe('/authen/notification/filterNotifications', onMessageReceived);
 
     // Tell your username to the server
     stompClient.send("/app/sendNotification",

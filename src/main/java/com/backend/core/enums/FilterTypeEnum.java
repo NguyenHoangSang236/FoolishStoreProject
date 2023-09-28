@@ -14,4 +14,5 @@ public enum FilterTypeEnum {
     PACKING_ORDERS,
     SUCCESSFUL_ORDERS,
     FAILED_ORDERS,
+    NOTIFICATION,
 }

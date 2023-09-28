@@ -516,7 +516,7 @@ CREATE TABLE `login_accounts` (
 
 LOCK TABLES `login_accounts` WRITE;
 /*!40000 ALTER TABLE `login_accounts` DISABLE KEYS */;
-INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDc3OTA4NSwiZXhwIjoxNjk0ODY1NDg1fQ.7A7-tlx2kxgFiZ4P8V0x3Hn9uGpkj9UDyLdDwovvOdA'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjk1ODEyNDkyLCJleHAiOjE2OTU4OTg4OTJ9.JFc9D75Ek3bdZbyHeAw9j-BDL088vqzP2KHs-PNKWmI'),(3,'nhu0707','$2a$10$yxb/nc9OxKsSgSCGUH6n6.t.EoHeJqWclVL8V9OF8hSFQmDdHH89u','CUSTOMER','ALLOWED',NULL),(7,'sang236','123','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyODk3MTA1LCJleHAiOjE2OTI5ODM1MDV9.7so_xwVTJfYtuAXNgvhFYSQXZSDEQWxhHWJqUL9ds7s'),(9,'tester','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXIiLCJpYXQiOjE2OTI4MDI4MzMsImV4cCI6MTY5Mjg4OTIzM30.LLZJ_PKOBvcYv8SWoaOGMLW7USOvSYjIH7u-GIgKaSU'),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL),(64,'user3','$2a$10$es2Ds7Q3fdP8PEyYh24d5eSbDBSTeg787rtM6jgAtAu71ZGqGVpD6','CUSTOMER','ALLOWED',NULL);
+INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDc3OTA4NSwiZXhwIjoxNjk0ODY1NDg1fQ.7A7-tlx2kxgFiZ4P8V0x3Hn9uGpkj9UDyLdDwovvOdA'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjk1ODk5MjAwLCJleHAiOjE2OTU5ODU2MDB9.663TQLWggShK4AMWryfsHoumX_JOOnB1iQLUkp8basY'),(3,'nhu0707','$2a$10$yxb/nc9OxKsSgSCGUH6n6.t.EoHeJqWclVL8V9OF8hSFQmDdHH89u','CUSTOMER','ALLOWED',NULL),(7,'sang236','123','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyODk3MTA1LCJleHAiOjE2OTI5ODM1MDV9.7so_xwVTJfYtuAXNgvhFYSQXZSDEQWxhHWJqUL9ds7s'),(9,'tester','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXIiLCJpYXQiOjE2OTI4MDI4MzMsImV4cCI6MTY5Mjg4OTIzM30.LLZJ_PKOBvcYv8SWoaOGMLW7USOvSYjIH7u-GIgKaSU'),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL),(64,'user3','$2a$10$es2Ds7Q3fdP8PEyYh24d5eSbDBSTeg787rtM6jgAtAu71ZGqGVpD6','CUSTOMER','ALLOWED',NULL);
 /*!40000 ALTER TABLE `login_accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -558,8 +558,12 @@ CREATE TABLE `notification` (
   `type` varchar(20) NOT NULL,
   `content` text NOT NULL,
   `additional_data` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `receiver_login_account_id` bigint NOT NULL,
+  `notification_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `receiver_login_account_id` (`receiver_login_account_id`),
+  CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`receiver_login_account_id`) REFERENCES `login_accounts` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -568,6 +572,7 @@ CREATE TABLE `notification` (
 
 LOCK TABLES `notification` WRITE;
 /*!40000 ALTER TABLE `notification` DISABLE KEYS */;
+INSERT INTO `notification` VALUES (1,'ORDER','New order','',0,'2023-09-10 00:00:00'),(2,'DELIVERY','We are packing your order',NULL,2,'2023-09-12 00:00:00');
 /*!40000 ALTER TABLE `notification` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1022,4 +1027,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-27 18:07:50
+-- Dump completed on 2023-09-28 18:24:04

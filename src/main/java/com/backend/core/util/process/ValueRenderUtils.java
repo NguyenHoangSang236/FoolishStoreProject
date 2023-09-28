@@ -8,6 +8,7 @@ import com.backend.core.entities.requestdto.cart.CartItemFilterDTO;
 import com.backend.core.entities.requestdto.comment.CommentRequestDTO;
 import com.backend.core.entities.requestdto.delivery.DeliveryFilterDTO;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterDTO;
+import com.backend.core.entities.requestdto.notification.NotificationFilterDTO;
 import com.backend.core.entities.requestdto.product.ProductFilterDTO;
 import com.backend.core.entities.tableentity.Account;
 import com.backend.core.enums.CartEnum;
@@ -259,6 +260,27 @@ public class ValueRenderUtils {
         }
 
         result += "order by id desc limit " + (limit * (page - 1)) + ", " + limit;
+
+        return result;
+    }
+
+
+    // create a query for notification binding filter
+    public String notificationFilterQuery(NotificationFilterDTO notiFilter, PaginationDTO pagination, int userId) {
+        Account loginAcc = accountRepo.getCustomerAccountByCustomerId(userId);
+        String result = "select * from notification where receiver_login_account_id = " + loginAcc.getId() + " ";
+        Date notiDate = notiFilter.getNotificationDate();
+        int page = pagination.getPage();
+        int limit = pagination.getLimit();
+
+
+        if (notiDate != null) {
+            result += "and notification_date = '" + formatDateToString(notiDate, "yyyy-MM-dd") + "' ";
+        }
+
+        result += "order by id desc limit " + (limit * (page - 1)) + ", " + limit;
+
+        System.out.println(result);
 
         return result;
     }
@@ -550,6 +572,9 @@ public class ValueRenderUtils {
                     }
                     case PRODUCT -> {
                         filterQuery = productFilterQuery((ProductFilterDTO) filter, pagination);
+                    }
+                    case NOTIFICATION -> {
+                        filterQuery = notificationFilterQuery((NotificationFilterDTO) filter, pagination, userId);
                     }
                     case CART_ITEMS -> {
                         filterQuery = cartItemFilterQuery((CartItemFilterDTO) filter, pagination);

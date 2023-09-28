@@ -5,4 +5,5 @@ public enum NotificationEnum {
     PAYMENT,
     ORDER,
     ADMIN_ACCEPTANCE,
+    COMMENT,
 }

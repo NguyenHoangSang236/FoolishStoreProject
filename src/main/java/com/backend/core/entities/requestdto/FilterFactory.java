@@ -6,6 +6,7 @@ import com.backend.core.entities.requestdto.cart.CartItemFilterRequestDTO;
 import com.backend.core.entities.requestdto.comment.CommentFilterRequestDTO;
 import com.backend.core.entities.requestdto.delivery.DeliveryFilterRequestDTO;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterRequestDTO;
+import com.backend.core.entities.requestdto.notification.NotificationFilterRequestDTO;
 import com.backend.core.entities.requestdto.product.ProductFilterRequestDTO;
 import com.backend.core.enums.FilterTypeEnum;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ public class FilterFactory {
             case COMMENT -> new CommentFilterRequestDTO();
             case ACCOUNT -> new AccountFilterRequestDTO();
             case DELIVERY -> new DeliveryFilterRequestDTO();
+            case NOTIFICATION -> new NotificationFilterRequestDTO();
             default -> null;
         };
     }
