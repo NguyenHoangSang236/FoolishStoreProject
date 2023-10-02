@@ -36,7 +36,6 @@ public class Notification {
     @Column(name = "notification_date")
     Date notificationDate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "receiver_login_account_id")
-    private Account account;
+    @Column(name = "receiver_login_account_id")
+    int receiverLoginAccountId;
 }

@@ -15,6 +15,7 @@ import com.backend.core.repository.cart.CartRenderInfoRepository;
 import com.backend.core.repository.cart.CartRepository;
 import com.backend.core.repository.customQuery.CustomQueryRepository;
 import com.backend.core.repository.customer.CustomerRepository;
+import com.backend.core.repository.delivery.DeliveryTypeRepository;
 import com.backend.core.repository.invoice.InvoiceDetailsRenderInfoRepository;
 import com.backend.core.repository.invoice.InvoiceRepository;
 import com.backend.core.repository.invoice.InvoicesWithProductsRepository;
@@ -52,6 +53,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Autowired
     ProductManagementRepository productManagementRepo;
+
+    @Autowired
+    DeliveryTypeRepository deliveryTypeRepo;
 
     @Autowired
     CustomerRepository customerRepo;
@@ -329,13 +333,12 @@ public class InvoiceCrudServiceImpl implements CrudService {
     public ResponseEntity<ApiResponse> readingById(int invoiceId, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
-        System.out.println(customerId);
-
         if (!isInvoiceOwner(customerId, invoiceId)) {
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
         } else {
             try {
                 List<InvoiceDetailRenderInfoDTO> invoiceItemsList = invoiceDetailsRenderInfoRepo.getInvoiceItemsByInvoiceId(invoiceId);
+
                 return new ResponseEntity<>(new ApiResponse("success", invoiceItemsList), HttpStatus.OK);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -435,6 +438,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
             invoicesWithProductsRepo.insertInvoicesWithProducts(invoicesWithProducts);
         }
 
+        // calculate delivery fee and add it to total price
+        DeliveryType deliveryType = deliveryTypeRepo.getDeliveryTypeByName(newInvoice.getDeliveryType());
+        invoiceTotalPrice += deliveryType.getPrice();
+
+        newInvoice.setDeliveryFee(deliveryType.getPrice());
         newInvoice.setTotalPrice(invoiceTotalPrice);
         invoiceRepo.save(newInvoice);
     }

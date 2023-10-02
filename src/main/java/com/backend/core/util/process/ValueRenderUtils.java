@@ -235,19 +235,19 @@ public class ValueRenderUtils {
 
         String result = "select * from invoice where Customer_ID = " + customerId + " ";
 
-        if (paymentStatus != null) {
+        if (paymentStatus != null && !paymentStatus.isBlank()) {
             result += " and Payment_Status = '" + paymentStatus + "' ";
         }
 
-        if (adminAcceptance != null) {
+        if (adminAcceptance != null && !adminAcceptance.isBlank()) {
             result += "and Admin_Acceptance = '" + adminAcceptance + "' ";
         }
 
-        if (deliveryStatus != null) {
+        if (deliveryStatus != null && !deliveryStatus.isBlank()) {
             result += "and Delivery_Status = '" + deliveryStatus + "' ";
         }
 
-        if (paymentMethod != null) {
+        if (paymentMethod != null && !paymentMethod.isBlank()) {
             result += "and Payment_Method = '" + paymentMethod + "' ";
         }
 

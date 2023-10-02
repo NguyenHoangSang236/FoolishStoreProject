@@ -1,6 +1,5 @@
 package com.backend.core.entities.responsedto;
 
-import com.backend.core.enums.DeliveryEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -62,10 +61,6 @@ public class CartRenderInfoDTO {
 
     @Column(name = "image_1")
     String image1;
-
-    public static double getShipFee(String deliType) {
-        return deliType.equals(DeliveryEnum.EXPRESS_DELIVERY.name()) ? 10 : deliType.equals(DeliveryEnum.NORMAL_DELIVERY.name()) ? 6 : 0;
-    }
 
     @Override
     public boolean equals(Object o) {

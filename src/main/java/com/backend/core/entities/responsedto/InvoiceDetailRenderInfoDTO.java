@@ -1,6 +1,7 @@
 package com.backend.core.entities.responsedto;
 
 import com.backend.core.entities.embededkey.InvoicesWithProductsPrimaryKeys;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -17,12 +18,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InvoiceDetailRenderInfoDTO {
+    @JsonIgnore
     @EmbeddedId
     InvoicesWithProductsPrimaryKeys id;
 
     @Column(name = "product_id")
     int productId;
 
+    @JsonIgnore
     @Column(name = "customer_id")
     int customerId;
 
@@ -44,18 +47,6 @@ public class InvoiceDetailRenderInfoDTO {
     @Column(name = "quantity")
     int quantity;
 
-    @Column(name = "overall_rating")
-    int overallRating;
-
     @Column(name = "image_1")
     String image1;
-
-    @Column(name = "image_2")
-    String image2;
-
-    @Column(name = "image_3")
-    String image3;
-
-    @Column(name = "image_4")
-    String image4;
 }

@@ -31,7 +31,7 @@ public class WebSecurityConfig {
         httpSecurity
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/unauthen/**", "/error", "/wsNotificationEndPoint").permitAll()
+                .requestMatchers("/unauthen/**", "/error", "/wsNotificationEndPoint/**").permitAll()
                 .anyRequest().authenticated()
 //                .anyRequest().permitAll()
                 .and()
