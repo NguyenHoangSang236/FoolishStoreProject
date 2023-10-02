@@ -8,6 +8,7 @@ import com.backend.core.entities.requestdto.cart.CartItemDTO;
 import com.backend.core.entities.requestdto.cart.CartItemFilterRequestDTO;
 import com.backend.core.entities.responsedto.CartRenderInfoDTO;
 import com.backend.core.entities.tableentity.Cart;
+import com.backend.core.entities.tableentity.DeliveryType;
 import com.backend.core.entities.tableentity.ProductManagement;
 import com.backend.core.enums.CartEnum;
 import com.backend.core.enums.ErrorTypeEnum;
@@ -17,6 +18,7 @@ import com.backend.core.repository.cart.CartRenderInfoRepository;
 import com.backend.core.repository.cart.CartRepository;
 import com.backend.core.repository.customQuery.CustomQueryRepository;
 import com.backend.core.repository.customer.CustomerRepository;
+import com.backend.core.repository.delivery.DeliveryTypeRepository;
 import com.backend.core.repository.product.ProductManagementRepository;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.process.ValueRenderUtils;
@@ -45,6 +47,9 @@ public class CartCrudServiceImpl implements CrudService {
 
     @Autowired
     CustomQueryRepository customQueryRepo;
+
+    @Autowired
+    DeliveryTypeRepository deliveryTypeRepo;
 
     @Autowired
     ProductManagementRepository productRepo;
@@ -262,12 +267,13 @@ public class CartCrudServiceImpl implements CrudService {
                 List<CartRenderInfoDTO> selectedCartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
 
                 // get shipping fee from request URL variable
-                double shippingFee = CartRenderInfoDTO.getShipFee((String) paramObj);
-                double subtotal = 0;
-
-                if (shippingFee == 0) {
+                DeliveryType deliveryType = deliveryTypeRepo.getDeliveryTypeByName((String) paramObj);
+                if (deliveryType == null) {
                     return new ResponseEntity<>(new ApiResponse("failed", "This delivery type does not exist"), HttpStatus.BAD_REQUEST);
                 }
+
+                double shippingFee = deliveryType.getPrice();
+                double subtotal = 0;
 
                 // calculate subtotal price
                 for (CartRenderInfoDTO cartRenderInfoDTO : selectedCartItemList) {
