@@ -10,6 +10,7 @@ import com.backend.core.entities.requestdto.delivery.DeliveryFilterDTO;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterDTO;
 import com.backend.core.entities.requestdto.notification.NotificationFilterDTO;
 import com.backend.core.entities.requestdto.product.ProductFilterDTO;
+import com.backend.core.entities.requestdto.refund.RefundFilterDTO;
 import com.backend.core.entities.tableentity.Account;
 import com.backend.core.enums.CartEnum;
 import com.backend.core.enums.ErrorTypeEnum;
@@ -465,6 +466,50 @@ public class ValueRenderUtils {
     }
 
 
+    // create a query for refund binding filter
+    public String refundFilterQuery(RefundFilterDTO refundFilter, PaginationDTO pagination) {
+        String result = "select r.* from refund r join invoice i on r.invoice_id = i.id where ";
+
+        Date refundDate = refundFilter.getRefundDate();
+        String paymentMethod = refundFilter.getPaymentMethod();
+        String reason = refundFilter.getReason();
+        int invoiceId = refundFilter.getInvoiceId();
+        int adminId = refundFilter.getAdminId();
+        int limit = pagination.getLimit();
+        int page = pagination.getPage();
+
+        if (paymentMethod != null && !paymentMethod.isBlank()) {
+            result += "payment_method = '" + paymentMethod + "' and ";
+        }
+
+        if (reason != null && !reason.isBlank()) {
+            result += "reason = '" + reason + "' and ";
+        }
+
+        if (refundDate != null) {
+            result += "date = '" + formatDateToString(refundDate, "yyyy-MM-dd") + "' and ";
+        }
+
+        if (invoiceId > 0) {
+            result += "invoice_id = " + invoiceId + " and ";
+        }
+
+        if (adminId > 0) {
+            result += "in_charge_admin_id = " + adminId + " and ";
+        }
+
+        if (page != 0 && limit != 0) {
+            result += " ORDER BY id desc LIMIT " + (limit * (page - 1)) + ", " + limit;
+        }
+
+        result = result.substring(0, result.lastIndexOf("and"));
+
+        System.out.println(result);
+
+        return result;
+    }
+
+
     // create a query for delivery binding filter
     public String deliveryFilterQuery(DeliveryFilterDTO deliveryFilter, PaginationDTO pagination, int shipperId) {
         String result = "select * from delivery_info_for_ui where ";
@@ -587,6 +632,9 @@ public class ValueRenderUtils {
                     }
                     case ACCOUNT -> {
                         filterQuery = accountFilterQuery((AccountFilterDTO) filter, pagination);
+                    }
+                    case REFUND -> {
+                        filterQuery = refundFilterQuery((RefundFilterDTO) filter, pagination);
                     }
                     default -> {
                         return filterQuery;
