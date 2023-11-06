@@ -41,7 +41,7 @@ public class SystemAuthenticationController extends AuthenticationController {
     }
 
     @Override
-    @PostMapping("/unauthen/systemAuthentication/updateProfile")
+    @PostMapping("/authen/systemAuthentication/updateProfile")
     public ResponseEntity<ApiResponse> updateProfile(@RequestBody CustomerRenderInfoDTO customerRenderInfoDTO, HttpServletRequest request) {
         return authenticationService.updateProfile(customerRenderInfoDTO, request);
     }

@@ -15,4 +15,5 @@ public enum FilterTypeEnum {
     SUCCESSFUL_ORDERS,
     FAILED_ORDERS,
     NOTIFICATION,
+    REFUND,
 }

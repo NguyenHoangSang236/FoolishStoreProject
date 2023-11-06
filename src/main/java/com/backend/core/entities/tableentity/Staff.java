@@ -62,6 +62,10 @@ public class Staff {
     @OneToMany(mappedBy = "staff")
     private List<Delivery> deliveries;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "staff")
+    private List<Refund> refunds;
+
 
     public Staff() {
     }

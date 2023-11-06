@@ -21,6 +21,7 @@ import com.backend.core.repository.invoice.InvoiceRepository;
 import com.backend.core.repository.invoice.InvoicesWithProductsRepository;
 import com.backend.core.repository.onlinePayment.OnlinePaymentAccountRepository;
 import com.backend.core.repository.product.ProductManagementRepository;
+import com.backend.core.repository.refund.RefundRepository;
 import com.backend.core.repository.staff.StaffRepository;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.process.CheckUtils;
@@ -44,6 +45,9 @@ import java.util.Map;
 public class InvoiceCrudServiceImpl implements CrudService {
     @Autowired
     InvoiceRepository invoiceRepo;
+
+    @Autowired
+    RefundRepository refundRepo;
 
     @Autowired
     InvoiceDetailsRenderInfoRepository invoiceDetailsRenderInfoRepo;
@@ -216,14 +220,24 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     invoice.setRefundPercentage(50);
                     invoice.setReason("Customer cancels order before shipper takes over, refund 50%");
                     message += "you will be refunded 50% of the total order value, we will send it within 24 hours!";
+
+                    Refund refund = new Refund();
+                    refund.setInvoice(invoice);
+                    refund.setInvoiceId(invoice.getId());
+                    refund.setRefundMoney(invoice.getTotalPrice() / 2);
+                    refund.setStatus(RefundEnum.NOT_REFUNDED_YET.name());
+
+                    refundRepo.save(refund);
                 }
                 // if COD payment -> error
                 else if (invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
-                    return new ResponseEntity<>(new ApiResponse("failed", "Can not cancel this order"), HttpStatus.BAD_REQUEST);
+                    invoice.setReason("Customer cancels COD order, no refund");
+                    message += "this is COD order, so you will not have any refund!";
                 } else {
                     invoice.setReason("Customer cancels order, no refund");
                     message += "the shipper has already been on the way, so you will not have any refund!";
                 }
+
                 invoice.setDeliveryStatus(DeliveryEnum.CUSTOMER_CANCEL.name());
                 invoiceRepo.save(invoice);
 
@@ -313,7 +327,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
         }
 
         return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
-
     }
 
 
@@ -441,9 +454,13 @@ public class InvoiceCrudServiceImpl implements CrudService {
         // calculate delivery fee and add it to total price
         DeliveryType deliveryType = deliveryTypeRepo.getDeliveryTypeByName(newInvoice.getDeliveryType());
         invoiceTotalPrice += deliveryType.getPrice();
-
         newInvoice.setDeliveryFee(deliveryType.getPrice());
         newInvoice.setTotalPrice(invoiceTotalPrice);
+
+        // set receiver account for online payment invoice
+        OnlinePaymentAccount receiverInfo = onlinePaymentAccountRepo.getOnlinePaymentAccountByType(newInvoice.getPaymentMethod());
+        newInvoice.setReceiverPaymentAccount(receiverInfo);
+
         invoiceRepo.save(newInvoice);
     }
 
