@@ -267,6 +267,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             if (invoice == null || EnumUtils.findEnumInsensitiveCase(AdminAcceptanceEnum.class, adminAction) == null)
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
 
+            // admin accepted or refuse order
             if ((adminAction.equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
                     adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTANCE_WAITING.name()) &&
@@ -284,7 +285,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 }
 
                 updateCartItemBuyingStatusOnAdminAcceptance(adminAction, invoice);
-            } else if (adminAction.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
+            }
+            // admin confirm online payment
+            else if (adminAction.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name()) &&
                     invoice.getDeliveryStatus().equals(DeliveryEnum.ACCEPTANCE_WAITING.name()) &&
                     !invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
@@ -292,7 +295,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 invoice.setDeliveryStatus(DeliveryEnum.PACKING.name());
                 // add sold quantity and subtract in-stock quantity of products from this invoice
                 productQuantityProcess(adminAction, invoice);
-            } else if (adminAction.equals(AdminAcceptanceEnum.FINISH_PACKING.name()) &&
+            }
+            // admin confirm packing is finished
+            else if (adminAction.equals(AdminAcceptanceEnum.FINISH_PACKING.name()) &&
                     invoice.getStaff().getId() == adminId &&
                     invoice.getDeliveryStatus().equals(DeliveryEnum.PACKING.name()) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTED.name())) {
