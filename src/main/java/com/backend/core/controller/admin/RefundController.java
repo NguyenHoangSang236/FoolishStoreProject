@@ -17,7 +17,7 @@ import java.io.IOException;
 @RestController
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping(value = "/authen/refund", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class RefundController extends CrudController {
     public RefundController(@Autowired @Qualifier("RefundCrudServiceImpl") CrudService refundCrudServiceImpl) {
         super(refundCrudServiceImpl);

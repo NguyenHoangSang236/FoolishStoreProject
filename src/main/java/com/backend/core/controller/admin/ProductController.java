@@ -18,7 +18,7 @@ import java.io.IOException;
 @RestController
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping(value = "/authen/product", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class ProductController extends CrudController {
     public ProductController(@Autowired @Qualifier("ProductCrudServiceImpl") CrudService productCrudServiceImpl) {
         super(productCrudServiceImpl);
