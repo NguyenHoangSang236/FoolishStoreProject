@@ -29,7 +29,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf().disable().cors().disable()
+                .csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/unauthen/**", "/error", "/wsNotificationEndPoint/**").permitAll()
                 .anyRequest().authenticated()
