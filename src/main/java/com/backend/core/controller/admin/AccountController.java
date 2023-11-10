@@ -20,7 +20,7 @@ import java.io.IOException;
 @RestController
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping(value = "/authen/account", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class AccountController extends CrudController {
     public AccountController(@Autowired @Qualifier("AccountCrudServiceImpl") CrudService accountCrudServiceImpl) {
         super(accountCrudServiceImpl);

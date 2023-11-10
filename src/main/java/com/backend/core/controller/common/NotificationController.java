@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/authen/notification", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class NotificationController extends CrudController {
     public NotificationController(@Autowired @Qualifier("NotificationCrudServiceImpl") CrudService notificationCrudServiceImpl) {
         super(notificationCrudServiceImpl);

@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/unauthen/deliveryType", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class DeliveryTypeController extends CrudController {
     public DeliveryTypeController(@Autowired @Qualifier("DeliveryTypeCrudServiceImpl") CrudService deliveryTypeCrudServiceImpl) {
         super(deliveryTypeCrudServiceImpl);

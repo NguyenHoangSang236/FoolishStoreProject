@@ -20,7 +20,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping(value = "/authen/delivery", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @PreAuthorize("hasAuthority('SHIPPER')")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class DeliveryController extends CrudController {
     public DeliveryController(@Autowired @Qualifier("DeliveryCrudServiceImpl") CrudService deliveryCrudService) {
         super(deliveryCrudService);

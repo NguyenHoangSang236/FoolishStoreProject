@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping(value = "/authen/googleDrive",
         consumes = {"*/*"},
         produces = {MediaType.APPLICATION_JSON_VALUE})
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class GoogleDriveController {
     @Autowired
     GoogleDriveService googleDriveService;
