@@ -45,7 +45,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // get username from jwt
                 userName = jwtUtils.getUserNameFromJwt(jwt);
 
-                // if this account has logged in yet -> proceed filter
+                response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+                response.setHeader("Access-Control-Allow-Credentials", "true");
+                response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+                response.setHeader("Access-Control-Max-Age", "3600");
+                response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
+
+                // if this account has already logged -> proceed filter
                 if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
 
