@@ -23,7 +23,7 @@ import java.io.IOException;
 @RestController
 //@PreAuthorize("hasAuthority('CUSTOMER')")
 @RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
+// @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class ShopController extends CrudController {
     @Autowired
     private CalculationService calculationService;

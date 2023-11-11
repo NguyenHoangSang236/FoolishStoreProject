@@ -9,13 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/authen/notification", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
+// @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class NotificationController extends CrudController {
     public NotificationController(@Autowired @Qualifier("NotificationCrudServiceImpl") CrudService notificationCrudServiceImpl) {
         super(notificationCrudServiceImpl);

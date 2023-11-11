@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
+// @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class CategoryController extends CrudController {
 
     public CategoryController(@Autowired @Qualifier("CategoryCrudServiceImpl") CrudService categoryCrudServiceImpl) {
