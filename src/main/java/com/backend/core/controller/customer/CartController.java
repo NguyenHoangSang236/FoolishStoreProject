@@ -23,7 +23,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping(value = "/authen/cart", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @PreAuthorize("hasAuthority('CUSTOMER')")
-@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
+// @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 public class CartController extends CrudController {
     public CartController(@Autowired @Qualifier("CartCrudServiceImpl") CrudService cartCrudServiceImpl) {
         super(cartCrudServiceImpl);

@@ -4,6 +4,7 @@ import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.util.process.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableList;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
@@ -17,6 +18,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -30,6 +34,8 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable()
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/unauthen/**", "/error", "/wsNotificationEndPoint/**").permitAll()
                 .anyRequest().authenticated()
@@ -69,22 +75,23 @@ public class WebSecurityConfig {
         return CookieSameSiteSupplier.ofNone();
     }
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration config = new CorsConfiguration();
-////        config.setAllowedOrigins(ImmutableList.of("*"));
-////        config.setAllowCredentials(true);
-////        config.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
-////        config.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
-//        config.addAllowedOrigin("*"); // Thay * bằng domain của bạn nếu bạn chỉ muốn cho phép từ một domain cụ thể.
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(ImmutableList.of("*"));
+        config.setAllowCredentials(true);
+        config.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
+//        config.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
+//        config.addAllowedOrigin("*");
 //        config.addAllowedMethod("*");
 //        config.addAllowedHeader("*");
-//        config.setAllowCredentials(true);
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", config);
-//        return source;
-//    }
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
 //    @Bean
 //    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
 //        return authConfig.getAuthenticationManager();
