@@ -72,7 +72,7 @@ public class GoogleDriveController {
                     googleDriveService.deleteFile(customer.getImage());
                 }
 
-                // set new avart image file id to customer
+                // set new avatar image file id to customer
                 customer.setImage(fileId);
                 customerRepo.save(customer);
 

@@ -110,11 +110,7 @@ public class Customer {
 
 
     public void setCustomerInfoFromRenderInfo(CustomerRenderInfoDTO customerRenderDTO) {
-        if (customerRenderDTO.getPassword() != null && !customerRenderDTO.getPassword().isEmpty() && !customerRenderDTO.getPassword().isBlank()) {
-            this.account.setPassword(customerRenderDTO.getPassword());
-        }
-
-        if (customerRenderDTO.getPassword() != null && !customerRenderDTO.getName().isEmpty() && !customerRenderDTO.getName().isBlank()) {
+        if (customerRenderDTO.getName() != null && !customerRenderDTO.getName().isEmpty() && !customerRenderDTO.getName().isBlank()) {
             this.setName(customerRenderDTO.getName());
         }
 
@@ -137,6 +133,5 @@ public class Customer {
         if (customerRenderDTO.getAddress() != null && !customerRenderDTO.getAddress().isEmpty() && !customerRenderDTO.getAddress().isBlank()) {
             this.setAddress(customerRenderDTO.getAddress());
         }
-
     }
 }
