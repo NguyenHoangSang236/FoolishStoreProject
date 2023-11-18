@@ -111,8 +111,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 newInvoice = new Invoice(
                         newInvoiceId,
                         new Date(),
-                        DeliveryEnum.ACCEPTANCE_WAITING.name(),
-                        deliveryType,
                         PaymentEnum.UNPAID.name(),
                         paymentMethod,
                         CurrencyEnum.USD.name(),
@@ -132,8 +130,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 newInvoice = new Invoice(
                         newInvoiceId,
                         new Date(),
-                        DeliveryEnum.PAYMENT_WAITING.name(),
-                        deliveryType,
                         PaymentEnum.UNPAID.name(),
                         paymentMethod,
                         CurrencyEnum.USD.name(),
@@ -212,13 +208,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 }
 
                 // if online payment and shipper has not accepted the order yet -> refund 50%
-                if (!invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) &&
-                        !invoice.getDeliveryStatus().equals(DeliveryEnum.FAILED.name()) &&
-                        (invoice.getDeliveryStatus().equals(DeliveryEnum.SHIPPER_WAITING.name()) ||
-                                invoice.getDeliveryStatus().equals(DeliveryEnum.PACKING.name()) ||
-                                invoice.getDeliveryStatus().equals(DeliveryEnum.PAYMENT_WAITING.name()))) {
+                if (!invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) || invoice.getDelivery() == null) {
                     invoice.setRefundPercentage(50);
-                    invoice.setReason("Customer cancels order before shipper takes over, refund 50%");
+                    invoice.setReason("Customer cancels order before admin create shipping order, refund 50%");
                     message += "you will be refunded 50% of the total order value, we will send it within 24 hours!";
 
                     Refund refund = new Refund();
@@ -238,7 +230,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     message += "the shipper has already been on the way, so you will not have any refund!";
                 }
 
-                invoice.setDeliveryStatus(DeliveryEnum.CUSTOMER_CANCEL.name());
                 invoiceRepo.save(invoice);
 
                 // retrieve product quantity from this invoice
@@ -271,15 +262,14 @@ public class InvoiceCrudServiceImpl implements CrudService {
             if ((adminAction.equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
                     adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTANCE_WAITING.name()) &&
-                    invoice.getDeliveryStatus().equals(DeliveryEnum.ACCEPTANCE_WAITING.name()) &&
                     invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
                 invoice.setAdminAcceptance(adminAction);
                 invoice.setStaff(adminInCharge);
 
                 if (adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) {
-                    invoice.setDeliveryStatus(DeliveryEnum.NOT_SHIPPED.name());
+                    invoice.setAdminAcceptance(AdminAcceptanceEnum.ACCEPTED.name());
                 } else {
-                    invoice.setDeliveryStatus(DeliveryEnum.PACKING.name());
+                    invoice.setAdminAcceptance(AdminAcceptanceEnum.REFUSED.name());
                     // add sold quantity and subtract in-stock quantity of products from this invoice
                     productQuantityProcess(adminAction, invoice);
                 }
@@ -289,19 +279,10 @@ public class InvoiceCrudServiceImpl implements CrudService {
             // admin confirm online payment
             else if (adminAction.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name()) &&
-                    invoice.getDeliveryStatus().equals(DeliveryEnum.ACCEPTANCE_WAITING.name()) &&
                     !invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
                 invoice.setAdminAcceptance(adminAction);
-                invoice.setDeliveryStatus(DeliveryEnum.PACKING.name());
                 // add sold quantity and subtract in-stock quantity of products from this invoice
                 productQuantityProcess(adminAction, invoice);
-            }
-            // admin confirm packing is finished
-            else if (adminAction.equals(AdminAcceptanceEnum.FINISH_PACKING.name()) &&
-                    invoice.getStaff().getId() == adminId &&
-                    invoice.getDeliveryStatus().equals(DeliveryEnum.PACKING.name()) &&
-                    invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTED.name())) {
-                invoice.setDeliveryStatus(DeliveryEnum.SHIPPER_WAITING.name());
             } else
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
@@ -404,7 +385,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
         OnlinePaymentInfoDTO receiver = new OnlinePaymentInfoDTO();
 
         if (currentInvoice.getPaymentStatus().equals(PaymentEnum.UNPAID.name()) &&
-                currentInvoice.getDeliveryStatus().equals(DeliveryEnum.PAYMENT_WAITING.name()) &&
                 currentInvoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name())) {
             receiver = new OnlinePaymentInfoDTO(
                     "Pay for invoice " + invoice.getId(),
@@ -457,10 +437,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
         }
 
         // calculate delivery fee and add it to total price
-        DeliveryType deliveryType = deliveryTypeRepo.getDeliveryTypeByName(newInvoice.getDeliveryType());
-        invoiceTotalPrice += deliveryType.getPrice();
-        newInvoice.setDeliveryFee(deliveryType.getPrice());
-        newInvoice.setTotalPrice(invoiceTotalPrice);
+//        DeliveryType deliveryType = deliveryTypeRepo.getDeliveryTypeByName(newInvoice.getDeliveryType());
+//        invoiceTotalPrice += deliveryType.getPrice();
+//        newInvoice.setTotalPrice(invoiceTotalPrice);
 
         // set receiver account for online payment invoice
         OnlinePaymentAccount receiverInfo = onlinePaymentAccountRepo.getOnlinePaymentAccountByType(newInvoice.getPaymentMethod());

@@ -1,11 +1,15 @@
 package com.backend.core.entities.requestdto.invoice;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderProcessDTO {
     @JsonProperty("id")
     int id;
@@ -15,14 +19,4 @@ public class OrderProcessDTO {
 
     @JsonProperty("reason")
     String reason;
-
-
-    public OrderProcessDTO() {
-    }
-
-    public OrderProcessDTO(int id, String adminAction, String reason) {
-        this.id = id;
-        this.adminAction = adminAction;
-        this.reason = reason;
-    }
 }

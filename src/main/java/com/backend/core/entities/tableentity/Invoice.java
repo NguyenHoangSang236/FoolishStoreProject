@@ -31,15 +31,6 @@ public class Invoice {
     @Column(name = "pay_date")
     Date payDate;
 
-    @Column(name = "Delivery_Status")
-    String deliveryStatus;
-
-    @Column(name = "Delivery_type")
-    String deliveryType;
-
-    @Column(name = "Delivery_fee")
-    double deliveryFee;
-
     @Column(name = "Payment_Status")
     String paymentStatus;
 
@@ -99,13 +90,11 @@ public class Invoice {
     private OnlinePaymentAccount receiverPaymentAccount;
 
 
-    public Invoice(int id, Date invoiceDate, String deliveryStatus, String deliveryType, String paymentStatus, String paymentMethod, String currency,
+    public Invoice(int id, Date invoiceDate, String paymentStatus, String paymentMethod, String currency,
                    String note, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount,
                    String adminAcceptance, Delivery delivery, List<InvoicesWithProducts> invoicesWithProducts, Customer customer) {
         this.id = id;
         this.invoiceDate = invoiceDate;
-        this.deliveryType = deliveryType;
-        this.deliveryStatus = deliveryStatus;
         this.paymentStatus = paymentStatus;
         this.paymentMethod = paymentMethod;
         this.currency = currency;

@@ -1,7 +1,9 @@
 package com.backend.core.entities.tableentity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -14,57 +16,23 @@ import java.util.Date;
 @Table(name = "delivery")
 @DynamicInsert
 @DynamicUpdate
+@NoArgsConstructor
+@AllArgsConstructor
 public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
     int id;
 
-    @Column(name = "delivery_date")
-    Date deliveryDate;
+    @Column(name = "shipping_order_code")
+    String shippingOrderCode;
 
-    @Column(name = "expected_delivery_date")
-    Date expectedDeliveryDate;
-
-    @Column(name = "current_status")
-    String currentStatus;
-
-    @Column(name = "additional_shipper_comment")
-    String additionalShipperComment;
-
-    @Lob
-    @Column(name = "evidence_image")
-    byte[] evidenceImage;
-
-    @ManyToOne
-    @JoinColumn(name = "shipper_id")
-    Staff staff;
+    @Column(name = "ship_date")
+    Date shipDate;
 
     @OneToOne
     @JoinColumn(name = "invoice_id", referencedColumnName = "ID")
     private Invoice invoice;
-
-
-    public Delivery() {
-    }
-
-    public Delivery(Date deliveryDate, String currentStatus, String additionalShipperComment, byte[] evidenceImage,
-                    Staff staff, Invoice invoice) {
-        super();
-        this.deliveryDate = deliveryDate;
-        this.currentStatus = currentStatus;
-        this.additionalShipperComment = additionalShipperComment;
-        this.evidenceImage = evidenceImage;
-        this.staff = staff;
-        this.invoice = invoice;
-    }
-
-    public Delivery(String currentStatus, Staff staff, Invoice invoice) {
-        super();
-        this.currentStatus = currentStatus;
-        this.staff = staff;
-        this.invoice = invoice;
-    }
 
 
 //    public String convertByteImamgeToBase64String() {
