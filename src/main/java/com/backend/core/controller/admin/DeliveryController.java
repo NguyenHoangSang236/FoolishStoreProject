@@ -67,6 +67,4 @@ public class DeliveryController extends CrudController {
     public ResponseEntity getListOfItemsFromFilter(String json, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
-
-
 }
