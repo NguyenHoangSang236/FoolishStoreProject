@@ -146,29 +146,30 @@ public class ShopCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
-        List<ProductRenderInfoDTO> productList = new ArrayList<ProductRenderInfoDTO>();
-        String status = "failed";
-
         try {
             switch (renderType) {
-                case "NEW_ARRIVAL_PRODUCTS" -> productList = productRenderInfoRepo.get8NewArrivalProducts();
-                case "HOT_DISCOUNT_PRODUCTS" -> productList = productRenderInfoRepo.get8HotDiscountProducts();
-                case "TOP_8_BEST_SELL_PRODUCTS" -> productList = productRenderInfoRepo.getTop8BestSellProducts();
-                default -> {
-                    return new ResponseEntity<>(new ApiResponse(status, ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+                case "NEW_ARRIVAL_PRODUCTS": {
+                    return new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.get8NewArrivalProducts()), HttpStatus.OK);
+                }
+                case "HOT_DISCOUNT_PRODUCTS": {
+                    return new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.get8HotDiscountProducts()), HttpStatus.OK);
+                }
+                case "TOP_8_BEST_SELL_PRODUCTS": {
+                    return new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.getTop8BestSellProducts()), HttpStatus.OK);
+                }
+                case "TOTAL_PRODUCTS_QUANTITY": {
+                    return new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.getTotalProductsQuantity()), HttpStatus.OK);
+                }
+                default: {
+                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
                 }
             }
 
-            if (productList != null) {
-                status = "success";
-            }
-        } catch (Exception e) {
-            status = "failed";
-            e.printStackTrace();
-            return new ResponseEntity<>(new ApiResponse(status, ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
 
-        return new ResponseEntity<>(new ApiResponse(status, productList), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
