@@ -325,13 +325,13 @@ public class ValueRenderUtils {
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
+        if (brand != null && !brand.isBlank()) {
+            result += " piu.brand = '" + brand + "' and ";
+        }
+
         if (catalogs == null) {
             catalogsLength = 0;
         } else catalogsLength = catalogs.length;
-
-        if (brand != null && !brand.isBlank()) {
-            result += "and piu.brand = '" + brand + "' and ";
-        }
 
         for (int i = 0; i < catalogsLength; i++) {
             if (catalogsLength >= 2) {
