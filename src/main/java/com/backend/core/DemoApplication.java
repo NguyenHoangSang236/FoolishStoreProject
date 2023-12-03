@@ -17,7 +17,8 @@ import java.util.Collections;
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class DemoApplication {
     public static void main(String[] args) throws IOException {
-        SourceCodeHandlerUtil.deleteDirectory("/home/mr/JAVA/FoolishStoreProject/tokens");
+//        SourceCodeHandlerUtil.deleteDirectory("/Users/caodinhsyvy/DATA/FoolishStoreProject/tokens");
+        SourceCodeHandlerUtil.deleteDirectory("tokens");
 
         SpringApplication app = new SpringApplication(DemoApplication.class);
         app.setDefaultProperties(Collections.singletonMap("server.port", "8080"));
