@@ -92,15 +92,10 @@ public class InvoiceCrudServiceImpl implements CrudService {
         Gson gson = new Gson();
         Map<String, String> request = gson.fromJson((String) paramObj, Map.class);
         String paymentMethod = request.get("paymentMethod");
-        String deliveryType = request.get("deliveryType");
         String responseSuccessMessage = "New order with ID --- has been created successfully";
         Invoice newInvoice;
 
         try {
-            if (!deliveryType.equals(DeliveryEnum.EXPRESS_DELIVERY.name()) && !deliveryType.equals(DeliveryEnum.NORMAL_DELIVERY.name())) {
-                return new ResponseEntity<>(new ApiResponse("failed", "This delivery type does not existed"), HttpStatus.BAD_REQUEST);
-            }
-
             int newInvoiceId = invoiceRepo.getLastestInvoiceId() + 1;
 
             if (paymentMethod.equals(PaymentEnum.COD.name())) {
@@ -108,6 +103,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                         newInvoiceId,
                         new Date(),
                         PaymentEnum.UNPAID.name(),
+                        InvoiceEnum.ACCEPTANCE_WAITING.name(),
                         paymentMethod,
                         CurrencyEnum.USD.name(),
                         "",
@@ -127,6 +123,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                         newInvoiceId,
                         new Date(),
                         PaymentEnum.UNPAID.name(),
+                        InvoiceEnum.PAYMENT_WAITING.name(),
                         paymentMethod,
                         CurrencyEnum.USD.name(),
                         "",
@@ -198,6 +195,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
                 }
 
+                // check the order status whether it can be canceled or not
+                if (invoice.isUpdatable() == false) {
+                    return new ResponseEntity<>(new ApiResponse("failed", "This order can not be canceled any more"), HttpStatus.BAD_REQUEST);
+                }
+
                 // check if this customer is the owner or not
                 if (customerId != invoice.getCustomer().getId()) {
                     return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
@@ -206,6 +208,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 // if online payment and shipper has not accepted the order yet -> refund 50%
                 if (!invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) || invoice.getDelivery() == null) {
                     invoice.setRefundPercentage(50);
+                    invoice.setOrderStatus(InvoiceEnum.CUSTOMER_CANCEL.name());
                     invoice.setReason("Customer cancels order before admin create shipping order, refund 50%");
                     message += "you will be refunded 50% of the total order value, we will send it within 24 hours!";
 
@@ -217,11 +220,15 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
                     refundRepo.save(refund);
                 }
-                // if COD payment -> error
+                // if COD payment -> no refund
                 else if (invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
+                    invoice.setOrderStatus(InvoiceEnum.CUSTOMER_CANCEL.name());
                     invoice.setReason("Customer cancels COD order, no refund");
                     message += "this is COD order, so you will not have any refund!";
-                } else {
+                }
+                // if online payment and shipper has already accepted the order -> no refund
+                else {
+                    invoice.setOrderStatus(InvoiceEnum.CUSTOMER_CANCEL.name());
                     invoice.setReason("Customer cancels order, no refund");
                     message += "the shipper has already been on the way, so you will not have any refund!";
                 }
@@ -229,7 +236,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 invoiceRepo.save(invoice);
 
                 // retrieve product quantity from this invoice
-                productQuantityProcess(DeliveryEnum.CUSTOMER_CANCEL.name(), invoice);
+                productQuantityProcess(InvoiceEnum.CUSTOMER_CANCEL.name(), invoice);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -251,10 +258,17 @@ public class InvoiceCrudServiceImpl implements CrudService {
             int invoiceId = orderProcess.getId();
             Invoice invoice = invoiceRepo.getInvoiceById(invoiceId);
 
-            if (invoice == null || EnumUtils.findEnumInsensitiveCase(AdminAcceptanceEnum.class, adminAction) == null)
+            // check invoice is existed or not, and admin action from request is existed or not
+            if (invoice == null || EnumUtils.findEnumInsensitiveCase(AdminAcceptanceEnum.class, adminAction) == null) {
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
+            }
 
-            // admin accepted or refuse order
+            // check if invoice can be updated or not
+            if (invoice.isUpdatable() == false) {
+                return new ResponseEntity<>(new ApiResponse("failed", "This invoice can not be updated"), HttpStatus.BAD_REQUEST);
+            }
+
+            // admin accept or refuse order
             if ((adminAction.equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
                     adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTANCE_WAITING.name()) &&
@@ -460,7 +474,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 // add sold quantity
                 pm.addQuantity(ProductManagementEnum.SOLD_QUANTITY.name(), quantity);
             } else if (reason.equals(AdminAcceptanceEnum.REFUSED.name()) ||
-                    reason.equals(DeliveryEnum.CUSTOMER_CANCEL.name())) {
+                    reason.equals(InvoiceEnum.CUSTOMER_CANCEL.name())) {
                 // subtract available quantity
                 pm.subtractQuantity(ProductManagementEnum.SOLD_QUANTITY.name(), quantity);
                 // add sold quantity
