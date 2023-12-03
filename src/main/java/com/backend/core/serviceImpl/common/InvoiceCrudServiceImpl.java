@@ -15,7 +15,6 @@ import com.backend.core.repository.cart.CartRenderInfoRepository;
 import com.backend.core.repository.cart.CartRepository;
 import com.backend.core.repository.customQuery.CustomQueryRepository;
 import com.backend.core.repository.customer.CustomerRepository;
-import com.backend.core.repository.delivery.DeliveryTypeRepository;
 import com.backend.core.repository.invoice.InvoiceDetailsRenderInfoRepository;
 import com.backend.core.repository.invoice.InvoiceRepository;
 import com.backend.core.repository.invoice.InvoicesWithProductsRepository;
@@ -57,9 +56,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Autowired
     ProductManagementRepository productManagementRepo;
-
-    @Autowired
-    DeliveryTypeRepository deliveryTypeRepo;
 
     @Autowired
     CustomerRepository customerRepo;
