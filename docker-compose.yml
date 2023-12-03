@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  spring-boot-app:
+    image: openjdk:19-jdk-slim
+    container_name: spring-boot-container
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: [ "java", "-jar", "target/FoolishStoreProject-0.0.1-SNAPSHOT.jar" ]
+
+  mysql:
+    image: mysql:8.0.33
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: Hoangsang236!
+      MYSQL_DATABASE: fashionstorewebsite
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data2:/var/lib/mysql
+
+volumes:
+  mysql-data2:
