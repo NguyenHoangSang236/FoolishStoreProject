@@ -295,6 +295,52 @@ INSERT INTO `delivery` VALUES (6,1,'1',NULL);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `delivery_info_for_ui`
+--
+
+DROP TABLE IF EXISTS `delivery_info_for_ui`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `delivery_info_for_ui` (
+  `invoice_id` int NOT NULL,
+  `additional_shipper_comment` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `current_delivery_status` varchar(255) DEFAULT NULL,
+  `customer_avatar` varchar(255) DEFAULT NULL,
+  `customer_id` varchar(255) DEFAULT NULL,
+  `customer_name` varchar(255) DEFAULT NULL,
+  `customer_phone_number` varchar(255) DEFAULT NULL,
+  `delivery_date` datetime DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `evidence_image` varchar(255) DEFAULT NULL,
+  `expected_delivery_date` datetime DEFAULT NULL,
+  `id` varchar(255) DEFAULT NULL,
+  `invoice_date` datetime DEFAULT NULL,
+  `invoice_delivery_status` varchar(255) DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL,
+  `payment_method` varchar(255) DEFAULT NULL,
+  `payment_status` varchar(255) DEFAULT NULL,
+  `shipper_avatar` varchar(255) DEFAULT NULL,
+  `shipper_id` int DEFAULT NULL,
+  `shipper_name` varchar(255) DEFAULT NULL,
+  `shipper_phone_number` varchar(255) DEFAULT NULL,
+  `total_price` double DEFAULT NULL,
+  PRIMARY KEY (`invoice_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `delivery_info_for_ui`
+--
+
+LOCK TABLES `delivery_info_for_ui` WRITE;
+/*!40000 ALTER TABLE `delivery_info_for_ui` DISABLE KEYS */;
+/*!40000 ALTER TABLE `delivery_info_for_ui` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `delivery_type`
 --
 
@@ -318,6 +364,32 @@ LOCK TABLES `delivery_type` WRITE;
 /*!40000 ALTER TABLE `delivery_type` DISABLE KEYS */;
 INSERT INTO `delivery_type` VALUES (1,'NORMAL_DELIVERY',3,'Get package after 2-8 days depends on distance'),(2,'EXPRESS_DELIVERY',6,'Get package after no more than 4 days');
 /*!40000 ALTER TABLE `delivery_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `device_fcm_token`
+--
+
+DROP TABLE IF EXISTS `device_fcm_token`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `device_fcm_token` (
+  `id` bigint NOT NULL,
+  `account_id` bigint NOT NULL,
+  `phone_fcm_token` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_id` (`account_id`),
+  CONSTRAINT `device_fcm_token_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `login_accounts` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `device_fcm_token`
+--
+
+LOCK TABLES `device_fcm_token` WRITE;
+/*!40000 ALTER TABLE `device_fcm_token` DISABLE KEYS */;
+/*!40000 ALTER TABLE `device_fcm_token` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -496,7 +568,7 @@ CREATE TABLE `login_accounts` (
 
 LOCK TABLES `login_accounts` WRITE;
 /*!40000 ALTER TABLE `login_accounts` DISABLE KEYS */;
-INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcwMDMxOTY3NSwiZXhwIjoxNzAwNDA2MDc1fQ.MwHKX_jqGZ-AyEAE3DApiBxGaPjgmvLGSBqJA_D0o3s'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzAwOTk1Nzk3LCJleHAiOjE3MDEwODIxOTd9.jJqMASA25NyB9EsG0whgQ-idgfa8hOHHuMztCyubMW8'),(3,'nhu0707','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaHUwNzA3IiwiaWF0IjoxNjk2MTUyMzk3LCJleHAiOjE2OTYyMzg3OTd9.7POixRXoyzuY1eBDGrcHJhl-skAWN8c-mLcwTjPlVFg'),(7,'sang236','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyODk3MTA1LCJleHAiOjE2OTI5ODM1MDV9.7so_xwVTJfYtuAXNgvhFYSQXZSDEQWxhHWJqUL9ds7s'),(9,'tester','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXIiLCJpYXQiOjE2OTI4MDI4MzMsImV4cCI6MTY5Mjg4OTIzM30.LLZJ_PKOBvcYv8SWoaOGMLW7USOvSYjIH7u-GIgKaSU'),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL),(64,'user3','$2a$10$es2Ds7Q3fdP8PEyYh24d5eSbDBSTeg787rtM6jgAtAu71ZGqGVpD6','CUSTOMER','ALLOWED',NULL);
+INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcwMTU5OTIzNywiZXhwIjoxNzAxNjg1NjM3fQ.d_N8lPN8jrJ_nVca-hiS9W6e9N0egjGryHGcUTd8Rro'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzAwOTk1Nzk3LCJleHAiOjE3MDEwODIxOTd9.jJqMASA25NyB9EsG0whgQ-idgfa8hOHHuMztCyubMW8'),(3,'nhu0707','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaHUwNzA3IiwiaWF0IjoxNjk2MTUyMzk3LCJleHAiOjE2OTYyMzg3OTd9.7POixRXoyzuY1eBDGrcHJhl-skAWN8c-mLcwTjPlVFg'),(7,'sang236','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyODk3MTA1LCJleHAiOjE2OTI5ODM1MDV9.7so_xwVTJfYtuAXNgvhFYSQXZSDEQWxhHWJqUL9ds7s'),(9,'tester','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXIiLCJpYXQiOjE2OTI4MDI4MzMsImV4cCI6MTY5Mjg4OTIzM30.LLZJ_PKOBvcYv8SWoaOGMLW7USOvSYjIH7u-GIgKaSU'),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL),(64,'user3','$2a$10$es2Ds7Q3fdP8PEyYh24d5eSbDBSTeg787rtM6jgAtAu71ZGqGVpD6','CUSTOMER','ALLOWED',NULL);
 /*!40000 ALTER TABLE `login_accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1018,4 +1090,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-03  9:24:44
+-- Dump completed on 2023-12-03 17:40:47

@@ -201,13 +201,10 @@ public class ValueRenderUtils {
     }
 
 
-    //get customer id from HttpSession
+    //get customer id from request
     public int getCustomerOrStaffIdFromRequest(HttpServletRequest request) {
         try {
-            String jwt = jwtUtils.getJwtFromRequest(request);
-            String userName = jwtUtils.getUserNameFromJwt(jwt);
-
-            Account currentUser = accountRepo.getAccountByUserName(userName);
+            Account currentUser = getCurrentAccountFromRequest(request);
 
             if (currentUser != null) {
                 if (currentUser.getCustomer() != null) {
@@ -219,6 +216,22 @@ public class ValueRenderUtils {
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+
+
+    // get current account from request
+    public Account getCurrentAccountFromRequest(HttpServletRequest request) {
+        try {
+            String jwt = jwtUtils.getJwtFromRequest(request);
+            String userName = jwtUtils.getUserNameFromJwt(jwt);
+
+            Account currentUser = accountRepo.getAccountByUserName(userName);
+
+            return currentUser;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

@@ -52,6 +52,9 @@ public class Account implements UserDetails {
     @Valid
     Staff staff;
 
+    @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
+    private List<DeviceFcmToken> deviceFcmTokens;
+
 //    @JsonIgnore
 //    @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
 //    List<Notification> notifications;

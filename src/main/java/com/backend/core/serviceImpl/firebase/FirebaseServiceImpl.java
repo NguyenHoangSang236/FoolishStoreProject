@@ -1,11 +1,13 @@
-package com.backend.core.serviceImpl.common;
+package com.backend.core.serviceImpl.firebase;
 
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
-import com.backend.core.entities.tableentity.DeliveryType;
+import com.backend.core.entities.tableentity.Account;
+import com.backend.core.entities.tableentity.DeviceFcmToken;
 import com.backend.core.enums.ErrorTypeEnum;
-import com.backend.core.repository.delivery.DeliveryTypeRepository;
+import com.backend.core.repository.firebase.DeviceFcmTokenRepository;
 import com.backend.core.service.CrudService;
+import com.backend.core.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,15 +18,36 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Qualifier("DeliveryTypeCrudServiceImpl")
-public class DeliveryTypeServiceImpl implements CrudService {
+@Qualifier("FirebaseServiceImpl")
+public class FirebaseServiceImpl implements CrudService {
     @Autowired
-    DeliveryTypeRepository deliveryTypeRepo;
+    DeviceFcmTokenRepository deviceFcmTokenRepo;
 
+    @Autowired
+    ValueRenderUtils valueRenderUtils;
 
     @Override
     public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
+        try {
+            Account currentAccount = valueRenderUtils.getCurrentAccountFromRequest(httpRequest);
+            String token = paramObj.toString();
+
+            if (currentAccount == null) {
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+            } else {
+                DeviceFcmToken newToken = new DeviceFcmToken();
+
+                newToken.setAccount(currentAccount);
+                newToken.setPhoneFcmToken(token);
+
+                deviceFcmTokenRepo.save(newToken);
+
+                return new ResponseEntity<>(new ApiResponse("success", "Add new phone fcm token successfully"), HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
@@ -69,14 +92,7 @@ public class DeliveryTypeServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
-        try {
-            List<DeliveryType> deliTypeList = deliveryTypeRepo.getAllDeliveryTypes();
-
-            return new ResponseEntity<>(new ApiResponse("success", deliTypeList), HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return null;
     }
 
     @Override
