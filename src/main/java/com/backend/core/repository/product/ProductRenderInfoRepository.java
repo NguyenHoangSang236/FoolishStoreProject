@@ -28,4 +28,7 @@ public interface ProductRenderInfoRepository extends JpaRepository<ProductRender
 
     @Query(value = "select * from product_info_for_ui where product_id = :productId", nativeQuery = true)
     List<ProductRenderInfoDTO> getProductDetails(@Param("productId") int productId);
+
+    @Query(value = "select count(*) from product_info_for_ui", nativeQuery = true)
+    int getTotalProductsQuantity();
 }

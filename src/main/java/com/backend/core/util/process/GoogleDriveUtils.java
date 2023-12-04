@@ -72,9 +72,13 @@ public class GoogleDriveUtils {
 
     // Delete file by id
     public void deleteFileOrFolder(String fileId) throws Exception {
-        googleDriveConfig = GoogleDriveConfig.getGgDriveConfigInstance();
-
-        googleDriveConfig.getInstance().files().delete(fileId).execute();
+        try {
+            googleDriveConfig = GoogleDriveConfig.getGgDriveConfigInstance();
+            googleDriveConfig.getInstance().files().delete(fileId).execute();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
     }
 
 

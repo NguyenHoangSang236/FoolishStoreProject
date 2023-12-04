@@ -1,5 +1,6 @@
 package com.backend.core.entities.tableentity;
 
+import com.backend.core.enums.InvoiceEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,6 +34,9 @@ public class Invoice {
 
     @Column(name = "Payment_Status")
     String paymentStatus;
+
+    @Column(name = "order_status")
+    String orderStatus;
 
     @Column(name = "payment_method")
     String paymentMethod;
@@ -90,12 +94,13 @@ public class Invoice {
     private OnlinePaymentAccount receiverPaymentAccount;
 
 
-    public Invoice(int id, Date invoiceDate, String paymentStatus, String paymentMethod, String currency,
+    public Invoice(int id, Date invoiceDate, String paymentStatus, String orderStatus, String paymentMethod, String currency,
                    String note, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount,
                    String adminAcceptance, Delivery delivery, List<InvoicesWithProducts> invoicesWithProducts, Customer customer) {
         this.id = id;
         this.invoiceDate = invoiceDate;
         this.paymentStatus = paymentStatus;
+        this.orderStatus = orderStatus;
         this.paymentMethod = paymentMethod;
         this.currency = currency;
         this.note = note;
@@ -108,5 +113,15 @@ public class Invoice {
         this.delivery = delivery;
         this.invoicesWithProducts = invoicesWithProducts;
         this.customer = customer;
+    }
+
+    // check invoice can be updated or not
+    public boolean isUpdatable() {
+        if (!this.orderStatus.equals(InvoiceEnum.FAILED.name())
+                && !this.orderStatus.equals(InvoiceEnum.SUCCESS.name())
+                && !this.orderStatus.equals(InvoiceEnum.CUSTOMER_CANCEL.name())
+                && !this.orderStatus.equals(InvoiceEnum.SHIPPER_CANCEL.name())) {
+            return false;
+        } else return true;
     }
 }
