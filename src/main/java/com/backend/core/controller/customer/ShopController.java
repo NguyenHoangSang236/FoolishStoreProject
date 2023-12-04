@@ -105,4 +105,9 @@ public class ShopController extends CrudController {
     public ResponseEntity<ApiResponse> getHotDiscountProducts(String json, HttpServletRequest httpRequest) throws IOException {
         return crudService.readingResponse(RenderTypeEnum.HOT_DISCOUNT_PRODUCTS.name(), httpRequest);
     }
+
+    @GetMapping("/unauthen/shop/totalProductsQuantity")
+    public ResponseEntity<ApiResponse> getTotalProductsQuantity(String json, HttpServletRequest httpRequest) throws IOException {
+        return crudService.readingResponse(RenderTypeEnum.TOTAL_PRODUCTS_QUANTITY.name(), httpRequest);
+    }
 }

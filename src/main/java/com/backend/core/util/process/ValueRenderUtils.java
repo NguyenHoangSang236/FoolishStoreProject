@@ -201,13 +201,10 @@ public class ValueRenderUtils {
     }
 
 
-    //get customer id from HttpSession
+    //get customer id from request
     public int getCustomerOrStaffIdFromRequest(HttpServletRequest request) {
         try {
-            String jwt = jwtUtils.getJwtFromRequest(request);
-            String userName = jwtUtils.getUserNameFromJwt(jwt);
-
-            Account currentUser = accountRepo.getAccountByUserName(userName);
+            Account currentUser = getCurrentAccountFromRequest(request);
 
             if (currentUser != null) {
                 if (currentUser.getCustomer() != null) {
@@ -219,6 +216,22 @@ public class ValueRenderUtils {
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+
+
+    // get current account from request
+    public Account getCurrentAccountFromRequest(HttpServletRequest request) {
+        try {
+            String jwt = jwtUtils.getJwtFromRequest(request);
+            String userName = jwtUtils.getUserNameFromJwt(jwt);
+
+            Account currentUser = accountRepo.getAccountByUserName(userName);
+
+            return currentUser;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -325,13 +338,13 @@ public class ValueRenderUtils {
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
+        if (brand != null && !brand.isBlank()) {
+            result += " piu.brand = '" + brand + "' and ";
+        }
+
         if (catalogs == null) {
             catalogsLength = 0;
         } else catalogsLength = catalogs.length;
-
-        if (brand != null && !brand.isBlank()) {
-            result += "and piu.brand = '" + brand + "' and ";
-        }
 
         for (int i = 0; i < catalogsLength; i++) {
             if (catalogsLength >= 2) {
