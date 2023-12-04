@@ -27,12 +27,6 @@ public class InvoiceRenderInfoDTO {
     @Column(name = "Delivery_Status")
     String deliveryStatus;
 
-    @Column(name = "Delivery_type")
-    String deliveryType;
-
-    @Column(name = "Delivery_fee")
-    double deliveryFee;
-
     @Column(name = "Payment_Status")
     String paymentStatus;
 
