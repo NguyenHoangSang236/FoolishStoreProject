@@ -17,7 +17,6 @@ import java.util.Collections;
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class DemoApplication {
     public static void main(String[] args) throws IOException {
-//        SourceCodeHandlerUtil.deleteDirectory("/Users/caodinhsyvy/DATA/FoolishStoreProject/tokens");
         SourceCodeHandlerUtil.deleteDirectory("tokens");
 
         SpringApplication app = new SpringApplication(DemoApplication.class);
