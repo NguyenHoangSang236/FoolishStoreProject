@@ -6,16 +6,16 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
-import java.util.List;
 
 @Component
+@NoArgsConstructor
 public class GoogleDriveConfig {
     private static final String APPLICATION_NAME = "FoolishFashionStore"; // Application name
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
@@ -24,18 +24,13 @@ public class GoogleDriveConfig {
      * Global instance of the scopes required by this quickstart.
      * If modifying these scopes, delete your previously saved tokens/ folder.
      */
-    private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
-    private static final String CREDENTIALS_FILE_PATH = "/home/mr/JAVA/FoolishStoreProject/src/main/resources/client_secret.json"; // path file Google Drive Service
+    private static final String CREDENTIALS_FILE_PATH = "/home/mr/JAVA/FoolishStoreProject/src/main/resources/client_secret.json";
     private static final String SERVICE_ACCOUNT_PRIVATE_JSON_KEY = "/home/mr/JAVA/FoolishStoreProject/src/main/resources/service_account_private_key.json";
 
     private static GoogleDriveConfig ggDriveConfigInstance;
 
     //    public Credential googleCredential;
     public GoogleCredential googleCredential;
-
-
-    public GoogleDriveConfig() {
-    }
 
 
     public static GoogleDriveConfig getGgDriveConfigInstance() {
