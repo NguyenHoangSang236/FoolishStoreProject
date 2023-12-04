@@ -25,9 +25,7 @@ public class GoogleDriveConfig {
      * If modifying these scopes, delete your previously saved tokens/ folder.
      */
     private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
-//    private static final String CREDENTIALS_FILE_PATH = "/Users/caodinhsyvy/DATA/FoolishStoreProject/src/main/resources/client_secret.json"; // path file Google Drive Service
     private static final String CREDENTIALS_FILE_PATH = "src/main/resources/client_secret.json"; // path file Google Drive Service
-//    private static final String SERVICE_ACCOUNT_PRIVATE_JSON_KEY = "/Users/caodinhsyvy/DATA/FoolishStoreProject/src/main/resources/service_account_private_key.json";
     private static final String SERVICE_ACCOUNT_PRIVATE_JSON_KEY = "src/main/resources/service_account_private_key.json";
 
     private static GoogleDriveConfig ggDriveConfigInstance;
