@@ -17,6 +17,7 @@ import java.util.Collections;
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class DemoApplication {
     public static void main(String[] args) throws IOException {
+        //
         SourceCodeHandlerUtil.deleteDirectory("tokens");
 
         SpringApplication app = new SpringApplication(DemoApplication.class);
