@@ -96,6 +96,6 @@ public class CartRenderInfoDTO {
     }
 
     public double getTotalPrice() {
-        return this.sellingPrice - (this.sellingPrice * (this.discount / 100));
+        return (this.sellingPrice - (this.sellingPrice * (this.discount / 100))) * this.quantity;
     }
 }
