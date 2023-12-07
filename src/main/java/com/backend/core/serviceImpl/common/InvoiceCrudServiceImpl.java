@@ -258,9 +258,16 @@ public class InvoiceCrudServiceImpl implements CrudService {
             int invoiceId = orderProcess.getId();
             Invoice invoice = invoiceRepo.getInvoiceById(invoiceId);
 
+            String outOfStockProductName = invoice.getOutOfStockProduct();
+
             // check invoice is existed or not, and admin action from request is existed or not
             if (invoice == null || EnumUtils.findEnumInsensitiveCase(AdminAcceptanceEnum.class, adminAction) == null) {
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
+            }
+
+            // check if invoice product is out of stock or not
+            if (outOfStockProductName != null) {
+                return new ResponseEntity<>(new ApiResponse("failed", outOfStockProductName + " has been out of stock!"), HttpStatus.BAD_REQUEST);
             }
 
             // check if invoice can be updated or not
@@ -475,9 +482,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 pm.addQuantity(ProductManagementEnum.SOLD_QUANTITY.name(), quantity);
             } else if (reason.equals(AdminAcceptanceEnum.REFUSED.name()) ||
                     reason.equals(InvoiceEnum.CUSTOMER_CANCEL.name())) {
-                // subtract available quantity
+                // subtract sold quantity
                 pm.subtractQuantity(ProductManagementEnum.SOLD_QUANTITY.name(), quantity);
-                // add sold quantity
+                // add available quantity
                 pm.addQuantity(ProductManagementEnum.AVAILABLE_QUANTITY.name(), quantity);
             }
 

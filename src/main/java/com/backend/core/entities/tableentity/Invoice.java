@@ -124,4 +124,17 @@ public class Invoice {
             return false;
         } else return true;
     }
+
+    // check if there is any product whose quantity is higher than its available quantity
+    public String getOutOfStockProduct() {
+        for (InvoicesWithProducts invoiceProduct : this.invoicesWithProducts) {
+            ProductManagement productMng = invoiceProduct.getProductManagement();
+
+            if (productMng.getAvailableQuantity() < invoiceProduct.getQuantity()) {
+                return productMng.getProduct().getName();
+            }
+        }
+
+        return null;
+    }
 }
