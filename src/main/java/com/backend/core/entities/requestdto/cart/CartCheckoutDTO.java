@@ -6,17 +6,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
-@NoArgsConstructor
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class CartCheckoutDTO {
-    @JsonProperty("subtotal")
-    double subtotal;
+    @JsonProperty("fromDistrictId")
+    int fromDistrictId;
 
-    @JsonProperty("total")
-    double total;
+    @JsonProperty("toDistrictId")
+    int toDistrictId;
 
-    @JsonProperty("shippingFee")
-    double shippingFee;
+    @JsonProperty("fromWardCode")
+    String fromWardCode;
+
+    @JsonProperty("toWardCode")
+    String toWardCode;
+
+    @JsonProperty("serviceId")
+    int serviceId;
 }

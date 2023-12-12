@@ -5,7 +5,9 @@ import com.backend.core.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -23,6 +25,8 @@ import java.util.Objects;
 @Table(name = "products")
 @DynamicInsert
 @DynamicUpdate
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product implements Serializable {
     @Serial
     private static final long serialVersionUID = -3612182239388257218L;
@@ -50,6 +54,18 @@ public class Product implements Serializable {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "length")
+    private double length;
+
+    @Column(name = "height")
+    private double height;
+
+    @Column(name = "width")
+    private double width;
+
+    @Column(name = "weight")
+    private double weight;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -69,9 +85,6 @@ public class Product implements Serializable {
     @OneToMany(mappedBy = "product")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ProductImagesManagement> productImagesManagement;
-
-    public Product() {
-    }
 
     @Override
     public boolean equals(Object o) {
