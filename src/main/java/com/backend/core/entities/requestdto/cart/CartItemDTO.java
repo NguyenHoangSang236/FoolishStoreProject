@@ -3,13 +3,17 @@ package com.backend.core.entities.requestdto.cart;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CartItemDTO {
     @NotEmpty
     @JsonProperty("productId")
@@ -33,20 +37,6 @@ public class CartItemDTO {
 
     @JsonProperty("select_status")
     int selectStatus;
-
-
-    public CartItemDTO(int productId, int cartId, String color, String size, int quantity, int selectStatus) {
-        this.productId = productId;
-        this.cartId = cartId;
-        this.color = color;
-        this.size = size;
-        this.quantity = quantity;
-        this.selectStatus = selectStatus;
-    }
-
-    public CartItemDTO() {
-    }
-
 
     @Override
     public boolean equals(Object o) {

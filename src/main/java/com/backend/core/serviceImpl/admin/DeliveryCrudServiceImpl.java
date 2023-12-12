@@ -10,14 +10,15 @@ import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.repository.delivery.DeliveryRepository;
 import com.backend.core.repository.invoice.InvoiceRepository;
 import com.backend.core.service.CrudService;
+import com.backend.core.util.process.NetworkUtils;
+import com.backend.core.util.staticValues.GlobalDefaultStaticVariables;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,9 @@ public class DeliveryCrudServiceImpl implements CrudService {
 
     @Autowired
     InvoiceRepository invoiceRepo;
+
+    @Autowired
+    NetworkUtils networkUtils;
 
     @Override
     public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
@@ -58,7 +62,7 @@ public class DeliveryCrudServiceImpl implements CrudService {
             Map<String, Object> map = new HashMap<>();
             map.put("client_order_code", request.getInvoiceId());
 
-            ResponseEntity responseEntity = restTemplate("/shipping-order/detail-by-client-code", map);
+            ResponseEntity responseEntity = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.shippingOrderDetailsByClientCodeUrl, map);
 
             if (responseEntity.getStatusCode().value() != 200) {
                 return new ResponseEntity<>(new ApiResponse("failed", "The shipping order with client order code = " + request.getInvoiceId() + " does not exist"), HttpStatus.BAD_REQUEST);
@@ -123,19 +127,5 @@ public class DeliveryCrudServiceImpl implements CrudService {
     @Override
     public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
         return null;
-    }
-
-    public ResponseEntity restTemplate(String url, Map<String, Object> body) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("ShopId", "190298");
-        headers.set("Token", "10a16ebf-7fa0-11ee-8bfa-8a2dda8ec551");
-
-        HttpEntity httpEntity = new HttpEntity(body, headers);
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        return restTemplate.exchange("https://dev-online-gateway.ghn.vn/shiip/public-api/v2" + url, HttpMethod.POST, httpEntity, Map.class);
     }
 }

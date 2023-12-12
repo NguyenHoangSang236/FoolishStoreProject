@@ -4,8 +4,11 @@ import com.backend.core.abstractClasses.CrudController;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.PaginationDTO;
+import com.backend.core.entities.requestdto.cart.AddressNameDTO;
+import com.backend.core.entities.requestdto.cart.CartCheckoutDTO;
 import com.backend.core.entities.requestdto.cart.CartItemDTO;
 import com.backend.core.entities.requestdto.cart.CartItemFilterRequestDTO;
+import com.backend.core.entities.responsedto.AddressCodeDTO;
 import com.backend.core.enums.RenderTypeEnum;
 import com.backend.core.service.CrudService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -101,8 +104,25 @@ public class CartController extends CrudController {
     }
 
 
-    @GetMapping("/checkout")
-    public ResponseEntity<ApiResponse> getCartCheckout(HttpServletRequest httpRequest) {
-        return crudService.readingFromSingleRequest("check out", httpRequest);
+    @PostMapping("/checkout")
+    public ResponseEntity<ApiResponse> getCartCheckout(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        CartCheckoutDTO checkout = objectMapper.readValue(json, CartCheckoutDTO.class);
+        return crudService.readingFromSingleRequest(checkout, httpRequest);
+    }
+
+    @PostMapping("/getGnhAvailableServiceList")
+    public ResponseEntity<ApiResponse> getGhnServiceList(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        AddressCodeDTO addressCode = objectMapper.readValue(json, AddressCodeDTO.class);
+        return crudService.readingFromSingleRequest(addressCode, httpRequest);
+    }
+
+
+    @PostMapping("/getGhnAddressCode")
+    public ResponseEntity<ApiResponse> getGhnAddressCode(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        AddressNameDTO addressName = objectMapper.readValue(json, AddressNameDTO.class);
+        return crudService.readingFromSingleRequest(addressName, httpRequest);
     }
 }
