@@ -248,6 +248,8 @@ public class CartCrudServiceImpl implements CrudService {
                         (pagination.getPage() - 1) * pagination.getLimit(),
                         pagination.getLimit()
                 );
+
+                return new ResponseEntity<>(new ApiResponse("success", cartItemList), HttpStatus.OK);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
