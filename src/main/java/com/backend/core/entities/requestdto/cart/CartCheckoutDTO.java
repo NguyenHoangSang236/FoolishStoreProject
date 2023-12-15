@@ -17,6 +17,12 @@ public class CartCheckoutDTO {
     @JsonProperty("toDistrictId")
     int toDistrictId;
 
+    @JsonProperty("fromProvinceId")
+    int fromProvinceId;
+
+    @JsonProperty("toProvinceId")
+    int toProvinceId;
+
     @JsonProperty("fromWardCode")
     String fromWardCode;
 
