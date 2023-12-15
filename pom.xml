@@ -231,16 +231,6 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>0.11.5</version>
         </dependency>
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework</groupId>-->
-        <!--			<artifactId>spring-websocket</artifactId>-->
-        <!--			<version>5.3.29</version>-->
-        <!--		</dependency>-->
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework</groupId>-->
-        <!--			<artifactId>spring-messaging</artifactId>-->
-        <!--			<version>5.3.29</version>-->
-        <!--		</dependency>-->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>sockjs-client</artifactId>
