@@ -14,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @PreAuthorize("hasAuthority('ADMIN')")
@@ -42,10 +44,9 @@ public class ProductController extends CrudController {
         return crudService.updatingResponseByRequest(productDetailsRequest, httpRequest);
     }
 
-    @GetMapping("/product_id={id}")
     @Override
-    public ResponseEntity<ApiResponse> readSelectedItemById(@PathVariable(value = "id") int id, HttpServletRequest httpRequest) throws IOException {
-        return crudService.readingById(id, httpRequest);
+    public ResponseEntity readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
+        return null;
     }
 
     @Override
@@ -66,5 +67,15 @@ public class ProductController extends CrudController {
     @Override
     public ResponseEntity<ApiResponse> getListOfItemsFromFilter(String json, HttpServletRequest httpRequest) throws IOException {
         return null;
+    }
+
+    @GetMapping("/product_id={productId}")
+    public ResponseEntity<ApiResponse> getProductInfo(@PathVariable(value = "productId") int productId, @RequestParam(value = "showFull") boolean showFull, HttpServletRequest httpRequest) throws IOException {
+        Map<String, Object> request = new HashMap<>();
+
+        request.put("productId", productId);
+        request.put("showFull", showFull);
+
+        return crudService.readingFromSingleRequest(request, httpRequest);
     }
 }
