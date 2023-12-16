@@ -21,10 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 enum RequestPurpose {
@@ -116,7 +113,27 @@ public class ProductCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
+        List<AuthenProductRenderInfoDTO> productDetails = new ArrayList<>();
+
+        try {
+            Map<String, Object> requestMap = (Map<String, Object>) paramObj;
+
+            int id = (int) requestMap.get("productId");
+            boolean showFull = (boolean) requestMap.get("showFull");
+
+            productDetails = showFull
+                    ? authenProductRenderInfoRepo.getAuthenProductFullDetails(id)
+                    : authenProductRenderInfoRepo.getAuthenProductDetails(id);
+
+            if (!productDetails.isEmpty()) {
+                return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
+        }
     }
 
     @Override
@@ -131,20 +148,7 @@ public class ProductCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
-        List<AuthenProductRenderInfoDTO> productDetails = new ArrayList<>();
-
-        try {
-            productDetails = authenProductRenderInfoRepo.getAuthenProductDetails(id);
-
-            if (!productDetails.isEmpty()) {
-                return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
-        }
+        return null;
     }
 
 
