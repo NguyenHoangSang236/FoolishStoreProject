@@ -12,4 +12,7 @@ import java.util.List;
 public interface AuthenProductRenderInfoRepository extends JpaRepository<AuthenProductRenderInfoDTO, Integer> {
     @Query(value = "select * from product_info_for_ui where product_id = :productId", nativeQuery = true)
     List<AuthenProductRenderInfoDTO> getAuthenProductDetails(@Param("productId") int productId);
+
+    @Query(value = "select * from product_full_info_for_ui where product_id = :productId", nativeQuery = true)
+    List<AuthenProductRenderInfoDTO> getAuthenProductFullDetails(@Param("productId") int productId);
 }
