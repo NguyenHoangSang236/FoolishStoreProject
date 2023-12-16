@@ -19,6 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 //@PreAuthorize("hasAuthority('CUSTOMER')")
@@ -55,9 +57,8 @@ public class ShopController extends CrudController {
     }
 
     @Override
-    @GetMapping("/unauthen/shop/product_id={productId}")
-    public ResponseEntity<ApiResponse> readSelectedItemById(@PathVariable(value = "productId") int productId, HttpServletRequest httpRequest) throws IOException {
-        return crudService.readingById(productId, httpRequest);
+    public ResponseEntity readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
+        return null;
     }
 
 
@@ -109,5 +110,25 @@ public class ShopController extends CrudController {
     @GetMapping("/unauthen/shop/totalProductsQuantity")
     public ResponseEntity<ApiResponse> getTotalProductsQuantity(String json, HttpServletRequest httpRequest) throws IOException {
         return crudService.readingResponse(RenderTypeEnum.TOTAL_PRODUCTS_QUANTITY.name(), httpRequest);
+    }
+
+    @GetMapping("/unauthen/shop/productSizeList")
+    public ResponseEntity<ApiResponse> getSizeListOfProduct(@RequestParam(value = "productId") int productId, @RequestParam(value = "color") String color, HttpServletRequest httpRequest) throws IOException {
+        Map<String, Object> request = new HashMap<>();
+
+        request.put("productId", productId);
+        request.put("color", color);
+
+        return crudService.readingFromSingleRequest(request, httpRequest);
+    }
+
+    @GetMapping("/unauthen/shop/product_id={productId}")
+    public ResponseEntity<ApiResponse> getProductInfo(@PathVariable(value = "productId") int productId, @RequestParam(value = "showFull") Boolean showFull, HttpServletRequest httpRequest) throws IOException {
+        Map<String, Object> request = new HashMap<>();
+
+        request.put("productId", productId);
+        request.put("showFull", showFull);
+
+        return crudService.readingFromSingleRequest(request, httpRequest);
     }
 }
