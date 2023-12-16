@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Qualifier("ShopCrudServiceImpl")
@@ -133,6 +134,50 @@ public class ShopCrudServiceImpl implements CrudService {
         // if there is no filter -> get all products with pagination
         else if (paramObj instanceof PaginationDTO pagination) {
             return getProductFromPagination(pagination);
+        }
+        // get size list of product or get product details
+        else if (paramObj instanceof Map requestMap) {
+            try {
+                int id = (int) requestMap.get("productId");
+                String color = (String) requestMap.get("color");
+                Boolean showFull = (Boolean) requestMap.get("showFull");
+
+                // get product details
+                if (color == null && showFull != null) {
+                    List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
+
+                    try {
+                        // show full or show first item of each size and color only
+                        productDetails = showFull == false
+                                ? productRenderInfoRepo.getProductDetails(id)
+                                : productRenderInfoRepo.getFullProductDetails(id);
+
+                        if (!productDetails.isEmpty()) {
+                            return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
+                        } else {
+                            return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
+                    }
+                }
+                // get size list of product
+                else if (showFull == null && color != null) {
+                    List<String> sizeList = productManagementRepo.getSizeListByProductIdAndColor(id, color);
+
+                    if (!sizeList.isEmpty()) {
+                        return new ResponseEntity<>(new ApiResponse("success", sizeList), HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
+                    }
+                } else
+                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } else
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -174,21 +219,8 @@ public class ShopCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ResponseEntity<ApiResponse> readingById(int productId, HttpServletRequest httpRequest) {
-        List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
-
-        try {
-            productDetails = productRenderInfoRepo.getProductDetails(productId);
-
-            if (!productDetails.isEmpty()) {
-                return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
-        }
+    public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
+        return null;
     }
 
 

@@ -150,7 +150,7 @@ public class ProductCrudServiceImpl implements CrudService {
 
     // save new product process
     public ResponseEntity<ApiResponse> saveProductProcess(ProductDetailsRequestDTO request, RequestPurpose purpose) {
-        // todo: save product first
+        // save product first
         Product product = new Product();
         Product existedProduct = (purpose.equals(RequestPurpose.ADD))
                 ? productRepo.getProductByFullName(request.getName().toLowerCase())
@@ -168,7 +168,7 @@ public class ProductCrudServiceImpl implements CrudService {
         // build Product from ProductAddingRequestDTO
         product.getProductFromProductDetailsRequest(request);
 
-        // todo: save product management, product import and product images later
+        // save product management, product import and product images later
         return saveOtherTables(request, product, purpose);
     }
 
