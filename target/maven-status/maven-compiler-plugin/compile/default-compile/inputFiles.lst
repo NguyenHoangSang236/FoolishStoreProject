@@ -9,6 +9,7 @@
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/util/process/CheckUtils.java
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/serviceImpl/admin/AccountCrudServiceImpl.java
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/controller/customer/CartController.java
+/home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/util/process/GhnUtils.java
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/controller/admin/AccountController.java
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/entities/tableentity/Account.java
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/controller/common/SystemAuthenticationController.java
