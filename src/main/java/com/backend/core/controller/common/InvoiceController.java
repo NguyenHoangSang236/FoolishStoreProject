@@ -2,10 +2,12 @@ package com.backend.core.controller.common;
 
 import com.backend.core.abstractClasses.CrudController;
 import com.backend.core.entities.requestdto.ApiResponse;
+import com.backend.core.entities.requestdto.cart.CartCheckoutDTO;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterRequestDTO;
 import com.backend.core.entities.requestdto.invoice.OrderProcessDTO;
 import com.backend.core.entities.tableentity.Invoice;
 import com.backend.core.service.CrudService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +32,11 @@ public class InvoiceController extends CrudController {
     @Override
     @PostMapping("/addNewOrder")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    public ResponseEntity<ApiResponse> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) {
-        return crudService.singleCreationalResponse(json, httpRequest);
+    public ResponseEntity<ApiResponse> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        CartCheckoutDTO cartCheckout = objectMapper.readValue(json, CartCheckoutDTO.class);
+
+        return crudService.singleCreationalResponse(cartCheckout, httpRequest);
     }
 
 

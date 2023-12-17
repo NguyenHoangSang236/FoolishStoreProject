@@ -1,6 +1,7 @@
 package com.backend.core.entities.requestdto.cart;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,4 +32,8 @@ public class CartCheckoutDTO {
 
     @JsonProperty("serviceId")
     int serviceId;
+
+    @Nullable
+    @JsonProperty("paymentMethod")
+    String paymentMethod;
 }
