@@ -19,7 +19,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 public class DeviceFcmToken {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

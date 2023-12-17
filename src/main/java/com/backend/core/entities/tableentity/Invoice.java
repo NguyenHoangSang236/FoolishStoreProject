@@ -56,6 +56,9 @@ public class Invoice {
     @Column(name = "total_price")
     double totalPrice;
 
+    @Column(name = "delivery_fee")
+    double deliveryFee;
+
     @Column(name = "reason")
     String reason;
 
@@ -95,7 +98,7 @@ public class Invoice {
 
 
     public Invoice(int id, Date invoiceDate, String paymentStatus, String orderStatus, String paymentMethod, String currency,
-                   String note, String description, double refundPercentage, double totalPrice, String reason, String onlinePaymentAccount,
+                   String note, String description, double refundPercentage, double totalPrice, double deliveryFee, String reason, String onlinePaymentAccount,
                    String adminAcceptance, Delivery delivery, List<InvoicesWithProducts> invoicesWithProducts, Customer customer) {
         this.id = id;
         this.invoiceDate = invoiceDate;
@@ -111,6 +114,7 @@ public class Invoice {
         this.onlinePaymentAccount = onlinePaymentAccount;
         this.adminAcceptance = adminAcceptance;
         this.delivery = delivery;
+        this.deliveryFee = deliveryFee;
         this.invoicesWithProducts = invoicesWithProducts;
         this.customer = customer;
     }

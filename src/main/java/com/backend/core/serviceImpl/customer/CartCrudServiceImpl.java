@@ -22,10 +22,9 @@ import com.backend.core.repository.customQuery.CustomQueryRepository;
 import com.backend.core.repository.customer.CustomerRepository;
 import com.backend.core.repository.product.ProductManagementRepository;
 import com.backend.core.service.CrudService;
+import com.backend.core.util.process.GhnUtils;
 import com.backend.core.util.process.NetworkUtils;
 import com.backend.core.util.process.ValueRenderUtils;
-import com.backend.core.util.staticValues.GlobalDefaultStaticVariables;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +63,9 @@ public class CartCrudServiceImpl implements CrudService {
 
     @Autowired
     NetworkUtils networkUtils;
+
+    @Autowired
+    GhnUtils ghnUtils;
 
 
     public CartCrudServiceImpl() {
@@ -174,6 +175,10 @@ public class CartCrudServiceImpl implements CrudService {
                     Gson gson = new Gson();
                     CartItemDTO cartItemDTO = gson.fromJson(obj.toString(), CartItemDTO.class);
 
+                    if (cartItemDTO.getQuantity() < 1) {
+                        return new ResponseEntity<>(new ApiResponse("failed", "Cart item quantity must be higher than 0"), HttpStatus.BAD_REQUEST);
+                    }
+
                     // get cart item by id
                     Cart requestCartItem = cartRepo.getCartById(cartItemDTO.getCartId());
 
@@ -273,7 +278,7 @@ public class CartCrudServiceImpl implements CrudService {
             try {
                 List<CartRenderInfoDTO> selectedCartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
 
-                double shippingFee = calculateShippingFee(cartCheckout, selectedCartItemList);
+                double shippingFee = ghnUtils.calculateShippingFee(cartCheckout, selectedCartItemList);
 
                 double subtotal = 0;
 
@@ -283,9 +288,9 @@ public class CartCrudServiceImpl implements CrudService {
                 }
 
                 // init new checkout object
-                CartCheckoutInfoDTO checkout = new CartCheckoutInfoDTO(subtotal, subtotal + shippingFee, shippingFee);
+                CartCheckoutInfoDTO checkoutInfo = new CartCheckoutInfoDTO(subtotal, subtotal + shippingFee, shippingFee);
 
-                return new ResponseEntity<>(new ApiResponse("success", checkout), HttpStatus.OK);
+                return new ResponseEntity<>(new ApiResponse("success", checkoutInfo), HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -294,7 +299,7 @@ public class CartCrudServiceImpl implements CrudService {
         else if (paramObj instanceof AddressNameDTO addressCodeRequest) {
             try {
                 // get address code using GHN apis
-                AddressCodeDTO addressCode = getGhnAddressCode(addressCodeRequest);
+                AddressCodeDTO addressCode = ghnUtils.getGhnAddressCode(addressCodeRequest);
 
                 if (addressCode != null) {
                     return new ResponseEntity<>(new ApiResponse("success", addressCode), HttpStatus.OK);
@@ -310,7 +315,7 @@ public class CartCrudServiceImpl implements CrudService {
         else if (paramObj instanceof AddressCodeDTO addressCode) {
             try {
                 // get service map list from ids of districts from GHN api
-                List<Map> serviceMapList = getAvailableServiceList(addressCode.getFromDistrictId(), addressCode.getToDistrictId());
+                List<Map> serviceMapList = ghnUtils.getAvailableServiceList(addressCode.getFromDistrictId(), addressCode.getToDistrictId());
 
                 if (serviceMapList != null && !serviceMapList.isEmpty()) {
                     return new ResponseEntity<>(new ApiResponse("success", serviceMapList), HttpStatus.OK);
@@ -358,228 +363,5 @@ public class CartCrudServiceImpl implements CrudService {
     @Override
     public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
         return null;
-    }
-
-    private double calculateShippingFee(CartCheckoutDTO cartCheckout, List<CartRenderInfoDTO> cartItemList) {
-        double shippingFee = 0;
-        Map<String, Object> requestMap = new HashMap<>();
-        int length = 0;
-        int width = 0;
-        int weight = 0;
-        int height = 0;
-
-        try {
-            // get the highest value of length, width and stack the value of weight, height
-            for (CartRenderInfoDTO cartItem : cartItemList) {
-                int productId = cartItem.getProductId();
-                int cartItemWidth = cartRenderInfoRepo.getCartItemWidth(productId);
-                int cartItemLength = cartRenderInfoRepo.getCartItemLength(productId);
-
-                weight += cartRenderInfoRepo.getCartItemWeight(productId);
-                height += cartRenderInfoRepo.getCartItemHeight(productId);
-
-                if (width < cartItemWidth) {
-                    width = cartItemWidth;
-                }
-
-                if (length < cartItemLength) {
-                    length = cartItemLength;
-                }
-            }
-
-            requestMap.put("from_district_id", cartCheckout.getFromDistrictId());
-            requestMap.put("to_district_id", cartCheckout.getToDistrictId());
-            requestMap.put("from_ward_code", cartCheckout.getFromWardCode());
-            requestMap.put("to_ward_code", cartCheckout.getToWardCode());
-            requestMap.put("service_id", cartCheckout.getServiceId());
-            requestMap.put("height", height);
-            requestMap.put("weight", weight);
-            requestMap.put("width", width);
-            requestMap.put("length", length);
-
-            System.out.println(requestMap.toString());
-
-            ResponseEntity<Map> shippingFeeResponse = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.shippingFeeUrl, requestMap);
-
-            if (shippingFeeResponse.getStatusCode().equals(HttpStatus.OK)) {
-                Map<String, Object> resMap = (Map<String, Object>) shippingFeeResponse.getBody().get("data");
-
-                System.out.println(resMap.get("total"));
-
-                // convert VND to USD
-                shippingFee = (int) resMap.get("total") / 24300;
-            }
-
-            return shippingFee;
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return 0;
-        }
-    }
-
-    private AddressCodeDTO getGhnAddressCode(AddressNameDTO addressCodeRequest) {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try {
-            // data from request
-            String fromProvince = addressCodeRequest.getFromProvince();
-            String fromDistrict = addressCodeRequest.getFromDistrict();
-            String fromWard = addressCodeRequest.getFromWard();
-            String toProvince = addressCodeRequest.getToProvince();
-            String toDistrict = addressCodeRequest.getToDistrict();
-            String toWard = addressCodeRequest.getToWard();
-
-            // selected data to call GHN api
-            int selectedFromProvinceId = getProvinceID(fromProvince);
-            int selectedToProvinceId = getProvinceID(toProvince);
-
-            if (selectedFromProvinceId != 0 && selectedToProvinceId != 0) {
-                int selectedFromDistrictId = getDistrictID(selectedFromProvinceId, fromDistrict);
-                int selectedToDistrictId = getDistrictID(selectedToProvinceId, toDistrict);
-
-                if (selectedFromDistrictId != 0 && selectedToDistrictId != 0) {
-                    String selectedFromWardCode = getWardCode(selectedFromDistrictId, fromWard);
-                    String selectedToWardCode = getWardCode(selectedToDistrictId, toWard);
-
-                    if (selectedToWardCode != "0" && selectedFromWardCode != "0") {
-                        return AddressCodeDTO.builder()
-                                .fromProvinceId(selectedFromProvinceId)
-                                .toProvinceId(selectedToProvinceId)
-                                .fromDistrictId(selectedFromDistrictId)
-                                .toDistrictId(selectedToDistrictId)
-                                .fromWardCode(selectedFromWardCode)
-                                .toWardCode(selectedToWardCode)
-                                .build();
-                    }
-                }
-            }
-
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return null;
-        }
-    }
-
-    private List<Map> getAvailableServiceList(int fromDistrictId, int toDistrictId) {
-        Map<String, Object> requestMap = new HashMap<>();
-
-        try {
-            requestMap.put("shop_id", 190298);
-            requestMap.put("from_district", fromDistrictId);
-            requestMap.put("to_district", toDistrictId);
-
-            ResponseEntity<Map> districtListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.availableServicesUrl, requestMap);
-
-            if (districtListRes.getStatusCode().equals(HttpStatus.OK)) {
-                // get 'data' field from request
-                return (List<Map>) districtListRes.getBody().get("data");
-            }
-
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return null;
-        }
-    }
-
-    private int getProvinceID(String provinceName) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        int selectedProvinceId = 0;
-
-        try {
-            // get response from GHN api
-            ResponseEntity<Map> provinceListRes = networkUtils.getGhnGetResponse(GlobalDefaultStaticVariables.provinceDataListUrl);
-
-            if (provinceListRes.getStatusCode().equals(HttpStatus.OK)) {
-                // get 'data' field from request
-                List<Map> provinceMapList = (List<Map>) provinceListRes.getBody().get("data");
-
-                // get the item in the list having the province name = fromProvince
-                for (Map map : provinceMapList) {
-                    List<String> nameExtensionList = (List<String>) map.get("NameExtension");
-
-                    if (nameExtensionList.contains(provinceName)) {
-                        // get the province ID
-                        selectedProvinceId = (int) map.get("ProvinceID");
-                        break;
-                    }
-                }
-            }
-            return selectedProvinceId;
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return 0;
-        }
-    }
-
-    private int getDistrictID(int provinceId, String districtName) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> requestMap = new HashMap<>();
-        int selectedDistrictId = 0;
-
-        try {
-            // get response from GHN api
-            requestMap.put("province_id", provinceId);
-            ResponseEntity<Map> districtListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.districtDataListUrl, requestMap);
-
-            if (districtListRes.getStatusCode().equals(HttpStatus.OK)) {
-                // get 'data' field from request
-                List<Map> districtMapList = (List<Map>) districtListRes.getBody().get("data");
-
-                // get the item in the list having the province id = provinceId
-                for (Map map : districtMapList) {
-                    String district = (String) map.get("DistrictName");
-
-                    if (district.contains(districtName)) {
-                        selectedDistrictId = (int) map.get("DistrictID");
-
-                        break;
-                    }
-                }
-            }
-            return selectedDistrictId;
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return 0;
-        }
-    }
-
-    private String getWardCode(int districtId, String wardName) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> requestMap = new HashMap<>();
-        String selectedWardCode = "0";
-
-        try {
-            // get response from GHN api
-            requestMap.put("district_id", districtId);
-            ResponseEntity<Map> wardListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.wardDataListUrl, requestMap);
-
-            if (wardListRes.getStatusCode().equals(HttpStatus.OK)) {
-                // get 'data' field from request
-                List<Map> wardMapList = (List<Map>) wardListRes.getBody().get("data");
-
-                // get the item in the list having the province id = provinceId
-                for (Map map : wardMapList) {
-                    String ward = (String) map.get("WardName");
-
-                    if (ward.contains(wardName)) {
-                        selectedWardCode = map.get("WardCode").toString();
-
-                        break;
-                    }
-                }
-            }
-            return selectedWardCode;
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return "0";
-        }
     }
 }
