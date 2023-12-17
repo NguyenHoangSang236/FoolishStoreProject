@@ -3,6 +3,7 @@ package com.backend.core.serviceImpl.common;
 import com.backend.core.entities.embededkey.InvoicesWithProductsPrimaryKeys;
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
+import com.backend.core.entities.requestdto.cart.CartCheckoutDTO;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterRequestDTO;
 import com.backend.core.entities.requestdto.invoice.OrderProcessDTO;
 import com.backend.core.entities.responsedto.CartRenderInfoDTO;
@@ -24,8 +25,8 @@ import com.backend.core.repository.refund.RefundRepository;
 import com.backend.core.repository.staff.StaffRepository;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.process.CheckUtils;
+import com.backend.core.util.process.GhnUtils;
 import com.backend.core.util.process.ValueRenderUtils;
-import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,7 +38,6 @@ import org.yaml.snakeyaml.util.EnumUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Qualifier("InvoiceCrudServiceImpl")
@@ -81,6 +81,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
     @Autowired
     ValueRenderUtils valueRenderUtils;
 
+    @Autowired
+    GhnUtils ghnUtils;
+
 
     public InvoiceCrudServiceImpl() {
     }
@@ -89,14 +92,24 @@ public class InvoiceCrudServiceImpl implements CrudService {
     @Override
     public synchronized ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
-        Gson gson = new Gson();
-        Map<String, String> request = gson.fromJson((String) paramObj, Map.class);
-        String paymentMethod = request.get("paymentMethod");
+
         String responseSuccessMessage = "New order with ID --- has been created successfully";
         Invoice newInvoice;
 
         try {
+            CartCheckoutDTO cartCheckout = (CartCheckoutDTO) paramObj;
+
+            List<CartRenderInfoDTO> selectedCartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
+
+            String paymentMethod = cartCheckout.getPaymentMethod();
+            double shippingFee = ghnUtils.calculateShippingFee(cartCheckout, selectedCartItemList);
+            double subtotal = 0;
             int newInvoiceId = invoiceRepo.getLastestInvoiceId() + 1;
+
+            // calculate subtotal price
+            for (CartRenderInfoDTO cartRenderInfoDTO : selectedCartItemList) {
+                subtotal += cartRenderInfoDTO.getTotalPrice();
+            }
 
             if (paymentMethod.equals(PaymentEnum.COD.name())) {
                 newInvoice = new Invoice(
@@ -109,7 +122,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                         "",
                         "",
                         0,
-                        0,
+                        subtotal + shippingFee,
+                        shippingFee,
                         "",
                         "",
                         AdminAcceptanceEnum.ACCEPTANCE_WAITING.name(),
@@ -129,7 +143,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                         "",
                         "",
                         0,
-                        0,
+                        subtotal + shippingFee,
+                        shippingFee,
                         "",
                         "",
                         AdminAcceptanceEnum.PAYMENT_WAITING.name(),
