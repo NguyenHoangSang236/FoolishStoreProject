@@ -237,41 +237,48 @@ public class ValueRenderUtils {
 
 
     //create a query for invoice binding filter
-    public String invoiceFilterQuery(int customerId, InvoiceFilterDTO invoiceFilter, PaginationDTO pagination) {
+    public String invoiceFilterQuery(int customerId, InvoiceFilterDTO invoiceFilter, PaginationDTO pagination, boolean authen) {
         String paymentStatus = invoiceFilter.getPaymentStatus();
         String adminAcceptance = invoiceFilter.getAdminAcceptance();
-        String deliveryStatus = invoiceFilter.getDeliveryStatus();
+        String orderStatus = invoiceFilter.getOrderStatus();
         String paymentMethod = invoiceFilter.getPaymentMethod();
         Date startInvoiceDate = invoiceFilter.getStartInvoiceDate();
         Date endInvoiceDate = invoiceFilter.getEndInvoiceDate();
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
-        String result = "select * from invoice where Customer_ID = " + customerId + " ";
+        String result = "select * from invoice where ";
+
+        if (authen) {
+            result += "Customer_ID = " + customerId + " and ";
+        }
 
         if (paymentStatus != null && !paymentStatus.isBlank()) {
-            result += " and Payment_Status = '" + paymentStatus + "' ";
+            result += "Payment_Status = '" + paymentStatus + "' and ";
         }
 
         if (adminAcceptance != null && !adminAcceptance.isBlank()) {
-            result += "and Admin_Acceptance = '" + adminAcceptance + "' ";
+            result += "Admin_Acceptance = '" + adminAcceptance + "' and ";
         }
 
-        if (deliveryStatus != null && !deliveryStatus.isBlank()) {
-            result += "and Delivery_Status = '" + deliveryStatus + "' ";
+        if (orderStatus != null && !orderStatus.isBlank()) {
+            result += "order_status = '" + orderStatus + "' and ";
         }
 
         if (paymentMethod != null && !paymentMethod.isBlank()) {
-            result += "and Payment_Method = '" + paymentMethod + "' ";
+            result += "Payment_Method = '" + paymentMethod + "' and ";
         }
 
         if (startInvoiceDate != null) {
-            result += "and Invoice_Date >= '" + formatDateToString(startInvoiceDate, "yyyy-MM-dd") + "' ";
+            result += "Invoice_Date >= '" + formatDateToString(startInvoiceDate, "yyyy-MM-dd") + "' and ";
         }
 
         if (endInvoiceDate != null) {
-            result += "and Invoice_Date <= '" + formatDateToString(endInvoiceDate, "yyyy-MM-dd") + "' ";
+            result += "Invoice_Date <= '" + formatDateToString(endInvoiceDate, "yyyy-MM-dd") + "' and ";
         }
+
+        // remove the final 'and' word in the query
+        result = result.substring(0, result.lastIndexOf("and"));
 
         result += "order by id desc limit " + (limit * (page - 1)) + ", " + limit;
 
@@ -626,7 +633,7 @@ public class ValueRenderUtils {
             try {
                 switch (filterType) {
                     case INVOICE -> {
-                        filterQuery = invoiceFilterQuery(userId, (InvoiceFilterDTO) filter, pagination);
+                        filterQuery = invoiceFilterQuery(userId, (InvoiceFilterDTO) filter, pagination, authen);
                     }
                     case PRODUCT -> {
                         filterQuery = productFilterQuery((ProductFilterDTO) filter, pagination);

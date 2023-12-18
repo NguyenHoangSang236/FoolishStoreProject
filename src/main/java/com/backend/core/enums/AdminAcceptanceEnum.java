@@ -6,5 +6,4 @@ public enum AdminAcceptanceEnum {
     ACCEPTED,
     REFUSED,
     CONFIRMED_ONLINE_PAYMENT,
-    FINISH_PACKING,
 }
