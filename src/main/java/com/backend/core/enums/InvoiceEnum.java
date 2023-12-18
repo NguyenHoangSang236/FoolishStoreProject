@@ -8,5 +8,6 @@ public enum InvoiceEnum {
     CUSTOMER_CANCEL,
     ACCEPTANCE_WAITING,
     PACKING,
+    FINISH_PACKING,
     PAYMENT_WAITING,
 }

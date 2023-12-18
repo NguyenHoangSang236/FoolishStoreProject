@@ -24,8 +24,8 @@ public class InvoiceRenderInfoDTO {
     @Column(name = "Invoice_Date")
     Date invoiceDate;
 
-    @Column(name = "Delivery_Status")
-    String deliveryStatus;
+    @Column(name = "order_status")
+    String orderStatus;
 
     @Column(name = "Payment_Status")
     String paymentStatus;
@@ -35,9 +35,6 @@ public class InvoiceRenderInfoDTO {
 
     @Column(name = "currency")
     String currency;
-
-    @Column(name = "intent")
-    String intent;
 
     @Column(name = "description")
     String description;
