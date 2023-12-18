@@ -19,8 +19,8 @@ public class InvoiceFilterDTO {
     @JsonProperty("paymentStatus")
     String paymentStatus;
 
-    @JsonProperty("deliveryStatus")
-    String deliveryStatus;
+    @JsonProperty("orderStatus")
+    String orderStatus;
 
     @JsonProperty("startInvoiceDate")
     Date startInvoiceDate;
@@ -30,7 +30,4 @@ public class InvoiceFilterDTO {
 
     @JsonProperty("paymentMethod")
     String paymentMethod;
-
-    @JsonProperty("type")
-    String type;
 }
