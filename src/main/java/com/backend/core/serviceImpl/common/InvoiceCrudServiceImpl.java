@@ -315,7 +315,10 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 invoice.setAdminAcceptance(adminAction);
                 // add sold quantity and subtract in-stock quantity of products from this invoice
                 productQuantityProcess(adminAction, invoice);
-            } else
+            }
+            // admin pack the order
+
+            else
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
             invoiceRepo.save(invoice);
@@ -392,7 +395,13 @@ public class InvoiceCrudServiceImpl implements CrudService {
     // filter invoices
     public ResponseEntity<ApiResponse> filterInvoice(InvoiceFilterRequestDTO invoiceFilterRequest, HttpServletRequest request) {
         try {
-            String filterQuery = valueRenderUtils.getFilterQuery(invoiceFilterRequest, FilterTypeEnum.INVOICE, request, true);
+            if (invoiceFilterRequest.getFilter() == null) {
+                return new ResponseEntity<>(new ApiResponse("failed", "Must have filter"), HttpStatus.BAD_REQUEST);
+            }
+
+            boolean needAuthen = valueRenderUtils.getCurrentAccountFromRequest(request).getRole().equals(RoleEnum.CUSTOMER.name());
+
+            String filterQuery = valueRenderUtils.getFilterQuery(invoiceFilterRequest, FilterTypeEnum.INVOICE, request, needAuthen);
 
             // get list from query
             List<InvoiceRenderInfoDTO> invoiceRenderList = customQueryRepo.getBindingFilteredList(filterQuery, InvoiceRenderInfoDTO.class);
