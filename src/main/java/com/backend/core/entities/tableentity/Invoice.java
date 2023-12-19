@@ -125,8 +125,8 @@ public class Invoice {
                 && !this.orderStatus.equals(InvoiceEnum.SUCCESS.name())
                 && !this.orderStatus.equals(InvoiceEnum.CUSTOMER_CANCEL.name())
                 && !this.orderStatus.equals(InvoiceEnum.SHIPPER_CANCEL.name())) {
-            return false;
-        } else return true;
+            return true;
+        } else return false;
     }
 
     // check if there is any product whose quantity is higher than its available quantity
