@@ -16,14 +16,9 @@ import java.util.Date;
 @Table(name = "refund")
 public class Refund {
     @Id
-    @Column(name = "invoice_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int invoiceId;
-
-    @OneToOne
-    @JoinColumn(name = "invoice_id", referencedColumnName = "ID")
-    @PrimaryKeyJoinColumn
-    Invoice invoice;
+    @Column(name = "ID", unique = true)
+    int id;
 
     @Column(name = "refund_money")
     double refundMoney;
@@ -43,4 +38,8 @@ public class Refund {
     @ManyToOne
     @JoinColumn(name = "in_charge_admin_id")
     Staff staff;
+
+    @OneToOne
+    @JoinColumn(name = "invoice_id", referencedColumnName = "ID")
+    Invoice invoice;
 }
