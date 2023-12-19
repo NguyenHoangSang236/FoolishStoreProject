@@ -229,7 +229,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
                     Refund refund = new Refund();
                     refund.setInvoice(invoice);
-                    refund.setInvoiceId(invoice.getId());
                     refund.setRefundMoney(invoice.getTotalPrice() / 2);
                     refund.setStatus(RefundEnum.NOT_REFUNDED_YET.name());
 
