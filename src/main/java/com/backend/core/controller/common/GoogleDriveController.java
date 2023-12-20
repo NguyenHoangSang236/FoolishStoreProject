@@ -76,7 +76,8 @@ public class GoogleDriveController {
                 customer.setImage(fileId);
                 customerRepo.save(customer);
 
-                return new ApiResponse("success", valueRenderUtils.getGoogleDriveUrlFromFileId(fileId));
+//                return new ApiResponse("success", valueRenderUtils.getGoogleDriveUrlFromFileId(fileId));
+                return new ApiResponse("success", fileId);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
