@@ -199,6 +199,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
         String message = "Cancel order successfully, ";
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
+        // todo: send notification to admin when customer cancel order -> admin click on notification -> redirect to invoice details page
         if (id == 0) {
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
         } else {
@@ -263,6 +264,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+        // todo: send notification to customer when admin proceed order -> customer click on notification -> redirect to invoice details page
         try {
             OrderProcessDTO orderProcess = (OrderProcessDTO) paramObj;
             int adminId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
@@ -286,7 +288,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
             // check if invoice can be updated or not
             if (invoice.isUpdatable() == false) {
-                return new ResponseEntity<>(new ApiResponse("failed", "This invoice can not be updated"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("failed", "This order can not be updated"), HttpStatus.BAD_REQUEST);
             }
 
             // admin accept or refuse order
@@ -312,11 +314,17 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name()) &&
                     !invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
                 invoice.setAdminAcceptance(adminAction);
+                invoice.setOrderStatus(InvoiceEnum.PACKING.name());
                 // add sold quantity and subtract in-stock quantity of products from this invoice
                 productQuantityProcess(adminAction, invoice);
             }
-            // admin pack the order
-
+            // admin finished pack the order
+            else if (adminAction.equals(InvoiceEnum.FINISH_PACKING.name()) &&
+                    (invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
+                            invoice.getAdminAcceptance().equals((AdminAcceptanceEnum.ACCEPTED))) &&
+                    !invoice.getOrderStatus().equals(InvoiceEnum.PACKING.name())) {
+                invoice.setOrderStatus(adminAction);
+            }
             else
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
@@ -455,6 +463,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             // set cart item from Cart table to buying_status = BOUGHT and select_status = 0
             tblCart.setSelectStatus(1);
             tblCart.setBuyingStatus(CartEnum.PENDING.name());
+            tblCart.setInvoice(newInvoice);
             cartRepo.save(tblCart);
 
             // get ProductManagement by id, color and size
@@ -528,6 +537,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
             case "CONFIRMED_ONLINE_PAYMENT" -> {
                 return "Confirm order successfully and it is being packed";
             }
+            case "FINISH_PACKING" -> {
+                return "Confirm order has been finished packing";
+            }
             default -> {
                 return ErrorTypeEnum.NO_DATA_ERROR.name();
             }
@@ -540,9 +552,13 @@ public class InvoiceCrudServiceImpl implements CrudService {
         List<InvoicesWithProducts> invoiceProductList = invoice.getInvoicesWithProducts();
 
         for (InvoicesWithProducts invoiceProduct : invoiceProductList) {
-            Cart cartItem = cartRepo.getCartItemByProductManagementIdAndCustomerId(
+            System.out.println(invoiceProduct.getProductManagement().getId());
+            System.out.println(invoice.getCustomer().getId());
+
+            Cart cartItem = cartRepo.getPendingCartItemByProductManagementIdAndCustomerIdAndInvoiceId(
                     invoiceProduct.getProductManagement().getId(),
-                    invoice.getCustomer().getId()
+                    invoice.getCustomer().getId(),
+                    invoice.getId()
             );
 
             cartItem.setBuyingStatus(
@@ -550,6 +566,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                             ? CartEnum.BOUGHT.name()
                             : CartEnum.NOT_BOUGHT_YET.name()
             );
+
             cartRepo.save(cartItem);
         }
     }

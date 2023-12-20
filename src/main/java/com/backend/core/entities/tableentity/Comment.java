@@ -27,9 +27,9 @@ public class Comment {
     @Column(name = "ID", unique = true)
     int id;
 
-    @ManyToOne
     @JsonIgnore
     @JsonManagedReference
+    @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
 
