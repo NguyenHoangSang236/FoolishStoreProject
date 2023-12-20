@@ -1,8 +1,12 @@
 package com.backend.core.entities.tableentity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -15,6 +19,8 @@ import java.util.Objects;
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "cart")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,9 +45,12 @@ public class Cart {
     @JoinColumn(name = "product_management_id")
     ProductManagement productManagement;
 
-
-    public Cart() {
-    }
+    @JsonIgnore
+    @Nullable
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "invoice_id")
+    Invoice invoice;
 
     public Cart(Customer customer, ProductManagement productManagement, int quantity, String buyingStatus, int selectStatus) {
         this.quantity = quantity;

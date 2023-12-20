@@ -1,6 +1,7 @@
 package com.backend.core.entities.tableentity;
 
 import com.backend.core.enums.InvoiceEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -95,6 +96,11 @@ public class Invoice {
     @ManyToOne
     @JoinColumn(name = "receiver_account_id")
     private OnlinePaymentAccount receiverPaymentAccount;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "invoice")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Cart> carts;
 
 
     public Invoice(int id, Date invoiceDate, String paymentStatus, String orderStatus, String paymentMethod, String currency,
