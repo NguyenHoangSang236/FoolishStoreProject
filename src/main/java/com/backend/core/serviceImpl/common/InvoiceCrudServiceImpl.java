@@ -228,17 +228,24 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
                 // if online payment and shipper has not accepted the order yet -> refund 50%
                 if (!invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) || invoice.getDelivery() == null) {
-                    invoice.setRefundPercentage(50);
+                    if(invoice.getPaymentMethod().equals(PaymentEnum.PAID)) {
+                        invoice.setRefundPercentage(50);
+                        invoice.setReason("Customer cancels order before admin create shipping order, refund 50%");
+                        message += "you will be refunded 50% of the total order value, we will send it within 24 hours!";
+
+                        Refund refund = new Refund();
+                        refund.setInvoice(invoice);
+                        refund.setRefundMoney(invoice.getTotalPrice() / 2);
+                        refund.setStatus(RefundEnum.NOT_REFUNDED_YET.name());
+
+                        refundRepo.save(refund);
+                    }
+                    else if(invoice.getPaymentMethod().equals(PaymentEnum.UNPAID)) {
+                        invoice.setReason("Customer cancels order before paying, no refund");
+                        message += "you will not have any refund because you have not paid for this order";
+                    }
+
                     invoice.setOrderStatus(InvoiceEnum.CUSTOMER_CANCEL.name());
-                    invoice.setReason("Customer cancels order before admin create shipping order, refund 50%");
-                    message += "you will be refunded 50% of the total order value, we will send it within 24 hours!";
-
-                    Refund refund = new Refund();
-                    refund.setInvoice(invoice);
-                    refund.setRefundMoney(invoice.getTotalPrice() / 2);
-                    refund.setStatus(RefundEnum.NOT_REFUNDED_YET.name());
-
-                    refundRepo.save(refund);
                 }
                 // if COD payment -> no refund
                 else if (invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
@@ -377,9 +384,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity<ApiResponse> readingById(int invoiceId, HttpServletRequest httpRequest) {
-        int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
+        Account currentAcc = valueRenderUtils.getCurrentAccountFromRequest(httpRequest);
 
-        if (!isInvoiceOwner(customerId, invoiceId)) {
+        if (!isInvoiceOwnerOrAdmin(currentAcc, invoiceId)) {
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
         } else {
             try {
@@ -394,8 +401,12 @@ public class InvoiceCrudServiceImpl implements CrudService {
     }
 
 
-    public boolean isInvoiceOwner(int customerId, int invoiceId) {
-        return (invoiceRepo.getInvoiceCountByInvoiceIdAndCustomerId(invoiceId, customerId) > 0);
+    public boolean isInvoiceOwnerOrAdmin(Account acc, int invoiceId) {
+        if(acc.getCustomer() == null && acc.getStaff() != null) {
+            return true;
+        }
+        else
+            return (invoiceRepo.getInvoiceCountByInvoiceIdAndCustomerId(invoiceId, acc.getCustomer().getId()) > 0);
     }
 
 
