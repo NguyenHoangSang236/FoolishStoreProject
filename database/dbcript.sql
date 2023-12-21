@@ -2,9 +2,9 @@ CREATE DATABASE  IF NOT EXISTS `fashionstorewebsite` /*!40100 DEFAULT CHARACTER 
 USE `fashionstorewebsite`;
 -- MySQL dump 10.13  Distrib 8.0.32, for Linux (x86_64)
 --
--- Host: localhost    Database: fashionstorewebsite
+-- Host: 14.225.254.87    Database: fashionstorewebsite
 -- ------------------------------------------------------
--- Server version	8.0.33-0ubuntu0.22.04.2
+-- Server version	8.0.33
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -31,12 +31,15 @@ CREATE TABLE `cart` (
   `quantity` int NOT NULL,
   `buying_status` varchar(20) NOT NULL DEFAULT 'NOT_BOUGHT_YET',
   `select_status` tinyint DEFAULT '0',
+  `invoice_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_Customer_Cart` (`customer_id`),
   KEY `FK_Product_Cart_idx` (`product_management_id`),
+  KEY `invoice_id` (`invoice_id`),
   CONSTRAINT `FK_Customer_Cart` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
+  CONSTRAINT `FK_Invoice_Cart` FOREIGN KEY (`invoice_id`) REFERENCES `invoice` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FK_Product_Cart` FOREIGN KEY (`product_management_id`) REFERENCES `products_management` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +48,6 @@ CREATE TABLE `cart` (
 
 LOCK TABLES `cart` WRITE;
 /*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-INSERT INTO `cart` VALUES (1,1,3,2,'NOT_BOUGHT_YET',0),(5,1,4,6,'BOUGHT',1),(9,1,25,5,'NOT_BOUGHT_YET',0),(19,1,22,2,'NOT_BOUGHT_YET',0),(23,1,13,4,'NOT_BOUGHT_YET',0),(27,1,27,2,'NOT_BOUGHT_YET',0),(28,1,7,1,'PENDING',1),(29,1,8,1,'PENDING',1),(30,1,24,1,'PENDING',1),(31,1,26,1,'PENDING',1),(32,1,28,1,'PENDING',1),(33,1,17,1,'PENDING',1),(34,1,11,1,'PENDING',1);
 /*!40000 ALTER TABLE `cart` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -171,7 +173,7 @@ CREATE TABLE `comment_like` (
 
 LOCK TABLES `comment_like` WRITE;
 /*!40000 ALTER TABLE `comment_like` DISABLE KEYS */;
-INSERT INTO `comment_like` VALUES (1,1),(2,1),(1,2),(2,2),(3,2),(1,13),(1,14),(1,15),(1,16),(1,28),(1,31),(1,32),(1,41);
+INSERT INTO `comment_like` VALUES (1,1),(2,1),(1,2),(2,2),(3,2),(1,13),(1,14),(1,15),(1,16),(1,28),(1,31),(1,32),(1,41),(29,42);
 /*!40000 ALTER TABLE `comment_like` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -197,7 +199,7 @@ CREATE TABLE `comments` (
   KEY `FK_Product_Comments` (`product_id`),
   CONSTRAINT `FK_Customer_Comments` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`),
   CONSTRAINT `FK_Product_Comments` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -206,7 +208,7 @@ CREATE TABLE `comments` (
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-INSERT INTO `comments` VALUES (1,1,'red',1,'nai xu','2023-07-30 09:17:33',2,13,0),(2,1,'red',3,'wow','2023-03-03 00:00:00',3,0,1),(4,1,'red',1,'niceee','2023-07-30 10:15:29',0,0,1),(5,1,'red',2,'alooo','2023-07-30 10:15:49',0,0,1),(6,1,'red',1,'huuuhu','2023-07-30 10:16:01',0,0,1),(7,1,'red',1,'huuuhu','2023-07-30 10:16:15',0,2,0),(8,1,'red',1,'shjttttt bro','2023-09-01 10:32:49',0,0,1),(9,1,'red',1,'shjttttt','2023-09-01 10:37:09',0,0,1),(10,1,'red',1,'dep qua','2023-09-01 12:55:56',0,0,0),(11,1,'red',1,'accc','2023-09-01 13:05:36',0,0,0),(12,1,'red',1,'deppp','2023-09-01 13:07:02',0,0,0),(13,1,'red',1,'alo','2023-09-01 13:07:30',1,0,0),(14,1,'red',1,'xinh','2023-09-01 13:08:06',1,1,0),(15,1,'red',1,'hehehehehehe','2023-09-01 13:08:59',1,4,0),(16,1,'red',1,'ak','2023-09-01 13:10:04',1,1,0),(17,1,'red',1,'no','2023-09-01 15:44:32',0,3,0),(18,1,'white',1,'nice Tee','2023-09-01 16:29:01',0,4,0),(19,1,'white',1,'omg','2023-09-01 16:41:15',0,0,0),(20,1,'white',1,'kkkk','2023-09-01 17:06:52',0,0,18),(21,1,'white',1,'hhhh','2023-09-01 17:07:09',0,0,18),(22,1,'red',1,'ok','2023-09-04 15:33:28',0,0,1),(23,1,'red',1,'yyyy','2023-09-04 15:41:00',0,0,1),(24,1,'red',1,'u gud?','2023-09-04 16:32:19',0,0,1),(25,1,'red',1,'love you ','2023-09-04 16:49:49',0,0,1),(26,1,'red',1,'alo 1','2023-09-04 16:51:13',0,0,1),(27,1,'red',1,'alo 2','2023-09-04 17:03:41',0,0,1),(28,1,'red',1,'alo 3','2023-09-04 17:04:05',1,0,1),(29,1,'white',1,'hehehe','2023-09-04 17:05:44',0,0,18),(30,1,'white',1,'heheh','2023-09-04 17:08:35',0,0,18),(31,1,'red',1,'hihi','2023-09-04 17:08:56',1,0,17),(32,1,'red',1,'kkkk','2023-09-04 17:09:09',1,0,17),(33,1,'red',1,'eeee','2023-09-04 17:09:49',0,0,7),(34,1,'red',1,'hhhh','2023-09-04 17:13:38',0,0,7),(35,1,'red',1,'iiii','2023-09-04 17:19:45',0,0,16),(36,1,'red',1,'fff','2023-09-04 17:21:11',0,0,15),(37,1,'red',1,'fff','2023-09-04 17:21:13',0,0,15),(38,1,'red',1,'fff','2023-09-04 17:21:15',0,0,15),(39,1,'red',1,'fff','2023-09-04 17:21:41',0,0,15),(40,1,'red',1,'luv','2023-09-04 17:25:12',0,0,14),(41,1,'red',1,'ac','2023-09-08 08:10:49',1,0,17),(42,7,'white',1,'okkk','2023-09-08 14:39:58',0,0,0);
+INSERT INTO `comments` VALUES (1,1,'red',1,'nai xu','2023-07-30 09:17:33',2,13,0),(2,1,'red',3,'wow','2023-03-03 00:00:00',3,0,1),(4,1,'red',1,'niceee','2023-07-30 10:15:29',0,0,1),(5,1,'red',2,'alooo','2023-07-30 10:15:49',0,0,1),(6,1,'red',1,'huuuhu','2023-07-30 10:16:01',0,0,1),(7,1,'red',1,'huuuhu','2023-07-30 10:16:15',0,2,0),(8,1,'red',1,'shjttttt bro','2023-09-01 10:32:49',0,0,1),(9,1,'red',1,'shjttttt','2023-09-01 10:37:09',0,0,1),(10,1,'red',1,'dep qua','2023-09-01 12:55:56',0,0,0),(11,1,'red',1,'accc','2023-09-01 13:05:36',0,0,0),(12,1,'red',1,'deppp','2023-09-01 13:07:02',0,0,0),(13,1,'red',1,'alo','2023-09-01 13:07:30',1,0,0),(14,1,'red',1,'xinh','2023-09-01 13:08:06',1,1,0),(15,1,'red',1,'hehehehehehe','2023-09-01 13:08:59',1,4,0),(16,1,'red',1,'ak','2023-09-01 13:10:04',1,1,0),(17,1,'red',1,'no','2023-09-01 15:44:32',0,3,0),(18,1,'white',1,'nice Tee','2023-09-01 16:29:01',0,4,0),(19,1,'white',1,'omg','2023-09-01 16:41:15',0,0,0),(20,1,'white',1,'kkkk','2023-09-01 17:06:52',0,0,18),(21,1,'white',1,'hhhh','2023-09-01 17:07:09',0,0,18),(22,1,'red',1,'ok','2023-09-04 15:33:28',0,0,1),(23,1,'red',1,'yyyy','2023-09-04 15:41:00',0,0,1),(24,1,'red',1,'u gud?','2023-09-04 16:32:19',0,0,1),(25,1,'red',1,'love you ','2023-09-04 16:49:49',0,0,1),(26,1,'red',1,'alo 1','2023-09-04 16:51:13',0,0,1),(27,1,'red',1,'alo 2','2023-09-04 17:03:41',0,0,1),(28,1,'red',1,'alo 3','2023-09-04 17:04:05',1,0,1),(29,1,'white',1,'hehehe','2023-09-04 17:05:44',0,0,18),(30,1,'white',1,'heheh','2023-09-04 17:08:35',0,0,18),(31,1,'red',1,'hihi','2023-09-04 17:08:56',1,0,17),(32,1,'red',1,'kkkk','2023-09-04 17:09:09',1,0,17),(33,1,'red',1,'eeee','2023-09-04 17:09:49',0,0,7),(34,1,'red',1,'hhhh','2023-09-04 17:13:38',0,0,7),(35,1,'red',1,'iiii','2023-09-04 17:19:45',0,0,16),(36,1,'red',1,'fff','2023-09-04 17:21:11',0,0,15),(37,1,'red',1,'fff','2023-09-04 17:21:13',0,0,15),(38,1,'red',1,'fff','2023-09-04 17:21:15',0,0,15),(39,1,'red',1,'fff','2023-09-04 17:21:41',0,0,15),(40,1,'red',1,'luv','2023-09-04 17:25:12',0,0,14),(41,1,'red',1,'ac','2023-09-08 08:10:49',1,0,17),(42,7,'white',1,'okkk','2023-09-08 14:39:58',1,1,0),(43,7,'white',29,'Ok','2023-12-21 13:32:25',0,0,42),(44,7,'white',29,'ok','2023-12-21 13:32:47',0,0,0);
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -253,7 +255,7 @@ CREATE TABLE `customers` (
   PRIMARY KEY (`id`),
   KEY `FK_Customers_Accounts` (`account_id`),
   CONSTRAINT `FK_Customers_Accounts` FOREIGN KEY (`account_id`) REFERENCES `login_accounts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -262,7 +264,7 @@ CREATE TABLE `customers` (
 
 LOCK TABLES `customers` WRITE;
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
-INSERT INTO `customers` VALUES (1,'Sang dep trai','nguyenhoangsang2362001@gmail.com','0321456987',2,'Vietnam',NULL,NULL,'1GZ_2uXGZklPMJY06COpHo1lJ9E1keq60'),(2,'Nguyen Quynh Nhu','nnhu7721@gmail.com','0213654798',3,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(3,'Nguyen Hoang Sang','19110120@student.hcmute.edu.vn','0977815809',7,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(4,'Nguyen Thi Hoang Trang','pbeltranster@gmail.com','0321654987',9,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(6,'qweqwe','qwe@we','1234567890',11,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(7,'Nguyen Quoc Heng','nqh130901@gmail.com','1234567890',12,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(8,'Duc Ngu Vcl','ducngu@gmail.com','0321654987',13,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(15,'guyen uoc oan\0\0\0','qhoangf@gmail.com','0321654789',50,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(16,'Nguyuen Hoang Anh Kho','anhkhoa123@gmail.com','0321456987',51,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(17,'Huynh Gia Kie','giakien@gmail.com','0312546897',52,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(27,'Nguyen Van A','nguyenvana@gmail.com','0123456789',63,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(28,'Nguyen Van','nguyenvanB@gmail.com','0321564897',64,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R');
+INSERT INTO `customers` VALUES (1,'Sang dep trai','nguyenhoangsang2362001@gmail.com','0321456987',2,'Vietnam',NULL,NULL,'1GZ_2uXGZklPMJY06COpHo1lJ9E1keq60'),(2,'Nguyen Quynh Nhu','nnhu7721@gmail.com','0213654798',3,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(3,'Nguyen Hoang Sang','19110120@student.hcmute.edu.vn','0977815809',7,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(4,'Nguyen Thi Hoang Trang','pbeltranster@gmail.com','0321654987',9,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(6,'qweqwe','qwe@we','1234567890',11,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(7,'Nguyen Quoc Heng','nqh130901@gmail.com','1234567890',12,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(8,'Duc Ngu Vcl','ducngu@gmail.com','0321654987',13,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(15,'guyen uoc oan\0\0\0','qhoangf@gmail.com','0321654789',50,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(16,'Nguyuen Hoang Anh Kho','anhkhoa123@gmail.com','0321456987',51,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(17,'Huynh Gia Kie','giakien@gmail.com','0312546897',52,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(27,'Nguyen Van A','nguyenvana@gmail.com','0123456789',63,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(28,'Nguyen Van','nguyenvanB@gmail.com','0321564897',64,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R'),(29,'Minh Hie','untilyou5501@gmail.com','0961329175',65,NULL,NULL,NULL,'1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R');
 /*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -281,7 +283,7 @@ CREATE TABLE `delivery` (
   PRIMARY KEY (`id`),
   KEY `FK_Invoice_delivery` (`invoice_id`),
   CONSTRAINT `FK_Invoice_delivery` FOREIGN KEY (`invoice_id`) REFERENCES `invoice` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -290,80 +292,7 @@ CREATE TABLE `delivery` (
 
 LOCK TABLES `delivery` WRITE;
 /*!40000 ALTER TABLE `delivery` DISABLE KEYS */;
-INSERT INTO `delivery` VALUES (6,1,'1',NULL);
 /*!40000 ALTER TABLE `delivery` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `delivery_info_for_ui`
---
-
-DROP TABLE IF EXISTS `delivery_info_for_ui`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `delivery_info_for_ui` (
-  `invoice_id` int NOT NULL,
-  `additional_shipper_comment` varchar(255) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `city` varchar(255) DEFAULT NULL,
-  `country` varchar(255) DEFAULT NULL,
-  `current_delivery_status` varchar(255) DEFAULT NULL,
-  `customer_avatar` varchar(255) DEFAULT NULL,
-  `customer_id` varchar(255) DEFAULT NULL,
-  `customer_name` varchar(255) DEFAULT NULL,
-  `customer_phone_number` varchar(255) DEFAULT NULL,
-  `delivery_date` datetime DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `evidence_image` varchar(255) DEFAULT NULL,
-  `expected_delivery_date` datetime DEFAULT NULL,
-  `id` varchar(255) DEFAULT NULL,
-  `invoice_date` datetime DEFAULT NULL,
-  `invoice_delivery_status` varchar(255) DEFAULT NULL,
-  `note` varchar(255) DEFAULT NULL,
-  `payment_method` varchar(255) DEFAULT NULL,
-  `payment_status` varchar(255) DEFAULT NULL,
-  `shipper_avatar` varchar(255) DEFAULT NULL,
-  `shipper_id` int DEFAULT NULL,
-  `shipper_name` varchar(255) DEFAULT NULL,
-  `shipper_phone_number` varchar(255) DEFAULT NULL,
-  `total_price` double DEFAULT NULL,
-  PRIMARY KEY (`invoice_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `delivery_info_for_ui`
---
-
-LOCK TABLES `delivery_info_for_ui` WRITE;
-/*!40000 ALTER TABLE `delivery_info_for_ui` DISABLE KEYS */;
-/*!40000 ALTER TABLE `delivery_info_for_ui` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `delivery_type`
---
-
-DROP TABLE IF EXISTS `delivery_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `delivery_type` (
-  `id` int NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `price` double NOT NULL,
-  `condition` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `delivery_type`
---
-
-LOCK TABLES `delivery_type` WRITE;
-/*!40000 ALTER TABLE `delivery_type` DISABLE KEYS */;
-INSERT INTO `delivery_type` VALUES (1,'NORMAL_DELIVERY',3,'Get package after 2-8 days depends on distance'),(2,'EXPRESS_DELIVERY',6,'Get package after no more than 4 days');
-/*!40000 ALTER TABLE `delivery_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -374,7 +303,7 @@ DROP TABLE IF EXISTS `device_fcm_token`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `device_fcm_token` (
-  `id` bigint NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `account_id` bigint NOT NULL,
   `phone_fcm_token` text NOT NULL,
   PRIMARY KEY (`id`),
@@ -390,28 +319,6 @@ CREATE TABLE `device_fcm_token` (
 LOCK TABLES `device_fcm_token` WRITE;
 /*!40000 ALTER TABLE `device_fcm_token` DISABLE KEYS */;
 /*!40000 ALTER TABLE `device_fcm_token` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `device_fcm_token_SEQ`
---
-
-DROP TABLE IF EXISTS `device_fcm_token_SEQ`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `device_fcm_token_SEQ` (
-  `next_val` bigint DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `device_fcm_token_SEQ`
---
-
-LOCK TABLES `device_fcm_token_SEQ` WRITE;
-/*!40000 ALTER TABLE `device_fcm_token_SEQ` DISABLE KEYS */;
-INSERT INTO `device_fcm_token_SEQ` VALUES (1);
-/*!40000 ALTER TABLE `device_fcm_token_SEQ` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -464,11 +371,8 @@ CREATE TABLE `invoice` (
   `online_payment_account` text,
   `admin_in_charge_id` bigint NOT NULL DEFAULT '0',
   `note` text,
-  `intent` varchar(255) DEFAULT NULL,
   `receiver_account_id` int DEFAULT NULL,
-  `Delivery_Status` varchar(255) DEFAULT NULL,
   `Delivery_fee` double DEFAULT NULL,
-  `Delivery_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `FK_customer_invoice` (`Customer_ID`),
   KEY `FK_staff_invoice` (`admin_in_charge_id`),
@@ -485,7 +389,6 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice` VALUES (1,1,'2023-10-02',NULL,'UNPAID','PACKING','ACCEPTED','COD','Customer cancels COD order, no refund',0,'USD','abcd',3600,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL),(2,1,'2023-10-02',NULL,'UNPAID','PAYMENT_WAITING','PAYMENT_WAITING','BANK_TRANSFER','',0,'USD','',5618,'',0,'',NULL,NULL,NULL,NULL,NULL),(3,1,'2023-10-02',NULL,'UNPAID','PAYMENT_WAITING','PAYMENT_WAITING','PAYPAL','',0,'USD','',959,'',0,'',NULL,NULL,NULL,NULL,NULL),(4,1,'2023-12-03',NULL,'UNPAID','BANK_TRANSFER','PAYMENT_WAITING','BANK_TRANSFER','',0,'USD','',0,'',0,'',NULL,NULL,NULL,NULL,NULL),(5,1,'2023-12-03',NULL,'UNPAID','PAYMENT_WAITING','PAYMENT_WAITING','BANK_TRANSFER','',0,'USD','',0,'',0,'',NULL,2,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -535,7 +438,6 @@ CREATE TABLE `invoices_with_products` (
 
 LOCK TABLES `invoices_with_products` WRITE;
 /*!40000 ALTER TABLE `invoices_with_products` DISABLE KEYS */;
-INSERT INTO `invoices_with_products` VALUES (1,7,1),(2,11,1),(2,17,1),(2,28,1),(3,26,1),(4,8,1),(4,24,1),(5,7,1);
 /*!40000 ALTER TABLE `invoices_with_products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -582,7 +484,7 @@ CREATE TABLE `login_accounts` (
   `current_jwt` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `User_Name` (`user_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -591,7 +493,7 @@ CREATE TABLE `login_accounts` (
 
 LOCK TABLES `login_accounts` WRITE;
 /*!40000 ALTER TABLE `login_accounts` DISABLE KEYS */;
-INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcwMTU5OTIzNywiZXhwIjoxNzAxNjg1NjM3fQ.d_N8lPN8jrJ_nVca-hiS9W6e9N0egjGryHGcUTd8Rro'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzAxNzA5Nzg1LCJleHAiOjE3MDE3OTYxODV9.QWh_yAh5LxLEweZK1w4SW4C8VHnC3kOMIg_5jUZyljY'),(3,'nhu0707','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaHUwNzA3IiwiaWF0IjoxNjk2MTUyMzk3LCJleHAiOjE2OTYyMzg3OTd9.7POixRXoyzuY1eBDGrcHJhl-skAWN8c-mLcwTjPlVFg'),(7,'sang236','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyODk3MTA1LCJleHAiOjE2OTI5ODM1MDV9.7so_xwVTJfYtuAXNgvhFYSQXZSDEQWxhHWJqUL9ds7s'),(9,'tester','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXIiLCJpYXQiOjE2OTI4MDI4MzMsImV4cCI6MTY5Mjg4OTIzM30.LLZJ_PKOBvcYv8SWoaOGMLW7USOvSYjIH7u-GIgKaSU'),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL),(64,'user3','$2a$10$es2Ds7Q3fdP8PEyYh24d5eSbDBSTeg787rtM6jgAtAu71ZGqGVpD6','CUSTOMER','ALLOWED',NULL);
+INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcwMzE2NjA1MywiZXhwIjoxNzAzMjUyNDUzfQ.VebD16oFnODmcqQn2stgLwxQUKN0PgUzQqHwByjU5-Y'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzAzMTY2MzQxLCJleHAiOjE3MDMyNTI3NDF9.yWEeyI4hlwUB7okvHLXjuaMceR2ZujpNYChkt819Gng'),(3,'nhu0707','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','BANNED',NULL),(7,'sang236','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyODk3MTA1LCJleHAiOjE2OTI5ODM1MDV9.7so_xwVTJfYtuAXNgvhFYSQXZSDEQWxhHWJqUL9ds7s'),(9,'tester','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXIiLCJpYXQiOjE2OTI4MDI4MzMsImV4cCI6MTY5Mjg4OTIzM30.LLZJ_PKOBvcYv8SWoaOGMLW7USOvSYjIH7u-GIgKaSU'),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL),(64,'user3','$2a$10$es2Ds7Q3fdP8PEyYh24d5eSbDBSTeg787rtM6jgAtAu71ZGqGVpD6','CUSTOMER','ALLOWED',NULL),(65,'minhbeo123','$2a$10$9k7D1fwg1L1et8VWH80PieOTaURchG9yjZX2fjpLupHggRFzkWyT6','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtaW5oYmVvMTIzIiwiaWF0IjoxNzAzMTY1NDkzLCJleHAiOjE3MDMyNTE4OTN9.nwh8OegclHS79UI4njVQ8f4sEglsmVcNXVzvhw9aW8w');
 /*!40000 ALTER TABLE `login_accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -680,6 +582,34 @@ INSERT INTO `online_payment_accounts` VALUES (1,'0977815809','NGUYEN HOANG SANG'
 UNLOCK TABLES;
 
 --
+-- Temporary view structure for view `product_full_info_for_ui`
+--
+
+DROP TABLE IF EXISTS `product_full_info_for_ui`;
+/*!50001 DROP VIEW IF EXISTS `product_full_info_for_ui`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `product_full_info_for_ui` AS SELECT 
+ 1 AS `id`,
+ 1 AS `product_id`,
+ 1 AS `name`,
+ 1 AS `size`,
+ 1 AS `selling_price`,
+ 1 AS `original_price`,
+ 1 AS `discount`,
+ 1 AS `brand`,
+ 1 AS `color`,
+ 1 AS `available_quantity`,
+ 1 AS `image_1`,
+ 1 AS `image_2`,
+ 1 AS `image_3`,
+ 1 AS `image_4`,
+ 1 AS `overall_rating`,
+ 1 AS `description`,
+ 1 AS `import_date`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `product_images_management`
 --
 
@@ -704,7 +634,7 @@ CREATE TABLE `product_images_management` (
 
 LOCK TABLES `product_images_management` WRITE;
 /*!40000 ALTER TABLE `product_images_management` DISABLE KEYS */;
-INSERT INTO `product_images_management` VALUES (1,'red','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/49808757050946de8bedae29011926b5_9366/Manchester_United_22-23_Home_Jersey_Red_H13881_21_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/8a9f28ca1b834e2e86ccae2901192e37_9366/Ao_DJau_San_Nha_Manchester_United_22-23_DJo_H13881_22_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/dd570e1feae0414b98e3ae2901193687_9366/Ao_DJau_San_Nha_Manchester_United_22-23_DJo_H13881_23_hover_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/693f5fb49f4c45078f9aae6f00d4c19e_9366/Ao_DJau_San_Nha_Manchester_United_22-23_DJo_H13881_01_laydown.jpg'),(1,'white','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2700b53701664eb8b277ae2f00df6e5d_9366/Ao_DJau_San_Khach_Manchester_United_22-23_trang_H13880_21_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/4d02848d2ad746f185e3ae2f00df7641_9366/Ao_DJau_San_Khach_Manchester_United_22-23_trang_H13880_22_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/1733a67776594a838a6cae2f00df7e7e_9366/Ao_DJau_San_Khach_Manchester_United_22-23_trang_H13880_23_hover_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/84bd0c3ab78f49808d78ae2f00df8697_9366/Ao_DJau_San_Khach_Manchester_United_22-23_trang_H13880_25_model.jpg'),(2,'black','https://media.gucci.com/style/HEXEAF2DC_Center_0_0_800x800/1653583557/699268_UXX0G_1000_003_100_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXEAF2DC_Center_0_0_800x800/1652714104/699268_UXX0G_1000_001_073_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXEAF2DC_Center_0_0_800x800/1652714105/699268_UXX0G_1000_002_073_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXEAF2DC_Center_0_0_800x800/1653583559/699268_UXX0G_1000_005_100_0000_Light-Gucci-Blondie-shoulder-bag.jpg'),(2,'pink','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1670024750/699268_UXX0G_6910_004_100_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1675811856/699268_UXX0G_6910_006_100_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1674688592/699268_UXX0G_6910_007_073_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1674688596/699268_UXX0G_6910_009_073_0000_Light-Gucci-Blondie-shoulder-bag.jpg'),(3,'none','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1669920431/724770_XKCWH_8050_002_100_0000_Light-Striped-jacquard-wool-knit-sweater.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1669920428/724770_XKCWH_8050_001_100_0000_Light-Striped-jacquard-wool-knit-sweater.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1669920433/724770_XKCWH_8050_003_100_0000_Light-Striped-jacquard-wool-knit-sweater.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1669920435/724770_XKCWH_8050_005_100_0000_Light-Striped-jacquard-wool-knit-sweater.jpg'),(4,'none','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/029d86dd-1549-4221-a18b-25d165998d1f/air-max-90-se-shoes-ltJLHs.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/eceb6b53-06fc-4182-a450-b16620dc5295/air-max-90-se-shoes-ltJLHs.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/4bb1f419-b093-4d53-b120-5607311bafeb/air-max-90-se-shoes-ltJLHs.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/92d5efd4-727c-4a43-93ac-14a3099591dc/air-max-90-se-shoes-ltJLHs.png'),(5,'none','https://www.dolcegabbana.com/dw/image/v2/AAGA_PRD/on/demandware.static/-/Sites-15/default/dwa68a4484/images/zoom/F6R8DTFUGOI_N0000_1.jpg?sw=742&sh=944&sm=fit','https://www.dolcegabbana.com/dw/image/v2/AAGA_PRD/on/demandware.static/-/Sites-15/default/dw06bbc59a/images/zoom/F6R8DTFUGOI_N0000_2.jpg?sw=742&sh=944&sm=fit','https://www.dolcegabbana.com/dw/image/v2/AAGA_PRD/on/demandware.static/-/Sites-15/default/dw24c729fa/images/zoom/F6R8DTFUGOI_N0000_3.jpg?sw=742&sh=944&sm=fit','https://www.dolcegabbana.com/dw/image/v2/AAGA_PRD/on/demandware.static/-/Sites-15/default/dwf8349ed3/images/zoom/F6R8DTFUGOI_N0000_11.jpg?sw=742&sh=944&sm=fit'),(6,'none','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/b75092c8-5853-4d15-bd57-c6dca886dd57/jordan-flight-mvp-fleece-pullover-hoodie-Z7kcns.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/5f7394a7-8c5e-4f5f-9782-40b932a93c36/jordan-flight-mvp-fleece-pullover-hoodie-Z7kcns.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/9a235f1a-fcfa-4c56-85ec-53225a27d5e6/jordan-flight-mvp-fleece-pullover-hoodie-Z7kcns.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/07c47509-10dd-45d5-b7ea-1ef57b8e4aea/jordan-flight-mvp-fleece-pullover-hoodie-Z7kcns.png'),(7,'red','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-red-white-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue1-as3313b09981nm243-9516416729118.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-red-white-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue2-as3313b09981nm243-9516416794654.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-red-white-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue3-as3313b09981nm243-9516424790046.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-red-white-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue4-as3313b09981nm243-9516430884894.jpg'),(7,'white','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-light-blue-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue1-as3313b08037nn268-9521332944926.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-light-blue-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue2-as3313b08037nn268-9521345888286.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-light-blue-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue3-as3313b08037nn268-9521535418398.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-light-blue-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue4-as3313b08037nn268-9521547345950.jpg'),(8,'green','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-green-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-default-a75267x08101v1702-9518592688158.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-green-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-alternative-a75267x08101v1702-9518591803422.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-green-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-other-a75267x08101v1702-9518592491550.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-green-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-extra-a75267x08101v1702-9518590033950.jpg'),(8,'red','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-brown-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-default-a75267x08101v1722-9518588788766.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-brown-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-alternative-a75267x08101v1722-9518587379742.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-brown-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-other-a75267x08101v1722-9518584725534.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-brown-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-extra-a75267x08101v1722-9518591737886.jpg'),(8,'white','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-beige-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-default-a75267x08101v1719-9518590099486.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-beige-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-alternative-a75267x08101v1719-9518592819230.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-beige-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-other-a75267x08101v1719-9518590263326.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-beige-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-extra-a75267x08101v1719-9518587871262.jpg');
+INSERT INTO `product_images_management` VALUES (1,'red','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/49808757050946de8bedae29011926b5_9366/Manchester_United_22-23_Home_Jersey_Red_H13881_21_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/8a9f28ca1b834e2e86ccae2901192e37_9366/Ao_DJau_San_Nha_Manchester_United_22-23_DJo_H13881_22_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/dd570e1feae0414b98e3ae2901193687_9366/Ao_DJau_San_Nha_Manchester_United_22-23_DJo_H13881_23_hover_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/693f5fb49f4c45078f9aae6f00d4c19e_9366/Ao_DJau_San_Nha_Manchester_United_22-23_DJo_H13881_01_laydown.jpg'),(1,'white','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2700b53701664eb8b277ae2f00df6e5d_9366/Ao_DJau_San_Khach_Manchester_United_22-23_trang_H13880_21_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/4d02848d2ad746f185e3ae2f00df7641_9366/Ao_DJau_San_Khach_Manchester_United_22-23_trang_H13880_22_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/1733a67776594a838a6cae2f00df7e7e_9366/Ao_DJau_San_Khach_Manchester_United_22-23_trang_H13880_23_hover_model.jpg','https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/84bd0c3ab78f49808d78ae2f00df8697_9366/Ao_DJau_San_Khach_Manchester_United_22-23_trang_H13880_25_model.jpg'),(2,'black','https://media.gucci.com/style/HEXEAF2DC_Center_0_0_800x800/1653583557/699268_UXX0G_1000_003_100_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXEAF2DC_Center_0_0_800x800/1652714104/699268_UXX0G_1000_001_073_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXEAF2DC_Center_0_0_800x800/1652714105/699268_UXX0G_1000_002_073_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXEAF2DC_Center_0_0_800x800/1653583559/699268_UXX0G_1000_005_100_0000_Light-Gucci-Blondie-shoulder-bag.jpg'),(2,'pink','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1670024750/699268_UXX0G_6910_004_100_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1675811856/699268_UXX0G_6910_006_100_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1674688592/699268_UXX0G_6910_007_073_0000_Light-Gucci-Blondie-shoulder-bag.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1674688596/699268_UXX0G_6910_009_073_0000_Light-Gucci-Blondie-shoulder-bag.jpg'),(3,'none','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1669920431/724770_XKCWH_8050_002_100_0000_Light-Striped-jacquard-wool-knit-sweater.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1669920428/724770_XKCWH_8050_001_100_0000_Light-Striped-jacquard-wool-knit-sweater.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1669920433/724770_XKCWH_8050_003_100_0000_Light-Striped-jacquard-wool-knit-sweater.jpg','https://media.gucci.com/style/HEXF1E9FB_Center_0_0_800x800/1669920435/724770_XKCWH_8050_005_100_0000_Light-Striped-jacquard-wool-knit-sweater.jpg'),(4,'none','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/029d86dd-1549-4221-a18b-25d165998d1f/air-max-90-se-shoes-ltJLHs.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/eceb6b53-06fc-4182-a450-b16620dc5295/air-max-90-se-shoes-ltJLHs.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/4bb1f419-b093-4d53-b120-5607311bafeb/air-max-90-se-shoes-ltJLHs.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/92d5efd4-727c-4a43-93ac-14a3099591dc/air-max-90-se-shoes-ltJLHs.png'),(5,'none','https://www.dolcegabbana.com/dw/image/v2/BKDB_PRD/on/demandware.static/-/Sites-15/default/dwb6f5c455/images/zoom/F6GAVTFSA56_HN4YA_0.jpg','https://www.dolcegabbana.com/dw/image/v2/BKDB_PRD/on/demandware.static/-/Sites-15/default/dw8d1d97c3/images/zoom/F6GAVTFSA56_HN4YA_1.jpg','https://www.dolcegabbana.com/dw/image/v2/BKDB_PRD/on/demandware.static/-/Sites-15/default/dw1947d070/images/zoom/F6GAVTFSA56_HN4YA_2.jpg','https://wwwhttps://www.dolcegabbana.com/dw/image/v2/BKDB_PRD/on/demandware.static/-/Sites-15/default/dw30454cfa/images/zoom/F6GAVTFSA56_HN4YA_3.jpg.dolcegabbana.com/dw/image/v2/AAGA_PRD/on/demandware.static/-/Sites-15/default/dwf8349ed3/images/zoom/F6R8DTFUGOI_N0000_11.jpg?sw=742&sh=944&sm=fit'),(6,'none','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/b75092c8-5853-4d15-bd57-c6dca886dd57/jordan-flight-mvp-fleece-pullover-hoodie-Z7kcns.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/5f7394a7-8c5e-4f5f-9782-40b932a93c36/jordan-flight-mvp-fleece-pullover-hoodie-Z7kcns.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/9a235f1a-fcfa-4c56-85ec-53225a27d5e6/jordan-flight-mvp-fleece-pullover-hoodie-Z7kcns.png','https://static.nike.com/a/images/t_PDP_864_v1/f_auto,b_rgb:f5f5f5/07c47509-10dd-45d5-b7ea-1ef57b8e4aea/jordan-flight-mvp-fleece-pullover-hoodie-Z7kcns.png'),(7,'red','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-red-white-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue1-as3313b09981nm243-9516416729118.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-red-white-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue2-as3313b09981nm243-9516416794654.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-red-white-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue3-as3313b09981nm243-9516424790046.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-red-white-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue4-as3313b09981nm243-9516430884894.jpg'),(7,'white','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-light-blue-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue1-as3313b08037nn268-9521332944926.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-light-blue-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue2-as3313b08037nn268-9521345888286.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-light-blue-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue3-as3313b08037nn268-9521535418398.jpg','https://www.chanel.com/images//t_one///q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/large-back-pack-chanel-22-light-blue-shiny-calfskin-gold-tone-metal-shiny-calfskin-gold-tone-metal--packshot-artistique-vue4-as3313b08037nn268-9521547345950.jpg'),(8,'green','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-green-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-default-a75267x08101v1702-9518592688158.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-green-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-alternative-a75267x08101v1702-9518591803422.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-green-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-other-a75267x08101v1702-9518592491550.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-green-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-extra-a75267x08101v1702-9518590033950.jpg'),(8,'red','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-brown-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-default-a75267x08101v1722-9518588788766.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-brown-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-alternative-a75267x08101v1722-9518587379742.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-brown-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-other-a75267x08101v1722-9518584725534.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-brown-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-extra-a75267x08101v1722-9518591737886.jpg'),(8,'white','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-beige-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-default-a75267x08101v1719-9518590099486.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-beige-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-alternative-a75267x08101v1719-9518592819230.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-beige-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-other-a75267x08101v1719-9518590263326.jpg','https://www.chanel.com/images//t_one/t_fashion9//b_rgb:F7F7F7,e_brightness:-3/q_auto:good,f_auto,fl_lossy,dpr_1.2/w_620/butterfly-eyeglasses-dark-beige-gold-acetate-glass-pearls-acetate-glass-pearls-packshot-extra-a75267x08101v1719-9518587871262.jpg');
 /*!40000 ALTER TABLE `product_images_management` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -724,7 +654,7 @@ CREATE TABLE `product_import_management` (
   PRIMARY KEY (`id`),
   KEY `FK_Products_Management_Products_Import_Management` (`product_management_id`),
   CONSTRAINT `FK_Products_Management_Products_Import_Management` FOREIGN KEY (`product_management_id`) REFERENCES `products_management` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -733,7 +663,7 @@ CREATE TABLE `product_import_management` (
 
 LOCK TABLES `product_import_management` WRITE;
 /*!40000 ALTER TABLE `product_import_management` DISABLE KEYS */;
-INSERT INTO `product_import_management` VALUES (1,1,'2022-12-01 00:00:00',10,NULL),(2,3,'2022-12-01 00:00:00',10,NULL),(3,4,'2022-12-01 00:00:00',10,NULL),(4,5,'2022-12-01 00:00:00',10,NULL),(5,6,'2022-12-01 00:00:00',10,NULL),(6,7,'2022-12-01 00:00:00',10,NULL),(7,8,'2022-12-01 00:00:00',10,NULL),(8,11,'2022-12-01 00:00:00',10,NULL),(9,12,'2022-12-01 00:00:00',10,NULL),(10,13,'2022-12-01 00:00:00',10,NULL),(11,14,'2022-12-01 00:00:00',10,NULL),(12,17,'2022-12-01 00:00:00',10,NULL),(13,18,'2022-12-01 00:00:00',10,NULL),(14,19,'2022-12-01 00:00:00',10,NULL),(15,20,'2022-12-01 00:00:00',10,NULL),(16,21,'2022-12-01 00:00:00',10,NULL),(17,22,'2022-12-01 00:00:00',10,NULL),(18,23,'2022-12-01 00:00:00',10,NULL),(19,24,'2022-12-01 00:00:00',10,NULL),(20,25,'2022-12-01 00:00:00',10,NULL),(21,26,'2022-12-01 00:00:00',10,NULL),(22,27,'2022-12-01 00:00:00',10,NULL),(23,28,'2022-12-01 00:00:00',10,NULL);
+INSERT INTO `product_import_management` VALUES (1,1,'2022-12-01 00:00:00',10,NULL),(2,3,'2022-12-01 00:00:00',10,NULL),(3,4,'2022-12-01 00:00:00',10,NULL),(4,5,'2022-12-01 00:00:00',10,NULL),(5,6,'2022-12-01 00:00:00',10,NULL),(6,7,'2022-12-01 00:00:00',10,NULL),(7,8,'2022-12-01 00:00:00',10,NULL),(8,11,'2022-12-01 00:00:00',10,NULL),(9,12,'2022-12-01 00:00:00',10,NULL),(10,13,'2022-12-01 00:00:00',10,NULL),(11,14,'2022-12-01 00:00:00',10,NULL),(12,17,'2022-12-01 00:00:00',10,NULL),(13,18,'2022-12-01 00:00:00',10,NULL),(14,19,'2022-12-01 00:00:00',10,NULL),(15,20,'2022-12-01 00:00:00',10,NULL),(16,21,'2022-12-01 00:00:00',10,NULL),(17,22,'2022-12-01 00:00:00',10,NULL),(18,23,'2022-12-01 00:00:00',10,NULL),(19,24,'2022-12-01 00:00:00',10,NULL),(20,25,'2022-12-01 00:00:00',10,NULL),(21,26,'2022-12-01 00:00:00',10,NULL),(22,27,'2022-12-01 00:00:00',10,NULL),(23,28,'2022-12-01 00:00:00',10,NULL),(98,276,'2023-12-21 00:00:00',10,NULL),(99,277,'2023-12-21 00:00:00',10,NULL);
 /*!40000 ALTER TABLE `product_import_management` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -780,6 +710,10 @@ CREATE TABLE `products` (
   `brand` varchar(50) NOT NULL,
   `discount` double NOT NULL,
   `description` text,
+  `height` double DEFAULT NULL,
+  `length` double DEFAULT NULL,
+  `weight` double DEFAULT NULL,
+  `width` double DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`),
   KEY `product_name_index` (`name`)
@@ -792,7 +726,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (1,'Manchester United 22/23',950,650,'addidas',10,'A supporter jersey made with recycled materials.\n\nTurned up or pressed down, the humble polo collar has played a starring role in many of Manchester United\'s biggest moments. Making a comeback on this adidas football jersey, it joins a shield-style badge and engineered pinstripe graphic to produce an eye-catching look. Moisture-absorbing AEROREADY and mesh panels make it a comfortable choice for passionate supporters.\n\nMade with 100% recycled materials, this product represents just one of our solutions to help end plastic waste.'),(2,'Gucci Blondie shoulder bag',3600,2500,'gucci',0,'\n\nVintage elements are paired with archival details as an ode to the glamour that permeates Gucci\'s latest collections. This shoulder bag pairs a delicate chain strap with soft leather to infuse the accessory with a timeless feel. Reintroduced in honor of the collection, the rounded silhouette is completed by a historical, rounded iteration of Guccio Gucci\'s monogram.'),(3,'Striped jacquard wool knit sweater',2600,1400,'gucci',0,'\n\nThe Cruise 2023 Gucci Cosmogonie collection was presented against the backdrop of the historic Castel del Monte in Italy. The show brought together aesthetics from distant eras and geographies and linked elements from the past with the present. This multicolor striped jacquard wool sweater has the image of the jester paired with the Interlocking G on the front.'),(4,'Nike Air Max 90 SE',2750,1600,'nike',15,'What moves you? Find out in the Air Max 90 SE. Hemp accents, durable textile and playful \"NIKE MOVING CO.\" details celebrate getting going. Snail-trail deco stitching across the mudguard adds a fun take to the outdoorsy aesthetic. And its Waffle outsole and exposed Air cushioning keep the tried-and-tested feel under your feet. So, where next?'),(5,'Jersey midi dress with sequins',2065,1300,'dolce&gabbana',0,'Dolce&Gabbana has always loved contrasts and thinks of strong contemporary women with a lot of personality. Garments with enveloping silhouettes, such as this sheath dress with fusible rhinestone embellishment, come in future-looking materials that will highlight all your feminine sensuality. '),(6,'Jordan Flight MVP',800,550,'nike',0,'Spring\'s here, gear up. This fleece hoodie will keep you cosy—and a big ol\' Jordan graphic busting through on the back keeps things fun.'),(7,'Chanel backpack 22',6627,5123,'chanel',10,'Glossy Calfskin & Light Blue Gold Plated Metal'),(8,'Butterfly glasses',953,721,'chanel',0,'Acetate & Glass Pearls Dark Green & Gold');
+INSERT INTO `products` VALUES (1,'Manchester United 22/23',950,650,'addidas',10,'A supporter jersey made with recycled materials.\n\nTurned up or pressed down, the humble polo collar has played a starring role in many of Manchester United\'s biggest moments. Making a comeback on this adidas football jersey, it joins a shield-style badge and engineered pinstripe graphic to produce an eye-catching look. Moisture-absorbing AEROREADY and mesh panels make it a comfortable choice for passionate supporters.\n\nMade with 100% recycled materials, this product represents just one of our solutions to help end plastic waste.',5,30,200,30),(2,'Gucci Blondie shoulder bag',3600,2500,'gucci',0,'\n\nVintage elements are paired with archival details as an ode to the glamour that permeates Gucci\'s latest collections. This shoulder bag pairs a delicate chain strap with soft leather to infuse the accessory with a timeless feel. Reintroduced in honor of the collection, the rounded silhouette is completed by a historical, rounded iteration of Guccio Gucci\'s monogram.',20,30,500,10),(3,'Striped jacquard wool knit sweater',2600,1400,'gucci',0,'\n\nThe Cruise 2023 Gucci Cosmogonie collection was presented against the backdrop of the historic Castel del Monte in Italy. The show brought together aesthetics from distant eras and geographies and linked elements from the past with the present. This multicolor striped jacquard wool sweater has the image of the jester paired with the Interlocking G on the front.',8,30,430,30),(4,'Nike Air Max 90 SE',2750,1600,'nike',15,'What moves you? Find out in the Air Max 90 SE. Hemp accents, durable textile and playful \"NIKE MOVING CO.\" details celebrate getting going. Snail-trail deco stitching across the mudguard adds a fun take to the outdoorsy aesthetic. And its Waffle outsole and exposed Air cushioning keep the tried-and-tested feel under your feet. So, where next?',15,30,500,20),(5,'CHARMEUSE SHEATH DRESS WITH ROSE GARDEN PRINT',2065,1300,'dolce&gabbana',0,'The spirit of the 1960s is taking over the new Flower Power collection. The focus is a head-to-toe floral look built around pairing and layering rose, anemone and floral bouquet maxi-prints. A cosmopolite poised between playful and sexy, this women interprets the austerity and elegance of the 1960s, harking back to boldly opulent imagery that here at Dolce&Gabbana is condensed and reinterpreted through silhouettes, ample proportions and airy shapes, bringing femininity and sensuality to the forefront.that will highlight all your feminine sensuality. ',0,0,0,0),(6,'Jordan Flight MVP',800,550,'nike',0,'Spring\'s here, gear up. This fleece hoodie will keep you cosy—and a big ol\' Jordan graphic busting through on the back keeps things fun.',8,30,445,30),(7,'Chanel backpack 22',6627,5123,'chanel',10,'Glossy Calfskin & Light Blue Gold Plated Metal',42,35,800,20),(8,'Butterfly glasses',953,721,'chanel',0,'Acetate & Glass Pearls Dark Green & Gold',4,10,70,10);
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -820,7 +754,7 @@ CREATE TABLE `products_management` (
   PRIMARY KEY (`id`),
   KEY `FK_Products_Products_Management` (`product_id`),
   CONSTRAINT `FK_Products_Products_Management` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=276 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=278 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -829,7 +763,7 @@ CREATE TABLE `products_management` (
 
 LOCK TABLES `products_management` WRITE;
 /*!40000 ALTER TABLE `products_management` DISABLE KEYS */;
-INSERT INTO `products_management` VALUES (1,1,'red','s',10,1,1,0,2,0,2,3,'2022-12-01 00:00:00'),(3,1,'red','l',10,1,1,0,2,0,2,3,'2022-12-01 00:00:00'),(4,1,'white','s',15,0,0,0,0,1,1,4,'2022-12-01 00:00:00'),(5,1,'white','m',15,0,0,0,0,1,1,4,'2022-12-01 00:00:00'),(6,1,'white','l',15,2,0,0,0,1,2,4,'2022-12-01 00:00:00'),(7,2,'pink','none',12,-1,0,0,0,1,1,4,'2022-12-01 00:00:00'),(8,2,'black','none',10,4,0,0,1,0,0,3,'2022-12-01 00:00:00'),(11,3,'none','l',3,3,0,0,0,0,4,5,'2022-12-01 00:00:00'),(12,4,'none','40',10,4,0,1,0,0,1,3,'2022-12-01 00:00:00'),(13,4,'none','40.5',12,3,0,1,0,0,1,3,'2022-12-01 00:00:00'),(14,4,'none','41',12,5,0,1,0,2,1,3,'2022-12-01 00:00:00'),(17,5,'none','36',8,3,0,0,0,1,1,4,'2022-12-01 00:00:00'),(18,5,'none','38',8,3,0,0,0,1,1,4,'2022-12-01 00:00:00'),(19,5,'none','40',8,3,0,0,0,1,1,4,'2022-12-01 00:00:00'),(20,5,'none','42',8,3,0,0,0,1,1,4,'2022-12-01 00:00:00'),(21,6,'none','s',10,1,0,0,0,2,0,4,'2022-12-01 00:00:00'),(22,6,'none','m',7,0,0,0,0,1,0,4,'2022-12-01 00:00:00'),(23,6,'none','l',7,1,0,0,0,2,0,4,'2022-12-01 00:00:00'),(24,7,'white','none',10,2,0,0,0,1,1,4,'2022-12-01 00:00:00'),(25,7,'red','none',8,3,0,0,0,1,2,4,'2022-12-01 00:00:00'),(26,8,'green','none',9,3,0,1,0,1,0,3,'2022-12-01 00:00:00'),(27,8,'white','none',6,2,0,0,0,1,2,4,'2022-12-01 00:00:00'),(28,8,'red','none',9,6,1,0,0,3,1,3,'2022-12-01 00:00:00');
+INSERT INTO `products_management` VALUES (1,1,'red','s',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(3,1,'red','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(4,1,'white','s',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(5,1,'white','m',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(6,1,'white','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(7,2,'pink','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(8,2,'black','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(11,3,'none','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(12,4,'none','40',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(13,4,'none','40.5',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(14,4,'none','41',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(17,5,'none','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(18,5,'none','xl',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(19,5,'none','xs',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(20,5,'none','xxl',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(21,6,'none','s',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(22,6,'none','m',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(23,6,'none','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(24,7,'white','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(25,7,'red','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(26,8,'green','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(27,8,'white','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(28,8,'red','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(276,5,'none','s',20,0,0,0,0,0,0,0,'2023-12-21 00:00:00'),(277,5,'none','m',20,0,0,0,0,0,0,0,'2023-12-21 00:00:00');
 /*!40000 ALTER TABLE `products_management` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -841,16 +775,18 @@ DROP TABLE IF EXISTS `refund`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `refund` (
-  `invoice_id` int NOT NULL AUTO_INCREMENT,
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `invoice_id` int NOT NULL,
   `content` varchar(255) DEFAULT NULL,
   `date` datetime DEFAULT NULL,
   `evident_image` varchar(255) DEFAULT NULL,
   `refund_money` double DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `in_charge_admin_id` int DEFAULT NULL,
-  PRIMARY KEY (`invoice_id`),
+  PRIMARY KEY (`ID`),
+  KEY `FK4ny5ywx78sgoir4c4gifedx7e` (`invoice_id`),
   KEY `FKk62gu4uso16ol1i5f2xmjo6n` (`in_charge_admin_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -859,6 +795,7 @@ CREATE TABLE `refund` (
 
 LOCK TABLES `refund` WRITE;
 /*!40000 ALTER TABLE `refund` DISABLE KEYS */;
+INSERT INTO `refund` VALUES (1,5,NULL,NULL,NULL,0,'NOT_REFUNDED_YET',NULL),(2,14,NULL,NULL,NULL,14911.25,'NOT_REFUNDED_YET',NULL);
 /*!40000 ALTER TABLE `refund` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -941,6 +878,14 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `overall_rating`,
  1 AS `description`*/;
 SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping events for database 'fashionstorewebsite'
+--
+
+--
+-- Dumping routines for database 'fashionstorewebsite'
+--
 
 --
 -- Final view structure for view `cart_item_info_for_ui`
@@ -1051,6 +996,24 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `product_full_info_for_ui`
+--
+
+/*!50001 DROP VIEW IF EXISTS `product_full_info_for_ui`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `product_full_info_for_ui` AS select `pm`.`id` AS `id`,`pm`.`product_id` AS `product_id`,`p`.`name` AS `name`,`pm`.`size` AS `size`,`p`.`selling_price` AS `selling_price`,`p`.`original_price` AS `original_price`,`p`.`discount` AS `discount`,`p`.`brand` AS `brand`,`pm`.`color` AS `color`,`pm`.`available_quantity` AS `available_quantity`,`pim`.`image_1` AS `image_1`,`pim`.`image_2` AS `image_2`,`pim`.`image_3` AS `image_3`,`pim`.`image_4` AS `image_4`,`pm`.`overall_rating` AS `overall_rating`,`p`.`description` AS `description`,`pm`.`import_date` AS `import_date` from ((`products` `p` left join `products_management` `pm` on((`p`.`id` = `pm`.`product_id`))) join `product_images_management` `pim` on((`p`.`id` = `pim`.`product_id`))) where (`pim`.`color` = `pm`.`color`) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `product_info_for_ui`
 --
 
@@ -1113,4 +1076,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-05 22:38:40
+-- Dump completed on 2023-12-21 21:20:52

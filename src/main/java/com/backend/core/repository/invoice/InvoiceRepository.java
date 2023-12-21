@@ -15,7 +15,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
 
 
     @Query(value = "select id from invoice order by id desc limit 1", nativeQuery = true)
-    int getLastestInvoiceId();
+    Integer getLatestInvoiceId();
 
 
     @Query(value = "select * from invoice i join customers c on i.customer_id = c.id where i.customer_id = :idVal and payment_status = 0 limit :limit offset :startLine", nativeQuery = true)
