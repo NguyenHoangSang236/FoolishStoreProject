@@ -104,7 +104,12 @@ public class InvoiceCrudServiceImpl implements CrudService {
             String paymentMethod = cartCheckout.getPaymentMethod();
             double shippingFee = ghnUtils.calculateShippingFee(cartCheckout, selectedCartItemList);
             double subtotal = 0;
-            int newInvoiceId = invoiceRepo.getLastestInvoiceId() + 1;
+            int newInvoiceId = 0;
+            Integer invoiceId = invoiceRepo.getLatestInvoiceId() + 1;
+
+            if(invoiceId != null) {
+                newInvoiceId = (int) invoiceId + 1;
+            }
 
             // calculate subtotal price
             for (CartRenderInfoDTO cartRenderInfoDTO : selectedCartItemList) {
