@@ -1,6 +1,7 @@
 package com.backend.core.entities.tableentity;
 
 import com.backend.core.enums.InvoiceEnum;
+import com.backend.core.enums.PaymentEnum;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -127,12 +128,10 @@ public class Invoice {
 
     // check invoice can be updated or not
     public boolean isUpdatable() {
-        if (!this.orderStatus.equals(InvoiceEnum.FAILED.name())
+        return (!this.orderStatus.equals(InvoiceEnum.FAILED.name())
                 && !this.orderStatus.equals(InvoiceEnum.SUCCESS.name())
                 && !this.orderStatus.equals(InvoiceEnum.CUSTOMER_CANCEL.name())
-                && !this.orderStatus.equals(InvoiceEnum.SHIPPER_CANCEL.name())) {
-            return true;
-        } else return false;
+                && !this.orderStatus.equals(InvoiceEnum.SHIPPER_CANCEL.name()));
     }
 
     // check if there is any product whose quantity is higher than its available quantity
