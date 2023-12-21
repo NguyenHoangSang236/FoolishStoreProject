@@ -105,7 +105,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             double shippingFee = ghnUtils.calculateShippingFee(cartCheckout, selectedCartItemList);
             double subtotal = 0;
             int newInvoiceId = 0;
-            Integer invoiceId = invoiceRepo.getLatestInvoiceId() + 1;
+            Integer invoiceId = invoiceRepo.getLatestInvoiceId();
 
             if(invoiceId != null) {
                 newInvoiceId = (int) invoiceId + 1;
