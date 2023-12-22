@@ -1,7 +1,6 @@
 package com.backend.core.entities.tableentity;
 
 import com.backend.core.enums.InvoiceEnum;
-import com.backend.core.enums.PaymentEnum;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

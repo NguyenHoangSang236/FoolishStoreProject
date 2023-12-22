@@ -107,7 +107,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             int newInvoiceId = 0;
             Integer invoiceId = invoiceRepo.getLatestInvoiceId();
 
-            if(invoiceId != null) {
+            if (invoiceId != null) {
                 newInvoiceId = (int) invoiceId + 1;
             }
 
@@ -308,15 +308,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTANCE_WAITING.name()) &&
                     invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
                 invoice.setAdminAcceptance(adminAction);
+                invoice.setOrderStatus(InvoiceEnum.PACKING.name());
                 invoice.setStaff(adminInCharge);
 
-                if (adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) {
-                    invoice.setAdminAcceptance(AdminAcceptanceEnum.ACCEPTED.name());
-                } else {
-                    invoice.setAdminAcceptance(AdminAcceptanceEnum.REFUSED.name());
-                    // add sold quantity and subtract in-stock quantity of products from this invoice
-                    productQuantityProcess(adminAction, invoice);
-                }
+                // add sold quantity and subtract in-stock quantity of products from this invoice
+                productQuantityProcess(adminAction, invoice);
 
                 updateCartItemBuyingStatusOnAdminAcceptance(adminAction, invoice);
             }
@@ -327,6 +323,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 invoice.setAdminAcceptance(adminAction);
                 invoice.setOrderStatus(InvoiceEnum.PACKING.name());
                 invoice.setPaymentStatus(PaymentEnum.PAID.name());
+
                 // add sold quantity and subtract in-stock quantity of products from this invoice
                 productQuantityProcess(adminAction, invoice);
             }
@@ -336,8 +333,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                             invoice.getAdminAcceptance().equals((AdminAcceptanceEnum.ACCEPTED))) &&
                     !invoice.getOrderStatus().equals(InvoiceEnum.PACKING.name())) {
                 invoice.setOrderStatus(adminAction);
-            }
-            else
+            } else
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
             invoiceRepo.save(invoice);
@@ -402,10 +398,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     public boolean isInvoiceOwnerOrAdmin(Account acc, int invoiceId) {
-        if(acc.getCustomer() == null && acc.getStaff() != null) {
+        if (acc.getCustomer() == null && acc.getStaff() != null) {
             return true;
-        }
-        else
+        } else
             return (invoiceRepo.getInvoiceCountByInvoiceIdAndCustomerId(invoiceId, acc.getCustomer().getId()) > 0);
     }
 
