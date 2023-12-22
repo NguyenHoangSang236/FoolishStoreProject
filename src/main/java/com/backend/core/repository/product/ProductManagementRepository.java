@@ -10,12 +10,12 @@ import java.util.List;
 
 @Repository
 public interface ProductManagementRepository extends JpaRepository<ProductManagement, Integer> {
-//	@Query(value = "select * from products_management where product_id = :idVal order by id desc limit 1", nativeQuery = true)
+    //	@Query(value = "select * from products_management where product_id = :idVal order by id desc limit 1", nativeQuery = true)
 //	ProductManagement getLastestProductManagementInfoByProductId(@Param("idVal") int productId);
 //
 //
-@Query(value = "select size from products_management where product_id = :productId and color = :color", nativeQuery = true)
-List<String> getSizeListByProductIdAndColor(@Param("productId") int productId, @Param("color") String color);
+    @Query(value = "select size from products_management where product_id = :productId and color = :color", nativeQuery = true)
+    List<String> getSizeListByProductIdAndColor(@Param("productId") int productId, @Param("color") String color);
 
 
     @Query(value = "select * from products_management where id = :idVal", nativeQuery = true)
