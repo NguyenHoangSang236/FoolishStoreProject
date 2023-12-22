@@ -1,6 +1,7 @@
 package com.backend.core.controller.admin;
 
 import com.backend.core.abstractClasses.CrudController;
+import com.backend.core.entities.requestdto.refund.RefundConfirmDTO;
 import com.backend.core.entities.requestdto.refund.RefundFilterRequestDTO;
 import com.backend.core.service.CrudService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,10 +11,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -34,7 +33,7 @@ public class RefundController extends CrudController {
     }
 
     @Override
-    public ResponseEntity updateItem(String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
 
@@ -64,5 +63,19 @@ public class RefundController extends CrudController {
         ObjectMapper objectMapper = new ObjectMapper();
         RefundFilterRequestDTO request = objectMapper.readValue(json, RefundFilterRequestDTO.class);
         return crudService.readingFromSingleRequest(request, httpRequest);
+    }
+
+    @PostMapping(value = "/confirmRefund",
+            consumes = {"*/*"},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity confirmInvoiceRefund(@RequestParam("evidenceImage") MultipartFile evidenceImage,
+                                               @RequestParam("invoiceId") int invoiceId,
+                                               HttpServletRequest httpRequest) {
+        RefundConfirmDTO request = RefundConfirmDTO.builder()
+                .evidenceImage(evidenceImage)
+                .invoiceId(invoiceId)
+                .build();
+
+        return crudService.updatingResponseByRequest(request, httpRequest);
     }
 }

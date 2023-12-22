@@ -227,8 +227,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 }
 
                 // if online payment and shipper has not accepted the order yet -> refund 50%
-                if (!invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) || invoice.getDelivery() == null) {
-                    if(invoice.getPaymentMethod().equals(PaymentEnum.PAID)) {
+                if (!invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) && invoice.getDelivery() == null) {
+                    if (invoice.getPaymentStatus().equals(PaymentEnum.PAID.name())) {
                         invoice.setRefundPercentage(50);
                         invoice.setReason("Customer cancels order before admin create shipping order, refund 50%");
                         message += "you will be refunded 50% of the total order value, we will send it within 24 hours!";
@@ -239,8 +239,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                         refund.setStatus(RefundEnum.NOT_REFUNDED_YET.name());
 
                         refundRepo.save(refund);
-                    }
-                    else if(invoice.getPaymentMethod().equals(PaymentEnum.UNPAID)) {
+                    } else if (invoice.getPaymentStatus().equals(PaymentEnum.UNPAID.name())) {
                         invoice.setReason("Customer cancels order before paying, no refund");
                         message += "you will not have any refund because you have not paid for this order";
                     }
@@ -327,6 +326,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     !invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
                 invoice.setAdminAcceptance(adminAction);
                 invoice.setOrderStatus(InvoiceEnum.PACKING.name());
+                invoice.setPaymentStatus(PaymentEnum.PAID.name());
                 // add sold quantity and subtract in-stock quantity of products from this invoice
                 productQuantityProcess(adminAction, invoice);
             }
