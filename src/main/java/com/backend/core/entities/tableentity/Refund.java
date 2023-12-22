@@ -1,7 +1,9 @@
 package com.backend.core.entities.tableentity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -14,6 +16,8 @@ import java.util.Date;
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "refund")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Refund {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +29,6 @@ public class Refund {
 
     @Column(name = "date")
     Date date;
-
-    @Column(name = "content")
-    String content;
 
     @Column(name = "evident_image")
     String evidentImage;

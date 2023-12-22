@@ -490,41 +490,44 @@ public class ValueRenderUtils {
     public String refundFilterQuery(RefundFilterDTO refundFilter, PaginationDTO pagination) {
         String result = "select r.* from refund r join invoice i on r.invoice_id = i.id where ";
 
-        Date refundDate = refundFilter.getRefundDate();
-        String paymentMethod = refundFilter.getPaymentMethod();
-        String reason = refundFilter.getReason();
-        int invoiceId = refundFilter.getInvoiceId();
-        int adminId = refundFilter.getAdminId();
         int limit = pagination.getLimit();
         int page = pagination.getPage();
 
-        if (paymentMethod != null && !paymentMethod.isBlank()) {
-            result += "payment_method = '" + paymentMethod + "' and ";
-        }
+        if (refundFilter != null) {
+            Date refundDate = refundFilter.getRefundDate();
+            String paymentMethod = refundFilter.getPaymentMethod();
+            String reason = refundFilter.getReason();
+            int invoiceId = refundFilter.getInvoiceId();
+            int adminId = refundFilter.getAdminId();
 
-        if (reason != null && !reason.isBlank()) {
-            result += "reason = '" + reason + "' and ";
-        }
+            if (paymentMethod != null && !paymentMethod.isBlank()) {
+                result += "payment_method = '" + paymentMethod + "' and ";
+            }
 
-        if (refundDate != null) {
-            result += "date = '" + formatDateToString(refundDate, "yyyy-MM-dd") + "' and ";
-        }
+            if (reason != null && !reason.isBlank()) {
+                result += "reason = '" + reason + "' and ";
+            }
 
-        if (invoiceId > 0) {
-            result += "invoice_id = " + invoiceId + " and ";
-        }
+            if (refundDate != null) {
+                result += "date = '" + formatDateToString(refundDate, "yyyy-MM-dd") + "' and ";
+            }
 
-        if (adminId > 0) {
-            result += "in_charge_admin_id = " + adminId + " and ";
+            if (invoiceId > 0) {
+                result += "invoice_id = " + invoiceId + " and ";
+            }
+
+            if (adminId > 0) {
+                result += "in_charge_admin_id = " + adminId + " and ";
+            }
+
+            result = result.substring(0, result.lastIndexOf("and"));
+        } else {
+            result = result.substring(0, result.lastIndexOf("where"));
         }
 
         if (page != 0 && limit != 0) {
             result += " ORDER BY id desc LIMIT " + (limit * (page - 1)) + ", " + limit;
         }
-
-        result = result.substring(0, result.lastIndexOf("and"));
-
-        System.out.println(result);
 
         return result;
     }
