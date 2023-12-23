@@ -390,7 +390,7 @@ CREATE TABLE `invoice` (
 
 LOCK TABLES `invoice` WRITE;
 /*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
-INSERT INTO `invoice` VALUES (22,1,'2023-12-21',NULL,'PAID','CUSTOMER_CANCEL','CONFIRMED_ONLINE_PAYMENT','BANK_TRANSFER','Customer cancels order before admin create shipping order, refund 50%',50,'USD','',1711,'',0,'',2,1),(23,1,'2023-12-21',NULL,'UNPAID','PAYMENT_WAITING','PAYMENT_WAITING','BANK_TRANSFER','',0,'USD','',1711,'',0,'',2,1);
+INSERT INTO `invoice` VALUES (22,1,'2023-12-21',NULL,'PAID','CUSTOMER_CANCEL','CONFIRMED_ONLINE_PAYMENT','BANK_TRANSFER','Customer cancels order before admin create shipping order, refund 50%',50,'USD','',1711,'',0,'',2,1),(23,1,'2023-12-21',NULL,'PAID','PACKING','CONFIRMED_ONLINE_PAYMENT','BANK_TRANSFER','',0,'USD','',1711,'',0,'',2,1);
 /*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -496,7 +496,7 @@ CREATE TABLE `login_accounts` (
 
 LOCK TABLES `login_accounts` WRITE;
 /*!40000 ALTER TABLE `login_accounts` DISABLE KEYS */;
-INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcwMzIzODE2NSwiZXhwIjoxNzAzMzI0NTY1fQ.CHHX5vK2m-AccFn4FhKjSno6UMHHV2Gq6iW7srKFJVU'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzAzMjMyMjgyLCJleHAiOjE3MDMzMTg2ODJ9.JftRNXJHTXQFCXI69F1AWvQBSZsww1wdWHldDYdoLH0'),(3,'nhu0707','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','BANNED',NULL),(7,'sang236','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyODk3MTA1LCJleHAiOjE2OTI5ODM1MDV9.7so_xwVTJfYtuAXNgvhFYSQXZSDEQWxhHWJqUL9ds7s'),(9,'tester','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXIiLCJpYXQiOjE2OTI4MDI4MzMsImV4cCI6MTY5Mjg4OTIzM30.LLZJ_PKOBvcYv8SWoaOGMLW7USOvSYjIH7u-GIgKaSU'),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL),(64,'user3','$2a$10$es2Ds7Q3fdP8PEyYh24d5eSbDBSTeg787rtM6jgAtAu71ZGqGVpD6','CUSTOMER','ALLOWED',NULL),(65,'minhbeo123','$2a$10$9k7D1fwg1L1et8VWH80PieOTaURchG9yjZX2fjpLupHggRFzkWyT6','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtaW5oYmVvMTIzIiwiaWF0IjoxNzAzMTY1NDkzLCJleHAiOjE3MDMyNTE4OTN9.nwh8OegclHS79UI4njVQ8f4sEglsmVcNXVzvhw9aW8w');
+INSERT INTO `login_accounts` VALUES (0,'unknown','123','ADMIN','ALLOWED',NULL),(1,'admin','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','ADMIN','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcwMzMyNzkzMiwiZXhwIjoxNzAzNDE0MzMyfQ.qd3Wbcy1M3QI8ivjEOotu7TkX4R3tJ1yVXFthl9EqTY'),(2,'user','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzAzMzI3NzcwLCJleHAiOjE3MDM0MTQxNzB9.Km1mJyMgNHEK4M1L2iPTjamWni94nVdU2PCNldo-VAQ'),(3,'nhu0707','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','BANNED',NULL),(7,'sang236','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','BANNED',NULL),(8,'shipper','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','SHIPPER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGlwcGVyIiwiaWF0IjoxNjkyODk3MTA1LCJleHAiOjE2OTI5ODM1MDV9.7so_xwVTJfYtuAXNgvhFYSQXZSDEQWxhHWJqUL9ds7s'),(9,'tester','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0ZXIiLCJpYXQiOjE2OTI4MDI4MzMsImV4cCI6MTY5Mjg4OTIzM30.LLZJ_PKOBvcYv8SWoaOGMLW7USOvSYjIH7u-GIgKaSU'),(11,'qweqwe','qweqwe','CUSTOMER','ALLOWED',NULL),(12,'quochoang','123','CUSTOMER','ALLOWED',NULL),(13,'ducngu','123','CUSTOMER','BANNED',NULL),(50,'qhoang','123','CUSTOMER','ALLOWED',NULL),(51,'anhkhoa','123','CUSTOMER','ALLOWED',NULL),(52,'kien','123','CUSTOMER','ALLOWED',NULL),(63,'user1','$2a$10$7jxw1kP1KDMTFzDEtWeDuOpKfzOmW0lmeRdYKsIKksX8wdZVGEtMe','CUSTOMER','ALLOWED',NULL),(64,'user3','$2a$10$es2Ds7Q3fdP8PEyYh24d5eSbDBSTeg787rtM6jgAtAu71ZGqGVpD6','CUSTOMER','ALLOWED',NULL),(65,'minhbeo123','$2a$10$9k7D1fwg1L1et8VWH80PieOTaURchG9yjZX2fjpLupHggRFzkWyT6','CUSTOMER','ALLOWED','eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtaW5oYmVvMTIzIiwiaWF0IjoxNzAzMTY1NDkzLCJleHAiOjE3MDMyNTE4OTN9.nwh8OegclHS79UI4njVQ8f4sEglsmVcNXVzvhw9aW8w');
 /*!40000 ALTER TABLE `login_accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -535,15 +535,14 @@ DROP TABLE IF EXISTS `notification`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `notification` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `type` varchar(20) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
   `content` text NOT NULL,
   `additional_data` text,
-  `receiver_login_account_id` bigint NOT NULL,
   `notification_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `receiver_login_account_id` (`receiver_login_account_id`),
-  CONSTRAINT `notification_ibfk_1` FOREIGN KEY (`receiver_login_account_id`) REFERENCES `login_accounts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `topic` varchar(255) DEFAULT NULL,
+  `seen` bit(1) NOT NULL DEFAULT b'0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -552,7 +551,7 @@ CREATE TABLE `notification` (
 
 LOCK TABLES `notification` WRITE;
 /*!40000 ALTER TABLE `notification` DISABLE KEYS */;
-INSERT INTO `notification` VALUES (1,'ORDER','New order','',0,'2023-09-10 00:00:00'),(2,'DELIVERY','We are packing your order',NULL,2,'2023-09-12 00:00:00');
+INSERT INTO `notification` VALUES (1,'New order','New order','','2023-09-10 00:00:00','user',_binary ''),(2,'Your order process','We are packing your order',NULL,'2023-09-12 00:00:00','user',_binary '\0'),(3,NULL,'We have received your payment','{invoiceId=23}','2023-12-23 10:39:55','user',_binary '\0');
 /*!40000 ALTER TABLE `notification` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -766,7 +765,7 @@ CREATE TABLE `products_management` (
 
 LOCK TABLES `products_management` WRITE;
 /*!40000 ALTER TABLE `products_management` DISABLE KEYS */;
-INSERT INTO `products_management` VALUES (1,1,'red','s',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(3,1,'red','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(4,1,'white','s',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(5,1,'white','m',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(6,1,'white','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(7,2,'pink','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(8,2,'black','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(11,3,'none','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(12,4,'none','40',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(13,4,'none','40.5',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(14,4,'none','41',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(17,5,'none','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(18,5,'none','xl',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(19,5,'none','xs',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(20,5,'none','xxl',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(21,6,'none','s',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(22,6,'none','m',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(23,6,'none','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(24,7,'white','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(25,7,'red','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(26,8,'green','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(27,8,'white','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(28,8,'red','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(276,5,'none','s',20,0,0,0,0,0,0,0,'2023-12-21 00:00:00'),(277,5,'none','m',20,0,0,0,0,0,0,0,'2023-12-21 00:00:00');
+INSERT INTO `products_management` VALUES (1,1,'red','s',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(3,1,'red','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(4,1,'white','s',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(5,1,'white','m',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(6,1,'white','l',18,2,0,0,0,0,0,0,'2022-12-01 00:00:00'),(7,2,'pink','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(8,2,'black','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(11,3,'none','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(12,4,'none','40',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(13,4,'none','40.5',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(14,4,'none','41',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(17,5,'none','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(18,5,'none','xl',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(19,5,'none','xs',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(20,5,'none','xxl',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(21,6,'none','s',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(22,6,'none','m',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(23,6,'none','l',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(24,7,'white','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(25,7,'red','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(26,8,'green','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(27,8,'white','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(28,8,'red','none',20,0,0,0,0,0,0,0,'2022-12-01 00:00:00'),(276,5,'none','s',20,0,0,0,0,0,0,0,'2023-12-21 00:00:00'),(277,5,'none','m',20,0,0,0,0,0,0,0,'2023-12-21 00:00:00');
 /*!40000 ALTER TABLE `products_management` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1079,4 +1078,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-22 21:51:37
+-- Dump completed on 2023-12-23 17:47:25
