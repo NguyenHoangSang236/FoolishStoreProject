@@ -2,6 +2,7 @@ package com.backend.core.serviceImpl.admin;
 
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
+import com.backend.core.entities.requestdto.notification.NotificationDTO;
 import com.backend.core.entities.requestdto.refund.RefundConfirmDTO;
 import com.backend.core.entities.requestdto.refund.RefundFilterRequestDTO;
 import com.backend.core.entities.tableentity.Account;
@@ -15,6 +16,7 @@ import com.backend.core.repository.invoice.InvoiceRepository;
 import com.backend.core.repository.refund.RefundRepository;
 import com.backend.core.service.CrudService;
 import com.backend.core.service.GoogleDriveService;
+import com.backend.core.util.process.FirebaseUtils;
 import com.backend.core.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Qualifier("RefundCrudServiceImpl")
@@ -43,6 +47,9 @@ public class RefundCrudServiceImpl implements CrudService {
 
     @Autowired
     GoogleDriveService googleDriveService;
+
+    @Autowired
+    FirebaseUtils firebaseUtils;
 
 
     @Override
@@ -75,7 +82,6 @@ public class RefundCrudServiceImpl implements CrudService {
         return null;
     }
 
-    // todo: send notification to customer when admin refund the order
     @Override
     public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
         try {
@@ -110,6 +116,19 @@ public class RefundCrudServiceImpl implements CrudService {
             refund.setStaff(adminAcc.getStaff());
 
             refundRepo.save(refund);
+
+            // send notification to customer
+            Map<String, String> dataMap = new HashMap<>();
+            dataMap.put("invoiceId", String.valueOf(invoice.getId()));
+
+            NotificationDTO notification = NotificationDTO.builder()
+                    .topic("Your order's process")
+                    .body("We has refunded your order, please checkout your account")
+                    .data(dataMap)
+                    .topic(invoice.getCustomer().getAccount().getUsername())
+                    .build();
+
+            firebaseUtils.sendMessage(notification);
 
             return new ResponseEntity<>(new ApiResponse("success", "Refunded successfully"), HttpStatus.OK);
         } catch (Exception e) {

@@ -287,21 +287,23 @@ public class ValueRenderUtils {
 
 
     // create a query for notification binding filter
-    public String notificationFilterQuery(NotificationFilterDTO notiFilter, PaginationDTO pagination, int userId) {
-        Account loginAcc = accountRepo.getCustomerAccountByCustomerId(userId);
-        String result = "select * from notification where receiver_login_account_id = " + loginAcc.getId() + " ";
+    public String notificationFilterQuery(NotificationFilterDTO notiFilter, PaginationDTO pagination, Account account) {
+        String result;
+
+        if (account.getRole().equals(RoleEnum.CUSTOMER.name())) {
+            result = "select n.* from notification n join login_accounts la on la.user_name = n.topic where ";
+        } else result = "select * from notification where topic = 'admin' and ";
+
         Date notiDate = notiFilter.getNotificationDate();
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
 
         if (notiDate != null) {
-            result += "and notification_date = '" + formatDateToString(notiDate, "yyyy-MM-dd") + "' ";
+            result += "notification_date = '" + formatDateToString(notiDate, "yyyy-MM-dd") + "' ";
         }
 
         result += "order by id desc limit " + (limit * (page - 1)) + ", " + limit;
-
-        System.out.println(result);
 
         return result;
     }
@@ -627,10 +629,12 @@ public class ValueRenderUtils {
             int limit = filterRequest.getPagination().getLimit();
 
             int userId = 0;
+            Account currentAccount = new Account();
 
             if (authen) {
                 // get current customer or staff id
-                userId = getCustomerOrStaffIdFromRequest(request);
+                currentAccount = getCurrentAccountFromRequest(request);
+                userId = currentAccount.getId();
             }
 
             try {
@@ -642,7 +646,7 @@ public class ValueRenderUtils {
                         filterQuery = productFilterQuery((ProductFilterDTO) filter, pagination);
                     }
                     case NOTIFICATION -> {
-                        filterQuery = notificationFilterQuery((NotificationFilterDTO) filter, pagination, userId);
+                        filterQuery = notificationFilterQuery((NotificationFilterDTO) filter, pagination, currentAccount);
                     }
                     case CART_ITEMS -> {
                         filterQuery = cartItemFilterQuery((CartItemFilterDTO) filter, pagination);

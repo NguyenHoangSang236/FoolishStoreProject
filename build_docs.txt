@@ -13,6 +13,12 @@ Xong nhập pass là: Thisispassword123@
 docker logs -f spring-boot-container
 
 
+* Xoá cache server
+ssh root@14.225.254.87
+Xong nhập pass là: Thisispassword123@
+docker system prune -a
+
+
 * Các bước restart server
 ssh root@14.225.254.87
 Nhập pass là: Thisispassword123@

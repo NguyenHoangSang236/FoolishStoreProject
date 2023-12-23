@@ -1,12 +1,15 @@
-package com.backend.core.serviceImpl.common;
+package com.backend.core.serviceImpl.notification;
 
 import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.notification.NotificationFilterRequestDTO;
+import com.backend.core.entities.tableentity.Account;
 import com.backend.core.entities.tableentity.Notification;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
+import com.backend.core.enums.RoleEnum;
 import com.backend.core.repository.customQuery.CustomQueryRepository;
+import com.backend.core.repository.notification.NotificationRepository;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +29,9 @@ public class NotificationCrudServiceImpl implements CrudService {
 
     @Autowired
     CustomQueryRepository customQueryRepo;
+
+    @Autowired
+    NotificationRepository notificationRepo;
 
 
     @Override
@@ -55,7 +61,31 @@ public class NotificationCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
-        return null;
+        try {
+            Notification notification = notificationRepo.getNotificationById(id);
+            Account account = valueRenderUtils.getCurrentAccountFromRequest(httpRequest);
+
+            // check if this notification is existed
+            if (notification == null) {
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+            }
+
+            String topic = notification.getTopic();
+
+            // check if this notification belongs to this account or not
+            if ((!account.getUsername().equals(topic) && topic != "admin") ||
+                    (!account.getRole().equals(RoleEnum.ADMIN) && topic == "admin")) {
+                return new ResponseEntity<>(new ApiResponse("failed", "This notification does not belong to you"), HttpStatus.BAD_REQUEST);
+            }
+
+            notification.setSeen(true);
+            notificationRepo.save(notification);
+
+            return new ResponseEntity<>(new ApiResponse("success", "Seen notification successfully"), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override

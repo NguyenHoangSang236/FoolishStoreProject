@@ -1,10 +1,7 @@
 package com.backend.core.entities.requestdto.notification;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -14,6 +11,7 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class NotificationDTO {
     @JsonProperty("title")
     String title;

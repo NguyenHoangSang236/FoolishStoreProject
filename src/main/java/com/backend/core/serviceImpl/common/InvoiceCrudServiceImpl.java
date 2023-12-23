@@ -6,6 +6,7 @@ import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.cart.CartCheckoutDTO;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterRequestDTO;
 import com.backend.core.entities.requestdto.invoice.OrderProcessDTO;
+import com.backend.core.entities.requestdto.notification.NotificationDTO;
 import com.backend.core.entities.responsedto.CartRenderInfoDTO;
 import com.backend.core.entities.responsedto.InvoiceDetailRenderInfoDTO;
 import com.backend.core.entities.responsedto.InvoiceRenderInfoDTO;
@@ -25,6 +26,7 @@ import com.backend.core.repository.refund.RefundRepository;
 import com.backend.core.repository.staff.StaffRepository;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.process.CheckUtils;
+import com.backend.core.util.process.FirebaseUtils;
 import com.backend.core.util.process.GhnUtils;
 import com.backend.core.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,9 +37,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.util.EnumUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Qualifier("InvoiceCrudServiceImpl")
@@ -83,6 +83,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Autowired
     GhnUtils ghnUtils;
+
+    @Autowired
+    FirebaseUtils firebaseUtils;
 
 
     public InvoiceCrudServiceImpl() {
@@ -204,7 +207,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
         String message = "Cancel order successfully, ";
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
-        // todo: send notification to admin when customer cancel order -> admin click on notification -> redirect to invoice details page
         if (id == 0) {
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
         } else {
@@ -261,6 +263,19 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
                 invoiceRepo.save(invoice);
 
+                // send message to admin
+                Map<String, String> dataMap = new HashMap<>();
+                dataMap.put("invoiceId", String.valueOf(invoice.getId()));
+
+                NotificationDTO notification = NotificationDTO.builder()
+                        .topic("Order Management")
+                        .body("A customer has canceled an order")
+                        .data(dataMap)
+                        .topic("admin")
+                        .build();
+
+                firebaseUtils.sendMessage(notification);
+
                 // retrieve product quantity from this invoice
                 productQuantityProcess(InvoiceEnum.CUSTOMER_CANCEL.name(), invoice);
             } catch (Exception e) {
@@ -275,7 +290,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        // todo: send notification to customer when admin proceed order -> customer click on notification -> redirect to invoice details page
         try {
             OrderProcessDTO orderProcess = (OrderProcessDTO) paramObj;
             int adminId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
@@ -337,6 +351,19 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
             invoiceRepo.save(invoice);
+
+            // send message to customer
+            Map<String, String> dataMap = new HashMap<>();
+            dataMap.put("invoiceId", String.valueOf(invoice.getId()));
+
+            NotificationDTO notification = NotificationDTO.builder()
+                    .topic("Your order's process")
+                    .body(adminActionMessage(adminAction))
+                    .data(dataMap)
+                    .topic(invoice.getCustomer().getAccount().getUsername())
+                    .build();
+
+            firebaseUtils.sendMessage(notification);
 
             return new ResponseEntity<>(new ApiResponse("success", adminActionResult(adminAction)), HttpStatus.OK);
         } catch (Exception e) {
@@ -550,6 +577,28 @@ public class InvoiceCrudServiceImpl implements CrudService {
             }
             case "FINISH_PACKING" -> {
                 return "Confirm order has been finished packing";
+            }
+            default -> {
+                return ErrorTypeEnum.NO_DATA_ERROR.name();
+            }
+        }
+    }
+
+
+    // generate message for notification
+    public String adminActionMessage(String adminAction) {
+        switch (adminAction) {
+            case "REFUSED" -> {
+                return "Sorry, we have to refuse your order";
+            }
+            case "ACCEPTED" -> {
+                return "Your order has been accepted";
+            }
+            case "CONFIRMED_ONLINE_PAYMENT" -> {
+                return "We have received your payment";
+            }
+            case "FINISH_PACKING" -> {
+                return "We have finished packing your order";
             }
             default -> {
                 return ErrorTypeEnum.NO_DATA_ERROR.name();
