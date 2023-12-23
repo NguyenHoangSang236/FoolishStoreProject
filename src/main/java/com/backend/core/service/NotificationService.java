@@ -16,6 +16,5 @@ public interface NotificationService {
 
     public ResponseEntity<ApiResponse> unsubscribeFromTopic(NotificationDTO notification, HttpServletRequest request);
 
-    // todo: finish later
     public ResponseEntity<ApiResponse> getNotificationList(Object object, HttpServletRequest request);
 }

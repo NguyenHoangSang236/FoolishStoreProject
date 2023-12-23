@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -46,8 +43,9 @@ public class NotificationController extends CrudController {
     }
 
     @Override
-    public ResponseEntity updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
+    @GetMapping("/seen_notification_id={id}")
+    public ResponseEntity updateSelectedItemById(@PathVariable("id") int id, HttpServletRequest httpRequest) throws IOException {
+        return crudService.updatingResponseById(id, httpRequest);
     }
 
     @Override
