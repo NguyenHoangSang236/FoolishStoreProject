@@ -444,9 +444,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 return new ResponseEntity<>(new ApiResponse("failed", "Must have filter"), HttpStatus.BAD_REQUEST);
             }
 
-            boolean needAuthen = valueRenderUtils.getCurrentAccountFromRequest(request).getRole().equals(RoleEnum.CUSTOMER.name());
+            boolean isCustomer = valueRenderUtils.getCurrentAccountFromRequest(request).getRole().equals(RoleEnum.CUSTOMER.name());
 
-            String filterQuery = valueRenderUtils.getFilterQuery(invoiceFilterRequest, FilterTypeEnum.INVOICE, request, needAuthen);
+            String filterQuery = valueRenderUtils.getFilterQuery(invoiceFilterRequest, FilterTypeEnum.INVOICE, request, isCustomer);
 
             // get list from query
             List<InvoiceRenderInfoDTO> invoiceRenderList = customQueryRepo.getBindingFilteredList(filterQuery, InvoiceRenderInfoDTO.class);

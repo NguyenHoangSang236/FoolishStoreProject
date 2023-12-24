@@ -237,7 +237,7 @@ public class ValueRenderUtils {
 
 
     //create a query for invoice binding filter
-    public String invoiceFilterQuery(int customerId, InvoiceFilterDTO invoiceFilter, PaginationDTO pagination, boolean authen) {
+    public String invoiceFilterQuery(InvoiceFilterDTO invoiceFilter, PaginationDTO pagination, HttpServletRequest request) {
         String paymentStatus = invoiceFilter.getPaymentStatus();
         String adminAcceptance = invoiceFilter.getAdminAcceptance();
         String orderStatus = invoiceFilter.getOrderStatus();
@@ -249,8 +249,10 @@ public class ValueRenderUtils {
 
         String result = "select * from invoice where ";
 
-        if (authen) {
-            result += "Customer_ID = " + customerId + " and ";
+        Account currentAcc = getCurrentAccountFromRequest(request);
+
+        if (currentAcc.getRole().equals(RoleEnum.CUSTOMER.name())) {
+            result += "Customer_ID = " + currentAcc.getCustomer().getId() + " and ";
         }
 
         if (paymentStatus != null && !paymentStatus.isBlank()) {
@@ -281,6 +283,8 @@ public class ValueRenderUtils {
         result = result.substring(0, result.lastIndexOf("and"));
 
         result += "order by id desc limit " + (limit * (page - 1)) + ", " + limit;
+
+        System.out.println(result);
 
         return result;
     }
@@ -535,57 +539,6 @@ public class ValueRenderUtils {
     }
 
 
-    // create a query for delivery binding filter
-    public String deliveryFilterQuery(DeliveryFilterDTO deliveryFilter, PaginationDTO pagination, int shipperId) {
-        String result = "select * from delivery_info_for_ui where ";
-
-        String country = deliveryFilter.getCountry();
-        String address = deliveryFilter.getAddress();
-        String city = deliveryFilter.getCity();
-        String paymentStatus = deliveryFilter.getPaymentStatus();
-        String paymentMethod = deliveryFilter.getPaymentMethod();
-        String type = pagination.getType();
-        int limit = pagination.getLimit();
-        int page = pagination.getPage();
-
-        if (country != null && !country.isBlank()) {
-            result += "country = '" + country + "' and ";
-        }
-
-        if (address != null && !address.isBlank()) {
-            result += "address = '" + address + "' and ";
-        }
-
-        if (city != null && !city.isBlank()) {
-            result += "city = '" + city + "' and ";
-        }
-
-        if (paymentMethod != null && !paymentMethod.isBlank()) {
-            result += "payment_method = '" + paymentMethod + "' and ";
-        }
-
-        if (paymentStatus != null && !paymentStatus.isBlank()) {
-            result += "payment_status = '" + paymentStatus + "' and ";
-        }
-
-        switch (type.toUpperCase()) {
-            case "SHIP_HISTORY" -> result += "shipper_id = " + shipperId;
-            case "MY_ORDERS" ->
-                    result += "shipper_id = " + shipperId + " and (current_delivery_status = 'TAKE_ORDER' or current_delivery_status = 'SHIPPING') and shipper_id = " + shipperId;
-            case "MY_SUCCESSFUL_ORDERS" ->
-                    result += "(current_delivery_status = 'SHIPPED' and invoice_delivery_status = 'SHIPPED') and shipper_id = " + shipperId;
-            case "MY_FAILED_ORDERS" ->
-                    result += "(current_delivery_status = 'FAILED' and invoice_delivery_status = 'FAILED') and shipper_id = " + shipperId;
-        }
-
-        if (page != 0 && limit != 0) {
-            result += " ORDER BY id desc LIMIT " + (limit * (page - 1)) + ", " + limit;
-        }
-
-        return result;
-    }
-
-
     //create a random temporary password
     public String randomTemporaryPassword(String userName) {
         String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
@@ -628,19 +581,12 @@ public class ValueRenderUtils {
             int page = filterRequest.getPagination().getPage();
             int limit = filterRequest.getPagination().getLimit();
 
-            int userId = 0;
-            Account currentAccount = new Account();
-
-            if (authen) {
-                // get current customer or staff id
-                currentAccount = getCurrentAccountFromRequest(request);
-                userId = currentAccount.getId();
-            }
+            Account currentAccount = getCurrentAccountFromRequest(request);
 
             try {
                 switch (filterType) {
                     case INVOICE -> {
-                        filterQuery = invoiceFilterQuery(userId, (InvoiceFilterDTO) filter, pagination, authen);
+                        filterQuery = invoiceFilterQuery((InvoiceFilterDTO) filter, pagination, request);
                     }
                     case PRODUCT -> {
                         filterQuery = productFilterQuery((ProductFilterDTO) filter, pagination);
@@ -650,9 +596,6 @@ public class ValueRenderUtils {
                     }
                     case CART_ITEMS -> {
                         filterQuery = cartItemFilterQuery((CartItemFilterDTO) filter, pagination);
-                    }
-                    case DELIVERY -> {
-                        filterQuery = deliveryFilterQuery((DeliveryFilterDTO) filter, pagination, userId);
                     }
                     case COMMENT -> {
                         filterQuery = commentFilterQuery((CommentRequestDTO) filter, pagination);
