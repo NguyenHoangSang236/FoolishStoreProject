@@ -61,14 +61,10 @@ public class GhnUtils {
             requestMap.put("width", width);
             requestMap.put("length", length);
 
-            System.out.println(requestMap.toString());
-
             ResponseEntity<Map> shippingFeeResponse = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.shippingFeeUrl, requestMap);
 
             if (shippingFeeResponse.getStatusCode().equals(HttpStatus.OK)) {
                 Map<String, Object> resMap = (Map<String, Object>) shippingFeeResponse.getBody().get("data");
-
-                System.out.println(resMap.get("total"));
 
                 // convert VND to USD
                 shippingFee = (int) resMap.get("total") / 24300;

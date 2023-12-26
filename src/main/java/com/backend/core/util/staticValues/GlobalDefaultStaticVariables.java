@@ -24,4 +24,6 @@ public class GlobalDefaultStaticVariables {
     public static final String districtDataListUrl = "/master-data/district";
 
     public static final String wardDataListUrl = "/master-data/ward?district_id";
+
+    public static final String createOrderUrl = "/v2/shipping-order/create";
 }

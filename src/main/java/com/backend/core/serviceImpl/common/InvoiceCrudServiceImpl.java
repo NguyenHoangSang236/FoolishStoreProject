@@ -22,6 +22,7 @@ import com.backend.core.repository.invoice.InvoiceRepository;
 import com.backend.core.repository.invoice.InvoicesWithProductsRepository;
 import com.backend.core.repository.onlinePayment.OnlinePaymentAccountRepository;
 import com.backend.core.repository.product.ProductManagementRepository;
+import com.backend.core.repository.product.ProductRepository;
 import com.backend.core.repository.refund.RefundRepository;
 import com.backend.core.repository.staff.StaffRepository;
 import com.backend.core.service.CrudService;
@@ -67,6 +68,9 @@ public class InvoiceCrudServiceImpl implements CrudService {
     CartRepository cartRepo;
 
     @Autowired
+    ProductRepository productRepo;
+
+    @Autowired
     StaffRepository staffRepo;
 
     @Autowired
@@ -102,12 +106,18 @@ public class InvoiceCrudServiceImpl implements CrudService {
         try {
             CartCheckoutDTO cartCheckout = (CartCheckoutDTO) paramObj;
 
+            if(cartCheckout.getAddress().equals(null) || cartCheckout.getAddress().isBlank()) {
+                return new ResponseEntity<>(new ApiResponse("failed", "Please input address"), HttpStatus.BAD_REQUEST);
+            }
+
             List<CartRenderInfoDTO> selectedCartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
 
             String paymentMethod = cartCheckout.getPaymentMethod();
             double shippingFee = ghnUtils.calculateShippingFee(cartCheckout, selectedCartItemList);
             double subtotal = 0;
             int newInvoiceId = 0;
+            String address = cartCheckout.getAddress();
+            String note = cartCheckout.getNote();
             Integer invoiceId = invoiceRepo.getLatestInvoiceId();
 
             if (invoiceId != null) {
@@ -127,16 +137,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
                         InvoiceEnum.ACCEPTANCE_WAITING.name(),
                         paymentMethod,
                         CurrencyEnum.USD.name(),
-                        "",
-                        "",
-                        0,
+                        note,
                         subtotal + shippingFee,
+                        address,
                         shippingFee,
-                        "",
-                        "",
                         AdminAcceptanceEnum.ACCEPTANCE_WAITING.name(),
-                        null,
-                        null,
                         customerRepo.getCustomerById(customerId)
                 );
                 responseSuccessMessage += ", please wait for Admin accept your order!";
@@ -148,16 +153,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
                         InvoiceEnum.PAYMENT_WAITING.name(),
                         paymentMethod,
                         CurrencyEnum.USD.name(),
-                        "",
-                        "",
-                        0,
+                        note,
                         subtotal + shippingFee,
+                        address,
                         shippingFee,
-                        "",
-                        "",
                         AdminAcceptanceEnum.PAYMENT_WAITING.name(),
-                        null,
-                        null,
                         customerRepo.getCustomerById(customerId)
                 );
                 responseSuccessMessage += ", please transfer money to the given banking information for us to continue processing your order!";
@@ -523,10 +523,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
             invoicesWithProductsRepo.insertInvoicesWithProducts(invoicesWithProducts);
         }
 
-        // calculate delivery fee and add it to total price
-//        DeliveryType deliveryType = deliveryTypeRepo.getDeliveryTypeByName(newInvoice.getDeliveryType());
-//        invoiceTotalPrice += deliveryType.getPrice();
-//        newInvoice.setTotalPrice(invoiceTotalPrice);
 
         // set receiver account for online payment invoice
         OnlinePaymentAccount receiverInfo = onlinePaymentAccountRepo.getOnlinePaymentAccountByType(newInvoice.getPaymentMethod());
@@ -628,6 +624,67 @@ public class InvoiceCrudServiceImpl implements CrudService {
             );
 
             cartRepo.save(cartItem);
+        }
+    }
+
+    // create a new GHN shipping order
+    public void createGhnShippingOrder(Invoice invoice) {
+        try {
+            Map<String, Object> request = new HashMap<>();
+
+            int length = 0;
+            int width = 0;
+            int weight = 0;
+            int height = 0;
+
+            Customer customer = invoice.getCustomer();
+            List<InvoicesWithProducts> invoiceProductList = invoice.getInvoicesWithProducts();
+
+            // get the highest value of length, width and stack the value of weight, height
+            for (InvoicesWithProducts invoiceProduct : invoiceProductList) {
+                int productId = invoiceProduct.getProductManagement().getProduct().getId();
+
+                Product product = productRepo.getProductById(productId);
+
+                int productWidth = product.getWidth();
+                int productLength = product.getLength();
+
+                weight += product.getWeight();
+                height += product.getHeight();
+
+                if (width < productWidth) {
+                    width = productWidth;
+                }
+
+                if (length < productLength) {
+                    length = productLength;
+                }
+            }
+
+            request.put("from_name", "Foolish Fashion Store");
+            request.put("from_phone", "0977815809");
+            request.put("from_address", "3/5B Âp 7, Đông Thạnh, Hóc Môn, Thành phố Hồ Chí Minh, Việt Nam");
+            request.put("from_ward_name", "Đông Thạnh");
+            request.put("from_district_name", "Hóc Môn");
+            request.put("from_province_name", "Hồ Chí Minh");
+            request.put("to_name", customer.getName());
+            request.put("to_address", customer.getName());
+            request.put("to_ward_code", invoice.getWardCode());
+            request.put("to_district_id", invoice.getDistrictId());
+            request.put("to_phone", customer.getPhoneNumber());
+            request.put("length", length);
+            request.put("width", width);
+            request.put("height", height);
+            request.put("weight", weight);
+            request.put("service_type_id", 2);
+            request.put("service_id", 0);
+            request.put("payment_type_id", invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) ? 2 : 1);
+            request.put("note", invoice.getNote());
+
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

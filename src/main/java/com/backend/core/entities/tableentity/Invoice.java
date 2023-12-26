@@ -48,9 +48,6 @@ public class Invoice {
     @Column(name = "note")
     String note;
 
-    @Column(name = "description")
-    String description;
-
     @Column(name = "refund_percentage")
     double refundPercentage;
 
@@ -59,6 +56,12 @@ public class Invoice {
 
     @Column(name = "delivery_fee")
     double deliveryFee;
+
+    @Column(name = "ward_code")
+    String wardCode;
+
+    @Column(name = "district_id")
+    int districtId;
 
     @Column(name = "reason")
     String reason;
@@ -69,6 +72,9 @@ public class Invoice {
 
     @Column(name = "admin_acceptance")
     String adminAcceptance;
+
+    @Column(name = "address")
+    String address;
 
     @JsonIgnore
     @OneToMany(mappedBy = "invoice", cascade = {CascadeType.ALL})
@@ -104,8 +110,7 @@ public class Invoice {
 
 
     public Invoice(int id, Date invoiceDate, String paymentStatus, String orderStatus, String paymentMethod, String currency,
-                   String note, String description, double refundPercentage, double totalPrice, double deliveryFee, String reason, String onlinePaymentAccount,
-                   String adminAcceptance, Delivery delivery, List<InvoicesWithProducts> invoicesWithProducts, Customer customer) {
+                   String note, double totalPrice, String address, double deliveryFee, String adminAcceptance, Customer customer) {
         this.id = id;
         this.invoiceDate = invoiceDate;
         this.paymentStatus = paymentStatus;
@@ -113,17 +118,13 @@ public class Invoice {
         this.paymentMethod = paymentMethod;
         this.currency = currency;
         this.note = note;
-        this.description = description;
-        this.refundPercentage = refundPercentage;
         this.totalPrice = totalPrice;
-        this.reason = reason;
-        this.onlinePaymentAccount = onlinePaymentAccount;
         this.adminAcceptance = adminAcceptance;
-        this.delivery = delivery;
         this.deliveryFee = deliveryFee;
-        this.invoicesWithProducts = invoicesWithProducts;
         this.customer = customer;
     }
+
+
 
     // check invoice can be updated or not
     public boolean isUpdatable() {
