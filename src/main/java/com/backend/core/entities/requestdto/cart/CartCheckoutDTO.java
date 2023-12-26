@@ -34,6 +34,14 @@ public class CartCheckoutDTO {
     int serviceId;
 
     @Nullable
+    @JsonProperty("address")
+    String address;
+
+    @Nullable
+    @JsonProperty("note")
+    String note;
+
+    @Nullable
     @JsonProperty("paymentMethod")
     String paymentMethod;
 }

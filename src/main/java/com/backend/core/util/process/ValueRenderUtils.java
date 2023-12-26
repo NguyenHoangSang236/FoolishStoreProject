@@ -316,12 +316,10 @@ public class ValueRenderUtils {
             result += "notification_date <= '" + formatDateToString(endDate, "yyyy-MM-dd HH:mm:ss") + "' and ";
         }
 
-        result += "order by id desc limit " + (limit * (page - 1)) + ", " + limit;
-
         // remove the final 'and' word in the query
         result = result.substring(0, result.lastIndexOf("and"));
 
-        System.out.println(result);
+        result += "order by id desc limit " + (limit * (page - 1)) + ", " + limit;
 
         return result;
     }

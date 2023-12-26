@@ -16,7 +16,9 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Getter
@@ -55,16 +57,16 @@ public class Product implements Serializable {
     private String description;
 
     @Column(name = "length")
-    private double length;
+    private int length;
 
     @Column(name = "height")
-    private double height;
+    private int height;
 
     @Column(name = "width")
-    private double width;
+    private int width;
 
     @Column(name = "weight")
-    private double weight;
+    private int weight;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
@@ -132,5 +134,18 @@ public class Product implements Serializable {
         this.brand = request.getBrand().toLowerCase();
         this.discount = request.getDiscount();
         this.description = request.getDescription();
+    }
+
+
+    public Map<String, String> getCategoryLevelJson() {
+        Map<String, String> map = new HashMap<>();
+        int lv = 1;
+
+        for (Catalog category: catalogs) {
+            map.put("level" + String.valueOf(lv), category.getName());
+            lv++;
+        }
+
+        return map;
     }
 }
