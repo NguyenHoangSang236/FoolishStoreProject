@@ -298,16 +298,30 @@ public class ValueRenderUtils {
             result = "select n.* from notification n join login_accounts la on la.user_name = n.topic where ";
         } else result = "select * from notification where topic = 'admin' and ";
 
-        Date notiDate = notiFilter.getNotificationDate();
+        // from 00:00:00 of start date
+        Date startDate = resetDate(notiFilter.getStartDate());
+
+        // to 23:59:59 of end date
+        Date endDate = new Date(resetDate(notiFilter.getEndDate()).getTime() + (1000 * 60 * 60 * 24) - 1000);
+
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
 
-        if (notiDate != null) {
-            result += "notification_date = '" + formatDateToString(notiDate, "yyyy-MM-dd") + "' ";
+        if (startDate != null) {
+            result += "notification_date >= '" + formatDateToString(startDate, "yyyy-MM-dd HH:mm:ss") + "' and ";
+        }
+
+        if (endDate != null) {
+            result += "notification_date <= '" + formatDateToString(endDate, "yyyy-MM-dd HH:mm:ss") + "' and ";
         }
 
         result += "order by id desc limit " + (limit * (page - 1)) + ", " + limit;
+
+        // remove the final 'and' word in the query
+        result = result.substring(0, result.lastIndexOf("and"));
+
+        System.out.println(result);
 
         return result;
     }
@@ -644,5 +658,19 @@ public class ValueRenderUtils {
         }
 
         return result;
+    }
+
+
+    // reset Date hour value to 0
+    public Date resetDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
     }
 }

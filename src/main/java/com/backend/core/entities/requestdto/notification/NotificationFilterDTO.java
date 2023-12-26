@@ -13,6 +13,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotificationFilterDTO {
-    @JsonProperty("notificationDate")
-    Date notificationDate;
+    @JsonProperty("startDate")
+    Date startDate;
+
+    @JsonProperty("endDate")
+    Date endDate;
 }
