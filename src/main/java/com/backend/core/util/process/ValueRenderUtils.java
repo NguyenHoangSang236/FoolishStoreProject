@@ -506,12 +506,13 @@ public class ValueRenderUtils {
 
     // create a query for refund binding filter
     public String refundFilterQuery(RefundFilterDTO refundFilter, PaginationDTO pagination) {
-        String result = "select r.* from refund r join invoice i on r.invoice_id = i.id where ";
+        String result = "";
 
         int limit = pagination.getLimit();
         int page = pagination.getPage();
 
         if (refundFilter != null) {
+            result = "select r.* from refund r join invoice i on r.invoice_id = i.id where ";
             Date refundDate = refundFilter.getRefundDate();
             String paymentMethod = refundFilter.getPaymentMethod();
             String reason = refundFilter.getReason();
@@ -540,12 +541,14 @@ public class ValueRenderUtils {
 
             result = result.substring(0, result.lastIndexOf("and"));
         } else {
-            result = result.substring(0, result.lastIndexOf("where"));
+            result = "select * from refund ";
         }
 
         if (page != 0 && limit != 0) {
             result += " ORDER BY id desc LIMIT " + (limit * (page - 1)) + ", " + limit;
         }
+
+        System.out.println(result);
 
         return result;
     }
