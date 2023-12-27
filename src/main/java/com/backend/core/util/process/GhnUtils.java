@@ -4,7 +4,11 @@ import com.backend.core.entities.requestdto.cart.AddressNameDTO;
 import com.backend.core.entities.requestdto.cart.CartCheckoutDTO;
 import com.backend.core.entities.responsedto.AddressCodeDTO;
 import com.backend.core.entities.responsedto.CartRenderInfoDTO;
+import com.backend.core.entities.tableentity.*;
+import com.backend.core.enums.PaymentEnum;
 import com.backend.core.repository.cart.CartRenderInfoRepository;
+import com.backend.core.repository.delivery.DeliveryRepository;
+import com.backend.core.repository.product.ProductRepository;
 import com.backend.core.util.staticValues.GlobalDefaultStaticVariables;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +16,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class GhnUtils {
     @Autowired
     CartRenderInfoRepository cartRenderInfoRepo;
+
+    @Autowired
+    ProductRepository productRepo;
+
+    @Autowired
+    DeliveryRepository deliveryRepo;
 
     @Autowired
     NetworkUtils networkUtils;
@@ -240,6 +250,96 @@ public class GhnUtils {
             e.printStackTrace();
 
             return "0";
+        }
+    }
+
+
+    // create a new GHN shipping order
+    public Delivery getNewGhnShippingOrderCode(Invoice invoice) {
+        Delivery delivery = new Delivery();
+
+        try {
+            Map<String, Object> request = new HashMap<>();
+
+            int length = 0;
+            int width = 0;
+            int weight = 0;
+            int height = 0;
+
+            Customer customer = invoice.getCustomer();
+            List<InvoicesWithProducts> invoiceProductList = invoice.getInvoicesWithProducts();
+            List<Map> items = new ArrayList<>();
+
+            // get the highest value of length, width and stack the value of weight, height
+            for (InvoicesWithProducts invoiceProduct : invoiceProductList) {
+                int productId = invoiceProduct.getProductManagement().getProduct().getId();
+
+                Product product = productRepo.getProductById(productId);
+
+                int productWidth = product.getWidth();
+                int productLength = product.getLength();
+
+                weight += product.getWeight();
+                height += product.getHeight();
+
+                if (width < productWidth) {
+                    width = productWidth;
+                }
+
+                if (length < productLength) {
+                    length = productLength;
+                }
+
+                items.add(invoiceProduct.getGhnItemJson());
+            }
+
+            request.put("from_name", "Foolish Fashion Store");
+            request.put("from_phone", "0977815809");
+            request.put("from_address", "3/5B Âp 7, Đông Thạnh, Hóc Môn, Thành phố Hồ Chí Minh, Việt Nam");
+            request.put("from_ward_name", "Đông Thạnh");
+            request.put("from_district_name", "Hóc Môn");
+            request.put("from_province_name", "Hồ Chí Minh");
+            request.put("to_name", customer.getName());
+            request.put("to_address", customer.getName());
+            request.put("to_ward_code", invoice.getWardCode());
+            request.put("to_district_id", invoice.getDistrictId());
+            request.put("to_phone", customer.getPhoneNumber());
+            request.put("length", length);
+            request.put("width", width);
+            request.put("height", height);
+            request.put("weight", weight);
+            request.put("service_type_id", 2);
+            request.put("service_id", 0);
+            request.put("payment_type_id", invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) ? 2 : 1);
+            request.put("note", invoice.getNote());
+            request.put("required_note", "KHONGCHOXEMHANG");
+            request.put("items", items);
+
+            ResponseEntity<Map> newOrderRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.createOrderUrl, request);
+
+            if (newOrderRes.getStatusCode().equals(HttpStatus.OK)) {
+                Map response = (Map) newOrderRes.getBody().get("data");
+
+                String orderCode = (String) response.get("order_code");
+                String expectedTimeStr = (String) response.get("expected_delivery_time");
+
+                DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+                Instant instant = Instant.from(formatter.parse(expectedTimeStr));
+
+                Date expectedTime = Date.from(instant);
+
+                delivery.setInvoice(invoice);
+                delivery.setExpectedDeliveryTime(expectedTime);
+                delivery.setShippingOrderCode(orderCode);
+                deliveryRepo.save(delivery);
+            }
+
+            return delivery;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
         }
     }
 }

@@ -110,7 +110,7 @@ public class Invoice {
 
 
     public Invoice(int id, Date invoiceDate, String paymentStatus, String orderStatus, String paymentMethod, String currency,
-                   String note, double totalPrice, String address, double deliveryFee, String adminAcceptance, Customer customer) {
+                   String note, double totalPrice, String address, String wardCode, int districtId, double deliveryFee, String adminAcceptance, Customer customer) {
         this.id = id;
         this.invoiceDate = invoiceDate;
         this.paymentStatus = paymentStatus;
@@ -119,6 +119,9 @@ public class Invoice {
         this.currency = currency;
         this.note = note;
         this.totalPrice = totalPrice;
+        this.address = address;
+        this.wardCode = wardCode;
+        this.districtId = districtId;
         this.adminAcceptance = adminAcceptance;
         this.deliveryFee = deliveryFee;
         this.customer = customer;

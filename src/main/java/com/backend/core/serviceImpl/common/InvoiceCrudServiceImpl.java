@@ -140,6 +140,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                         note,
                         subtotal + shippingFee,
                         address,
+                        cartCheckout.getToWardCode(),
+                        cartCheckout.getToDistrictId(),
                         shippingFee,
                         AdminAcceptanceEnum.ACCEPTANCE_WAITING.name(),
                         customerRepo.getCustomerById(customerId)
@@ -156,6 +158,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                         note,
                         subtotal + shippingFee,
                         address,
+                        cartCheckout.getToWardCode(),
+                        cartCheckout.getToDistrictId(),
                         shippingFee,
                         AdminAcceptanceEnum.PAYMENT_WAITING.name(),
                         customerRepo.getCustomerById(customerId)
@@ -321,6 +325,12 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTANCE_WAITING.name()) &&
                     invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
+                if(adminAction.equals(AdminAcceptanceEnum.ACCEPTED.name())) {
+                    if(!createNewGhnShippingOrder(invoice)) {
+                        return new ResponseEntity<>(new ApiResponse("failed", "Failed to add new GHN shipping order, please check necessary information again"), HttpStatus.BAD_REQUEST);
+                    }
+                }
+
                 invoice.setAdminAcceptance(adminAction);
                 invoice.setOrderStatus(InvoiceEnum.PACKING.name());
                 invoice.setStaff(adminInCharge);
@@ -334,9 +344,14 @@ public class InvoiceCrudServiceImpl implements CrudService {
             else if (adminAction.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name()) &&
                     !invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
+                if(!createNewGhnShippingOrder(invoice)) {
+                    return new ResponseEntity<>(new ApiResponse("failed", "Failed to add new GHN shipping order, please check necessary information again"), HttpStatus.BAD_REQUEST);
+                }
+
                 invoice.setAdminAcceptance(adminAction);
                 invoice.setOrderStatus(InvoiceEnum.PACKING.name());
                 invoice.setPaymentStatus(PaymentEnum.PAID.name());
+                invoice.setStaff(adminInCharge);
 
                 // add sold quantity and subtract in-stock quantity of products from this invoice
                 productQuantityProcess(adminAction, invoice);
@@ -627,64 +642,22 @@ public class InvoiceCrudServiceImpl implements CrudService {
         }
     }
 
-    // create a new GHN shipping order
-    public void createGhnShippingOrder(Invoice invoice) {
+
+    public boolean createNewGhnShippingOrder(Invoice invoice) {
         try {
-            Map<String, Object> request = new HashMap<>();
+            Delivery newDelivery = ghnUtils.getNewGhnShippingOrderCode(invoice);
 
-            int length = 0;
-            int width = 0;
-            int weight = 0;
-            int height = 0;
+            if(newDelivery != null && !newDelivery.getShippingOrderCode().isBlank()) {
+                invoice.setDelivery(newDelivery);
+                invoiceRepo.save(invoice);
 
-            Customer customer = invoice.getCustomer();
-            List<InvoicesWithProducts> invoiceProductList = invoice.getInvoicesWithProducts();
-
-            // get the highest value of length, width and stack the value of weight, height
-            for (InvoicesWithProducts invoiceProduct : invoiceProductList) {
-                int productId = invoiceProduct.getProductManagement().getProduct().getId();
-
-                Product product = productRepo.getProductById(productId);
-
-                int productWidth = product.getWidth();
-                int productLength = product.getLength();
-
-                weight += product.getWeight();
-                height += product.getHeight();
-
-                if (width < productWidth) {
-                    width = productWidth;
-                }
-
-                if (length < productLength) {
-                    length = productLength;
-                }
+                return true;
             }
-
-            request.put("from_name", "Foolish Fashion Store");
-            request.put("from_phone", "0977815809");
-            request.put("from_address", "3/5B Âp 7, Đông Thạnh, Hóc Môn, Thành phố Hồ Chí Minh, Việt Nam");
-            request.put("from_ward_name", "Đông Thạnh");
-            request.put("from_district_name", "Hóc Môn");
-            request.put("from_province_name", "Hồ Chí Minh");
-            request.put("to_name", customer.getName());
-            request.put("to_address", customer.getName());
-            request.put("to_ward_code", invoice.getWardCode());
-            request.put("to_district_id", invoice.getDistrictId());
-            request.put("to_phone", customer.getPhoneNumber());
-            request.put("length", length);
-            request.put("width", width);
-            request.put("height", height);
-            request.put("weight", weight);
-            request.put("service_type_id", 2);
-            request.put("service_id", 0);
-            request.put("payment_type_id", invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) ? 2 : 1);
-            request.put("note", invoice.getNote());
-
-
+            else return false;
         }
         catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

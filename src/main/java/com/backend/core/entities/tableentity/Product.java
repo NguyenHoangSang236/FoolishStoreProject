@@ -135,17 +135,4 @@ public class Product implements Serializable {
         this.discount = request.getDiscount();
         this.description = request.getDescription();
     }
-
-
-    public Map<String, String> getCategoryLevelJson() {
-        Map<String, String> map = new HashMap<>();
-        int lv = 1;
-
-        for (Catalog category: catalogs) {
-            map.put("level" + String.valueOf(lv), category.getName());
-            lv++;
-        }
-
-        return map;
-    }
 }

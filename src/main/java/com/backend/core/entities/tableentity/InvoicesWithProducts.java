@@ -4,6 +4,8 @@ import com.backend.core.entities.embededkey.InvoicesWithProductsPrimaryKeys;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -54,8 +56,16 @@ public class InvoicesWithProducts {
                 '}';
     }
 
+    public Map<String, Objects> getGhnItemJson() {
+        Map map = new HashMap<>();
 
-    //    public String formattedProductTotalPrice() {
-//        return ValueRender.formatDoubleNumber(this.quantity * (this.product.getPrice() * ((100 - this.product.getDiscount()) / 100)));
-//    }`
+        map.put("name", this.productManagement.getProduct().getName());
+        map.put("quantity", this.quantity);
+        map.put("height", this.productManagement.getProduct().getHeight());
+        map.put("weight", this.productManagement.getProduct().getWeight());
+        map.put("length", this.productManagement.getProduct().getLength());
+        map.put("width", this.productManagement.getProduct().getWidth());
+
+        return map;
+    }
 }
