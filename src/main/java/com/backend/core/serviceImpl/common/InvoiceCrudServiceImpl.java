@@ -271,17 +271,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 invoiceRepo.save(invoice);
 
                 // send message to admin
-                Map<String, String> dataMap = new HashMap<>();
-                dataMap.put("invoiceId", String.valueOf(invoice.getId()));
-
-                NotificationDTO notification = NotificationDTO.builder()
-                        .topic("Order Management")
-                        .body("A customer has canceled an order")
-                        .data(dataMap)
-                        .topic("admin")
-                        .build();
-
-                firebaseUtils.sendMessage(notification);
+                sendNotificationOnOrderProcess("Order Management", "A customer has canceled an order", "admin", invoice.getId());
 
                 // retrieve product quantity from this invoice
                 productQuantityProcess(InvoiceEnum.CUSTOMER_CANCEL.name(), invoice);
@@ -392,17 +382,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             invoiceRepo.save(invoice);
 
             // send message to customer
-            Map<String, String> dataMap = new HashMap<>();
-            dataMap.put("invoiceId", String.valueOf(invoice.getId()));
-
-            NotificationDTO notification = NotificationDTO.builder()
-                    .topic("Your order's process")
-                    .body(adminActionMessage(adminAction))
-                    .data(dataMap)
-                    .topic(invoice.getCustomer().getAccount().getUsername())
-                    .build();
-
-            firebaseUtils.sendMessage(notification);
+            sendNotificationOnOrderProcess("Your order's process", adminActionMessage(adminAction), invoice.getCustomer().getAccount().getUsername(), invoice.getId());
 
             return new ResponseEntity<>(new ApiResponse("success", adminActionResult(adminAction)), HttpStatus.OK);
         } catch (Exception e) {
@@ -637,6 +617,15 @@ public class InvoiceCrudServiceImpl implements CrudService {
             case "REFUSED" -> {
                 return "Sorry, we have to refuse your order";
             }
+            case "SUCCESS" -> {
+                return "Your order has been success, have a good day!";
+            }
+            case "FAILED" -> {
+                return "Your order has been failed";
+            }
+            case "SHIPPING" -> {
+                return "We are shipping your order";
+            }
             case "ACCEPTED" -> {
                 return "Your order has been accepted";
             }
@@ -678,6 +667,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
     }
 
 
+    // create new GHN shipping order
     public boolean createNewGhnShippingOrder(Invoice invoice) {
         try {
             Delivery newDelivery = ghnUtils.getNewGhnShippingOrderCode(invoice);
@@ -694,5 +684,21 @@ public class InvoiceCrudServiceImpl implements CrudService {
             e.printStackTrace();
             return false;
         }
+    }
+
+
+    // send notification about order process
+    public void sendNotificationOnOrderProcess(String title, String content, String topic, int invoiceId) {
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("invoiceId", String.valueOf(invoiceId));
+
+        NotificationDTO notification = NotificationDTO.builder()
+                .topic(title)
+                .body(content)
+                .data(dataMap)
+                .topic(topic)
+                .build();
+
+        firebaseUtils.sendMessage(notification);
     }
 }
