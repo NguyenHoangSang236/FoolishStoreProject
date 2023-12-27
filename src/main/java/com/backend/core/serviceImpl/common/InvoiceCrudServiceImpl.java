@@ -169,15 +169,18 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
             }
 
-            createNewInvoice(newInvoice, customerId);
+            boolean result = createNewInvoice(newInvoice, customerId);
 
-            responseSuccessMessage = responseSuccessMessage.replace("---", String.valueOf(newInvoiceId));
+            if (result) {
+                return new ResponseEntity<>(new ApiResponse("success", responseSuccessMessage.replace("---", String.valueOf(newInvoiceId))), HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>(new ApiResponse("success", responseSuccessMessage), HttpStatus.OK);
     }
 
 
@@ -320,17 +323,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 return new ResponseEntity<>(new ApiResponse("failed", "This order can not be updated"), HttpStatus.BAD_REQUEST);
             }
 
-            // admin accept or refuse order
+            // admin accept or refuse COD order
             if ((adminAction.equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
                     adminAction.equals(AdminAcceptanceEnum.REFUSED.name())) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTANCE_WAITING.name()) &&
                     invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
-                if(adminAction.equals(AdminAcceptanceEnum.ACCEPTED.name())) {
-                    if(!createNewGhnShippingOrder(invoice)) {
-                        return new ResponseEntity<>(new ApiResponse("failed", "Failed to add new GHN shipping order, please check necessary information again"), HttpStatus.BAD_REQUEST);
-                    }
-                }
-
                 invoice.setAdminAcceptance(adminAction);
                 invoice.setOrderStatus(InvoiceEnum.PACKING.name());
                 invoice.setStaff(adminInCharge);
@@ -344,10 +341,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
             else if (adminAction.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
                     invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.PAYMENT_WAITING.name()) &&
                     !invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
-                if(!createNewGhnShippingOrder(invoice)) {
-                    return new ResponseEntity<>(new ApiResponse("failed", "Failed to add new GHN shipping order, please check necessary information again"), HttpStatus.BAD_REQUEST);
-                }
-
                 invoice.setAdminAcceptance(adminAction);
                 invoice.setOrderStatus(InvoiceEnum.PACKING.name());
                 invoice.setPaymentStatus(PaymentEnum.PAID.name());
@@ -361,8 +354,39 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     (invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
                             invoice.getAdminAcceptance().equals((AdminAcceptanceEnum.ACCEPTED))) &&
                     !invoice.getOrderStatus().equals(InvoiceEnum.PACKING.name())) {
+                // create a new GHN shipping order
+                if(!createNewGhnShippingOrder(invoice)) {
+                    return new ResponseEntity<>(new ApiResponse("failed", "Failed to add new GHN shipping order, please check necessary information again"), HttpStatus.BAD_REQUEST);
+                }
+
                 invoice.setOrderStatus(adminAction);
-            } else
+            }
+            // admin confirms order is being shipped
+            else if((adminAction.equals(InvoiceEnum.SHIPPING.name())) &&
+                    invoice.getOrderStatus().equals(InvoiceEnum.FINISH_PACKING.name()) &&
+                    (invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
+                            invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()))) {
+                invoice.setOrderStatus(adminAction);
+            }
+            // admin confirms order is SUCCESS or FAILED
+            else if((adminAction.equals(InvoiceEnum.SUCCESS.name()) || adminAction.equals(InvoiceEnum.FAILED.name())) &&
+                    invoice.getOrderStatus().equals(InvoiceEnum.SHIPPING.name()) &&
+                    (invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
+                            invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()))) {
+                String reason = orderProcess.getReason();
+
+                // FAILED must have a reason
+                if(adminAction.equals(InvoiceEnum.FAILED.name()) && (reason == null || reason.isBlank())) {
+                    return new ResponseEntity<>(new ApiResponse("failed", "Must have a reason for failed order"), HttpStatus.BAD_REQUEST);
+                }
+
+                if (invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
+                    invoice.setPaymentStatus(PaymentEnum.PAID.name());
+                }
+
+                invoice.setOrderStatus(adminAction);
+            }
+            else
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
             invoiceRepo.save(invoice);
@@ -473,7 +497,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
     }
 
@@ -500,50 +523,62 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     // create a new invoice process
-    public void createNewInvoice(Invoice newInvoice, int customerId) {
-        double invoiceTotalPrice = 0;
-        List<CartRenderInfoDTO> cartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
+    public boolean createNewInvoice(Invoice newInvoice, int customerId) {
+        try {
+            double invoiceTotalPrice = 0;
+            List<CartRenderInfoDTO> cartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
 
-        // save new invoice first to take its ID as the foreign key for InvoicesWithProducts to progress
-        invoiceRepo.save(newInvoice);
+            // save new invoice first to take its ID as the foreign key for InvoicesWithProducts to progress
+            invoiceRepo.save(newInvoice);
 
-        // modify data to tables
-        for (CartRenderInfoDTO item : cartItemList) {
-            invoiceTotalPrice += item.getTotalPrice();
+            if(cartItemList.isEmpty()) {
+                return false;
+            }
 
-            Cart tblCart = cartRepo.getCartById(item.getId());
+            // modify data to tables
+            for (CartRenderInfoDTO item : cartItemList) {
+                invoiceTotalPrice += item.getTotalPrice();
 
-            // set cart item from Cart table to buying_status = BOUGHT and select_status = 0
-            tblCart.setSelectStatus(1);
-            tblCart.setBuyingStatus(CartEnum.PENDING.name());
-            tblCart.setInvoice(newInvoice);
-            cartRepo.save(tblCart);
+                Cart tblCart = cartRepo.getCartById(item.getId());
 
-            // get ProductManagement by id, color and size
-            ProductManagement pm = productManagementRepo.getProductsManagementByProductIDAndColorAndSize(
-                    item.getProductId(),
-                    item.getColor(),
-                    item.getSize()
-            );
+                // set cart item from Cart table to buying_status = BOUGHT and select_status = 0
+                tblCart.setSelectStatus(1);
+                tblCart.setBuyingStatus(CartEnum.PENDING.name());
+                tblCart.setInvoice(newInvoice);
+                cartRepo.save(tblCart);
+
+                // get ProductManagement by id, color and size
+                ProductManagement pm = productManagementRepo.getProductsManagementByProductIDAndColorAndSize(
+                        item.getProductId(),
+                        item.getColor(),
+                        item.getSize()
+                );
 
 
-            InvoicesWithProducts invoicesWithProducts = new InvoicesWithProducts(
-                    new InvoicesWithProductsPrimaryKeys(pm.getId(), newInvoice.getId()),
-                    pm,
-                    newInvoice,
-                    item.getQuantity()
-            );
+                InvoicesWithProducts invoicesWithProducts = new InvoicesWithProducts(
+                        new InvoicesWithProductsPrimaryKeys(pm.getId(), newInvoice.getId()),
+                        pm,
+                        newInvoice,
+                        item.getQuantity()
+                );
 
-            // insert to InvoicesWithProducts table
-            invoicesWithProductsRepo.insertInvoicesWithProducts(invoicesWithProducts);
+                // insert to InvoicesWithProducts table
+                invoicesWithProductsRepo.insertInvoicesWithProducts(invoicesWithProducts);
+            }
+
+
+            // set receiver account for online payment invoice
+            OnlinePaymentAccount receiverInfo = onlinePaymentAccountRepo.getOnlinePaymentAccountByType(newInvoice.getPaymentMethod());
+            newInvoice.setReceiverPaymentAccount(receiverInfo);
+
+            invoiceRepo.save(newInvoice);
+
+            return true;
         }
-
-
-        // set receiver account for online payment invoice
-        OnlinePaymentAccount receiverInfo = onlinePaymentAccountRepo.getOnlinePaymentAccountByType(newInvoice.getPaymentMethod());
-        newInvoice.setReceiverPaymentAccount(receiverInfo);
-
-        invoiceRepo.save(newInvoice);
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
