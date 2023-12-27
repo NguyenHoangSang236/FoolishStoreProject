@@ -60,6 +60,7 @@ public class Invoice {
     @Column(name = "ward_code")
     String wardCode;
 
+    @NonNull
     @Column(name = "district_id")
     int districtId;
 
