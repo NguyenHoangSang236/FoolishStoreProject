@@ -30,6 +30,9 @@ public class Delivery {
     @Column(name = "ship_date")
     Date shipDate;
 
+    @Column(name = "expected_delivery_time")
+    Date expectedDeliveryTime;
+
     @OneToOne
     @JoinColumn(name = "invoice_id", referencedColumnName = "ID")
     private Invoice invoice;
