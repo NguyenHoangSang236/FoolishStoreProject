@@ -81,7 +81,7 @@ public class NotificationCrudServiceImpl implements CrudService {
             notification.setSeen(true);
             notificationRepo.save(notification);
 
-            return new ResponseEntity<>(new ApiResponse("success", "Seen notification successfully"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ApiResponse("success", "Seen notification successfully"), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
