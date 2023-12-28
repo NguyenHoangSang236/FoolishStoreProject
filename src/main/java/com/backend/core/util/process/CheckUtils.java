@@ -1,5 +1,7 @@
 package com.backend.core.util.process;
 
+import com.backend.core.enums.AdminAcceptanceEnum;
+import com.backend.core.enums.InvoiceEnum;
 import com.backend.core.enums.StringTypeEnum;
 import com.backend.core.repository.account.AccountRepository;
 import com.backend.core.repository.customer.CustomerRepository;
@@ -82,5 +84,25 @@ public class CheckUtils {
     //check email has been used or not
     public boolean isUsedEmail(String email) {
         return customerRepo.getCustomerByEmail(email) != null;
+    }
+
+    // check string is in invoice enum or not
+    public boolean isInvoiceEnumValueExist(String value) {
+        try {
+            InvoiceEnum.valueOf(value);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    // check string is in invoice enum or not
+    public boolean isAdminAcceptanceEnumValueExist(String value) {
+        try {
+            AdminAcceptanceEnum.valueOf(value);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }
