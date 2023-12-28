@@ -340,7 +340,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             }
             // admin finished pack the order
             else if (adminAction.equals(InvoiceEnum.FINISH_PACKING.name()) &&
-                    (invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
+                    (invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) ||
                             invoice.getAdminAcceptance().equals((AdminAcceptanceEnum.ACCEPTED))) &&
                     !invoice.getOrderStatus().equals(InvoiceEnum.PACKING.name())) {
                 // create a new GHN shipping order
