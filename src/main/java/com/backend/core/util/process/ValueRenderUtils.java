@@ -306,7 +306,6 @@ public class ValueRenderUtils {
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
-
         if (startDate != null) {
             result += "notification_date >= '" + formatDateToString(startDate, "yyyy-MM-dd HH:mm:ss") + "' and ";
         }
@@ -659,7 +658,7 @@ public class ValueRenderUtils {
     }
 
 
-    // reset Date hour value to 0
+    // reset Date's hour value to 0
     public Date resetDate(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
