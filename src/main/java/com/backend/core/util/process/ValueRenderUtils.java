@@ -295,7 +295,7 @@ public class ValueRenderUtils {
         String result;
 
         if (account.getRole().equals(RoleEnum.CUSTOMER.name())) {
-            result = "select n.* from notification n join login_accounts la on la.user_name = n.topic where ";
+            result = "select n.* from notification n join login_accounts la on la.user_name = n.topic where topic = '" + account.getUsername() + "' and ";
         } else result = "select * from notification where topic = 'admin' and ";
 
         // from 00:00:00 of start date
