@@ -298,8 +298,10 @@ public class InvoiceCrudServiceImpl implements CrudService {
             String outOfStockProductName = invoice.getOutOfStockProduct();
 
             // check invoice is existed or not, and admin action from request is existed or not
-            if (invoice == null || EnumUtils.findEnumInsensitiveCase(AdminAcceptanceEnum.class, adminAction) == null) {
-                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.NO_CONTENT);
+            if (invoice == null ||
+                    (EnumUtils.findEnumInsensitiveCase(AdminAcceptanceEnum.class, adminAction) == null &&
+                    EnumUtils.findEnumInsensitiveCase(InvoiceEnum.class, adminAction) == null)) {
+                return new ResponseEntity<>(new ApiResponse("failed", "This action is not existed"), HttpStatus.BAD_REQUEST);
             }
 
             // check if invoice product is out of stock or not
@@ -688,7 +690,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
         dataMap.put("invoiceId", String.valueOf(invoiceId));
 
         NotificationDTO notification = NotificationDTO.builder()
-                .topic(title)
+                .title(title)
                 .body(content)
                 .data(dataMap)
                 .topic(topic)
