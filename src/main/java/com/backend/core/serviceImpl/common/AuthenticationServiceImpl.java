@@ -227,7 +227,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             customer.setCustomerInfoFromRenderInfo(customerInfo);
 
             // customer change password
-            if (!customerInfo.getPassword().equals(null) && !customerInfo.getPassword().isBlank()) {
+            if (customerInfo.getPassword() != null && !customerInfo.getPassword().isBlank()) {
                 Account account = valueRenderUtils.getCurrentAccountFromRequest(request);
 
                 String newEncodedPassword = passwordEncoder.encode(account.getPassword());

@@ -122,7 +122,7 @@ public class RefundCrudServiceImpl implements CrudService {
             dataMap.put("invoiceId", String.valueOf(invoice.getId()));
 
             NotificationDTO notification = NotificationDTO.builder()
-                    .topic("Your order's process")
+                    .title("Your order's process")
                     .body("We has refunded your order, please checkout your account")
                     .data(dataMap)
                     .topic(invoice.getCustomer().getAccount().getUsername())
