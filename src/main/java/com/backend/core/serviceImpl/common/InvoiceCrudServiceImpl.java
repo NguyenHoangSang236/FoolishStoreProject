@@ -297,10 +297,14 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
             String outOfStockProductName = invoice.getOutOfStockProduct();
 
-            // check invoice is existed or not, and admin action from request is existed or not
-            if (invoice == null ||
-                    (EnumUtils.findEnumInsensitiveCase(AdminAcceptanceEnum.class, adminAction) == null &&
-                    EnumUtils.findEnumInsensitiveCase(InvoiceEnum.class, adminAction) == null)) {
+            // check invoice is existed or not
+            if (invoice == null) {
+                return new ResponseEntity<>(new ApiResponse("failed", "This invoice is not existed"), HttpStatus.BAD_REQUEST);
+            }
+
+            // admin action from request is existed or not
+            if (!checkUtils.isAdminAcceptanceEnumValueExist(adminAction) &&
+                    !checkUtils.isInvoiceEnumValueExist(adminAction)) {
                 return new ResponseEntity<>(new ApiResponse("failed", "This action is not existed"), HttpStatus.BAD_REQUEST);
             }
 
@@ -340,11 +344,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 // add sold quantity and subtract in-stock quantity of products from this invoice
                 productQuantityProcess(adminAction, invoice);
             }
-            // admin finished pack the order
+            // admin finished packing the order
             else if (adminAction.equals(InvoiceEnum.FINISH_PACKING.name()) &&
                     (invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) ||
-                            invoice.getAdminAcceptance().equals((AdminAcceptanceEnum.ACCEPTED))) &&
-                    !invoice.getOrderStatus().equals(InvoiceEnum.PACKING.name())) {
+                            invoice.getAdminAcceptance().equals((AdminAcceptanceEnum.ACCEPTED.name()))) &&
+                    invoice.getOrderStatus().equals(InvoiceEnum.PACKING.name())) {
                 // create a new GHN shipping order
                 if (!createNewGhnShippingOrder(invoice)) {
                     return new ResponseEntity<>(new ApiResponse("failed", "Failed to add new GHN shipping order, please check necessary information again"), HttpStatus.BAD_REQUEST);
@@ -356,7 +360,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
             else if ((adminAction.equals(InvoiceEnum.SHIPPING.name())) &&
                     invoice.getOrderStatus().equals(InvoiceEnum.FINISH_PACKING.name()) &&
                     (invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
-                            invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()))) {
+                            invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name())) &&
+                    invoice.getDelivery() != null) {
                 invoice.setOrderStatus(adminAction);
             }
             // admin confirms order is SUCCESS or FAILED
@@ -371,7 +376,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     return new ResponseEntity<>(new ApiResponse("failed", "Must have a reason for failed order"), HttpStatus.BAD_REQUEST);
                 }
 
-                if (invoice.getPaymentMethod().equals(PaymentEnum.COD.name())) {
+                // set payment status for SUCCESS COD order
+                if (invoice.getPaymentMethod().equals(PaymentEnum.COD.name()) && adminAction.equals(InvoiceEnum.SUCCESS.name())) {
                     invoice.setPaymentStatus(PaymentEnum.PAID.name());
                 }
 
@@ -602,6 +608,15 @@ public class InvoiceCrudServiceImpl implements CrudService {
             }
             case "FINISH_PACKING" -> {
                 return "Confirm order has been finished packing";
+            }
+            case "SHIPPING" -> {
+                return "We are shipping your order";
+            }
+            case "SUCCESS" -> {
+                return "Your order has been shipped successfully";
+            }
+            case "FAILED" -> {
+                return "Sorry! Your order has been failed, please check the reason";
             }
             default -> {
                 return ErrorTypeEnum.NO_DATA_ERROR.name();
