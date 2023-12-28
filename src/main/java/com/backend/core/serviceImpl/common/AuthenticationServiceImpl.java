@@ -37,7 +37,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 @Service
@@ -114,7 +113,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ResponseEntity<ApiResponse> forgotPassword(String username, String email) throws URISyntaxException {
-        URI location = new URI("http://192.168.1.9:8080/systemAuthentication/forgotPassword");
         HttpHeaders responseHeaders = new HttpHeaders();
 
         try {
@@ -227,6 +225,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             Customer customer = customerRepo.getCustomerById(customerId);
             customer.setCustomerInfoFromRenderInfo(customerInfo);
+
+            // customer change password
+            if (!customerInfo.getPassword().equals(null) && !customerInfo.getPassword().isBlank()) {
+                Account account = valueRenderUtils.getCurrentAccountFromRequest(request);
+
+                String newEncodedPassword = passwordEncoder.encode(account.getPassword());
+
+                account.setPassword(newEncodedPassword);
+                accountRepo.save(account);
+            }
+
             customerRepo.save(customer);
 
             return new ResponseEntity<>(new ApiResponse("success", "Update profile successfully"), HttpStatus.OK);
