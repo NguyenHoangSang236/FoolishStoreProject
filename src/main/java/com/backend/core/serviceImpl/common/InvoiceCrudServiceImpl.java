@@ -106,7 +106,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
         try {
             CartCheckoutDTO cartCheckout = (CartCheckoutDTO) paramObj;
 
-            if(cartCheckout.getAddress().equals(null) || cartCheckout.getAddress().isBlank()) {
+            if (cartCheckout.getAddress().equals(null) || cartCheckout.getAddress().isBlank()) {
                 return new ResponseEntity<>(new ApiResponse("failed", "Please input address"), HttpStatus.BAD_REQUEST);
             }
 
@@ -173,8 +173,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
             if (result) {
                 return new ResponseEntity<>(new ApiResponse("success", responseSuccessMessage.replace("---", String.valueOf(newInvoiceId))), HttpStatus.OK);
-            }
-            else {
+            } else {
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
@@ -345,28 +344,28 @@ public class InvoiceCrudServiceImpl implements CrudService {
                             invoice.getAdminAcceptance().equals((AdminAcceptanceEnum.ACCEPTED))) &&
                     !invoice.getOrderStatus().equals(InvoiceEnum.PACKING.name())) {
                 // create a new GHN shipping order
-                if(!createNewGhnShippingOrder(invoice)) {
+                if (!createNewGhnShippingOrder(invoice)) {
                     return new ResponseEntity<>(new ApiResponse("failed", "Failed to add new GHN shipping order, please check necessary information again"), HttpStatus.BAD_REQUEST);
                 }
 
                 invoice.setOrderStatus(adminAction);
             }
             // admin confirms order is being shipped
-            else if((adminAction.equals(InvoiceEnum.SHIPPING.name())) &&
+            else if ((adminAction.equals(InvoiceEnum.SHIPPING.name())) &&
                     invoice.getOrderStatus().equals(InvoiceEnum.FINISH_PACKING.name()) &&
                     (invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
                             invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()))) {
                 invoice.setOrderStatus(adminAction);
             }
             // admin confirms order is SUCCESS or FAILED
-            else if((adminAction.equals(InvoiceEnum.SUCCESS.name()) || adminAction.equals(InvoiceEnum.FAILED.name())) &&
+            else if ((adminAction.equals(InvoiceEnum.SUCCESS.name()) || adminAction.equals(InvoiceEnum.FAILED.name())) &&
                     invoice.getOrderStatus().equals(InvoiceEnum.SHIPPING.name()) &&
                     (invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.ACCEPTED.name()) ||
                             invoice.getAdminAcceptance().equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()))) {
                 String reason = orderProcess.getReason();
 
                 // FAILED must have a reason
-                if(adminAction.equals(InvoiceEnum.FAILED.name()) && (reason == null || reason.isBlank())) {
+                if (adminAction.equals(InvoiceEnum.FAILED.name()) && (reason == null || reason.isBlank())) {
                     return new ResponseEntity<>(new ApiResponse("failed", "Must have a reason for failed order"), HttpStatus.BAD_REQUEST);
                 }
 
@@ -375,8 +374,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 }
 
                 invoice.setOrderStatus(adminAction);
-            }
-            else
+            } else
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
             invoiceRepo.save(invoice);
@@ -511,7 +509,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             // save new invoice first to take its ID as the foreign key for InvoicesWithProducts to progress
             invoiceRepo.save(newInvoice);
 
-            if(cartItemList.isEmpty()) {
+            if (cartItemList.isEmpty()) {
                 return false;
             }
 
@@ -554,8 +552,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             invoiceRepo.save(newInvoice);
 
             return true;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -672,15 +669,13 @@ public class InvoiceCrudServiceImpl implements CrudService {
         try {
             Delivery newDelivery = ghnUtils.getNewGhnShippingOrderCode(invoice);
 
-            if(newDelivery != null && !newDelivery.getShippingOrderCode().isBlank()) {
+            if (newDelivery != null && !newDelivery.getShippingOrderCode().isBlank()) {
                 invoice.setDelivery(newDelivery);
                 invoiceRepo.save(invoice);
 
                 return true;
-            }
-            else return false;
-        }
-        catch (Exception e) {
+            } else return false;
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

@@ -129,7 +129,6 @@ public class Invoice {
     }
 
 
-
     // check invoice can be updated or not
     public boolean isUpdatable() {
         return (!this.orderStatus.equals(InvoiceEnum.FAILED.name())
