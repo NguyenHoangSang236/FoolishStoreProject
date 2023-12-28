@@ -23,6 +23,8 @@ public abstract class AuthenticationController {
 
     public abstract ResponseEntity logoutFromSystem(HttpServletRequest request);
 
+    public abstract ResponseEntity changePassword(String oldPassword, String newPassword, HttpServletRequest request) throws URISyntaxException;
+
     public abstract ResponseEntity updateProfile(@RequestBody CustomerRenderInfoDTO customerRenderInfoDTO, HttpServletRequest request);
 
     public abstract ResponseEntity registerNewAccount(@Validated @RequestBody Account account, BindingResult bindingResult);

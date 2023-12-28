@@ -27,7 +27,7 @@ public class CustomerRenderInfoDTO {
     @Column(name = "user_name", unique = true)
     String userName;
 
-    @JsonIgnore
+//    @JsonIgnore
     @Column(name = "password")
     String password;
 

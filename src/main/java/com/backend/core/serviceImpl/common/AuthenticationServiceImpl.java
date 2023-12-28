@@ -88,7 +88,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 accountRepo.save(loginAcc);
 
                 // when the account is Admin or Shipper
-                if (loginAcc.getRole().equals(RoleEnum.ADMIN.name()) || loginAcc.getRole().equals(RoleEnum.SHIPPER.name())) {
+                if (loginAcc.getRole().equals(RoleEnum.ADMIN.name())) {
                     staffInfo = staffRenderInfoRepo.getStaffInfoByUserName(account.getUsername());
 
                     return new ResponseEntity<>(new ApiResponse("success", staffInfo, jwt), HttpStatus.OK);
@@ -136,6 +136,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), responseHeaders, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> changePassword(String oldPassword, String newPassword, HttpServletRequest request) throws URISyntaxException {
+        try {
+            Account account = valueRenderUtils.getCurrentAccountFromRequest(request);
+            String newEncodedPassword = passwordEncoder.encode(newPassword);
+
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            account.getUsername(),
+                            oldPassword
+                    )
+            );
+
+            account.setPassword(newEncodedPassword);
+            accountRepo.save(account);
+
+            return new ResponseEntity<>(new ApiResponse("success", "Changed password successfully"), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+
+            if(e instanceof BadCredentialsException) {
+                return new ResponseEntity<>(new ApiResponse("failed", "Incorrect old password"), HttpStatus.BAD_REQUEST);
+            }
+            else
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -225,16 +254,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             Customer customer = customerRepo.getCustomerById(customerId);
             customer.setCustomerInfoFromRenderInfo(customerInfo);
-
-            // customer change password
-            if (customerInfo.getPassword() != null && !customerInfo.getPassword().isBlank()) {
-                Account account = valueRenderUtils.getCurrentAccountFromRequest(request);
-
-                String newEncodedPassword = passwordEncoder.encode(account.getPassword());
-
-                account.setPassword(newEncodedPassword);
-                accountRepo.save(account);
-            }
 
             customerRepo.save(customer);
 
