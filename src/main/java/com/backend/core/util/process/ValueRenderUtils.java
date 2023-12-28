@@ -283,8 +283,6 @@ public class ValueRenderUtils {
 
         result += "order by id desc limit " + (limit * (page - 1)) + ", " + limit;
 
-        System.out.println(result);
-
         return result;
     }
 
