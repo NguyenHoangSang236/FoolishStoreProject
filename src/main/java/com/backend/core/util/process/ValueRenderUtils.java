@@ -412,7 +412,7 @@ public class ValueRenderUtils {
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
-        if (pagination.getType().equals(RoleEnum.ADMIN.name()) || pagination.getType().equals(RoleEnum.SHIPPER.name())) {
+        if (pagination.getType().equals(RoleEnum.ADMIN.name())) {
             result = "select * from staff_info_for_ui where ";
             result += "position = '" + pagination.getType() + "' and ";
         } else if (pagination.getType().equals(RoleEnum.CUSTOMER.name())) {

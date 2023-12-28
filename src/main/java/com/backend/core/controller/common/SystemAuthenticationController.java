@@ -41,6 +41,12 @@ public class SystemAuthenticationController extends AuthenticationController {
     }
 
     @Override
+    @GetMapping("/authen/systemAuthentication/changePassword")
+    public ResponseEntity changePassword(@RequestParam String oldPassword, @RequestParam String newPassword, HttpServletRequest request) throws URISyntaxException {
+        return authenticationService.changePassword(oldPassword, newPassword, request);
+    }
+
+    @Override
     @PostMapping("/authen/systemAuthentication/updateProfile")
     public ResponseEntity<ApiResponse> updateProfile(@RequestBody CustomerRenderInfoDTO customerRenderInfoDTO, HttpServletRequest request) {
         return authenticationService.updateProfile(customerRenderInfoDTO, request);

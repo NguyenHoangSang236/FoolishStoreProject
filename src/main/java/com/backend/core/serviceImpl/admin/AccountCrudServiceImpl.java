@@ -142,16 +142,6 @@ public class AccountCrudServiceImpl implements CrudService {
                     );
 
                     return new ResponseEntity<>(new ApiResponse("success", customerList), HttpStatus.OK);
-                } else if (type.equals(RoleEnum.SHIPPER.name())) {
-                    List<StaffRenderInfoDTO> shipperList = new ArrayList<>();
-
-                    // get shipper info list by pagination
-                    shipperList = staffRenderInfoRepo.getShipperInfoList(
-                            valueRenderUtils.getStartLineForQueryPagination(limit, page),
-                            limit
-                    );
-
-                    return new ResponseEntity<>(new ApiResponse("success", shipperList), HttpStatus.OK);
                 } else if (type.equals(RoleEnum.ADMIN.name())) {
                     List<StaffRenderInfoDTO> adminList = new ArrayList<>();
 
@@ -176,8 +166,7 @@ public class AccountCrudServiceImpl implements CrudService {
                         accountFilterRequest.getPagination()
                 );
 
-                if (accountFilterRequest.getPagination().getType().equals(RoleEnum.ADMIN.name()) ||
-                        accountFilterRequest.getPagination().getType().equals(RoleEnum.SHIPPER.name())) {
+                if (accountFilterRequest.getPagination().getType().equals(RoleEnum.ADMIN.name())) {
                     List<StaffRenderInfoDTO> staffInfoList = customQueryRepo.getBindingFilteredList(filterQuery, StaffRenderInfoDTO.class);
 
                     return new ResponseEntity<>(new ApiResponse("success", staffInfoList), HttpStatus.OK);

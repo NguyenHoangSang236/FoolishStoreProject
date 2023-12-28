@@ -16,6 +16,8 @@ public interface AuthenticationService {
 
     ResponseEntity<ApiResponse> forgotPassword(String username, String email) throws URISyntaxException;
 
+    ResponseEntity<ApiResponse> changePassword(String oldPassword, String newPassword, HttpServletRequest request) throws URISyntaxException;
+
     ResponseEntity<ApiResponse> logoutFromSystem(HttpServletRequest request);
 
     ResponseEntity<ApiResponse> registerNewAccount(Account account, BindingResult bindingResult);
