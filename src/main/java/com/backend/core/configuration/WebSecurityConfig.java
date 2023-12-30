@@ -81,19 +81,10 @@ public class WebSecurityConfig {
         config.setAllowedOrigins(ImmutableList.of("*"));
         config.setAllowCredentials(true);
         config.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
-//        config.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type"));
-//        config.addAllowedOrigin("*");
-//        config.addAllowedMethod("*");
-//        config.addAllowedHeader("*");
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-//        return authConfig.getAuthenticationManager();
-//    }
 }
