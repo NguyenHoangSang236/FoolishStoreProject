@@ -45,8 +45,20 @@ public class InvoiceRenderInfoDTO {
     @Column(name = "total_price")
     double totalPrice;
 
+    @Column(name = "delivery_fee")
+    double deliveryFee;
+
+    @Column(name = "district_id")
+    int districtId;
+
+    @Column(name = "ward_code")
+    String wardCode;
+
     @Column(name = "reason")
     String reason;
+
+    @Column(name = "address")
+    String address;
 
     @Column(name = "online_payment_account")
     String onlinePaymentAccount;

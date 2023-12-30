@@ -32,6 +32,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindException;
@@ -144,6 +145,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             Account account = valueRenderUtils.getCurrentAccountFromRequest(request);
             String newEncodedPassword = passwordEncoder.encode(newPassword);
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+            System.out.println(encoder.encode(oldPassword));
+            System.out.println(account.getPassword());
 
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -152,8 +157,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     )
             );
 
-            account.setPassword(newEncodedPassword);
-            accountRepo.save(account);
+//            account.setPassword(newEncodedPassword);
+//            accountRepo.save(account);
 
             return new ResponseEntity<>(new ApiResponse("success", "Changed password successfully"), HttpStatus.OK);
         }
