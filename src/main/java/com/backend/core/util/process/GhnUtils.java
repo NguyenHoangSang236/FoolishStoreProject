@@ -295,9 +295,9 @@ public class GhnUtils {
 
             request.put("from_name", "Foolish Fashion Store");
             request.put("from_phone", "0977815809");
-            request.put("from_address", "3/5B Âp 7, Đông Thạnh, Hóc Môn, Thành phố Hồ Chí Minh, Việt Nam");
-            request.put("from_ward_name", "Đông Thạnh");
-            request.put("from_district_name", "Hóc Môn");
+            request.put("from_address", "72 Thành Thái, Phường 14, Quận 10, Hồ Chí Minh, Vietnam");
+            request.put("from_ward_name", "Phường 14");
+            request.put("from_district_name", "Quận 10");
             request.put("from_province_name", "Hồ Chí Minh");
             request.put("to_name", customer.getName());
             request.put("to_address", customer.getName());
