@@ -7,10 +7,7 @@ import com.backend.core.entities.requestdto.cart.CartCheckoutDTO;
 import com.backend.core.entities.requestdto.invoice.InvoiceFilterRequestDTO;
 import com.backend.core.entities.requestdto.invoice.OrderProcessDTO;
 import com.backend.core.entities.requestdto.notification.NotificationDTO;
-import com.backend.core.entities.responsedto.CartRenderInfoDTO;
-import com.backend.core.entities.responsedto.InvoiceDetailRenderInfoDTO;
-import com.backend.core.entities.responsedto.InvoiceRenderInfoDTO;
-import com.backend.core.entities.responsedto.OnlinePaymentInfoDTO;
+import com.backend.core.entities.responsedto.*;
 import com.backend.core.entities.tableentity.*;
 import com.backend.core.enums.*;
 import com.backend.core.repository.cart.CartRenderInfoRepository;
@@ -438,9 +435,15 @@ public class InvoiceCrudServiceImpl implements CrudService {
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
         } else {
             try {
-                List<InvoiceDetailRenderInfoDTO> invoiceItemsList = invoiceDetailsRenderInfoRepo.getInvoiceItemsByInvoiceId(invoiceId);
+                List<InvoiceProductInfoDTO> invoiceItemsList = invoiceDetailsRenderInfoRepo.getInvoiceItemsByInvoiceId(invoiceId);
+                Invoice invoice = invoiceRepo.getInvoiceById(invoiceId);
 
-                return new ResponseEntity<>(new ApiResponse("success", invoiceItemsList), HttpStatus.OK);
+                InvoiceDetailsDTO invoiceDetails = InvoiceDetailsDTO.builder()
+                        .invoice(invoice)
+                        .invoiceProducts(invoiceItemsList)
+                        .build();
+
+                return new ResponseEntity<>(new ApiResponse("success", invoiceDetails), HttpStatus.OK);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
