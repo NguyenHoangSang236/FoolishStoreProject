@@ -1,5 +1,6 @@
 package com.backend.core.entities.tableentity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class Delivery {
     Date expectedDeliveryTime;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "invoice_id", referencedColumnName = "ID")
     private Invoice invoice;
 
