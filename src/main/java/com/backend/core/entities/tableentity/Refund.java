@@ -1,5 +1,7 @@
 package com.backend.core.entities.tableentity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,7 +42,13 @@ public class Refund {
     @JoinColumn(name = "in_charge_admin_id")
     Staff staff;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "invoice_id", referencedColumnName = "ID")
     Invoice invoice;
+
+    @JsonProperty("invoiceId")
+    public int invoiceID() {
+        return this.invoice.getId();
+    }
 }
