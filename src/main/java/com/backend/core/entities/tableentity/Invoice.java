@@ -95,7 +95,6 @@ public class Invoice {
     @JoinColumn(name = "admin_in_charge_id")
     private Staff staff;
 
-    @JsonIgnore
     @OneToOne(mappedBy = "invoice")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Refund refund;

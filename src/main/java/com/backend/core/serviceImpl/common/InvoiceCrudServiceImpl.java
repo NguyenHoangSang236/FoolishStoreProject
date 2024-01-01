@@ -336,6 +336,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 invoice.setAdminAcceptance(adminAction);
                 invoice.setOrderStatus(InvoiceEnum.PACKING.name());
                 invoice.setPaymentStatus(PaymentEnum.PAID.name());
+                invoice.setPayDate(new Date());
                 invoice.setStaff(adminInCharge);
 
                 // add sold quantity and subtract in-stock quantity of products from this invoice
@@ -371,6 +372,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 // FAILED must have a reason
                 if (adminAction.equals(InvoiceEnum.FAILED.name()) && (reason == null || reason.isBlank())) {
                     return new ResponseEntity<>(new ApiResponse("failed", "Must have a reason for failed order"), HttpStatus.BAD_REQUEST);
+                }
+
+                // set shipped date for order when SUCCESS
+                if (adminAction.equals(InvoiceEnum.SUCCESS.name())) {
+                    invoice.getDelivery().setShipDate(new Date());
                 }
 
                 // set payment status for SUCCESS COD order

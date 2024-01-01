@@ -566,7 +566,7 @@ public class ValueRenderUtils {
 
     // get gg drive url from file ID
     public String getGoogleDriveUrlFromFileId(String fileId) {
-        return "https://drive.google.com/file/d/" + fileId + "/view?usp=sharing";
+        return "https://drive.google.com/uc?export=view&id=" + fileId;
     }
 
 
