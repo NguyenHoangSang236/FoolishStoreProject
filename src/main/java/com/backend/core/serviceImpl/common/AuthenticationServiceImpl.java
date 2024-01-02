@@ -143,12 +143,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public ResponseEntity<ApiResponse> changePassword(String oldPassword, String newPassword, HttpServletRequest request) throws URISyntaxException {
         try {
+            // check password format
+            if(newPassword.length() < 6 && newPassword.trim().contains(" ")) {
+                return new ResponseEntity<>(new ApiResponse("failed", "Password must contain more than 6 letters and must not have any space"), HttpStatus.BAD_REQUEST);
+            }
+
             Account account = valueRenderUtils.getCurrentAccountFromRequest(request);
             String newEncodedPassword = passwordEncoder.encode(newPassword);
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-            System.out.println(encoder.encode(oldPassword));
-            System.out.println(account.getPassword());
 
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -202,6 +204,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             //check for null password
             else if (accountFromUI.getPassword().isEmpty() || accountFromUI.getPassword().isBlank()) {
                 return new ResponseEntity<>(new ApiResponse("failed", "Password can not be null !!"), HttpStatus.BAD_REQUEST);
+            }
+            // check password format
+            if(accountFromUI.getPassword().length() < 6) {
+                return new ResponseEntity<>(new ApiResponse("failed", "Password must contain more than 6 letters"), HttpStatus.BAD_REQUEST);
             }
             //check valid username and password
             else if (checkUtils.checkValidStringType(accountFromUI.getUsername(), StringTypeEnum.HAS_NO_SPACE) ||

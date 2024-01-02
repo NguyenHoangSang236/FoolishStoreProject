@@ -29,8 +29,7 @@ public class Catalog {
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "catalogs_with_products",
+    @JoinTable(name = "catalogs_with_products",
             joinColumns = @JoinColumn(name = "catalog_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> products;
