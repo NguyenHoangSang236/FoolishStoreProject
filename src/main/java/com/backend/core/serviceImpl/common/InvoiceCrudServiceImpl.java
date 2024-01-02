@@ -267,7 +267,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 invoiceRepo.save(invoice);
 
                 // send message to admin
-                sendNotificationOnOrderProcess("Order Management", "A customer has canceled an order", "admin", invoice.getId());
+                sendNotificationOnOrderProcess("Order Management", "A customer has canceled an order", "admin", invoice);
 
                 // retrieve product quantity from this invoice
                 productQuantityProcess(InvoiceEnum.CUSTOMER_CANCEL.name(), invoice);
@@ -391,7 +391,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             invoiceRepo.save(invoice);
 
             // send message to customer
-            sendNotificationOnOrderProcess("Your order's process", adminActionMessage(adminAction), invoice.getCustomer().getAccount().getUsername(), invoice.getId());
+            sendNotificationOnOrderProcess("Your order's process", adminActionMessage(adminAction), invoice.getCustomer().getAccount().getUsername(), invoice);
 
             return new ResponseEntity<>(new ApiResponse("success", adminActionResult(adminAction)), HttpStatus.OK);
         } catch (Exception e) {
@@ -710,9 +710,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     // send notification about order process
-    public void sendNotificationOnOrderProcess(String title, String content, String topic, int invoiceId) {
+    public void sendNotificationOnOrderProcess(String title, String content, String topic, Invoice invoice) {
         Map<String, String> dataMap = new HashMap<>();
-        dataMap.put("invoiceId", String.valueOf(invoiceId));
+        dataMap.put("invoiceId", String.valueOf(invoice.getId()));
+        dataMap.put("paymentMethod", invoice.getPaymentMethod());
+        dataMap.put("paymentStatus", invoice.getPaymentStatus());
 
         NotificationDTO notification = NotificationDTO.builder()
                 .title(title)
