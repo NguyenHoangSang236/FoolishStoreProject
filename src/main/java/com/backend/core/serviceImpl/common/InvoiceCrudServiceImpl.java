@@ -459,10 +459,11 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
 
     public boolean isInvoiceOwnerOrAdmin(Account acc, int invoiceId) {
-        if (acc.getCustomer() == null && acc.getStaff() != null) {
+        if (acc.getRole().equals(RoleEnum.ADMIN.name())) {
             return true;
-        } else
+        } else {
             return (invoiceRepo.getInvoiceCountByInvoiceIdAndCustomerId(invoiceId, acc.getCustomer().getId()) > 0);
+        }
     }
 
 

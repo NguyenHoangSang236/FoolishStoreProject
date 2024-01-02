@@ -88,7 +88,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 loginAcc.setCurrentJwt(jwt);
                 accountRepo.save(loginAcc);
 
-                // when the account is Admin or Shipper
+                // when the account is Admin
                 if (loginAcc.getRole().equals(RoleEnum.ADMIN.name())) {
                     staffInfo = staffRenderInfoRepo.getStaffInfoByUserName(account.getUsername());
 
