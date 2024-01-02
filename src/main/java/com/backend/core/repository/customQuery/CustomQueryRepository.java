@@ -26,13 +26,13 @@ public class CustomQueryRepository {
     }
 
 
-//	@Transactional
-//	public void insertCatalogWithProducts(int catalogId, String productName) {
-//	    this.entityManager.createNativeQuery("INSERT INTO catalog_with_products (catalog_id, product_name) VALUES (?,?)")
-//	      .setParameter(1, catalogId)
-//	      .setParameter(2, productName)
-//	      .executeUpdate();
-//	}
+	@Transactional
+	public void insertCatalogWithProducts(int catalogId, int productId) {
+	    this.entityManager.createNativeQuery("INSERT INTO catalogs_with_products (catalog_id, product_id) VALUES (?,?)")
+	      .setParameter(1, catalogId)
+	      .setParameter(2, productId)
+	      .executeUpdate();
+	}
 
 
     @Transactional
@@ -47,6 +47,13 @@ public class CustomQueryRepository {
     public void deleteCatalogsWithProductsById(int catalogId) {
         this.entityManager.createNativeQuery("DELETE FROM catalogs_with_products WHERE (`catalog_id` = ?)")
                 .setParameter(1, catalogId)
+                .executeUpdate();
+    }
+
+    @Transactional
+    public void deleteCatalogsWithProductsByProductId(int productId) {
+        this.entityManager.createNativeQuery("DELETE FROM catalogs_with_products WHERE (`product_id` = ?)")
+                .setParameter(1, productId)
                 .executeUpdate();
     }
 }

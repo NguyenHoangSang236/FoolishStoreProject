@@ -1,5 +1,6 @@
 package com.backend.core.entities.requestdto.product;
 
+import com.backend.core.entities.tableentity.Catalog;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,18 @@ public class ProductDetailsRequestDTO {
     @JsonProperty("description")
     String description;
 
+    @JsonProperty("length")
+    double length;
+
+    @JsonProperty("width")
+    double width;
+
+    @JsonProperty("weight")
+    double weight;
+
+    @JsonProperty("height")
+    double height;
+
     @JsonProperty("sellingPrice")
     double sellingPrice;
 
@@ -35,9 +48,9 @@ public class ProductDetailsRequestDTO {
     @JsonProperty("discount")
     double discount;
 
-    @JsonProperty("importDate")
-    Date importDate;
-
     @JsonProperty("attributes")
     List<ProductAttribute> attributes;
+
+    @JsonProperty("categoryIds")
+    List<Integer> categoryIds;
 }

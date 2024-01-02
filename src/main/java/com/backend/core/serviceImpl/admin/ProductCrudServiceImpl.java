@@ -6,11 +6,10 @@ import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.product.ProductAttribute;
 import com.backend.core.entities.requestdto.product.ProductDetailsRequestDTO;
 import com.backend.core.entities.responsedto.AuthenProductRenderInfoDTO;
-import com.backend.core.entities.tableentity.Product;
-import com.backend.core.entities.tableentity.ProductImagesManagement;
-import com.backend.core.entities.tableentity.ProductImportManagement;
-import com.backend.core.entities.tableentity.ProductManagement;
+import com.backend.core.entities.tableentity.*;
 import com.backend.core.enums.ErrorTypeEnum;
+import com.backend.core.repository.catalog.CatalogRepository;
+import com.backend.core.repository.customQuery.CustomQueryRepository;
 import com.backend.core.repository.product.*;
 import com.backend.core.service.CrudService;
 import com.backend.core.util.process.ValueRenderUtils;
@@ -49,6 +48,12 @@ public class ProductCrudServiceImpl implements CrudService {
 
     @Autowired
     AuthenProductRenderInfoRepository authenProductRenderInfoRepo;
+
+    @Autowired
+    CatalogRepository catalogRepo;
+
+    @Autowired
+    CustomQueryRepository customQueryRepo;
 
     @Autowired
     ValueRenderUtils valueRenderUtils;
@@ -156,6 +161,7 @@ public class ProductCrudServiceImpl implements CrudService {
     public ResponseEntity<ApiResponse> saveProductProcess(ProductDetailsRequestDTO request, RequestPurpose purpose) {
         // save product first
         Product product = new Product();
+        List<Catalog> categoryList = new ArrayList<>();
         Product existedProduct = (purpose.equals(RequestPurpose.ADD))
                 ? productRepo.getProductByFullName(request.getName().toLowerCase())
                 : productRepo.getProductById(request.getId());
@@ -171,8 +177,9 @@ public class ProductCrudServiceImpl implements CrudService {
 
         // build Product from ProductAddingRequestDTO
         product.getProductFromProductDetailsRequest(request);
+        product.setCatalogs(categoryList);
 
-        // save product management, product import and product images later
+        // save product management, catalogs_with_products and product images later
         return saveOtherTables(request, product, purpose);
     }
 
@@ -188,13 +195,28 @@ public class ProductCrudServiceImpl implements CrudService {
         } else {
             productRepo.save(product);
 
-            for (ProductAttribute attribute : attributes) {
-                Date importDate = request.getImportDate();
+            Product newProduct = productRepo.getProductByFullName(product.getName());
 
+            if(purpose.equals(RequestPurpose.EDIT)) {
+                customQueryRepo.deleteCatalogsWithProductsByProductId(product.getId());
+            }
+
+            for (Integer cateId : request.getCategoryIds()) {
+                Catalog category = catalogRepo.getCatalogById(cateId);
+
+                if(category == null) {
+                    return new ResponseEntity<>(new ApiResponse("failed", "Category does not exist"), HttpStatus.BAD_REQUEST);
+                }
+
+                customQueryRepo.insertCatalogWithProducts(cateId, product.getId());
+            }
+
+
+            for (ProductAttribute attribute : attributes) {
                 if (purpose.equals(RequestPurpose.ADD)) {
-                    saveNewProductManagementAndImportManagement(attribute, importDate, product);
+                    saveNewProductManagement(attribute, product);
                 } else {
-                    saveEditedProductManagementAndImportManagement(attribute, importDate, product);
+                    saveEditedProductManagement(attribute, product);
                 }
 
                 saveProductImagesManagement(attribute, product);
@@ -228,7 +250,7 @@ public class ProductCrudServiceImpl implements CrudService {
 
 
     // save new data to product management and product import management tables
-    public void saveNewProductManagementAndImportManagement(ProductAttribute attribute, Date importDate, Product product) {
+    public void saveNewProductManagement(ProductAttribute attribute, Product product) {
         try {
             for (int i = 0; i < attribute.getSizes().length; i++) {
                 ProductManagement pm = new ProductManagement();
@@ -236,7 +258,6 @@ public class ProductCrudServiceImpl implements CrudService {
                 pm.setColor(attribute.getColor());
                 pm.setSize(attribute.getSizes()[i]);
                 pm.setAvailableQuantity(attribute.getQuantity()[i]);
-                pm.setImportDate(importDate);
                 pm.setProduct(product);
 
                 productManagementRepo.save(pm);
@@ -246,14 +267,6 @@ public class ProductCrudServiceImpl implements CrudService {
                         attribute.getColor(),
                         attribute.getSizes()[i]
                 );
-
-                ProductImportManagement pim = new ProductImportManagement(
-                        attribute.getQuantity()[i],
-                        pm,
-                        importDate
-                );
-
-                productImportManagementRepo.save(pim);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -262,7 +275,7 @@ public class ProductCrudServiceImpl implements CrudService {
 
 
     // save edited data to product management and product import management tables
-    public void saveEditedProductManagementAndImportManagement(ProductAttribute attribute, Date importDate, Product product) {
+    public void saveEditedProductManagement(ProductAttribute attribute, Product product) {
         try {
             List<ProductManagement> pmList = productManagementRepo.getProductsManagementListByProductIDAndColor(
                     product.getId(),
@@ -298,7 +311,6 @@ public class ProductCrudServiceImpl implements CrudService {
                                 );
 
                                 pm.setAvailableQuantity(rqQuantityList.get(j));
-                                pm.setImportDate(importDate);
                                 pm.setProduct(product);
 
                                 productManagementRepo.save(pm);
@@ -332,7 +344,6 @@ public class ProductCrudServiceImpl implements CrudService {
                             pm.setColor(attribute.getColor());
                             pm.setSize(rqSizeList.get(i));
                             pm.setAvailableQuantity(rqQuantityList.get(i));
-                            pm.setImportDate(importDate);
                             pm.setProduct(product);
 
                             productManagementRepo.save(pm);
@@ -342,21 +353,13 @@ public class ProductCrudServiceImpl implements CrudService {
                                     attribute.getColor(),
                                     rqSizeList.get(i)
                             );
-
-                            ProductImportManagement pim = new ProductImportManagement(
-                                    rqQuantityList.get(i),
-                                    pm,
-                                    importDate
-                            );
-
-                            productImportManagementRepo.save(pim);
                         }
                     }
                 }
             }
             // new product color
             else {
-                saveNewProductManagementAndImportManagement(attribute, importDate, product);
+                saveNewProductManagement(attribute, product);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -396,8 +399,6 @@ public class ProductCrudServiceImpl implements CrudService {
             return "Please input product's brand";
         } else if (request.getAttributes() == null || request.getAttributes().isEmpty()) {
             return "Please input product's features or attributes";
-        } else if (request.getImportDate() == null) {
-            return "Please input product's import date";
         } else return null;
     }
 }

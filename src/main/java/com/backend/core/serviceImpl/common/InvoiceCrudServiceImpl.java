@@ -169,6 +169,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
             boolean result = createNewInvoice(newInvoice, customerId);
 
             if (result) {
+                sendNotificationOnOrderProcess("New order", "A new order has been created", "admin", newInvoice);
+
                 return new ResponseEntity<>(new ApiResponse("success", responseSuccessMessage.replace("---", String.valueOf(newInvoiceId))), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
