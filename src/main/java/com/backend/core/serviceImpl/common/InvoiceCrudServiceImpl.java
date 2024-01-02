@@ -112,7 +112,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             String paymentMethod = cartCheckout.getPaymentMethod();
             double shippingFee = ghnUtils.calculateShippingFee(cartCheckout, selectedCartItemList);
             double subtotal = 0;
-            int newInvoiceId = 0;
+            int newInvoiceId = 1;
             String address = cartCheckout.getAddress();
             String note = cartCheckout.getNote();
             Integer invoiceId = invoiceRepo.getLatestInvoiceId();
@@ -525,6 +525,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
         try {
             double invoiceTotalPrice = 0;
             List<CartRenderInfoDTO> cartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
+            List<Cart> cartList = new ArrayList<>();
+            List<InvoicesWithProducts> invoiceItemList = new ArrayList<>();
 
             // save new invoice first to take its ID as the foreign key for InvoicesWithProducts to progress
             invoiceRepo.save(newInvoice);
@@ -542,7 +544,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 // set cart item from Cart table to buying_status = BOUGHT and select_status = 0
                 tblCart.setSelectStatus(1);
                 tblCart.setBuyingStatus(CartEnum.PENDING.name());
-                tblCart.setInvoice(newInvoice);
+//                tblCart.setInvoice(newInvoice);
+                cartList.add(tblCart);
                 cartRepo.save(tblCart);
 
                 // get ProductManagement by id, color and size
@@ -561,13 +564,17 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 );
 
                 // insert to InvoicesWithProducts table
+                invoiceItemList.add(invoicesWithProducts);
                 invoicesWithProductsRepo.insertInvoicesWithProducts(invoicesWithProducts);
             }
 
 
             // set receiver account for online payment invoice
             OnlinePaymentAccount receiverInfo = onlinePaymentAccountRepo.getOnlinePaymentAccountByType(newInvoice.getPaymentMethod());
+
             newInvoice.setReceiverPaymentAccount(receiverInfo);
+            newInvoice.setCarts(cartList);
+            newInvoice.setInvoicesWithProducts(invoiceItemList);
 
             invoiceRepo.save(newInvoice);
 

@@ -3,6 +3,7 @@ package com.backend.core.entities.tableentity;
 import com.backend.core.enums.InvoiceEnum;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -95,7 +96,8 @@ public class Invoice {
     @JoinColumn(name = "admin_in_charge_id")
     private Staff staff;
 
-    @OneToOne(mappedBy = "invoice")
+    @Nullable
+    @OneToOne(mappedBy = "invoice", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Refund refund;
 

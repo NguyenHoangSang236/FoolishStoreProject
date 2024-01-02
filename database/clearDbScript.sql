@@ -5,6 +5,7 @@ truncate delivery;
 truncate cart;
 truncate invoice;
 truncate notification;
+truncate refund;
 
 update products_management set available_quantity = 20;
 update products_management set sold_quantity = 0;
