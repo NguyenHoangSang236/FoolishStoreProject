@@ -2,7 +2,9 @@ package com.backend.core.entities.responsedto;
 
 import com.backend.core.entities.tableentity.Catalog;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,8 +33,9 @@ public class ProductRenderInfoDTO {
     @Column(name = "size")
     private String size;
 
-    @Column(name = "original_price")
-    private double originalPrice;
+//    @Nullable
+//    @Column(name = "original_price")
+//    private double originalPrice;
 
     @Column(name = "selling_price")
     private double sellingPrice;
