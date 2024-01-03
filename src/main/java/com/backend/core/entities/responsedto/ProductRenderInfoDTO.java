@@ -33,10 +33,6 @@ public class ProductRenderInfoDTO {
     @Column(name = "size")
     private String size;
 
-//    @Nullable
-//    @Column(name = "original_price")
-//    private double originalPrice;
-
     @Column(name = "selling_price")
     private double sellingPrice;
 

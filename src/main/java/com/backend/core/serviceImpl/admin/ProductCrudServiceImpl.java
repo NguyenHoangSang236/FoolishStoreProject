@@ -6,6 +6,7 @@ import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.product.ProductAttribute;
 import com.backend.core.entities.requestdto.product.ProductDetailsRequestDTO;
 import com.backend.core.entities.responsedto.AuthenProductRenderInfoDTO;
+import com.backend.core.entities.responsedto.ProductRenderInfoDTO;
 import com.backend.core.entities.tableentity.*;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.repository.catalog.CatalogRepository;
@@ -118,27 +119,7 @@ public class ProductCrudServiceImpl implements CrudService {
 
     @Override
     public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
-        List<AuthenProductRenderInfoDTO> productDetails = new ArrayList<>();
-
-        try {
-            Map<String, Object> requestMap = (Map<String, Object>) paramObj;
-
-            int id = (int) requestMap.get("productId");
-            boolean showFull = (boolean) requestMap.get("showFull");
-
-            productDetails = showFull
-                    ? authenProductRenderInfoRepo.getAuthenProductFullDetails(id)
-                    : authenProductRenderInfoRepo.getAuthenProductDetails(id);
-
-            if (!productDetails.isEmpty()) {
-                return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
-        }
+        return null;
     }
 
     @Override
