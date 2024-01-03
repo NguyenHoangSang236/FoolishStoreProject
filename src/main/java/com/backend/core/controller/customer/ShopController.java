@@ -123,7 +123,7 @@ public class ShopController extends CrudController {
     }
 
     @GetMapping("/unauthen/shop/product_id={productId}")
-    public ResponseEntity<ApiResponse> getProductInfo(@PathVariable(value = "productId") int productId, @RequestParam(value = "showFull") Boolean showFull, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> getProductInfo(@PathVariable(value = "productId") int productId, @RequestParam(value = "showFull") String showFull, HttpServletRequest httpRequest) throws IOException {
         Map<String, Object> request = new HashMap<>();
 
         request.put("productId", productId);

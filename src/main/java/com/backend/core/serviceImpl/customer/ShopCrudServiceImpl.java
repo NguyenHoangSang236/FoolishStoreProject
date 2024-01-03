@@ -153,37 +153,52 @@ public class ShopCrudServiceImpl implements CrudService {
 
             try {
                 int id = (int) requestMap.get("productId");
-                boolean showFull = (boolean) requestMap.get("showFull");
+                String showFull = (String) requestMap.get("showFull");
+                String color = (String) requestMap.get("color");
 
                 List<Catalog> catalogList = catalogRepo.getCatalogsByProductId(id);
                 List<CategoryDTO> categoryList = CategoryDTO.getListFromCatalogList(catalogList);
 
-                if(!showFull) {
-                    productDetails = productRenderInfoRepo.getProductDetails(id);
+                // get product details data
+                if(showFull != null && color == null) {
+                    if(Boolean.valueOf(showFull) == false) {
+                        productDetails = productRenderInfoRepo.getProductDetails(id);
 
-                    for(ProductRenderInfoDTO productDetail : productDetails) {
-                        productDetail.setCategories(categoryList);
+                        for(ProductRenderInfoDTO productDetail : productDetails) {
+                            productDetail.setCategories(categoryList);
+                        }
+
+                        if(productDetails.isEmpty()) {
+                            return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
+                        }
+
+                        return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
                     }
+                    else {
+                        authenProductDetails = authenProductRenderInfoRepo.getAuthenProductFullDetails(id);
 
-                    if(productDetails.isEmpty()) {
+                        for(AuthenProductRenderInfoDTO authenProductDetail : authenProductDetails) {
+                            authenProductDetail.setCategories(categoryList);
+                        }
+
+                        if(authenProductDetails.isEmpty()) {
+                            return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
+                        }
+
+                        return new ResponseEntity<>(new ApiResponse("success", authenProductDetails), HttpStatus.OK);
+                    }
+                }
+                // get size list of product
+                else if (showFull == null && color != null) {
+                    List<String> sizeList = productManagementRepo.getSizeListByProductIdAndColor(id, color);
+
+                    if (!sizeList.isEmpty()) {
+                        return new ResponseEntity<>(new ApiResponse("success", sizeList), HttpStatus.OK);
+                    } else {
                         return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
                     }
-
-                    return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
                 }
-                else {
-                    authenProductDetails = authenProductRenderInfoRepo.getAuthenProductFullDetails(id);
-
-                    for(AuthenProductRenderInfoDTO authenProductDetail : authenProductDetails) {
-                        authenProductDetail.setCategories(categoryList);
-                    }
-
-                    if(authenProductDetails.isEmpty()) {
-                        return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
-                    }
-
-                    return new ResponseEntity<>(new ApiResponse("success", authenProductDetails), HttpStatus.OK);
-                }
+                else return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
