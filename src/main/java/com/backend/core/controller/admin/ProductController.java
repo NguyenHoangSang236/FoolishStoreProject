@@ -68,14 +68,4 @@ public class ProductController extends CrudController {
     public ResponseEntity<ApiResponse> getListOfItemsFromFilter(String json, HttpServletRequest httpRequest) throws IOException {
         return null;
     }
-
-    @GetMapping("/product_id={productId}")
-    public ResponseEntity<ApiResponse> getProductInfo(@PathVariable(value = "productId") int productId, @RequestParam(value = "showFull") boolean showFull, HttpServletRequest httpRequest) throws IOException {
-        Map<String, Object> request = new HashMap<>();
-
-        request.put("productId", productId);
-        request.put("showFull", showFull);
-
-        return crudService.readingFromSingleRequest(request, httpRequest);
-    }
 }

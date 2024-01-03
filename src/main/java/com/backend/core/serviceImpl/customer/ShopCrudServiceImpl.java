@@ -4,6 +4,7 @@ import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.PaginationDTO;
 import com.backend.core.entities.requestdto.product.ProductFilterRequestDTO;
+import com.backend.core.entities.responsedto.AuthenProductRenderInfoDTO;
 import com.backend.core.entities.responsedto.CategoryDTO;
 import com.backend.core.entities.responsedto.ProductRenderInfoDTO;
 import com.backend.core.entities.tableentity.Catalog;
@@ -12,6 +13,7 @@ import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
 import com.backend.core.repository.catalog.CatalogRepository;
 import com.backend.core.repository.customQuery.CustomQueryRepository;
+import com.backend.core.repository.product.AuthenProductRenderInfoRepository;
 import com.backend.core.repository.product.ProductManagementRepository;
 import com.backend.core.repository.product.ProductRenderInfoRepository;
 import com.backend.core.repository.product.ProductRepository;
@@ -43,6 +45,9 @@ public class ShopCrudServiceImpl implements CrudService {
 
     @Autowired
     ProductManagementRepository productManagementRepo;
+
+    @Autowired
+    AuthenProductRenderInfoRepository authenProductRenderInfoRepo;
 
     @Autowired
     CustomQueryRepository customQueryRepo;
@@ -143,53 +148,34 @@ public class ShopCrudServiceImpl implements CrudService {
         }
         // get size list of product or get product details
         else if (paramObj instanceof Map requestMap) {
+            List<AuthenProductRenderInfoDTO> authenProductDetails = new ArrayList<>();
+            List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
+
             try {
                 int id = (int) requestMap.get("productId");
-                String color = (String) requestMap.get("color");
-                Boolean showFull = (Boolean) requestMap.get("showFull");
+                boolean showFull = (boolean) requestMap.get("showFull");
 
-                List<Catalog> catalogList = catalogRepo.getCatalogsByProductId(id);
+                if(!showFull) {
+                    productDetails = productRenderInfoRepo.getProductDetails(id);
 
-                // get product details
-                if (color == null && showFull != null) {
-                    List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
-
-                    try {
-                        // show full or show first item of each size and color only
-                        productDetails = showFull == false
-                                ? productRenderInfoRepo.getProductDetails(id)
-                                : productRenderInfoRepo.getFullProductDetails(id);
-
-                        if (!productDetails.isEmpty()) {
-                            for(ProductRenderInfoDTO productDetail : productDetails) {
-                                List<CategoryDTO> categoryList = CategoryDTO.getListFromCatalogList(catalogList);
-                                productDetail.setCategories(categoryList);
-                            }
-
-                            return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
-                        } else {
-                            return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
-                    }
-                }
-                // get size list of product
-                else if (showFull == null && color != null) {
-                    List<String> sizeList = productManagementRepo.getSizeListByProductIdAndColor(id, color);
-
-                    if (!sizeList.isEmpty()) {
-                        return new ResponseEntity<>(new ApiResponse("success", sizeList), HttpStatus.OK);
-                    } else {
+                    if(productDetails.isEmpty()) {
                         return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
                     }
-                } else
-                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
+                    return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
+                }
+                else {
+                    authenProductDetails = authenProductRenderInfoRepo.getAuthenProductFullDetails(id);
+
+                    if(authenProductDetails.isEmpty()) {
+                        return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
+                    }
+
+                    return new ResponseEntity<>(new ApiResponse("success", authenProductDetails), HttpStatus.OK);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);
             }
         } else
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);

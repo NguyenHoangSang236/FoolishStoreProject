@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "product_info_for_ui")
+@Table(name = "product_full_info_for_ui")
 @Getter
 @Setter
 @AllArgsConstructor
