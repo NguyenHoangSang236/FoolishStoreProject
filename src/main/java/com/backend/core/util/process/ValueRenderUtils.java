@@ -386,13 +386,19 @@ public class ValueRenderUtils {
         }
 
         if (name != null && !name.isBlank()) {
-            result += "piu.name like '%" + name + "%' and ";
+            List<String> subNameList = Arrays.asList(name.split(" "));
+
+            for(String nameItem : subNameList) {
+                result += "piu.name like '%" + nameItem + "%' and ";
+            }
         }
 
         // remove the final 'and' word in the query
         result = result.substring(0, result.lastIndexOf("and"));
 
         result += " ORDER BY piu.id desc LIMIT " + (limit * (page - 1)) + ", " + limit;
+
+        System.out.println(result);
 
         return result;
     }
