@@ -155,8 +155,15 @@ public class ShopCrudServiceImpl implements CrudService {
                 int id = (int) requestMap.get("productId");
                 boolean showFull = (boolean) requestMap.get("showFull");
 
+                List<Catalog> catalogList = catalogRepo.getCatalogsByProductId(id);
+                List<CategoryDTO> categoryList = CategoryDTO.getListFromCatalogList(catalogList);
+
                 if(!showFull) {
                     productDetails = productRenderInfoRepo.getProductDetails(id);
+
+                    for(ProductRenderInfoDTO productDetail : productDetails) {
+                        productDetail.setCategories(categoryList);
+                    }
 
                     if(productDetails.isEmpty()) {
                         return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
@@ -166,6 +173,10 @@ public class ShopCrudServiceImpl implements CrudService {
                 }
                 else {
                     authenProductDetails = authenProductRenderInfoRepo.getAuthenProductFullDetails(id);
+
+                    for(AuthenProductRenderInfoDTO authenProductDetail : authenProductDetails) {
+                        authenProductDetail.setCategories(categoryList);
+                    }
 
                     if(authenProductDetails.isEmpty()) {
                         return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
