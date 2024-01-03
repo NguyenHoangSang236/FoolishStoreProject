@@ -48,6 +48,7 @@ com/backend/core/enums/ProductManagementEnum.class
 com/backend/core/serviceImpl/notification/NotificationCrudServiceImpl.class
 com/backend/core/repository/invoice/InvoiceRepository.class
 com/backend/core/serviceImpl/customer/CartCrudServiceImpl.class
+com/backend/core/entities/responsedto/CategoryDTO$CategoryDTOBuilder.class
 com/backend/core/enums/RoleEnum.class
 com/backend/core/entities/responsedto/InvoiceDetailsDTO.class
 com/backend/core/entities/tableentity/ProductManagement.class
@@ -84,6 +85,7 @@ com/backend/core/entities/requestdto/delivery/DeliveryFilterDTO.class
 com/backend/core/entities/embededkey/ProductImagesManagementPrimaryKeys.class
 com/backend/core/repository/cart/CartRemoveRepository.class
 com/backend/core/entities/responsedto/CustomerRenderInfoDTO.class
+com/backend/core/entities/responsedto/CategoryDTO.class
 com/backend/core/enums/FilterTypeEnum.class
 com/backend/core/repository/invoice/InvoicesWithProductsRepository.class
 com/backend/core/entities/requestdto/product/ProductFilterDTO.class

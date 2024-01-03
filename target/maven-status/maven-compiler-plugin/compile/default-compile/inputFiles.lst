@@ -63,6 +63,7 @@
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/entities/requestdto/product/ProductDetailsRequestDTO.java
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/service/GoogleTranslateService.java
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/entities/requestdto/cart/CartItemFilterRequestDTO.java
+/home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/entities/responsedto/CategoryDTO.java
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/repository/firebase/DeviceFcmTokenRepository.java
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/serviceImpl/common/AuthenticationServiceImpl.java
 /home/mr/JAVA/FoolishStoreProject/src/main/java/com/backend/core/repository/delivery/DeliveryRepository.java

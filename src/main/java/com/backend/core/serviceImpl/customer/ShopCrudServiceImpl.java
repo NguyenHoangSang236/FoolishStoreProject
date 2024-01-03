@@ -4,10 +4,13 @@ import com.backend.core.entities.requestdto.ApiResponse;
 import com.backend.core.entities.requestdto.ListRequestDTO;
 import com.backend.core.entities.requestdto.PaginationDTO;
 import com.backend.core.entities.requestdto.product.ProductFilterRequestDTO;
+import com.backend.core.entities.responsedto.CategoryDTO;
 import com.backend.core.entities.responsedto.ProductRenderInfoDTO;
+import com.backend.core.entities.tableentity.Catalog;
 import com.backend.core.entities.tableentity.ProductManagement;
 import com.backend.core.enums.ErrorTypeEnum;
 import com.backend.core.enums.FilterTypeEnum;
+import com.backend.core.repository.catalog.CatalogRepository;
 import com.backend.core.repository.customQuery.CustomQueryRepository;
 import com.backend.core.repository.product.ProductManagementRepository;
 import com.backend.core.repository.product.ProductRenderInfoRepository;
@@ -43,6 +46,9 @@ public class ShopCrudServiceImpl implements CrudService {
 
     @Autowired
     CustomQueryRepository customQueryRepo;
+
+    @Autowired
+    CatalogRepository catalogRepo;
 
     @Autowired
     ValueRenderUtils valueRenderUtils;
@@ -142,6 +148,8 @@ public class ShopCrudServiceImpl implements CrudService {
                 String color = (String) requestMap.get("color");
                 Boolean showFull = (Boolean) requestMap.get("showFull");
 
+                List<Catalog> catalogList = catalogRepo.getCatalogsByProductId(id);
+
                 // get product details
                 if (color == null && showFull != null) {
                     List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
@@ -153,6 +161,11 @@ public class ShopCrudServiceImpl implements CrudService {
                                 : productRenderInfoRepo.getFullProductDetails(id);
 
                         if (!productDetails.isEmpty()) {
+                            for(ProductRenderInfoDTO productDetail : productDetails) {
+                                List<CategoryDTO> categoryList = CategoryDTO.getListFromCatalogList(catalogList);
+                                productDetail.setCategories(categoryList);
+                            }
+
                             return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
                         } else {
                             return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);

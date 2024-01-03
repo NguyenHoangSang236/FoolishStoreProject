@@ -195,8 +195,6 @@ public class ProductCrudServiceImpl implements CrudService {
         } else {
             productRepo.save(product);
 
-            Product newProduct = productRepo.getProductByFullName(product.getName());
-
             if(purpose.equals(RequestPurpose.EDIT)) {
                 customQueryRepo.deleteCatalogsWithProductsByProductId(product.getId());
             }
