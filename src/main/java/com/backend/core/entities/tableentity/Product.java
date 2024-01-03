@@ -127,6 +127,10 @@ public class Product implements Serializable {
             this.id = request.getId();
         }
         this.name = request.getName();
+        this.height = request.getHeight();
+        this.weight = request.getWeight();
+        this.width = request.getWidth();
+        this.length = request.getLength();
         this.sellingPrice = request.getSellingPrice();
         this.originalPrice = request.getOriginalPrice();
         this.brand = request.getBrand().toLowerCase();

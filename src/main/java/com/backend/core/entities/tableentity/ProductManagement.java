@@ -110,8 +110,6 @@ public class ProductManagement implements Serializable {
             totalRating += this.fiveStarQuantity * 5;
         }
 
-        System.out.println(totalRating / total);
-
         this.overallRating = totalRating / total;
     }
 

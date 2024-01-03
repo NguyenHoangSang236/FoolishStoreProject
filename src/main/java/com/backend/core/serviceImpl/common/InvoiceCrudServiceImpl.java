@@ -390,6 +390,8 @@ public class InvoiceCrudServiceImpl implements CrudService {
             } else
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
 
+            updateCartItemBuyingStatusOnAdminAcceptance(adminAction, invoice);
+
             invoiceRepo.save(invoice);
 
             // send message to customer
@@ -544,7 +546,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 // set cart item from Cart table to buying_status = BOUGHT and select_status = 0
                 tblCart.setSelectStatus(1);
                 tblCart.setBuyingStatus(CartEnum.PENDING.name());
-//                tblCart.setInvoice(newInvoice);
+                tblCart.setInvoice(newInvoice);
                 cartList.add(tblCart);
                 cartRepo.save(tblCart);
 
@@ -680,9 +682,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
         List<InvoicesWithProducts> invoiceProductList = invoice.getInvoicesWithProducts();
 
         for (InvoicesWithProducts invoiceProduct : invoiceProductList) {
-            System.out.println(invoiceProduct.getProductManagement().getId());
-            System.out.println(invoice.getCustomer().getId());
-
             Cart cartItem = cartRepo.getPendingCartItemByProductManagementIdAndCustomerIdAndInvoiceId(
                     invoiceProduct.getProductManagement().getId(),
                     invoice.getCustomer().getId(),
@@ -690,7 +689,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             );
 
             cartItem.setBuyingStatus(
-                    adminAcceptance.equals(AdminAcceptanceEnum.ACCEPTED.name())
+                    adminAcceptance.equals(InvoiceEnum.SUCCESS.name())
                             ? CartEnum.BOUGHT.name()
                             : CartEnum.NOT_BOUGHT_YET.name()
             );
