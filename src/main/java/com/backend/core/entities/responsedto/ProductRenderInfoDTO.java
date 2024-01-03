@@ -70,7 +70,6 @@ public class ProductRenderInfoDTO {
     @JsonProperty("categories")
     private List<CategoryDTO> categories;
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
