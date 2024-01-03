@@ -28,16 +28,16 @@ public class ProductDetailsRequestDTO {
     String description;
 
     @JsonProperty("length")
-    double length;
+    int length;
 
     @JsonProperty("width")
-    double width;
+    int width;
 
     @JsonProperty("weight")
-    double weight;
+    int weight;
 
     @JsonProperty("height")
-    double height;
+    int height;
 
     @JsonProperty("sellingPrice")
     double sellingPrice;
