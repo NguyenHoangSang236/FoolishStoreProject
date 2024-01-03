@@ -1,14 +1,14 @@
 package com.backend.core.entities.responsedto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.backend.core.entities.tableentity.Catalog;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -63,6 +63,10 @@ public class ProductRenderInfoDTO {
 
     @Column(name = "description")
     private String description;
+
+    @Transient
+    @JsonProperty("categories")
+    private List<CategoryDTO> categories;
 
 
     @Override
