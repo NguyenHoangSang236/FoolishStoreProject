@@ -328,8 +328,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
 
                 // add sold quantity and subtract in-stock quantity of products from this invoice
                 productQuantityProcess(adminAction, invoice);
-
-                updateCartItemBuyingStatusOnAdminAcceptance(adminAction, invoice);
             }
             // admin confirm online payment
             else if (adminAction.equals(AdminAcceptanceEnum.CONFIRMED_ONLINE_PAYMENT.name()) &&
@@ -688,11 +686,16 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     invoice.getId()
             );
 
-            cartItem.setBuyingStatus(
-                    adminAcceptance.equals(InvoiceEnum.SUCCESS.name())
-                            ? CartEnum.BOUGHT.name()
-                            : CartEnum.NOT_BOUGHT_YET.name()
-            );
+            if(adminAcceptance.equals(InvoiceEnum.SUCCESS.name())) {
+                cartItem.setBuyingStatus(CartEnum.BOUGHT.name());
+            }
+            else if (adminAcceptance.equals(InvoiceEnum.FAILED.name()) &&
+                    adminAcceptance.equals(InvoiceEnum.SUCCESS.name()) ) {
+                cartItem.setBuyingStatus(CartEnum.NOT_BOUGHT_YET.name());
+            }
+            else {
+                cartItem.setBuyingStatus(CartEnum.PENDING.name());
+            }
 
             cartRepo.save(cartItem);
         }
