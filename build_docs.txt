@@ -8,19 +8,19 @@ B6. Chờ một lúc thì terminal yêu cầu nhập password, nhập: Thisispas
 
 
 * Các bước xem log của server
-ssh root@14.225.254.87
+ssh root@103.200.20.153
 Xong nhập pass là: Thisispassword123@
 docker logs -f spring-boot-container
 
 
 * Xoá cache server
-ssh root@14.225.254.87
+ssh root@103.200.20.153
 Xong nhập pass là: Thisispassword123@
 docker system prune -a
 
 
 * Các bước restart server
-ssh root@14.225.254.87
+ssh root@103.200.20.153
 Nhập pass là: Thisispassword123@
 cd FoolishStoreProject
 docker compose up -d --build
