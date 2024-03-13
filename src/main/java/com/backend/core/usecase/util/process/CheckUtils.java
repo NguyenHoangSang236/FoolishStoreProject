@@ -1,4 +1,4 @@
-package usecase.util.process;
+package com.backend.core.usecase.util.process;
 
 import com.backend.core.infrastructure.business.account.repository.AccountRepository;
 import com.backend.core.infrastructure.business.account.repository.CustomerRepository;

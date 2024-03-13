@@ -1,6 +1,7 @@
-package usecase.util.process;
+package com.backend.core.usecase.util.process;
 
 import com.backend.core.entity.api.ApiResponse;
+import com.backend.core.infrastructure.config.security.UserDetailsServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -8,12 +9,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -21,10 +21,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtUtils jwtUtils;
-    private final UserDetailsService userDetailsService;
+    @Autowired
+    JwtUtils jwtUtils;
+    @Autowired
+    UserDetailsServiceImpl userDetailsServiceImpl;
+
 
     @Override
     protected void doFilterInternal(
@@ -53,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // if this account has already logged -> proceed filter
                 if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+                    UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(userName);
 
                     // if jwt is valid -> proceed
                     if (jwtUtils.isJwtValid(jwt, userDetails)) {

@@ -1,4 +1,4 @@
-package usecase.util.process;
+package com.backend.core.usecase.util.process;
 
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
