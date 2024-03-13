@@ -2,7 +2,6 @@ package com.backend.core.usecase.business.comment;
 
 import com.backend.core.entity.account.model.Customer;
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.entity.api.ListRequestDTO;
 import com.backend.core.entity.comment.gateway.CommentFilterRequestDTO;
 import com.backend.core.entity.comment.gateway.CommentRequestDTO;
 import com.backend.core.entity.comment.key.CommentLikePrimaryKeys;
@@ -69,18 +68,6 @@ public class CommentCrudServiceImpl implements CrudService {
         return addNewComment(request, httpRequest);
     }
 
-
-    @Override
-    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
     @Override
     public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
         Comment comment;
@@ -100,12 +87,6 @@ public class CommentCrudServiceImpl implements CrudService {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
-        return null;
     }
 
     @Override
@@ -211,25 +192,6 @@ public class CommentCrudServiceImpl implements CrudService {
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
-        return null;
-    }
-
 
     // add new comment process
     public ResponseEntity<ApiResponse> addNewComment(CommentRequestDTO request, HttpServletRequest httpServletRequest) {

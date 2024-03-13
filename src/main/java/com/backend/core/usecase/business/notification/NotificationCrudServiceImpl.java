@@ -2,7 +2,6 @@ package com.backend.core.usecase.business.notification;
 
 import com.backend.core.entity.account.model.Account;
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.entity.api.ListRequestDTO;
 import com.backend.core.entity.notification.gateway.NotificationFilterRequestDTO;
 import com.backend.core.entity.notification.model.Notification;
 import com.backend.core.infrastructure.business.notification.repository.NotificationRepository;
@@ -35,31 +34,6 @@ public class NotificationCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
     public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
         try {
             Notification notification = notificationRepo.getNotificationById(id);
@@ -89,11 +63,6 @@ public class NotificationCrudServiceImpl implements CrudService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
     public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
@@ -111,20 +80,5 @@ public class NotificationCrudServiceImpl implements CrudService {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
-        return null;
     }
 }

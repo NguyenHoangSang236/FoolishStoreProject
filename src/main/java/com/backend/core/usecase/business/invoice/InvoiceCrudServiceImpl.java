@@ -3,7 +3,6 @@ package com.backend.core.usecase.business.invoice;
 import com.backend.core.entity.account.model.Account;
 import com.backend.core.entity.account.model.Staff;
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.entity.api.ListRequestDTO;
 import com.backend.core.entity.cart.gateway.CartCheckoutDTO;
 import com.backend.core.entity.cart.model.Cart;
 import com.backend.core.entity.delivery.model.Delivery;
@@ -191,31 +190,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
-        return null;
-    }
-
 
     @Override
     public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
@@ -431,18 +405,6 @@ public class InvoiceCrudServiceImpl implements CrudService {
         }
 
         return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
-        return null;
     }
 
 
