@@ -4,7 +4,6 @@ import com.backend.core.entity.account.gateway.AccountFilterDTO;
 import com.backend.core.entity.account.gateway.AccountFilterRequestDTO;
 import com.backend.core.entity.account.model.Account;
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.entity.api.ListRequestDTO;
 import com.backend.core.entity.api.PaginationDTO;
 import com.backend.core.infrastructure.business.account.dto.CustomerRenderInfoDTO;
 import com.backend.core.infrastructure.business.account.dto.StaffRenderInfoDTO;
@@ -49,37 +48,6 @@ public class AccountCrudServiceImpl implements CrudService {
 
     @Autowired
     ValueRenderUtils valueRenderUtils;
-
-
-    @Override
-    public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
-        return null;
-    }
 
     @Override
     public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
@@ -183,16 +151,6 @@ public class AccountCrudServiceImpl implements CrudService {
         }
 
         return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
-        return null;
     }
 
     @Override

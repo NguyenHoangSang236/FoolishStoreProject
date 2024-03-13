@@ -2,7 +2,6 @@ package com.backend.core.usecase.business.refund;
 
 import com.backend.core.entity.account.model.Account;
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.entity.api.ListRequestDTO;
 import com.backend.core.entity.invoice.model.Invoice;
 import com.backend.core.entity.notification.gateway.NotificationDTO;
 import com.backend.core.entity.refund.gateway.RefundConfirmDTO;
@@ -51,36 +50,6 @@ public class RefundCrudServiceImpl implements CrudService {
     @Autowired
     FirebaseUtils firebaseUtils;
 
-
-    @Override
-    public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
-        return null;
-    }
 
     @Override
     public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
@@ -155,20 +124,5 @@ public class RefundCrudServiceImpl implements CrudService {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
-        return null;
     }
 }

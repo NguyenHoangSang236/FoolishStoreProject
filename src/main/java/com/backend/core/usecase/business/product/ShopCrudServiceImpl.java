@@ -1,7 +1,6 @@
 package com.backend.core.usecase.business.product;
 
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.entity.api.ListRequestDTO;
 import com.backend.core.entity.api.PaginationDTO;
 import com.backend.core.entity.category.model.Catalog;
 import com.backend.core.entity.product.gateway.ProductFilterRequestDTO;
@@ -62,38 +61,6 @@ public class ShopCrudServiceImpl implements CrudService {
     public ShopCrudServiceImpl() {
     }
 
-
-    @Override
-    public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> listCreationalResponse(List<Object> objList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> removingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> removingResponseById(int id, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> updatingResponseByList(ListRequestDTO listRequestDTO, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> updatingResponseById(int id, HttpServletRequest httpRequest) {
-        return null;
-    }
 
     @Override
     public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
@@ -209,12 +176,6 @@ public class ShopCrudServiceImpl implements CrudService {
 
 
     @Override
-    public ResponseEntity<ApiResponse> readingFromListRequest(List<Object> paramObjList, HttpServletRequest httpRequest) {
-        return null;
-    }
-
-
-    @Override
     public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
         try {
             switch (renderType) {
@@ -240,12 +201,6 @@ public class ShopCrudServiceImpl implements CrudService {
             e.printStackTrace();
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> readingById(int id, HttpServletRequest httpRequest) {
-        return null;
     }
 
 
