@@ -4,11 +4,9 @@ import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.api.ListRequestDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface CrudService {
     // generate post response for creation
     default public ResponseEntity<ApiResponse> singleCreationalResponse(Object paramObj, HttpServletRequest httpRequest) {

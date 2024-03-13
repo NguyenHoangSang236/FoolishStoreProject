@@ -7,14 +7,14 @@ import com.backend.core.entity.notification.gateway.NotificationDTO;
 import com.backend.core.infrastructure.business.firebase.repository.DeviceFcmTokenRepository;
 import com.backend.core.usecase.service.NotificationService;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
+import com.backend.core.usecase.util.process.FirebaseUtils;
+import com.backend.core.usecase.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import usecase.util.process.FirebaseUtils;
-import usecase.util.process.ValueRenderUtils;
 
 @Service
 @Qualifier("FirebaseMessageNotificationServiceImpl")

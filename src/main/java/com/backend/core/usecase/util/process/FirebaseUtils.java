@@ -1,4 +1,4 @@
-package usecase.util.process;
+package com.backend.core.usecase.util.process;
 
 import com.backend.core.entity.notification.gateway.NotificationDTO;
 import com.backend.core.entity.notification.model.Notification;
