@@ -34,12 +34,6 @@ import java.util.Map;
 @Qualifier("ShopCrudServiceImpl")
 public class ShopCrudServiceImpl implements CrudService {
     @Autowired
-    CalculationService calculationService;
-
-    @Autowired
-    ProductRepository productRepo;
-
-    @Autowired
     ProductRenderInfoRepository productRenderInfoRepo;
 
     @Autowired
@@ -56,10 +50,6 @@ public class ShopCrudServiceImpl implements CrudService {
 
     @Autowired
     ValueRenderUtils valueRenderUtils;
-
-
-    public ShopCrudServiceImpl() {
-    }
 
 
     @Override
@@ -128,7 +118,7 @@ public class ShopCrudServiceImpl implements CrudService {
 
                 // get product details data
                 if(showFull != null && color == null) {
-                    if(Boolean.valueOf(showFull) == false) {
+                    if(!Boolean.parseBoolean(showFull)) {
                         productDetails = productRenderInfoRepo.getProductDetails(id);
 
                         for(ProductRenderInfoDTO productDetail : productDetails) {
@@ -178,23 +168,18 @@ public class ShopCrudServiceImpl implements CrudService {
     @Override
     public ResponseEntity<ApiResponse> readingResponse(String renderType, HttpServletRequest httpRequest) {
         try {
-            switch (renderType) {
-                case "NEW_ARRIVAL_PRODUCTS": {
-                    return new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.get8NewArrivalProducts()), HttpStatus.OK);
-                }
-                case "HOT_DISCOUNT_PRODUCTS": {
-                    return new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.get8HotDiscountProducts()), HttpStatus.OK);
-                }
-                case "TOP_8_BEST_SELL_PRODUCTS": {
-                    return new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.getTop8BestSellProducts()), HttpStatus.OK);
-                }
-                case "TOTAL_PRODUCTS_QUANTITY": {
-                    return new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.getTotalProductsQuantity()), HttpStatus.OK);
-                }
-                default: {
-                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
-                }
-            }
+            return switch (renderType) {
+                case "NEW_ARRIVAL_PRODUCTS" ->
+                        new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.get8NewArrivalProducts()), HttpStatus.OK);
+                case "HOT_DISCOUNT_PRODUCTS" ->
+                        new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.get8HotDiscountProducts()), HttpStatus.OK);
+                case "TOP_8_BEST_SELL_PRODUCTS" ->
+                        new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.getTop8BestSellProducts()), HttpStatus.OK);
+                case "TOTAL_PRODUCTS_QUANTITY" ->
+                        new ResponseEntity<>(new ApiResponse("success", productRenderInfoRepo.getTotalProductsQuantity()), HttpStatus.OK);
+                default ->
+                        new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+            };
 
 
         } catch (Exception e) {
