@@ -1,12 +1,12 @@
 package com.backend.core.usecase.util.process;
 
+import com.backend.core.infrastructure.config.google_drive.GoogleDriveConfig;
 import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.Permission;
-import infrastructure.config.google_drive.GoogleDriveConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,4 +1,4 @@
-package infrastructure.config.firebase;
+package com.backend.core.infrastructure.config.firebase;
 
 import lombok.Getter;
 import lombok.Setter;

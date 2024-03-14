@@ -1,4 +1,4 @@
-package usecase.util.staticValues;
+package com.backend.core.usecase.util.static_values;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
