@@ -1,4 +1,4 @@
-package infrastructure.config.firebase;
+package com.backend.core.infrastructure.config.firebase;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;

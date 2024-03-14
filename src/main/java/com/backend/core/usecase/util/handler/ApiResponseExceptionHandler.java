@@ -1,4 +1,4 @@
-package usecase.util.handler;
+package com.backend.core.usecase.util.handler;
 
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.usecase.statics.ErrorTypeEnum;

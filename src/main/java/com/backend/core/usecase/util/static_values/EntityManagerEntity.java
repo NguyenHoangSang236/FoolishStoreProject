@@ -1,4 +1,4 @@
-package usecase.util.staticValues;
+package com.backend.core.usecase.util.staticValues;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

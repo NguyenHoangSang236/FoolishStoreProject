@@ -1,4 +1,4 @@
-package usecase.util.handler;
+package com.backend.core.usecase.util.handler;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;

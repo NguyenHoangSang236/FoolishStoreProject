@@ -1,7 +1,6 @@
-package infrastructure.config.security;
+package com.backend.core.infrastructure.config.security;
 
 import com.backend.core.infrastructure.business.account.repository.AccountRepository;
-import com.backend.core.infrastructure.config.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
