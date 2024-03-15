@@ -5,9 +5,15 @@ import com.backend.core.entity.account.gateway.AccountFilterRequestDTO;
 import com.backend.core.entity.account.model.Account;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.api.PaginationDTO;
+import com.backend.core.infrastructure.config.api.ResponseMapper;
+import com.backend.core.usecase.UseCaseExecutorImpl;
 import com.backend.core.usecase.service.CrudService;
+import com.backend.core.usecase.usecases.account.FilterAccountUseCase;
+import com.backend.core.usecase.usecases.account.UpdateAccountUseCase;
+import com.backend.core.usecase.usecases.account.ViewAccountByIdUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -20,24 +26,27 @@ import java.io.IOException;
 @RestController
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping(value = "/authen/account", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequiredArgsConstructor
 // @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
-public class AccountController extends CrudController {
-    public AccountController(@Autowired @Qualifier("AccountCrudServiceImpl") CrudService accountCrudServiceImpl) {
-        super(accountCrudServiceImpl);
-        super.crudService = accountCrudServiceImpl;
-    }
+public class AccountController {
+    private UpdateAccountUseCase updateAccountUseCase;
+    private FilterAccountUseCase filterAccountUseCase;
+    private ViewAccountByIdUseCase viewAccountByIdUseCase;
+    private ResponseMapper responseMapper;
+    private UseCaseExecutorImpl useCaseExecutor;
 
-    @Override
-    public ResponseEntity<ApiResponse> addNewItem(String json, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
 
     @PostMapping("/actionOnAccount")
     @Override
-    public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public ResponseEntity<ApiResponse> actionOnAccount(@RequestBody String json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        Account acc = objectMapper.readValue(json, Account.class);
-        return crudService.updatingResponseByRequest(acc, httpRequest);
+        Account account = objectMapper.readValue(json, Account.class);
+
+        return useCaseExecutor.execute(
+                updateAccountUseCase,
+                new UpdateAccountUseCase.InputValue(account),
+
+        );
     }
 
     @GetMapping("/account_id={id}")
@@ -47,26 +56,7 @@ public class AccountController extends CrudController {
         return crudService.readingById(id, httpRequest);
     }
 
-    @Override
-    public ResponseEntity<ApiResponse> deleteSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
-
-    @PostMapping("/allAccounts")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @Override
-    public ResponseEntity<ApiResponse> getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        PaginationDTO pagination = objectMapper.readValue(json, PaginationDTO.class);
-        return crudService.readingFromSingleRequest(pagination, httpRequest);
-    }
-
-    @PostMapping("/filterAccounts")
+    @PostMapping("/accountList")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Override
     public ResponseEntity<ApiResponse> getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {

@@ -1,4 +1,4 @@
-package com.backend.core.infrastructure.config.exception_handler;
+package com.backend.core.infrastructure.config.api;
 
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
