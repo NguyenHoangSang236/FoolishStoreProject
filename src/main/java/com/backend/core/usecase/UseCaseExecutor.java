@@ -5,9 +5,9 @@ import java.util.function.Function;
 
 
 public interface UseCaseExecutor {
-    <Any, I extends UseCase.InputValues, O extends UseCase.OutputValues> CompletableFuture<Any> execute(
-            UseCase<I, O> useCase,
-            I input,
-            Function<O, Any> outputMapper
+    <Any, In extends UseCase.InputValues, Out extends UseCase.OutputValues> CompletableFuture<Any> execute(
+            UseCase<In, Out> useCase,
+            In input,
+            Function<Out, Any> outputMapper
     );
 }

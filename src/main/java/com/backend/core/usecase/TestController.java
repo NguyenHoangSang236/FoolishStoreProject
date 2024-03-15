@@ -16,11 +16,11 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 public class TestController {
-    private UseCaseExecutor useCaseExecutor;
+    private UseCaseExecutorImpl useCaseExecutor;
     private TestUseCaseOutputMapper outputMapper;
     private TestUseCase testUseCase;
 
-    public TestController(UseCaseExecutor useCaseExecutor, TestUseCaseOutputMapper outputMapper, TestUseCase testUseCase) {
+    public TestController(UseCaseExecutorImpl useCaseExecutor, TestUseCaseOutputMapper outputMapper, TestUseCase testUseCase) {
         this.useCaseExecutor = useCaseExecutor;
         this.outputMapper = outputMapper;
         this.testUseCase = testUseCase;
