@@ -1,7 +1,7 @@
 package com.backend.core.usecase;
 
-public abstract class UseCase<I extends UseCase.InputValues, O extends UseCase.OutputValues> {
-    public abstract O execute(I input);
+public abstract class UseCase<In extends UseCase.InputValues, Out extends UseCase.OutputValues> {
+    public abstract Out execute(In input);
     public interface InputValues{}
     public interface OutputValues{}
 }
