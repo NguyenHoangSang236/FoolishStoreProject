@@ -44,9 +44,6 @@ public class AccountCrudServiceImpl implements CrudService {
     CustomQueryRepository customQueryRepo;
 
     @Autowired
-    CheckUtils checkUtils;
-
-    @Autowired
     ValueRenderUtils valueRenderUtils;
 
     @Override
