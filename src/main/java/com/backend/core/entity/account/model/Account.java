@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +21,9 @@ import java.util.List;
 @Table(name = "login_accounts")
 @DynamicInsert
 @DynamicUpdate
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,25 +47,16 @@ public class Account implements UserDetails {
     @Column(name = "current_jwt")
     String currentJwt;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Valid
     Customer customer;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Valid
     Staff staff;
 
-    @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
-    private List<DeviceFcmToken> deviceFcmTokens;
-
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL})
-//    List<Notification> notifications;
-
-
-    public Account() {
-    }
-
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    List<DeviceFcmToken> deviceFcmTokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -98,6 +91,20 @@ public class Account implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                ", status='" + status + '\'' +
+                ", currentJwt='" + currentJwt + '\'' +
+                ", customer=" + customer.getName() +
+                ", deviceFcmTokens=" + deviceFcmTokens +
+                '}';
     }
 }
 
