@@ -1,7 +1,6 @@
 package com.backend.core.entity.api;
 
 import com.backend.core.usecase.UseCase;
-import com.google.api.Http;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
@@ -20,6 +19,12 @@ public class ApiResponse implements UseCase.OutputValues {
         this.result = result;
         this.content = content;
         this.status = status;
+    }
+
+    public ApiResponse(String result, Object content, String message) {
+        this.result = result;
+        this.content = content;
+        this.message = message;
     }
 
     public ApiResponse(String result, Object content) {

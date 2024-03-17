@@ -407,14 +407,14 @@ public class ValueRenderUtils {
     // create a query for account binding filter
     public String accountFilterQuery(AccountFilterDTO accountFilter, PaginationDTO pagination) {
         String result;
-        String status = accountFilter.getStatus();
-        String city = accountFilter.getCity();
-        String address = accountFilter.getAddress();
-        String country = accountFilter.getCountry();
-        String phoneNumber = accountFilter.getPhoneNumber();
-        String email = accountFilter.getEmail();
-        String name = accountFilter.getName();
-        String userName = accountFilter.getUserName();
+        String status = accountFilter != null ? accountFilter.getStatus() : null;
+        String city = accountFilter != null ? accountFilter.getCity() : null;
+        String address = accountFilter != null ? accountFilter.getAddress() : null;
+        String country = accountFilter != null ? accountFilter.getCountry() : null;
+        String phoneNumber = accountFilter != null ? accountFilter.getPhoneNumber() : null;
+        String email = accountFilter != null ? accountFilter.getEmail() : null;
+        String name = accountFilter != null ? accountFilter.getName() : null;
+        String userName = accountFilter != null ? accountFilter.getUserName() : null;
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
@@ -458,12 +458,13 @@ public class ValueRenderUtils {
         }
 
         // remove the final 'and' word in the query
-        result = result.substring(0, result.lastIndexOf("and"));
+        result = accountFilter != null
+                ? result.substring(0, result.lastIndexOf("and"))
+                : result.substring(0, result.lastIndexOf("where"));
 
         if (page != 0 && limit != 0) {
             result += " ORDER BY id desc LIMIT " + (limit * (page - 1)) + ", " + limit;
         }
-
 
         return result;
     }

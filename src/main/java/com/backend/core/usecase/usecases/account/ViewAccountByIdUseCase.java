@@ -7,24 +7,22 @@ import com.backend.core.infrastructure.business.account.repository.CustomerRende
 import com.backend.core.infrastructure.business.account.repository.StaffRenderInfoRepository;
 import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
-import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class ViewAccountByIdUseCase extends UseCase<ViewAccountByIdUseCase.Input, ApiResponse> {
+public class ViewAccountByIdUseCase extends UseCase<ViewAccountByIdUseCase.InputValue, ApiResponse> {
     @Autowired
     CustomerRenderInfoRepository customerRenderInfoRepo;
     @Autowired
     StaffRenderInfoRepository staffRenderInfoRepo;
 
     @Override
-    public ApiResponse execute(Input input) {
+    public ApiResponse execute(InputValue input) {
         try {
             int id = input.getId();
 
@@ -48,7 +46,7 @@ public class ViewAccountByIdUseCase extends UseCase<ViewAccountByIdUseCase.Input
     }
 
     @Value
-    public static class Input implements UseCase.InputValues{
+    public static class InputValue implements UseCase.InputValues {
         int id;
     }
 }
