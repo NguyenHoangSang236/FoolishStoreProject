@@ -1,8 +1,6 @@
 package com.backend.core.infrastructure.config.api;
 
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.usecase.TestUseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,13 +15,17 @@ public class ResponseMapper {
                 .content(response.getContent())
                 .build();
 
-        switch (status) {
-            case OK -> ResponseEntity.ok(apiRes);
-            case INTERNAL_SERVER_ERROR -> ResponseEntity.internalServerError().body(apiRes);
-            case BAD_REQUEST -> ResponseEntity.badRequest().body(apiRes);
-            case UNAUTHORIZED, NO_CONTENT -> new ResponseEntity<>(apiRes, status);
+        switch (status.name()) {
+            case "OK":
+                return ResponseEntity.ok(apiRes);
+            case "INTERNAL_SERVER_ERROR":
+                return ResponseEntity.internalServerError().body(apiRes);
+            case "BAD_REQUEST":
+                return ResponseEntity.badRequest().body(apiRes);
+            case "UNAUTHORIZED, NO_CONTENT":
+                return new ResponseEntity<>(apiRes, status);
+            default:
+                return ResponseEntity.notFound().build();
         }
-
-        return null;
     }
 }
