@@ -7,20 +7,17 @@ import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.statics.AccountStatusEnum;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.RoleEnum;
-import lombok.EqualsAndHashCode;
 import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.util.EnumUtils;
 
-@Slf4j
 @Component
 public class UpdateAccountUseCase extends UseCase<UpdateAccountUseCase.InputValue, ApiResponse> {
     @Autowired
     AccountRepository accountRepo;
+
 
     @Override
     public ApiResponse execute(InputValue input) {
@@ -46,9 +43,7 @@ public class UpdateAccountUseCase extends UseCase<UpdateAccountUseCase.InputValu
 
             // set status to CUSTOMER account and the status of it is DIFFERENT from request param's one
             if (!selectedAcc.getStatus().equals(account.getStatus()) && !selectedAcc.getRole().equals(RoleEnum.ADMIN.name())) {
-                selectedAcc.setStatus(status);
-                selectedAcc.setCurrentJwt(null);
-                accountRepo.save(selectedAcc);
+                accountRepo.updateAccountStatus(status, account.getId());
 
                 return new ApiResponse("success", "Update account successfully", HttpStatus.OK);
             } else {
@@ -56,7 +51,7 @@ public class UpdateAccountUseCase extends UseCase<UpdateAccountUseCase.InputValu
             }
         }
         catch (Exception e) {
-            log.error(e.toString());
+            e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
