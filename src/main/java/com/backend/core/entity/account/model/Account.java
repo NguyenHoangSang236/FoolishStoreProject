@@ -26,20 +26,20 @@ import java.util.List;
 public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", unique = true)
+    @Column(name = "id", unique = true)
     int id;
 
-    @Column(name = "User_Name")
+    @Column(name = "user_name")
     @NotEmpty(message = "User name can not be null")
     String userName;
 
-    @Column(name = "Password")
+    @Column(name = "password")
     String password;
 
-    @Column(name = "Role")
+    @Column(name = "role")
     String role;
 
-    @Column(name = "Status")
+    @Column(name = "status")
     String status;
 
     @JsonIgnore
