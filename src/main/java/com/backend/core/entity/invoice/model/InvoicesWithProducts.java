@@ -21,7 +21,7 @@ public class InvoicesWithProducts {
     InvoicesWithProductsPrimaryKeys id;
 
     @ManyToOne
-    @MapsId("productId")
+    @MapsId("productManagementId")
     @JoinColumn(name = "product_management_id")
     ProductManagement productManagement;
 

@@ -5,7 +5,9 @@ import com.backend.core.entity.refund.model.Refund;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -21,6 +23,8 @@ import java.util.Objects;
 @Table(name = "staffs")
 @DynamicInsert
 @DynamicUpdate
+@NoArgsConstructor
+@AllArgsConstructor
 public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +57,7 @@ public class Staff {
 
     @JsonIgnore
     @OneToOne
-    @JoinColumn(name = "Account_ID", referencedColumnName = "id")
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 
     @JsonIgnore
@@ -63,10 +67,6 @@ public class Staff {
     @JsonIgnore
     @OneToMany(mappedBy = "staff")
     private List<Refund> refunds;
-
-
-    public Staff() {
-    }
 
 
     @Override

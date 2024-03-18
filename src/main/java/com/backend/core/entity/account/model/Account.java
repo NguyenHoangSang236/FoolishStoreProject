@@ -3,7 +3,6 @@ package com.backend.core.entity.account.model;
 import com.backend.core.entity.delivery.model.DeviceFcmToken;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -47,12 +46,10 @@ public class Account implements UserDetails {
     @Column(name = "current_jwt")
     String currentJwt;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Valid
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     Customer customer;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Valid
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     Staff staff;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

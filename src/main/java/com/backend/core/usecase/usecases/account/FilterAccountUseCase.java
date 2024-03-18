@@ -11,14 +11,12 @@ import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.RoleEnum;
 import com.backend.core.usecase.util.process.ValueRenderUtils;
 import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Slf4j
 @Component
 public class FilterAccountUseCase extends UseCase<FilterAccountUseCase.InputValue, ApiResponse> {
     @Autowired

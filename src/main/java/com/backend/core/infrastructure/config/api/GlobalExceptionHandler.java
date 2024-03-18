@@ -11,14 +11,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
     @ExceptionHandler(value = {AuthenticationException.class})
     ResponseEntity<ApiResponse> handleAuthenticationException(AuthenticationException ex) {
+        ex.printStackTrace();
         return new ResponseEntity<>(new ApiResponse("failed", ex.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(value = {Exception.class})
     ResponseEntity<ApiResponse> handleException(Exception ex) {
+        ex.printStackTrace();
         return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -1,13 +1,12 @@
 package com.backend.core.infrastructure.business.account.controller;
 
-import com.backend.core.entity.AuthenticationController;
 import com.backend.core.entity.account.model.Account;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.account.dto.CustomerRenderInfoDTO;
-import com.backend.core.usecase.service.AuthenticationService;
+import com.backend.core.infrastructure.config.api.ResponseMapper;
+import com.backend.core.usecase.UseCaseExecutorImpl;
+import com.backend.core.usecase.usecases.authentication.LoginUseCase;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,60 +15,54 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
-import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-// @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
-public class SystemAuthenticationController extends AuthenticationController {
-    public SystemAuthenticationController(AuthenticationService authenticationService) {
-        super(authenticationService);
+public class SystemAuthenticationController {
+    final UseCaseExecutorImpl useCaseExecutor;
+    final LoginUseCase loginUseCase;
+
+    public SystemAuthenticationController(UseCaseExecutorImpl useCaseExecutor, ResponseMapper responseMapper, LoginUseCase loginUseCase) {
+        this.useCaseExecutor = useCaseExecutor;
+        this.loginUseCase = loginUseCase;
     }
 
-
-    @Override
     @PostMapping("/unauthen/systemAuthentication/login")
-    public ResponseEntity<ApiResponse> loginIntoSystem(@RequestBody Account accountFromUI, HttpServletRequest request) throws URISyntaxException {
-        return authenticationService.loginIntoSystem(accountFromUI, request);
+    public CompletableFuture<ResponseEntity<ApiResponse>> loginIntoSystem(@RequestBody Account accountFromUI, HttpServletRequest request) throws URISyntaxException {
+        return useCaseExecutor.execute(
+                loginUseCase,
+                new LoginUseCase.InputValue(accountFromUI),
+                ResponseMapper::map
+        );
     }
 
 
-    @Override
     @GetMapping("/authen/systemAuthentication/logout")
     public ResponseEntity<ApiResponse> logoutFromSystem(HttpServletRequest request) {
-        return authenticationService.logoutFromSystem(request);
+        return null;
     }
 
-    @Override
     @GetMapping("/authen/systemAuthentication/changePassword")
     public ResponseEntity changePassword(@RequestParam String oldPassword, @RequestParam String newPassword, HttpServletRequest request) throws URISyntaxException {
-        return authenticationService.changePassword(oldPassword, newPassword, request);
+        return null;
     }
 
-    @Override
     @PostMapping("/authen/systemAuthentication/updateProfile")
     public ResponseEntity<ApiResponse> updateProfile(@RequestBody CustomerRenderInfoDTO customerRenderInfoDTO, HttpServletRequest request) {
-        return authenticationService.updateProfile(customerRenderInfoDTO, request);
+        return null;
     }
 
 
-    @Override
     @PostMapping("/unauthen/systemAuthentication/register")
     public ResponseEntity<ApiResponse> registerNewAccount(@Validated @RequestBody Account account, BindingResult bindingResult) {
-        return authenticationService.registerNewAccount(account, bindingResult);
+        return null;
     }
 
 
-    @Override
     @PostMapping("/unauthen/systemAuthentication/forgotPassword")
     public ResponseEntity<ApiResponse> forgotPassword(@Validated @RequestBody String accJson, BindingResult bindingResult) throws JsonProcessingException, URISyntaxException {
-        ObjectMapper objMapper = new ObjectMapper();
-        HashMap<String, Object> map = objMapper.readValue(accJson, new TypeReference<HashMap<String, Object>>() {
-        });
+        return null;
 
-        String username = (String) map.get("userName");
-        String email = (String) map.get("email");
-
-        return authenticationService.forgotPassword(username, email);
     }
 }
