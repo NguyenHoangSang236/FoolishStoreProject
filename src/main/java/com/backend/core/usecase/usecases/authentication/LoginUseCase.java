@@ -52,6 +52,8 @@ public class LoginUseCase extends UseCase<LoginUseCase.InputValue, ApiResponse> 
 
             loginAcc = accountRepo.getAccountByUserName(account.getUsername());
 
+            System.out.println(loginAcc.getCustomer().getName());
+
             // check the status of the account is ALLOWED or BANNED
             if (loginAcc != null && loginAcc.getStatus().equals(AccountStatusEnum.ALLOWED.name())) {
                 jwt = jwtUtils.generateJwt(loginAcc);
