@@ -31,31 +31,31 @@ import java.util.Objects;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", unique = true)
+    @Column(name = "id", unique = true)
     int id;
 
-    @Column(name = "Name")
+    @Column(name = "name")
     @NotEmpty(message = "Customer's name can not be empty")
     String name;
 
-    @Column(name = "Email")
+    @Column(name = "email")
     @Email(message = "Invalid email !!")
     String email;
 
-    @Column(name = "Phone_Number")
+    @Column(name = "phone_Number")
     @NotEmpty(message = "Customer's phone number can not be empty")
     String phoneNumber;
 
-    @Column(name = "Avatar")
+    @Column(name = "avatar")
     String image;
 
-    @Column(name = "Country")
+    @Column(name = "country")
     String country;
 
-    @Column(name = "Address")
+    @Column(name = "address")
     String address;
 
-    @Column(name = "City")
+    @Column(name = "city")
     String city;
 
     @JsonIgnore
