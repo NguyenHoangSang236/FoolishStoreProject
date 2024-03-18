@@ -59,8 +59,8 @@ public class Customer {
     String city;
 
     @JsonIgnore
-    @OneToOne()
-    @JoinColumn(name = "Account_ID", referencedColumnName = "id")
+    @OneToOne
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 
     @JsonIgnore
