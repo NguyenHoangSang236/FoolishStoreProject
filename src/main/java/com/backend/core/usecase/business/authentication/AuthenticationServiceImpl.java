@@ -159,14 +159,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             return new ResponseEntity<>(new ApiResponse("success", "Changed password successfully"), HttpStatus.OK);
         }
+        catch (BadCredentialsException badCreEx) {
+            badCreEx.printStackTrace();
+            return new ResponseEntity<>(new ApiResponse("failed", "Incorrect old password"), HttpStatus.BAD_REQUEST);
+        }
         catch (Exception e) {
             e.printStackTrace();
-
-            if(e instanceof BadCredentialsException) {
-                return new ResponseEntity<>(new ApiResponse("failed", "Incorrect old password"), HttpStatus.BAD_REQUEST);
-            }
-            else
-                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
         }
     }
 
