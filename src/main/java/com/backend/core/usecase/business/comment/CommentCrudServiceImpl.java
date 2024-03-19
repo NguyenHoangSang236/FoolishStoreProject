@@ -164,8 +164,7 @@ public class CommentCrudServiceImpl implements CrudService {
     @Override
     public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
         try {
-            if (paramObj instanceof CommentFilterRequestDTO) {
-                CommentFilterRequestDTO commentFilterRequest = (CommentFilterRequestDTO) paramObj;
+            if (paramObj instanceof CommentFilterRequestDTO commentFilterRequest) {
 
                 String filterQuery = valueRenderUtils.getFilterQuery(commentFilterRequest, FilterTypeEnum.COMMENT, httpRequest, false);
 
@@ -173,8 +172,7 @@ public class CommentCrudServiceImpl implements CrudService {
                 Collections.reverse(commentList);
 
                 return new ResponseEntity<>(new ApiResponse("success", commentList), HttpStatus.OK);
-            } else if (paramObj instanceof CommentRequestDTO) {
-                CommentRequestDTO comment = (CommentRequestDTO) paramObj;
+            } else if (paramObj instanceof CommentRequestDTO comment) {
                 int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
                 List<Integer> commentIdList = commentLikeRepo.getCommentIdListByCustomerIdAndProductColorAndProductId(

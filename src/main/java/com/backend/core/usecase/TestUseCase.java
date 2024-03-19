@@ -1,20 +1,16 @@
 package com.backend.core.usecase;
 
-import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.product.dto.ProductRenderInfoDTO;
 import com.backend.core.infrastructure.business.product.repository.ProductRenderInfoRepository;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class TestUseCase extends UseCase<TestUseCase.InputValues, TestUseCase.OutputValues>{
+public class TestUseCase extends UseCase<TestUseCase.InputValues, TestUseCase.OutputValues> {
     @Autowired
     ProductRenderInfoRepository productRenderInfoRepo;
 
@@ -29,7 +25,7 @@ public class TestUseCase extends UseCase<TestUseCase.InputValues, TestUseCase.Ou
     }
 
     @Value
-    public static class InputValues implements UseCase.InputValues{
+    public static class InputValues implements UseCase.InputValues {
         private final String type;
     }
 

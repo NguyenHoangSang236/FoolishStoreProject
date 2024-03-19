@@ -22,16 +22,10 @@ public class CategoryDTO {
     @JsonProperty("image")
     private String image;
 
-    public void getDataFromCatalog(Catalog catalog) {
-        this.id = catalog.getId();
-        this.name = catalog.getName();
-        this.image = catalog.getImage();
-    }
-
     public static List<CategoryDTO> getListFromCatalogList(List<Catalog> catalogList) {
         List<CategoryDTO> resList = new ArrayList<>();
 
-        for(Catalog catalog : catalogList) {
+        for (Catalog catalog : catalogList) {
             CategoryDTO category = new CategoryDTO();
             category.getDataFromCatalog(catalog);
 
@@ -39,5 +33,11 @@ public class CategoryDTO {
         }
 
         return resList;
+    }
+
+    public void getDataFromCatalog(Catalog catalog) {
+        this.id = catalog.getId();
+        this.name = catalog.getName();
+        this.image = catalog.getImage();
     }
 }

@@ -9,10 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class TestUseCaseOutputMapper {
     public static ResponseEntity<ApiResponse> map(TestUseCase.OutputValues outputValue) {
-        if(outputValue.isError()) {
+        if (outputValue.isError()) {
             return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
-        }
-        else {
+        } else {
             return new ResponseEntity<>(new ApiResponse("success", outputValue.getProductList()), HttpStatus.OK);
         }
     }

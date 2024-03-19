@@ -109,8 +109,7 @@ public class RefundCrudServiceImpl implements CrudService {
     @Override
     public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
         try {
-            if (paramObj instanceof RefundFilterRequestDTO) {
-                RefundFilterRequestDTO refundFilterRequest = (RefundFilterRequestDTO) paramObj;
+            if (paramObj instanceof RefundFilterRequestDTO refundFilterRequest) {
 
                 String filterQuery = valueRenderUtils.getFilterQuery(refundFilterRequest, FilterTypeEnum.REFUND, httpRequest, false);
 

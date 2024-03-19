@@ -85,7 +85,8 @@ public class SystemAuthenticationController {
     @PostMapping("/unauthen/systemAuthentication/forgotPassword")
     public CompletableFuture<ResponseEntity<ApiResponse>> forgotPassword(@Validated @RequestBody String accJson, BindingResult bindingResult) throws JsonProcessingException, URISyntaxException {
         ObjectMapper objMapper = new ObjectMapper();
-        HashMap<String, Object> map = objMapper.readValue(accJson, new TypeReference<HashMap<String, Object>>() {});
+        HashMap<String, Object> map = objMapper.readValue(accJson, new TypeReference<HashMap<String, Object>>() {
+        });
 
         String username = (String) map.get("userName");
         String email = (String) map.get("email");

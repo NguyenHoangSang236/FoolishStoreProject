@@ -386,7 +386,7 @@ public class ValueRenderUtils {
         }
 
         if (name != null && !name.isBlank()) {
-            List<String> subNameList = Arrays.asList(name.split(" "));
+            String[] subNameList = name.split(" ");
 
             for (String nameItem : subNameList) {
                 result += "piu.name like '%" + nameItem + "%' and ";
