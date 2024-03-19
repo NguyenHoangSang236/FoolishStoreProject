@@ -12,9 +12,7 @@ import com.backend.core.infrastructure.business.product.dto.ProductRenderInfoDTO
 import com.backend.core.infrastructure.business.product.repository.AuthenProductRenderInfoRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductManagementRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductRenderInfoRepository;
-import com.backend.core.infrastructure.business.product.repository.ProductRepository;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
-import com.backend.core.usecase.service.CalculationService;
 import com.backend.core.usecase.service.CrudService;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.FilterTypeEnum;
@@ -117,28 +115,27 @@ public class ShopCrudServiceImpl implements CrudService {
                 List<CategoryDTO> categoryList = CategoryDTO.getListFromCatalogList(catalogList);
 
                 // get product details data
-                if(showFull != null && color == null) {
-                    if(!Boolean.parseBoolean(showFull)) {
+                if (showFull != null && color == null) {
+                    if (!Boolean.parseBoolean(showFull)) {
                         productDetails = productRenderInfoRepo.getProductDetails(id);
 
-                        for(ProductRenderInfoDTO productDetail : productDetails) {
+                        for (ProductRenderInfoDTO productDetail : productDetails) {
                             productDetail.setCategories(categoryList);
                         }
 
-                        if(productDetails.isEmpty()) {
+                        if (productDetails.isEmpty()) {
                             return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
                         }
 
                         return new ResponseEntity<>(new ApiResponse("success", productDetails), HttpStatus.OK);
-                    }
-                    else {
+                    } else {
                         authenProductDetails = authenProductRenderInfoRepo.getAuthenProductFullDetails(id);
 
-                        for(AuthenProductRenderInfoDTO authenProductDetail : authenProductDetails) {
+                        for (AuthenProductRenderInfoDTO authenProductDetail : authenProductDetails) {
                             authenProductDetail.setCategories(categoryList);
                         }
 
-                        if(authenProductDetails.isEmpty()) {
+                        if (authenProductDetails.isEmpty()) {
                             return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
                         }
 
@@ -154,8 +151,8 @@ public class ShopCrudServiceImpl implements CrudService {
                     } else {
                         return new ResponseEntity<>(new ApiResponse("failed", "This product does not exist"), HttpStatus.BAD_REQUEST);
                     }
-                }
-                else return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
+                } else
+                    return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
             } catch (Exception e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.OK);

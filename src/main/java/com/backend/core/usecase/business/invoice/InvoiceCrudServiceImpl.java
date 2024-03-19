@@ -128,7 +128,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             Integer invoiceId = invoiceRepo.getLatestInvoiceId();
 
             if (invoiceId != null) {
-                newInvoiceId = (int) invoiceId + 1;
+                newInvoiceId = invoiceId + 1;
             }
 
             // calculate subtotal price
@@ -209,7 +209,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
                 }
 
                 // check the order status whether it can be canceled or not
-                if (invoice.isUpdatable() == false) {
+                if (!invoice.isUpdatable()) {
                     return new ResponseEntity<>(new ApiResponse("failed", "This order can not be canceled any more"), HttpStatus.BAD_REQUEST);
                 }
 
@@ -298,7 +298,7 @@ public class InvoiceCrudServiceImpl implements CrudService {
             }
 
             // check if invoice can be updated or not
-            if (invoice.isUpdatable() == false) {
+            if (!invoice.isUpdatable()) {
                 return new ResponseEntity<>(new ApiResponse("failed", "This order can not be updated"), HttpStatus.BAD_REQUEST);
             }
 
@@ -659,14 +659,12 @@ public class InvoiceCrudServiceImpl implements CrudService {
                     invoice.getId()
             );
 
-            if(adminAcceptance.equals(InvoiceEnum.SUCCESS.name())) {
+            if (adminAcceptance.equals(InvoiceEnum.SUCCESS.name())) {
                 cartItem.setBuyingStatus(CartEnum.BOUGHT.name());
-            }
-            else if (adminAcceptance.equals(InvoiceEnum.FAILED.name()) &&
-                    adminAcceptance.equals(InvoiceEnum.SUCCESS.name()) ) {
+            } else if (adminAcceptance.equals(InvoiceEnum.FAILED.name()) &&
+                    adminAcceptance.equals(InvoiceEnum.SUCCESS.name())) {
                 cartItem.setBuyingStatus(CartEnum.NOT_BOUGHT_YET.name());
-            }
-            else {
+            } else {
                 cartItem.setBuyingStatus(CartEnum.PENDING.name());
             }
 

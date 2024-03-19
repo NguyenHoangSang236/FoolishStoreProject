@@ -319,7 +319,7 @@ public class GhnUtils {
             request.put("required_note", "KHONGCHOXEMHANG");
             request.put("items", items);
 
-            System.out.println(request.toString());
+            System.out.println(request);
 
             ResponseEntity<Map> newOrderRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.createOrderUrl, request);
 

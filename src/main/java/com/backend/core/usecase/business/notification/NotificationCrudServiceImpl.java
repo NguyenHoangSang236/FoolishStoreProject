@@ -67,8 +67,7 @@ public class NotificationCrudServiceImpl implements CrudService {
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(httpRequest);
 
         try {
-            if (paramObj instanceof NotificationFilterRequestDTO) {
-                NotificationFilterRequestDTO filterRequest = (NotificationFilterRequestDTO) paramObj;
+            if (paramObj instanceof NotificationFilterRequestDTO filterRequest) {
                 String filterQuery = valueRenderUtils.getFilterQuery(filterRequest, FilterTypeEnum.NOTIFICATION, httpRequest, true);
 
                 List<Notification> notiList = customQueryRepo.getBindingFilteredList(filterQuery, Notification.class);

@@ -10,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class ChangePasswordUseCase extends UseCase<ChangePasswordUseCase.InputValue, ApiResponse>{
+public class ChangePasswordUseCase extends UseCase<ChangePasswordUseCase.InputValue, ApiResponse> {
     @Autowired
     ValueRenderUtils valueRenderUtils;
     @Autowired
@@ -37,7 +36,7 @@ public class ChangePasswordUseCase extends UseCase<ChangePasswordUseCase.InputVa
 
         try {
             // check password format
-            if(newPassword.length() < 6 || newPassword.trim().contains(" ")) {
+            if (newPassword.length() < 6 || newPassword.trim().contains(" ")) {
                 return new ApiResponse("failed", "Password must contain more than 6 letters and must not have any space", HttpStatus.BAD_REQUEST);
             }
 
@@ -55,14 +54,12 @@ public class ChangePasswordUseCase extends UseCase<ChangePasswordUseCase.InputVa
             accountRepo.save(account);
 
             return new ApiResponse("success", "Changed password successfully", HttpStatus.OK);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
 
-            if(e instanceof BadCredentialsException) {
+            if (e instanceof BadCredentialsException) {
                 return new ApiResponse("failed", "Incorrect old password", HttpStatus.BAD_REQUEST);
-            }
-            else
+            } else
                 return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.BAD_REQUEST);
         }
     }

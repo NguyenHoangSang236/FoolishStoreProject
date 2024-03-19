@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface NotificationService {
-    public ResponseEntity<ApiResponse> sendMessage(NotificationDTO notification, HttpServletRequest request);
+    ResponseEntity<ApiResponse> sendMessage(NotificationDTO notification, HttpServletRequest request);
 
-    public ResponseEntity<ApiResponse> addNewDeviceFcmToken(String token, HttpServletRequest request);
+    ResponseEntity<ApiResponse> addNewDeviceFcmToken(String token, HttpServletRequest request);
 
-    public ResponseEntity<ApiResponse> subscribeToTopic(NotificationDTO notification, HttpServletRequest request);
+    ResponseEntity<ApiResponse> subscribeToTopic(NotificationDTO notification, HttpServletRequest request);
 
-    public ResponseEntity<ApiResponse> unsubscribeFromTopic(NotificationDTO notification, HttpServletRequest request);
+    ResponseEntity<ApiResponse> unsubscribeFromTopic(NotificationDTO notification, HttpServletRequest request);
 
-    public ResponseEntity<ApiResponse> getNotificationList(Object object, HttpServletRequest request);
+    ResponseEntity<ApiResponse> getNotificationList(Object object, HttpServletRequest request);
 }

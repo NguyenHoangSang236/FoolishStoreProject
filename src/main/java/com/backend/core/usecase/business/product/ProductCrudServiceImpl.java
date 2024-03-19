@@ -129,14 +129,14 @@ public class ProductCrudServiceImpl implements CrudService {
         } else {
             productRepo.save(product);
 
-            if(purpose.equals(RequestPurpose.EDIT)) {
+            if (purpose.equals(RequestPurpose.EDIT)) {
                 customQueryRepo.deleteCatalogsWithProductsByProductId(product.getId());
             }
 
             for (Integer cateId : request.getCategoryIds()) {
                 Catalog category = catalogRepo.getCatalogById(cateId);
 
-                if(category == null) {
+                if (category == null) {
                     return new ResponseEntity<>(new ApiResponse("failed", "Category does not exist"), HttpStatus.BAD_REQUEST);
                 }
 

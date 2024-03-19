@@ -83,7 +83,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getRequestURI().contains("/authen") == false;
+        return !request.getRequestURI().contains("/authen");
     }
 
     public String convertObjectToJson(Object object) throws JsonProcessingException {
