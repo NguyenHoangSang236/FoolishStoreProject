@@ -10,20 +10,15 @@ public class ResponseMapper {
     public static ResponseEntity<ApiResponse> map(ApiResponse response) {
         HttpStatus status = response.getStatus();
 
-        ApiResponse apiRes = ApiResponse.builder()
-                .result(response.getResult())
-                .content(response.getContent())
-                .build();
-
         switch (status.name()) {
             case "OK":
-                return ResponseEntity.ok(apiRes);
+                return ResponseEntity.ok(response);
             case "INTERNAL_SERVER_ERROR":
-                return ResponseEntity.internalServerError().body(apiRes);
+                return ResponseEntity.internalServerError().body(response);
             case "BAD_REQUEST":
-                return ResponseEntity.badRequest().body(apiRes);
+                return ResponseEntity.badRequest().body(response);
             case "UNAUTHORIZED, NO_CONTENT":
-                return new ResponseEntity<>(apiRes, status);
+                return new ResponseEntity<>(response, status);
             default:
                 return ResponseEntity.notFound().build();
         }

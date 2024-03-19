@@ -6,8 +6,11 @@ import com.backend.core.infrastructure.business.account.dto.CustomerRenderInfoDT
 import com.backend.core.infrastructure.config.api.ResponseMapper;
 import com.backend.core.usecase.UseCaseExecutorImpl;
 import com.backend.core.usecase.usecases.authentication.LoginUseCase;
+import com.backend.core.usecase.usecases.authentication.LogoutUseCase;
+import com.backend.core.usecase.usecases.authentication.RegisterUseCase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,14 +22,13 @@ import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+@AllArgsConstructor
 public class SystemAuthenticationController {
     final UseCaseExecutorImpl useCaseExecutor;
     final LoginUseCase loginUseCase;
+    final LogoutUseCase logoutUseCase;
+    final RegisterUseCase registerUseCase;
 
-    public SystemAuthenticationController(UseCaseExecutorImpl useCaseExecutor, ResponseMapper responseMapper, LoginUseCase loginUseCase) {
-        this.useCaseExecutor = useCaseExecutor;
-        this.loginUseCase = loginUseCase;
-    }
 
     @PostMapping("/unauthen/systemAuthentication/login")
     public CompletableFuture<ResponseEntity<ApiResponse>> loginIntoSystem(@RequestBody Account accountFromUI, HttpServletRequest request) throws URISyntaxException {
@@ -39,8 +41,12 @@ public class SystemAuthenticationController {
 
 
     @GetMapping("/authen/systemAuthentication/logout")
-    public ResponseEntity<ApiResponse> logoutFromSystem(HttpServletRequest request) {
-        return null;
+    public CompletableFuture<ResponseEntity<ApiResponse>> logoutFromSystem(HttpServletRequest request) {
+        return useCaseExecutor.execute(
+                logoutUseCase,
+                new LogoutUseCase.InputValue(request),
+                ResponseMapper::map
+        );
     }
 
     @GetMapping("/authen/systemAuthentication/changePassword")
@@ -55,8 +61,12 @@ public class SystemAuthenticationController {
 
 
     @PostMapping("/unauthen/systemAuthentication/register")
-    public ResponseEntity<ApiResponse> registerNewAccount(@Validated @RequestBody Account account, BindingResult bindingResult) {
-        return null;
+    public CompletableFuture<ResponseEntity<ApiResponse>> registerNewAccount(@Validated @RequestBody Account account, BindingResult bindingResult) {
+        return useCaseExecutor.execute(
+                registerUseCase,
+                new RegisterUseCase.InputValue(account, bindingResult),
+                ResponseMapper::map
+        );
     }
 
 
