@@ -10,6 +10,7 @@ import com.backend.core.usecase.usecases.account.UpdateAccountUseCase;
 import com.backend.core.usecase.usecases.account.ViewAccountByIdUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,19 +22,12 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping(value = "/authen/account", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-// @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
+@AllArgsConstructor
 public class AccountController {
     private UpdateAccountUseCase updateAccountUseCase;
     private FilterAccountUseCase filterAccountUseCase;
     private ViewAccountByIdUseCase viewAccountByIdUseCase;
     private UseCaseExecutorImpl useCaseExecutor;
-
-    public AccountController(UpdateAccountUseCase updateAccountUseCase, FilterAccountUseCase filterAccountUseCase, ViewAccountByIdUseCase viewAccountByIdUseCase, UseCaseExecutorImpl useCaseExecutor) {
-        this.updateAccountUseCase = updateAccountUseCase;
-        this.filterAccountUseCase = filterAccountUseCase;
-        this.viewAccountByIdUseCase = viewAccountByIdUseCase;
-        this.useCaseExecutor = useCaseExecutor;
-    }
 
     @PostMapping("/actionOnAccount")
     public CompletableFuture<ResponseEntity<ApiResponse>> actionOnAccount(@RequestBody String json) throws IOException {
