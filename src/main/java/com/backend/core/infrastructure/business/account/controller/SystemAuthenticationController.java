@@ -5,10 +5,10 @@ import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.account.dto.CustomerRenderInfoDTO;
 import com.backend.core.infrastructure.config.api.ResponseMapper;
 import com.backend.core.usecase.UseCaseExecutorImpl;
-import com.backend.core.usecase.usecases.authentication.LoginUseCase;
-import com.backend.core.usecase.usecases.authentication.LogoutUseCase;
-import com.backend.core.usecase.usecases.authentication.RegisterUseCase;
+import com.backend.core.usecase.usecases.authentication.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -28,6 +29,9 @@ public class SystemAuthenticationController {
     final LoginUseCase loginUseCase;
     final LogoutUseCase logoutUseCase;
     final RegisterUseCase registerUseCase;
+    final ChangePasswordUseCase changePasswordUseCase;
+    final UpdatePersonalProfileUseCase updatePersonalProfileUseCase;
+    final ForgotPasswordUseCase forgotPasswordUseCase;
 
 
     @PostMapping("/unauthen/systemAuthentication/login")
@@ -50,13 +54,21 @@ public class SystemAuthenticationController {
     }
 
     @GetMapping("/authen/systemAuthentication/changePassword")
-    public ResponseEntity changePassword(@RequestParam String oldPassword, @RequestParam String newPassword, HttpServletRequest request) throws URISyntaxException {
-        return null;
+    public CompletableFuture<ResponseEntity<ApiResponse>> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword, HttpServletRequest request) throws URISyntaxException {
+        return useCaseExecutor.execute(
+                changePasswordUseCase,
+                new ChangePasswordUseCase.InputValue(newPassword, oldPassword, request),
+                ResponseMapper::map
+        );
     }
 
     @PostMapping("/authen/systemAuthentication/updateProfile")
-    public ResponseEntity<ApiResponse> updateProfile(@RequestBody CustomerRenderInfoDTO customerRenderInfoDTO, HttpServletRequest request) {
-        return null;
+    public CompletableFuture<ResponseEntity<ApiResponse>> updateProfile(@RequestBody CustomerRenderInfoDTO customerRenderInfoDTO, HttpServletRequest request) {
+        return useCaseExecutor.execute(
+                updatePersonalProfileUseCase,
+                new UpdatePersonalProfileUseCase.InputValue(customerRenderInfoDTO, request),
+                ResponseMapper::map
+        );
     }
 
 
@@ -71,8 +83,17 @@ public class SystemAuthenticationController {
 
 
     @PostMapping("/unauthen/systemAuthentication/forgotPassword")
-    public ResponseEntity<ApiResponse> forgotPassword(@Validated @RequestBody String accJson, BindingResult bindingResult) throws JsonProcessingException, URISyntaxException {
-        return null;
+    public CompletableFuture<ResponseEntity<ApiResponse>> forgotPassword(@Validated @RequestBody String accJson, BindingResult bindingResult) throws JsonProcessingException, URISyntaxException {
+        ObjectMapper objMapper = new ObjectMapper();
+        HashMap<String, Object> map = objMapper.readValue(accJson, new TypeReference<HashMap<String, Object>>() {});
 
+        String username = (String) map.get("userName");
+        String email = (String) map.get("email");
+
+        return useCaseExecutor.execute(
+                forgotPasswordUseCase,
+                new ForgotPasswordUseCase.InputValue(username, email),
+                ResponseMapper::map
+        );
     }
 }
