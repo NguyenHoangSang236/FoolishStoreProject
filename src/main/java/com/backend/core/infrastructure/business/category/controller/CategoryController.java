@@ -72,10 +72,10 @@ public class CategoryController {
     }
 
     @GetMapping("/unauthen/category/allCategories")
-    public CompletableFuture<ResponseEntity<ApiResponse>> getListOfItems(String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> getListOfItems() throws IOException {
         return useCaseExecutor.execute(
-                deleteCategoryUseCase,
-                new DeleteCategoryUseCase.InputValue(id),
+                filterCategoryUseCase,
+                new FilterCategoryUseCase.InputValue(),
                 ResponseMapper::map
         );
     }
