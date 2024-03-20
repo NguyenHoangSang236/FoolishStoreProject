@@ -37,8 +37,7 @@ public class CategoryCrudServiceImpl implements CrudService {
         try {
             Catalog newCatalog = (Catalog) paramObj;
 
-            if ((newCatalog.getName() == null && newCatalog.getName().isBlank()) ||
-                    (newCatalog.getImage() == null && newCatalog.getImage().isBlank())) {
+            if (newCatalog.getName() == null || newCatalog.getName().isBlank() || newCatalog.getImage() == null || newCatalog.getImage().isBlank()) {
                 return new ResponseEntity<>(new ApiResponse("failed", "New category must have an image and name"), HttpStatus.BAD_REQUEST);
             }
 
@@ -87,10 +86,10 @@ public class CategoryCrudServiceImpl implements CrudService {
         try {
             Catalog updatingCatalog = (Catalog) paramObj;
 
-            if (updatingCatalog.getName() == null &&
-                    updatingCatalog.getName().isBlank() &&
-                    updatingCatalog.getImage() == null &&
-                    updatingCatalog.getImage().isBlank() &&
+            if (updatingCatalog.getName() == null ||
+                    updatingCatalog.getName().isBlank() ||
+                    updatingCatalog.getImage() == null ||
+                    updatingCatalog.getImage().isBlank() ||
                     updatingCatalog.getId() == 0) {
                 return new ResponseEntity<>(new ApiResponse("failed", "Updating category must have id and an image or name"), HttpStatus.BAD_REQUEST);
             }

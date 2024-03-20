@@ -4,7 +4,7 @@ import com.backend.core.entity.account.model.Account;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.account.dto.CustomerRenderInfoDTO;
 import com.backend.core.infrastructure.config.api.ResponseMapper;
-import com.backend.core.usecase.UseCaseExecutorImpl;
+import com.backend.core.usecase.UseCaseExecutor;
 import com.backend.core.usecase.usecases.authentication.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @AllArgsConstructor
 public class SystemAuthenticationController {
-    final UseCaseExecutorImpl useCaseExecutor;
+    final UseCaseExecutor useCaseExecutor;
     final LoginUseCase loginUseCase;
     final LogoutUseCase logoutUseCase;
     final RegisterUseCase registerUseCase;

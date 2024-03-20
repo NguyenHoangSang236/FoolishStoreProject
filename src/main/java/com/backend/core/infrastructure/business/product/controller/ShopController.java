@@ -6,11 +6,15 @@ import com.backend.core.entity.api.PaginationDTO;
 import com.backend.core.entity.product.gateway.ProductFilterRequestDTO;
 import com.backend.core.infrastructure.business.product.dto.ProductRenderInfoDTO;
 import com.backend.core.infrastructure.business.product.repository.ProductRepository;
+import com.backend.core.infrastructure.config.api.ResponseMapper;
+import com.backend.core.usecase.UseCaseExecutor;
 import com.backend.core.usecase.service.CalculationService;
 import com.backend.core.usecase.service.CrudService;
 import com.backend.core.usecase.statics.RenderTypeEnum;
+import com.backend.core.usecase.usecases.product.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -21,93 +25,87 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-public class ShopController extends CrudController {
-    @Autowired
-    private CalculationService calculationService;
+@AllArgsConstructor
+public class ShopController {
+    final UseCaseExecutor useCaseExecutor;
+    final FilterProductUseCase filterProductUseCase;
+    final GetAllProductsUseCase getAllProductsUseCase;
+    final HotDiscountProductsUseCase hotDiscountProductsUseCase;
+    final NewArrivalProductsUseCase newArrivalProductsUseCase;
+    final BestSellerProductsUseCase bestSellerProductsUseCase;
 
-    @Autowired
-    private ProductRepository productRepo;
 
+    @PostMapping("/unauthen/shop/productList")
+    public CompletableFuture<ResponseEntity<ApiResponse>> getAllProducts(@RequestBody String json) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        PaginationDTO pagination = objectMapper.readValue(json, PaginationDTO.class);
 
-    public ShopController(@Autowired @Qualifier("ShopCrudServiceImpl") CrudService productCrudServiceImpl) {
-        super(productCrudServiceImpl);
-        super.crudService = productCrudServiceImpl;
+        return useCaseExecutor.execute(
+                getAllProductsUseCase,
+                new GetAllProductsUseCase.InputValue(pagination),
+                ResponseMapper::map
+        );
     }
 
+    @PostMapping("/unauthen/shop/filterProduct")
+    public CompletableFuture<ResponseEntity<ApiResponse>> filterProducts(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductFilterRequestDTO productFilterRequest = objectMapper.readValue(json, ProductFilterRequestDTO.class);
 
-    @Override
-    public ResponseEntity<ApiResponse> addNewItem(String json, HttpServletRequest httpRequest) throws IOException {
-        return null;
+        return useCaseExecutor.execute(
+                filterProductUseCase,
+                new FilterProductUseCase.InputValue(productFilterRequest, httpRequest),
+                ResponseMapper::map
+        );
     }
 
-
-    @Override
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @PostMapping("/authen/shop/rateProduct")
     public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProductRenderInfoDTO request = objectMapper.readValue(json, ProductRenderInfoDTO.class);
 
-        return crudService.updatingResponseByRequest(request, httpRequest);
-    }
-
-    @Override
-    public ResponseEntity readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
         return null;
+//        return crudService.updatingResponseByRequest(request, httpRequest);
     }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> deleteSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
-
-
-    @Override
-    @PostMapping("/unauthen/shop/allProducts")
-    public ResponseEntity<ApiResponse> getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        PaginationDTO pagination = objectMapper.readValue(json, PaginationDTO.class);
-        return crudService.readingFromSingleRequest(pagination, httpRequest);
-    }
-
-    @Override
-    @PostMapping("/unauthen/shop/filterProducts")
-    public ResponseEntity<ApiResponse> getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProductFilterRequestDTO productFilterRequest = objectMapper.readValue(json, ProductFilterRequestDTO.class);
-        return crudService.readingFromSingleRequest(productFilterRequest, httpRequest);
-    }
-
 
     @GetMapping("/unauthen/shop/top8BestSellers")
-    public ResponseEntity<ApiResponse> getTop8BestSellers(String json, HttpServletRequest httpRequest) throws IOException {
-        return crudService.readingResponse(RenderTypeEnum.TOP_8_BEST_SELL_PRODUCTS.name(), httpRequest);
+    public CompletableFuture<ResponseEntity<ApiResponse>> getTop8BestSellers() throws IOException {
+        return useCaseExecutor.execute(
+                bestSellerProductsUseCase,
+                new BestSellerProductsUseCase.InputValue(),
+                ResponseMapper::map
+        );
     }
 
 
     @GetMapping("/unauthen/shop/newArrivalProducts")
-    public ResponseEntity<ApiResponse> getNewArrivalProducts(String json, HttpServletRequest httpRequest) throws IOException {
-        return crudService.readingResponse(RenderTypeEnum.NEW_ARRIVAL_PRODUCTS.name(), httpRequest);
+    public CompletableFuture<ResponseEntity<ApiResponse>> getNewArrivalProducts(String json, HttpServletRequest httpRequest) throws IOException {
+        return useCaseExecutor.execute(
+                newArrivalProductsUseCase,
+                new NewArrivalProductsUseCase.InputValue(),
+                ResponseMapper::map
+        );
     }
 
 
     @GetMapping("/unauthen/shop/hotDiscountProducts")
-    public ResponseEntity<ApiResponse> getHotDiscountProducts(String json, HttpServletRequest httpRequest) throws IOException {
-        return crudService.readingResponse(RenderTypeEnum.HOT_DISCOUNT_PRODUCTS.name(), httpRequest);
+    public CompletableFuture<ResponseEntity<ApiResponse>> getHotDiscountProducts(String json, HttpServletRequest httpRequest) throws IOException {
+        return useCaseExecutor.execute(
+                hotDiscountProductsUseCase,
+                new HotDiscountProductsUseCase.InputValue(),
+                ResponseMapper::map
+        );
     }
 
     @GetMapping("/unauthen/shop/totalProductsQuantity")
     public ResponseEntity<ApiResponse> getTotalProductsQuantity(String json, HttpServletRequest httpRequest) throws IOException {
-        return crudService.readingResponse(RenderTypeEnum.TOTAL_PRODUCTS_QUANTITY.name(), httpRequest);
+        return null;
+//        return crudService.readingResponse(RenderTypeEnum.TOTAL_PRODUCTS_QUANTITY.name(), httpRequest);
     }
 
     @GetMapping("/unauthen/shop/productSizeList")
@@ -117,7 +115,8 @@ public class ShopController extends CrudController {
         request.put("productId", productId);
         request.put("color", color);
 
-        return crudService.readingFromSingleRequest(request, httpRequest);
+        return null;
+//        return crudService.readingFromSingleRequest(request, httpRequest);
     }
 
     @GetMapping("/unauthen/shop/product_id={productId}")
@@ -127,6 +126,7 @@ public class ShopController extends CrudController {
         request.put("productId", productId);
         request.put("showFull", showFull);
 
-        return crudService.readingFromSingleRequest(request, httpRequest);
+        return null;
+//        return crudService.readingFromSingleRequest(request, httpRequest);
     }
 }
