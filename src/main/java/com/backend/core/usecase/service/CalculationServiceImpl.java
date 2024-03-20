@@ -1,4 +1,4 @@
-package com.backend.core.usecase.business.calculation;
+package com.backend.core.usecase.service;
 
 import com.backend.core.entity.invoice.model.InvoicesWithProducts;
 import com.backend.core.usecase.service.CalculationService;

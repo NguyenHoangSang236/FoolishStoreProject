@@ -350,12 +350,12 @@ public class ValueRenderUtils {
                 "FROM product_info_for_ui piu JOIN catalogs_with_products cwp ON piu.product_id = cwp.product_id\n" +
                 "                             JOIN catalog c ON c.id = cwp.catalog_id\n" +
                 "WHERE ";
-        int catalogsLength;
-        String[] catalogs = productFilter.getCategories();
-        String brand = productFilter.getBrand();
-        String name = productFilter.getName();
-        double price1 = productFilter.getMinPrice();
-        double price2 = productFilter.getMaxPrice();
+        String[] catalogs = productFilter != null && productFilter.getCategories() != null ? productFilter.getCategories() : null;
+        int catalogsLength = productFilter != null && catalogs != null? catalogs.length : 0;
+        String brand = productFilter != null ? productFilter.getBrand() : null;
+        String name = productFilter != null ? productFilter.getName() : null;
+        double price1 = productFilter != null ? productFilter.getMinPrice() : 0;
+        double price2 = productFilter != null ? productFilter.getMaxPrice() : 0;
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
@@ -363,23 +363,21 @@ public class ValueRenderUtils {
             result += " piu.brand = '" + brand + "' and ";
         }
 
-        if (catalogs == null) {
-            catalogsLength = 0;
-        } else catalogsLength = catalogs.length;
+        if(catalogsLength > 0) {
+            result += "(";
 
-        for (int i = 0; i < catalogsLength; i++) {
-            if (catalogsLength >= 2) {
-                if (i == 0) {
-                    result += "(c.name = '" + catalogs[i] + "' or ";
-                } else if (i == catalogsLength - 1) {
-                    result += "c.name = '" + catalogs[i] + "') and ";
+            for (int i = 0; i < catalogsLength; i++) {
+                if (i == catalogsLength - 1) {
+                    result += "c.name = '" + catalogs[i] + "'";
                 } else {
                     result += "c.name = '" + catalogs[i] + "' or ";
                 }
-            } else {
-                result += "c.name = '" + catalogs[i] + "' and ";
             }
+
+            result += ") and ";
         }
+
+
 
         if (price1 >= 0 && price2 > 0) {
             result += " piu.selling_price >= " + price1 + " and piu.selling_price <= " + price2 + " and ";
@@ -394,11 +392,9 @@ public class ValueRenderUtils {
         }
 
         // remove the final 'and' word in the query
-        result = result.substring(0, result.lastIndexOf("and"));
+        result = productFilter != null && result.contains("and") ? result.substring(0, result.lastIndexOf("and")) : result.substring(0, result.lastIndexOf("WHERE"));
 
         result += " ORDER BY piu.id desc LIMIT " + (limit * (page - 1)) + ", " + limit;
-
-        System.out.println(result);
 
         return result;
     }
