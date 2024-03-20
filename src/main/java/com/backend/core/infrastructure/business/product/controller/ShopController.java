@@ -37,6 +37,10 @@ public class ShopController {
     final HotDiscountProductsUseCase hotDiscountProductsUseCase;
     final NewArrivalProductsUseCase newArrivalProductsUseCase;
     final BestSellerProductsUseCase bestSellerProductsUseCase;
+    final TotalProductQuantityUseCase totalProductQuantityUseCase;
+    final ProductSizeListUseCase productSizeListUseCase;
+    final ViewProductByIdUseCase viewProductByIdUseCase;
+    final RateProductUseCase rateProductUseCase;
 
 
     @PostMapping("/unauthen/shop/productList")
@@ -65,16 +69,19 @@ public class ShopController {
 
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @PostMapping("/authen/shop/rateProduct")
-    public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> rateProduct(@RequestBody String json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProductRenderInfoDTO request = objectMapper.readValue(json, ProductRenderInfoDTO.class);
 
-        return null;
-//        return crudService.updatingResponseByRequest(request, httpRequest);
+        return useCaseExecutor.execute(
+                rateProductUseCase,
+                new RateProductUseCase.InputValue(request),
+                ResponseMapper::map
+        );
     }
 
     @GetMapping("/unauthen/shop/top8BestSellers")
-    public CompletableFuture<ResponseEntity<ApiResponse>> getTop8BestSellers() throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> getTop8BestSellers() {
         return useCaseExecutor.execute(
                 bestSellerProductsUseCase,
                 new BestSellerProductsUseCase.InputValue(),
@@ -84,7 +91,7 @@ public class ShopController {
 
 
     @GetMapping("/unauthen/shop/newArrivalProducts")
-    public CompletableFuture<ResponseEntity<ApiResponse>> getNewArrivalProducts(String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> getNewArrivalProducts() {
         return useCaseExecutor.execute(
                 newArrivalProductsUseCase,
                 new NewArrivalProductsUseCase.InputValue(),
@@ -94,7 +101,7 @@ public class ShopController {
 
 
     @GetMapping("/unauthen/shop/hotDiscountProducts")
-    public CompletableFuture<ResponseEntity<ApiResponse>> getHotDiscountProducts(String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> getHotDiscountProducts() {
         return useCaseExecutor.execute(
                 hotDiscountProductsUseCase,
                 new HotDiscountProductsUseCase.InputValue(),
@@ -103,30 +110,29 @@ public class ShopController {
     }
 
     @GetMapping("/unauthen/shop/totalProductsQuantity")
-    public ResponseEntity<ApiResponse> getTotalProductsQuantity(String json, HttpServletRequest httpRequest) throws IOException {
-        return null;
-//        return crudService.readingResponse(RenderTypeEnum.TOTAL_PRODUCTS_QUANTITY.name(), httpRequest);
+    public CompletableFuture<ResponseEntity<ApiResponse>> getTotalProductsQuantity() {
+        return useCaseExecutor.execute(
+                totalProductQuantityUseCase,
+                new TotalProductQuantityUseCase.InputValue(),
+                ResponseMapper::map
+        );
     }
 
     @GetMapping("/unauthen/shop/productSizeList")
-    public ResponseEntity<ApiResponse> getSizeListOfProduct(@RequestParam(value = "productId") int productId, @RequestParam(value = "color") String color, HttpServletRequest httpRequest) throws IOException {
-        Map<String, Object> request = new HashMap<>();
-
-        request.put("productId", productId);
-        request.put("color", color);
-
-        return null;
-//        return crudService.readingFromSingleRequest(request, httpRequest);
+    public CompletableFuture<ResponseEntity<ApiResponse>> getSizeListOfProduct(@RequestParam(value = "productId") int productId, @RequestParam(value = "color") String color) {
+        return useCaseExecutor.execute(
+                productSizeListUseCase,
+                new ProductSizeListUseCase.InputValue(color, productId),
+                ResponseMapper::map
+        );
     }
 
     @GetMapping("/unauthen/shop/product_id={productId}")
-    public ResponseEntity<ApiResponse> getProductInfo(@PathVariable(value = "productId") int productId, @RequestParam(value = "showFull") String showFull, HttpServletRequest httpRequest) throws IOException {
-        Map<String, Object> request = new HashMap<>();
-
-        request.put("productId", productId);
-        request.put("showFull", showFull);
-
-        return null;
-//        return crudService.readingFromSingleRequest(request, httpRequest);
+    public CompletableFuture<ResponseEntity<ApiResponse>> getProductInfoById(@PathVariable(value = "productId") int productId) {
+        return useCaseExecutor.execute(
+                viewProductByIdUseCase,
+                new ViewProductByIdUseCase.InputValue(productId),
+                ResponseMapper::map
+        );
     }
 }
