@@ -131,7 +131,7 @@ public class ShopController {
     public CompletableFuture<ResponseEntity<ApiResponse>> getProductInfoById(@PathVariable(value = "productId") int productId) {
         return useCaseExecutor.execute(
                 viewProductByIdUseCase,
-                new ViewProductByIdUseCase.InputValue(productId),
+                new ViewProductByIdUseCase.InputValue(productId, false),
                 ResponseMapper::map
         );
     }
