@@ -4,6 +4,7 @@ import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.category.model.Catalog;
 import com.backend.core.infrastructure.business.category.dto.CategoryDTO;
 import com.backend.core.infrastructure.business.category.repository.CatalogRepository;
+import com.backend.core.infrastructure.business.product.dto.AuthenProductRenderInfoDTO;
 import com.backend.core.infrastructure.business.product.dto.ProductRenderInfoDTO;
 import com.backend.core.infrastructure.business.product.repository.AuthenProductRenderInfoRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductRenderInfoRepository;
@@ -12,6 +13,7 @@ import com.backend.core.usecase.statics.ErrorTypeEnum;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -30,25 +32,42 @@ public class ViewProductByIdUseCase extends UseCase<ViewProductByIdUseCase.Input
     @Override
     public ApiResponse execute(InputValue input) {
         try {
-            List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
-
             int id = input.getProductId();
+            boolean isAuthen = input.isAuthen();
 
             List<Catalog> catalogList = catalogRepo.getCatalogsByProductId(id);
             List<CategoryDTO> categoryList = CategoryDTO.getListFromCatalogList(catalogList);
 
+            // show full info of product
+            if(isAuthen) {
+                List<AuthenProductRenderInfoDTO> authenProductDetails = new ArrayList<>();
+                authenProductDetails = authenProductRenderInfoRepo.getAuthenProductFullDetails(id);
 
-            productDetails = productRenderInfoRepo.getProductDetails(id);
+                for (AuthenProductRenderInfoDTO authenProductDetail : authenProductDetails) {
+                    authenProductDetail.setCategories(categoryList);
+                }
 
-            for (ProductRenderInfoDTO productDetail : productDetails) {
-                productDetail.setCategories(categoryList);
+                if (authenProductDetails.isEmpty()) {
+                    return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
+                }
+
+                return new ApiResponse("success", authenProductDetails, HttpStatus.OK);
             }
+            // show general info of product
+            else {
+                List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
+                productDetails = productRenderInfoRepo.getProductDetails(id);
 
-            if (productDetails.isEmpty()) {
-                return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
+                for (ProductRenderInfoDTO productDetail : productDetails) {
+                    productDetail.setCategories(categoryList);
+                }
+
+                if (productDetails.isEmpty()) {
+                    return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
+                }
+
+                return new ApiResponse("success", productDetails, HttpStatus.OK);
             }
-
-            return new ApiResponse("success", productDetails, HttpStatus.OK);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -59,5 +78,6 @@ public class ViewProductByIdUseCase extends UseCase<ViewProductByIdUseCase.Input
     @Value
     public static class InputValue implements InputValues  {
         int productId;
+        boolean isAuthen;
     }
 }
