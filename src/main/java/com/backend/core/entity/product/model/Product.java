@@ -7,6 +7,8 @@ import com.backend.core.usecase.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,12 +43,16 @@ public class Product implements Serializable {
     @Column(name = "name", unique = true)
     private String name;
 
+    @Min(value = 1, message = "Selling must be greater than 0")
     @Column(name = "selling_price")
     private double sellingPrice;
 
+    @Min(value = 1, message = "Original must be greater than 0")
     @Column(name = "original_price")
     private double originalPrice;
 
+    @Min(value = 0, message = "Discount must be from 0 to 100")
+    @Max(100)
     @Column(name = "discount")
     private double discount;
 
@@ -56,15 +62,19 @@ public class Product implements Serializable {
     @Column(name = "description")
     private String description;
 
+    @Min(value = 10, message = "Length must be greater than 10 millimeter")
     @Column(name = "length")
     private int length;
 
+    @Min(value = 10, message = "Length must be greater than 10 millimeter")
     @Column(name = "height")
     private int height;
 
+    @Min(value = 10, message = "Length must be greater than 10 millimeter")
     @Column(name = "width")
     private int width;
 
+    @Min(value = 1, message = "Length must be greater than 1 gram")
     @Column(name = "weight")
     private int weight;
 

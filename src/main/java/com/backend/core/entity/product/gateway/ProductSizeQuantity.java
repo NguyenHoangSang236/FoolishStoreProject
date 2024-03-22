@@ -7,22 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class ProductAttribute {
+public class ProductSizeQuantity {
     @NotNull
-    @JsonProperty("color")
-    String color;
+    @JsonProperty("size")
+    String size;
 
     @NotNull
-    @JsonProperty("sizeQuantities")
-    List<ProductSizeQuantity> sizeQuantities;
-
-    @NotNull
-    @JsonProperty("images")
-    String[] images;
+    @JsonProperty("quantity")
+    int quantity;
 }
