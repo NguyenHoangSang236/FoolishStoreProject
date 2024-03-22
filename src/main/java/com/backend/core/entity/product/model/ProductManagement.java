@@ -6,10 +6,7 @@ import com.backend.core.usecase.service.CalculationService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
@@ -20,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+@Builder
 @Getter
 @Setter
 @Table(name = "products_management")
