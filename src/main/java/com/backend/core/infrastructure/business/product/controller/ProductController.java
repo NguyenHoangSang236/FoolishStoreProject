@@ -7,6 +7,7 @@ import com.backend.core.infrastructure.config.api.ResponseMapper;
 import com.backend.core.usecase.UseCaseExecutor;
 import com.backend.core.usecase.usecases.product.AddProductUseCase;
 import com.backend.core.usecase.usecases.product.EditGeneralProductInfoUseCase;
+import com.backend.core.usecase.usecases.product.EditProductPropertiesUseCase;
 import com.backend.core.usecase.usecases.product.ViewProductByIdUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ public class ProductController {
     final ViewProductByIdUseCase viewProductByIdUseCase;
     final AddProductUseCase addProductUseCase;
     final EditGeneralProductInfoUseCase editGeneralProductInfoUseCase;
+    final EditProductPropertiesUseCase editProductPropertiesUseCase;
 
 
     @GetMapping("/product_id={id}")
@@ -61,5 +63,19 @@ public class ProductController {
                 new EditGeneralProductInfoUseCase.InputValue(productDetailsRequest),
                 ResponseMapper::map
         );
+    }
+
+    @PostMapping("/editProductProperties")
+    public CompletableFuture<ResponseEntity<ApiResponse>> editProductPropertiesInfo(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductDetailsRequestDTO productDetailsRequest = objectMapper.readValue(json, ProductDetailsRequestDTO.class);
+
+//        return useCaseExecutor.execute(
+//                editGeneralProductInfoUseCase,
+//                new EditGeneralProductInfoUseCase.InputValue(productDetailsRequest),
+//                ResponseMapper::map
+//        );
+
+        return null;
     }
 }
