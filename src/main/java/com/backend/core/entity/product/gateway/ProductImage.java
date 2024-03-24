@@ -11,12 +11,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ProductSizeQuantity {
+public class ProductImage {
     @NotNull
-    @JsonProperty("size")
-    String size;
+    @JsonProperty("images")
+    String[] images;
 
     @NotNull
-    @JsonProperty("quantity")
-    int quantity;
+    @JsonProperty("color")
+    String color;
 }

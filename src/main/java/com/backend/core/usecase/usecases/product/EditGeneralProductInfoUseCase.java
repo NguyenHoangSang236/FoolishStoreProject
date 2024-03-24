@@ -2,14 +2,11 @@ package com.backend.core.usecase.usecases.product;
 
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.category.model.Catalog;
-import com.backend.core.entity.product.gateway.ProductAttribute;
 import com.backend.core.entity.product.gateway.ProductDetailsRequestDTO;
 import com.backend.core.entity.product.model.Product;
 import com.backend.core.infrastructure.business.category.repository.CatalogRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductImagesManagementRepository;
-import com.backend.core.infrastructure.business.product.repository.ProductManagementRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductRepository;
-import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import lombok.Value;
@@ -40,7 +37,7 @@ public class EditGeneralProductInfoUseCase extends UseCase<EditGeneralProductInf
             if (unqualifiedRequestMsg != null) {
                 return new ApiResponse("failed", unqualifiedRequestMsg, HttpStatus.BAD_REQUEST);
             } else {
-                Product selectedProduct = productRepo.getProductById(productDetailsRequest.getId());
+                Product selectedProduct = productRepo.getProductById(productDetailsRequest.getProductId());
 
                 for (int cateId : productDetailsRequest.getCategoryIds()) {
                    Catalog catalog = catalogRepo.getCatalogById(cateId);
@@ -80,7 +77,7 @@ public class EditGeneralProductInfoUseCase extends UseCase<EditGeneralProductInf
 
     // check if product adding request is qualified to proceed
     public String messageForUnqualifiedAddingRequest(ProductDetailsRequestDTO product) {
-        if (product.getId() <= 0) {
+        if (product.getProductId() <= 0) {
             return "Please input product's id";
         }
         else if (product.getName() == null || product.getName().isBlank()) {

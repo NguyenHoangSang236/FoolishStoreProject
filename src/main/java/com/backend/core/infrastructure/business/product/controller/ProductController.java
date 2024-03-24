@@ -2,7 +2,6 @@ package com.backend.core.infrastructure.business.product.controller;
 
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.product.gateway.ProductDetailsRequestDTO;
-import com.backend.core.entity.product.model.Product;
 import com.backend.core.infrastructure.config.api.ResponseMapper;
 import com.backend.core.usecase.UseCaseExecutor;
 import com.backend.core.usecase.usecases.product.AddProductUseCase;
@@ -70,12 +69,10 @@ public class ProductController {
         ObjectMapper objectMapper = new ObjectMapper();
         ProductDetailsRequestDTO productDetailsRequest = objectMapper.readValue(json, ProductDetailsRequestDTO.class);
 
-//        return useCaseExecutor.execute(
-//                editGeneralProductInfoUseCase,
-//                new EditGeneralProductInfoUseCase.InputValue(productDetailsRequest),
-//                ResponseMapper::map
-//        );
-
-        return null;
+        return useCaseExecutor.execute(
+                editProductPropertiesUseCase,
+                new EditProductPropertiesUseCase.InputValue(productDetailsRequest),
+                ResponseMapper::map
+        );
     }
 }

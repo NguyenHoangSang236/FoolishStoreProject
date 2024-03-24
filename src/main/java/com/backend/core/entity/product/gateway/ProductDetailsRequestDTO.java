@@ -13,8 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 public class ProductDetailsRequestDTO {
-    @JsonProperty("id")
-    int id;
+    @JsonProperty("productId")
+    int productId;
 
     @JsonProperty("name")
     String name;
@@ -46,9 +46,12 @@ public class ProductDetailsRequestDTO {
     @JsonProperty("discount")
     double discount;
 
-    @JsonProperty("attributes")
-    List<ProductAttribute> attributes;
+    @JsonProperty("properties")
+    List<ProductProperty> properties;
 
     @JsonProperty("categoryIds")
     List<Integer> categoryIds;
+
+    @JsonProperty("images")
+    List<ProductImage> images;
 }

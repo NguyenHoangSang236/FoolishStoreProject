@@ -79,22 +79,22 @@ public class Product implements Serializable {
     private int weight;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "products", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Catalog> catalogs;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Comment> comments;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ProductManagement> productManagements;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ProductImagesManagement> productImagesManagement;
 
@@ -135,8 +135,8 @@ public class Product implements Serializable {
 
 
     public void getProductFromProductDetailsRequest(ProductDetailsRequestDTO request) {
-        if (request.getId() > 0) {
-            this.id = request.getId();
+        if (request.getProductId() > 0) {
+            this.id = request.getProductId();
         }
         this.name = request.getName();
         this.height = request.getHeight();
