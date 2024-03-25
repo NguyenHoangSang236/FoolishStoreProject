@@ -13,6 +13,7 @@ import com.backend.core.infrastructure.config.api.ResponseMapper;
 import com.backend.core.usecase.UseCaseExecutor;
 import com.backend.core.usecase.service.CrudService;
 import com.backend.core.usecase.statics.RenderTypeEnum;
+import com.backend.core.usecase.usecases.cart.AddCartItemUseCase;
 import com.backend.core.usecase.usecases.cart.FilterCartUseCase;
 import com.backend.core.usecase.usecases.cart.TotalCartItemQuantityUseCase;
 import com.backend.core.usecase.usecases.cart.UpdateCartUseCase;
@@ -39,6 +40,7 @@ public class CartController {
     final FilterCartUseCase filterCartUseCase;
     final TotalCartItemQuantityUseCase totalCartItemQuantityUseCase;
     final UpdateCartUseCase updateCartUseCase;
+    final AddCartItemUseCase addCartItemUseCase;
 
 
     @PostMapping("/remove")
@@ -54,10 +56,13 @@ public class CartController {
     @PostMapping("/add")
     public CompletableFuture<ResponseEntity<ApiResponse>> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        CartItemDTO cartItemDTO = objectMapper.readValue(json, CartItemDTO.class);
+        CartItemDTO cartItem = objectMapper.readValue(json, CartItemDTO.class);
 
-        return null;
-//        return crudService.singleCreationalResponse(cartItemDTO, httpRequest);
+        return useCaseExecutor.execute(
+                addCartItemUseCase,
+                new AddCartItemUseCase.InputValue(cartItem, httpRequest),
+                ResponseMapper::map
+        );
     }
 
 
