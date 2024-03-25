@@ -3,6 +3,7 @@ package com.backend.core.usecase.usecases.product;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.category.model.Catalog;
 import com.backend.core.entity.product.gateway.ProductDetailsRequestDTO;
+import com.backend.core.entity.product.gateway.ProductImage;
 import com.backend.core.entity.product.gateway.ProductProperty;
 import com.backend.core.entity.product.key.ProductImagesManagementPrimaryKeys;
 import com.backend.core.entity.product.model.Product;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -65,9 +67,15 @@ public class AddProductUseCase extends UseCase<AddProductUseCase.InputValue, Api
                 return new ApiResponse("failed", "This product has been existed", HttpStatus.BAD_REQUEST);
             }
 
+            if (request.getImages().size() != request.getProperties().size()) {
+                return new ApiResponse("failed", "Amount of product properties does not match with amount of images", HttpStatus.BAD_REQUEST);
+            }
+
             // build Product from ProductAddingRequestDTO
             product.getProductFromProductDetailsRequest(request);
             product.setCatalogs(categoryList);
+
+            productRepo.save(product);
 
             // save product management, catalogs_with_products and product images later
             return saveOtherTables(request, product);
@@ -80,10 +88,6 @@ public class AddProductUseCase extends UseCase<AddProductUseCase.InputValue, Api
 
     public ApiResponse saveOtherTables(ProductDetailsRequestDTO request, Product product) {
         try {
-            List<ProductProperty> properties = request.getProperties();
-
-            productRepo.save(product);
-
             // save categories
             for (Integer cateId : request.getCategoryIds()) {
                 Catalog category = catalogRepo.getCatalogById(cateId);
@@ -95,11 +99,9 @@ public class AddProductUseCase extends UseCase<AddProductUseCase.InputValue, Api
                 customQueryRepo.insertCatalogWithProducts(cateId, product.getId());
             }
 
-            // save product properties
-            for (ProductProperty property : properties) {
-                saveNewProductManagement(property, product);
-                saveProductImagesManagement(property, product);
-            }
+            // save product properties and images
+            saveNewProductManagement(request.getProperties(), product);
+            saveProductImagesManagement(request.getImages(), product);
 
             return new ApiResponse("success", "Add new product successfully", HttpStatus.OK);
         }
@@ -123,37 +125,43 @@ public class AddProductUseCase extends UseCase<AddProductUseCase.InputValue, Api
     }
 
     // save new data to product management and product import management tables
-    public void saveNewProductManagement(ProductProperty property, Product product) {
-        try {
-            ProductManagement pm = ProductManagement
-                    .builder()
-                    .color(property.getColor())
-                    .availableQuantity(property.getAvailableQuantity())
-                    .size(property.getSize())
-                    .product(product)
-                    .build();
+    public void saveNewProductManagement(List<ProductProperty> properties, Product product) {
+        for (ProductProperty property : properties) {
+            try {
+                ProductManagement pm = ProductManagement
+                        .builder()
+                        .color(property.getColor())
+                        .availableQuantity(property.getAvailableQuantity())
+                        .size(property.getSize())
+                        .product(product)
+                        .importDate(new Date())
+                        .build();
 
-            productManagementRepo.save(pm);
-        } catch (Exception e) {
-            e.printStackTrace();
+                productManagementRepo.save(pm);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     // save new data to product images management table
-    public void saveProductImagesManagement(ProductProperty attribute, Product product) {
+    public void saveProductImagesManagement(List<ProductImage> productImages, Product product) {
         try {
-            ProductImagesManagementPrimaryKeys pimPk = new ProductImagesManagementPrimaryKeys();
-            ProductImagesManagement productImgMng = new ProductImagesManagement();
+            if(productImages != null) {
+                for(ProductImage img : productImages) {
+                    ProductImagesManagementPrimaryKeys pimPk = new ProductImagesManagementPrimaryKeys();
+                    ProductImagesManagement productImgMng = new ProductImagesManagement();
 
-            pimPk.setProductId(product.getId());
-            pimPk.setColor(attribute.getColor());
+                    pimPk.setProductId(product.getId());
+                    pimPk.setColor(img.getColor());
 
-            productImgMng.setProduct(product);
-            productImgMng.setId(pimPk);
-            // todo: fix this
-//            productImgMng.getImagesFromList(attribute.getImages());
+                    productImgMng.setProduct(product);
+                    productImgMng.setId(pimPk);
+                    productImgMng.getImagesFromList(img.getImages());
 
-            productImagesManagementRepo.save(productImgMng);
+                    productImagesManagementRepo.save(productImgMng);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
