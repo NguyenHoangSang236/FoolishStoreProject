@@ -4,10 +4,7 @@ import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.product.gateway.ProductDetailsRequestDTO;
 import com.backend.core.infrastructure.config.api.ResponseMapper;
 import com.backend.core.usecase.UseCaseExecutor;
-import com.backend.core.usecase.usecases.product.AddProductUseCase;
-import com.backend.core.usecase.usecases.product.EditGeneralProductInfoUseCase;
-import com.backend.core.usecase.usecases.product.EditProductPropertiesUseCase;
-import com.backend.core.usecase.usecases.product.ViewProductByIdUseCase;
+import com.backend.core.usecase.usecases.product.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -27,6 +24,7 @@ public class ProductController {
     final UseCaseExecutor useCaseExecutor;
     final ViewProductByIdUseCase viewProductByIdUseCase;
     final AddProductUseCase addProductUseCase;
+    final AddProductPropertiesUseCase addProductPropertiesUseCase;
     final EditGeneralProductInfoUseCase editGeneralProductInfoUseCase;
     final EditProductPropertiesUseCase editProductPropertiesUseCase;
 
@@ -41,13 +39,25 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public CompletableFuture<ResponseEntity<ApiResponse>> addNewProduct(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> addNewProduct(@RequestBody String json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProductDetailsRequestDTO productDetailsRequest = objectMapper.readValue(json, ProductDetailsRequestDTO.class);
 
         return useCaseExecutor.execute(
                 addProductUseCase,
                 new AddProductUseCase.InputValue(productDetailsRequest),
+                ResponseMapper::map
+        );
+    }
+
+    @PostMapping("/addProductNewProperty")
+    public CompletableFuture<ResponseEntity<ApiResponse>> addNewProductProperties(@RequestBody String json) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductDetailsRequestDTO productDetailsRequest = objectMapper.readValue(json, ProductDetailsRequestDTO.class);
+
+        return useCaseExecutor.execute(
+                addProductPropertiesUseCase,
+                new AddProductPropertiesUseCase.InputValue(productDetailsRequest),
                 ResponseMapper::map
         );
     }

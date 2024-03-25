@@ -149,17 +149,15 @@ public class AddProductUseCase extends UseCase<AddProductUseCase.InputValue, Api
         try {
             if(productImages != null) {
                 for(ProductImage img : productImages) {
-                    ProductImagesManagementPrimaryKeys pimPk = new ProductImagesManagementPrimaryKeys();
-                    ProductImagesManagement productImgMng = new ProductImagesManagement();
+                    ProductImagesManagement pim = ProductImagesManagement
+                            .builder()
+                            .product(product)
+                            .id(new ProductImagesManagementPrimaryKeys(product.getId(), img.getColor()))
+                            .build();
+                    pim.getImagesFromList(img.getImages());
+                    pim.getImagesFromList(img.getImages());
 
-                    pimPk.setProductId(product.getId());
-                    pimPk.setColor(img.getColor());
-
-                    productImgMng.setProduct(product);
-                    productImgMng.setId(pimPk);
-                    productImgMng.getImagesFromList(img.getImages());
-
-                    productImagesManagementRepo.save(productImgMng);
+                    productImagesManagementRepo.save(pim);
                 }
             }
         } catch (Exception e) {

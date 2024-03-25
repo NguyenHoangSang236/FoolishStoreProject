@@ -4,20 +4,22 @@ import com.backend.core.entity.product.key.ProductImagesManagementPrimaryKeys;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
 
+@Builder
 @Getter
 @Setter
 @Entity
 @Table(name = "product_images_management")
 @DynamicInsert
 @DynamicUpdate
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 public class ProductImagesManagement {
     @EmbeddedId
