@@ -22,56 +22,49 @@ public class EditGeneralProductInfoUseCase extends UseCase<EditGeneralProductInf
     @Autowired
     ProductRepository productRepo;
     @Autowired
-    ProductImagesManagementRepository productImagesManagementRepo;
-    @Autowired
     CatalogRepository catalogRepo;
 
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            ProductDetailsRequestDTO productDetailsRequest = input.getProductDetailsRequest();
-            String unqualifiedRequestMsg = messageForUnqualifiedAddingRequest(productDetailsRequest);
-            List<Catalog> catalogList = new ArrayList<>();
+        ProductDetailsRequestDTO productDetailsRequest = input.getProductDetailsRequest();
+        String unqualifiedRequestMsg = messageForUnqualifiedAddingRequest(productDetailsRequest);
+        List<Catalog> catalogList = new ArrayList<>();
 
-            if (unqualifiedRequestMsg != null) {
-                return new ApiResponse("failed", unqualifiedRequestMsg, HttpStatus.BAD_REQUEST);
-            } else {
-                Product selectedProduct = productRepo.getProductById(productDetailsRequest.getProductId());
+        if (unqualifiedRequestMsg != null) {
+            return new ApiResponse("failed", unqualifiedRequestMsg, HttpStatus.BAD_REQUEST);
+        } else {
+            Product selectedProduct = productRepo.getProductById(productDetailsRequest.getProductId());
 
-                for (int cateId : productDetailsRequest.getCategoryIds()) {
-                   Catalog catalog = catalogRepo.getCatalogById(cateId);
+            for (int cateId : productDetailsRequest.getCategoryIds()) {
+                Catalog catalog = catalogRepo.getCatalogById(cateId);
 
-                   if (catalog != null) {
-                       catalogList.add(catalog);
-                   }
-                   else return new ApiResponse("failed", "Category with id = " + cateId + " does not exist", HttpStatus.BAD_REQUEST);
+                if (catalog != null) {
+                    catalogList.add(catalog);
                 }
-
-                if(selectedProduct == null) {
-                    return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
-                }
-                else {
-                    selectedProduct.setName(productDetailsRequest.getName());
-                    selectedProduct.setBrand(productDetailsRequest.getBrand());
-                    selectedProduct.setDescription(productDetailsRequest.getDescription());
-                    selectedProduct.setDiscount(productDetailsRequest.getDiscount());
-                    selectedProduct.setOriginalPrice(productDetailsRequest.getOriginalPrice());
-                    selectedProduct.setSellingPrice(productDetailsRequest.getSellingPrice());
-                    selectedProduct.setHeight(productDetailsRequest.getHeight());
-                    selectedProduct.setLength(productDetailsRequest.getLength());
-                    selectedProduct.setWidth(productDetailsRequest.getWidth());
-                    selectedProduct.setWeight(productDetailsRequest.getWeight());
-                    selectedProduct.setCatalogs(catalogList);
-
-                    productRepo.save(selectedProduct);
-
-                    return new ApiResponse("success", "Edit general information of product successfully", HttpStatus.OK);
-                }
+                else return new ApiResponse("failed", "Category with id = " + cateId + " does not exist", HttpStatus.BAD_REQUEST);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+            if(selectedProduct == null) {
+                return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
+            }
+            else {
+                selectedProduct.setName(productDetailsRequest.getName());
+                selectedProduct.setBrand(productDetailsRequest.getBrand());
+                selectedProduct.setDescription(productDetailsRequest.getDescription());
+                selectedProduct.setDiscount(productDetailsRequest.getDiscount());
+                selectedProduct.setOriginalPrice(productDetailsRequest.getOriginalPrice());
+                selectedProduct.setSellingPrice(productDetailsRequest.getSellingPrice());
+                selectedProduct.setHeight(productDetailsRequest.getHeight());
+                selectedProduct.setLength(productDetailsRequest.getLength());
+                selectedProduct.setWidth(productDetailsRequest.getWidth());
+                selectedProduct.setWeight(productDetailsRequest.getWeight());
+                selectedProduct.setCatalogs(catalogList);
+
+                productRepo.save(selectedProduct);
+
+                return new ApiResponse("success", "Edit general information of product successfully", HttpStatus.OK);
+            }
         }
     }
 

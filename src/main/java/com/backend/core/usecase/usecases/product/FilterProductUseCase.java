@@ -41,9 +41,6 @@ public class FilterProductUseCase extends UseCase<FilterProductUseCase.InputValu
         } catch (StringIndexOutOfBoundsException e) {
             e.printStackTrace();
             return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

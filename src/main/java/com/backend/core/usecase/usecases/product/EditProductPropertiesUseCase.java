@@ -37,66 +37,61 @@ public class EditProductPropertiesUseCase extends UseCase<EditProductPropertiesU
         List<ProductProperty> propertyList = productDetailsRequest.getProperties();
         List<ProductImage> imageList = productDetailsRequest.getImages();
 
-        try {
-            // check product id is valid or not
-            if (productId == 0) {
-                return new ApiResponse("failed", "Please input product id", HttpStatus.BAD_REQUEST);
+        // check product id is valid or not
+        if (productId == 0) {
+            return new ApiResponse("failed", "Please input product id", HttpStatus.BAD_REQUEST);
+        }
+        // check product properties is null or not
+        else if (propertyList == null || propertyList.isEmpty()) {
+            return new ApiResponse("failed", "Please input product properties", HttpStatus.BAD_REQUEST);
+        }
+        // proceed editing
+        else {
+            Product product = productRepo.getProductById(productId);
+
+            if (product == null) {
+                return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
             }
-            // check product properties is null or not
-            else if (propertyList == null || propertyList.isEmpty()) {
-                return new ApiResponse("failed", "Please input product properties", HttpStatus.BAD_REQUEST);
+
+            List<ProductManagement> pmList = product.getProductManagements();
+
+            // check size of product properties list and product management list are equal or not
+            if (pmList.size() < propertyList.size()) {
+                return new ApiResponse("failed", "Number of properties from request is larger than number of product's properties", HttpStatus.BAD_REQUEST);
             }
-            // proceed editing
-            else {
-                Product product = productRepo.getProductById(productId);
 
-                if (product == null) {
-                    return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
+            // save every product property
+            for (int i = 0; i < propertyList.size(); i++) {
+                ProductProperty prop = propertyList.get(i);
+
+                ProductManagement pm = productManagementRepo.getProductManagementById(prop.getId());
+
+                if (pm == null) {
+                    return new ApiResponse("failed", "Product property ID does not belong to this product", HttpStatus.BAD_REQUEST);
+                } else {
+                    pm.setAvailableQuantity(prop.getAvailableQuantity());
+                    Optional.ofNullable(prop.getImportDate()).ifPresent(pm::setImportDate);
+
+                    productManagementRepo.save(pm);
                 }
+            }
 
-                List<ProductManagement> pmList = product.getProductManagements();
+            // save product images
+            if (imageList != null) {
+                for (ProductImage image : imageList) {
+                    ProductImagesManagement pim = productImagesManagementRepo.getProductImagesByProductIdAndColor(productId, image.getColor());
 
-                // check size of product properties list and product management list are equal or not
-                if (pmList.size() < propertyList.size()) {
-                    return new ApiResponse("failed", "Number of properties from request is larger than number of product's properties", HttpStatus.BAD_REQUEST);
-                }
-
-                // save every product property
-                for (int i = 0; i < propertyList.size(); i++) {
-                    ProductProperty prop = propertyList.get(i);
-
-                    ProductManagement pm = productManagementRepo.getProductManagementById(prop.getId());
-
-                    if (pm == null) {
-                        return new ApiResponse("failed", "Product property ID does not belong to this product", HttpStatus.BAD_REQUEST);
-                    } else {
-                        pm.setAvailableQuantity(prop.getAvailableQuantity());
-                        Optional.ofNullable(prop.getImportDate()).ifPresent(pm::setImportDate);
-
-                        productManagementRepo.save(pm);
+                    if (pim == null) {
+                        return new ApiResponse("failed", "This product does not have " + image.getColor() + " color, please check again", HttpStatus.BAD_REQUEST);
                     }
+
+                    pim.getImagesFromList(image.getImages());
+
+                    productImagesManagementRepo.save(pim);
                 }
-
-                // save product images
-                if (imageList != null) {
-                    for (ProductImage image : imageList) {
-                        ProductImagesManagement pim = productImagesManagementRepo.getProductImagesByProductIdAndColor(productId, image.getColor());
-
-                        if (pim == null) {
-                            return new ApiResponse("failed", "This product does not have " + image.getColor() + " color, please check again", HttpStatus.BAD_REQUEST);
-                        }
-
-                        pim.getImagesFromList(image.getImages());
-
-                        productImagesManagementRepo.save(pim);
-                    }
-                }
-
-                return new ApiResponse("success", "Edit product's properties successfully", HttpStatus.OK);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+            return new ApiResponse("success", "Edit product's properties successfully", HttpStatus.OK);
         }
     }
 

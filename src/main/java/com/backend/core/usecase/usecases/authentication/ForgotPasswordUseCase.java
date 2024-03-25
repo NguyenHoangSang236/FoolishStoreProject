@@ -32,28 +32,23 @@ public class ForgotPasswordUseCase extends UseCase<ForgotPasswordUseCase.InputVa
         String username = input.getUserName();
         String email = input.getEmail();
 
-        try {
-            Account currentAccount = accountRepo.getAccountByUserName(username);
+        Account currentAccount = accountRepo.getAccountByUserName(username);
 
-            if (currentAccount != null) {
-                if (currentAccount.getStatus().equals(AccountStatusEnum.BANNED.name())) {
-                    return new ApiResponse("failed", "This account has been banned", HttpStatus.BAD_REQUEST);
-                } else if (currentAccount.getCustomer().getEmail().equals(email)) {
-                    String newPassword = getNewTemporaryRandomPasswordMail(username, email);
+        if (currentAccount != null) {
+            if (currentAccount.getStatus().equals(AccountStatusEnum.BANNED.name())) {
+                return new ApiResponse("failed", "This account has been banned", HttpStatus.BAD_REQUEST);
+            } else if (currentAccount.getCustomer().getEmail().equals(email)) {
+                String newPassword = getNewTemporaryRandomPasswordMail(username, email);
 
-                    String newEncodedPassword = passwordEncoder.encode(newPassword);
-                    currentAccount.setPassword(newEncodedPassword);
-                    accountRepo.save(currentAccount);
+                String newEncodedPassword = passwordEncoder.encode(newPassword);
+                currentAccount.setPassword(newEncodedPassword);
+                accountRepo.save(currentAccount);
 
-                    return new ApiResponse("success", "Change password successfully", HttpStatus.OK);
-                } else
-                    return new ApiResponse("failed", "This email does not belong to this account", HttpStatus.BAD_REQUEST);
+                return new ApiResponse("success", "Change password successfully", HttpStatus.OK);
             } else
-                return new ApiResponse("failed", "This account is not existed", HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                return new ApiResponse("failed", "This email does not belong to this account", HttpStatus.BAD_REQUEST);
+        } else
+            return new ApiResponse("failed", "This account is not existed", HttpStatus.BAD_REQUEST);
     }
 
     private String getNewTemporaryRandomPasswordMail(String userName, String email) {

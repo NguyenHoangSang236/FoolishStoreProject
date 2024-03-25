@@ -21,37 +21,32 @@ public class UpdateAccountUseCase extends UseCase<UpdateAccountUseCase.InputValu
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            // convert request param into Account
-            Account account = input.getAccount();
+        // convert request param into Account
+        Account account = input.getAccount();
 
-            int id = account.getId();
-            String status = account.getStatus();
+        int id = account.getId();
+        String status = account.getStatus();
 
-            // get Account by id
-            Account selectedAcc = accountRepo.getAccountByID(id);
+        // get Account by id
+        Account selectedAcc = accountRepo.getAccountByID(id);
 
-            // check if selected account is existed
-            if (selectedAcc == null) {
-                return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name(), HttpStatus.BAD_REQUEST);
-            }
+        // check if selected account is existed
+        if (selectedAcc == null) {
+            return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name(), HttpStatus.BAD_REQUEST);
+        }
 
-            // check the status is correct or not
-            if (EnumUtils.findEnumInsensitiveCase(AccountStatusEnum.class, status) == null) {
-                return new ApiResponse("failed", ErrorTypeEnum.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST);
-            }
+        // check the status is correct or not
+        if (EnumUtils.findEnumInsensitiveCase(AccountStatusEnum.class, status) == null) {
+            return new ApiResponse("failed", ErrorTypeEnum.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST);
+        }
 
-            // set status to CUSTOMER account and the status of it is DIFFERENT from request param's one
-            if (!selectedAcc.getStatus().equals(account.getStatus()) && !selectedAcc.getRole().equals(RoleEnum.ADMIN.name())) {
-                accountRepo.updateAccountStatus(status, account.getId());
+        // set status to CUSTOMER account and the status of it is DIFFERENT from request param's one
+        if (!selectedAcc.getStatus().equals(account.getStatus()) && !selectedAcc.getRole().equals(RoleEnum.ADMIN.name())) {
+            accountRepo.updateAccountStatus(status, account.getId());
 
-                return new ApiResponse("success", "Update account successfully", HttpStatus.OK);
-            } else {
-                return new ApiResponse("failed", ErrorTypeEnum.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ApiResponse("success", "Update account successfully", HttpStatus.OK);
+        } else {
+            return new ApiResponse("failed", ErrorTypeEnum.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -9,11 +9,17 @@ import com.backend.core.entity.cart.gateway.CartCheckoutDTO;
 import com.backend.core.entity.cart.gateway.CartItemDTO;
 import com.backend.core.entity.cart.gateway.CartItemFilterRequestDTO;
 import com.backend.core.infrastructure.business.delivery.dto.AddressCodeDTO;
+import com.backend.core.infrastructure.config.api.ResponseMapper;
+import com.backend.core.usecase.UseCaseExecutor;
 import com.backend.core.usecase.service.CrudService;
 import com.backend.core.usecase.statics.RenderTypeEnum;
+import com.backend.core.usecase.usecases.cart.FilterCartUseCase;
+import com.backend.core.usecase.usecases.cart.TotalCartItemQuantityUseCase;
+import com.backend.core.usecase.usecases.cart.UpdateCartUseCase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -22,107 +28,101 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping(value = "/authen/cart", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @PreAuthorize("hasAuthority('CUSTOMER')")
-// @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
-public class CartController extends CrudController {
-    public CartController(@Autowired @Qualifier("CartCrudServiceImpl") CrudService cartCrudServiceImpl) {
-        super(cartCrudServiceImpl);
-        super.crudService = cartCrudServiceImpl;
-    }
+@AllArgsConstructor
+public class CartController {
+    final UseCaseExecutor useCaseExecutor;
+    final FilterCartUseCase filterCartUseCase;
+    final TotalCartItemQuantityUseCase totalCartItemQuantityUseCase;
+    final UpdateCartUseCase updateCartUseCase;
 
 
     @PostMapping("/remove")
-    public ResponseEntity<ApiResponse> updateCart(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> updateCart(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         ListRequestDTO requestDTO = objectMapper.readValue(json, ListRequestDTO.class);
 
-        return crudService.removingResponseByRequest(requestDTO, httpRequest);
+        return null;
+//        return crudService.removingResponseByRequest(requestDTO, httpRequest);
     }
 
 
     @PostMapping("/add")
-    @Override
-    public ResponseEntity<ApiResponse> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CartItemDTO cartItemDTO = objectMapper.readValue(json, CartItemDTO.class);
 
-        return crudService.singleCreationalResponse(cartItemDTO, httpRequest);
+        return null;
+//        return crudService.singleCreationalResponse(cartItemDTO, httpRequest);
     }
 
 
     @PostMapping("/update")
-    @Override
-    public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ListRequestDTO requestDTO = objectMapper.readValue(json, ListRequestDTO.class);
 
-        return crudService.updatingResponseByList(requestDTO, httpRequest);
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> deleteSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
-
-
-    @Override
-    public ResponseEntity<ApiResponse> updateSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
-
-
-    @PostMapping("/showFullCart")
-    @Override
-    public ResponseEntity<ApiResponse> getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        PaginationDTO pagination = objectMapper.readValue(json, PaginationDTO.class);
-        return crudService.readingFromSingleRequest(pagination, httpRequest);
+        return useCaseExecutor.execute(
+                updateCartUseCase,
+                new UpdateCartUseCase.InputValue(requestDTO, httpRequest),
+                ResponseMapper::map
+        );
     }
 
 
     @PostMapping("/filterCartItems")
-    @Override
-    public ResponseEntity<ApiResponse> getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> filterCartItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CartItemFilterRequestDTO filterRequest = objectMapper.readValue(json, CartItemFilterRequestDTO.class);
-        return crudService.readingFromSingleRequest(filterRequest, httpRequest);
+
+        return useCaseExecutor.execute(
+                filterCartUseCase,
+                new FilterCartUseCase.InputValue(filterRequest, httpRequest),
+                ResponseMapper::map
+        );
     }
 
 
     @GetMapping("/totalCartItemQuantity")
-    public ResponseEntity<ApiResponse> getTotalCartItemQuantity(HttpServletRequest httpRequest) {
-        return crudService.readingResponse(RenderTypeEnum.TOTAL_CART_ITEM_QUANTITY.name(), httpRequest);
+    public CompletableFuture<ResponseEntity<ApiResponse>> getTotalCartItemQuantity(HttpServletRequest httpRequest) {
+
+        return useCaseExecutor.execute(
+                totalCartItemQuantityUseCase,
+                new TotalCartItemQuantityUseCase.InputValue(httpRequest),
+                ResponseMapper::map
+        );
     }
 
 
     @PostMapping("/checkout")
-    public ResponseEntity<ApiResponse> getCartCheckout(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> getCartCheckout(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         CartCheckoutDTO checkout = objectMapper.readValue(json, CartCheckoutDTO.class);
-        return crudService.readingFromSingleRequest(checkout, httpRequest);
+
+        return null;
+//        return crudService.readingFromSingleRequest(checkout, httpRequest);
     }
 
     @PostMapping("/getGnhAvailableServiceList")
-    public ResponseEntity<ApiResponse> getGhnServiceList(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> getGhnServiceList(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         AddressCodeDTO addressCode = objectMapper.readValue(json, AddressCodeDTO.class);
-        return crudService.readingFromSingleRequest(addressCode, httpRequest);
+
+        return null;
+//        return crudService.readingFromSingleRequest(addressCode, httpRequest);
     }
 
 
     @PostMapping("/getGhnAddressCode")
-    public ResponseEntity<ApiResponse> getGhnAddressCode(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> getGhnAddressCode(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         AddressNameDTO addressName = objectMapper.readValue(json, AddressNameDTO.class);
-        return crudService.readingFromSingleRequest(addressName, httpRequest);
+
+        return null;
+//        return crudService.readingFromSingleRequest(addressName, httpRequest);
     }
 }

@@ -18,14 +18,8 @@ public class TotalProductQuantityUseCase extends UseCase<TotalProductQuantityUse
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            int totalProductQuantity = productRenderInfoRepo.getTotalProductsQuantity();
-
-            return new ApiResponse("success", totalProductQuantity, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        int totalProductQuantity = productRenderInfoRepo.getTotalProductsQuantity();
+        return new ApiResponse("success", totalProductQuantity, HttpStatus.OK);
     }
 
     @Value

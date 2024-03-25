@@ -26,27 +26,22 @@ public class FilterAccountUseCase extends UseCase<FilterAccountUseCase.InputValu
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            AccountFilterRequestDTO accountFilterRequest = input.getAccountFilterRequest();
-            String filterQuery = valueRenderUtils.accountFilterQuery(
-                    (AccountFilterDTO) accountFilterRequest.getFilter(),
-                    accountFilterRequest.getPagination()
-            );
+        AccountFilterRequestDTO accountFilterRequest = input.getAccountFilterRequest();
+        String filterQuery = valueRenderUtils.accountFilterQuery(
+                (AccountFilterDTO) accountFilterRequest.getFilter(),
+                accountFilterRequest.getPagination()
+        );
 
-            if (accountFilterRequest.getPagination().getType().equals(RoleEnum.ADMIN.name())) {
-                List<StaffRenderInfoDTO> staffInfoList = customQueryRepo.getBindingFilteredList(filterQuery, StaffRenderInfoDTO.class);
+        if (accountFilterRequest.getPagination().getType().equals(RoleEnum.ADMIN.name())) {
+            List<StaffRenderInfoDTO> staffInfoList = customQueryRepo.getBindingFilteredList(filterQuery, StaffRenderInfoDTO.class);
 
-                return new ApiResponse("success", staffInfoList, HttpStatus.OK);
-            } else if (accountFilterRequest.getPagination().getType().equals(RoleEnum.CUSTOMER.name())) {
-                List<CustomerRenderInfoDTO> customerInfoList = customQueryRepo.getBindingFilteredList(filterQuery, CustomerRenderInfoDTO.class);
+            return new ApiResponse("success", staffInfoList, HttpStatus.OK);
+        } else if (accountFilterRequest.getPagination().getType().equals(RoleEnum.CUSTOMER.name())) {
+            List<CustomerRenderInfoDTO> customerInfoList = customQueryRepo.getBindingFilteredList(filterQuery, CustomerRenderInfoDTO.class);
 
-                return new ApiResponse("success", customerInfoList, HttpStatus.OK);
-            } else
-                return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            return new ApiResponse("success", customerInfoList, HttpStatus.OK);
+        } else
+            return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name(), HttpStatus.BAD_REQUEST);
     }
 
     @Value

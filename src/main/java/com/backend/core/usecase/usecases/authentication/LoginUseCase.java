@@ -42,45 +42,37 @@ public class LoginUseCase extends UseCase<LoginUseCase.InputValue, ApiResponse> 
         StaffRenderInfoDTO staffInfo = new StaffRenderInfoDTO();
         CustomerRenderInfoDTO customerInfo = new CustomerRenderInfoDTO();
 
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            account.getUsername(),
-                            account.getPassword()
-                    )
-            );
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        account.getUsername(),
+                        account.getPassword()
+                )
+        );
 
-            loginAcc = accountRepo.getAccountByUserName(account.getUsername());
+        loginAcc = accountRepo.getAccountByUserName(account.getUsername());
 
-            // check the status of the account is ALLOWED or BANNED
-            if (loginAcc != null && loginAcc.getStatus().equals(AccountStatusEnum.ALLOWED.name())) {
-                jwt = jwtUtils.generateJwt(loginAcc);
+        // check the status of the account is ALLOWED or BANNED
+        if (loginAcc != null && loginAcc.getStatus().equals(AccountStatusEnum.ALLOWED.name())) {
+            jwt = jwtUtils.generateJwt(loginAcc);
 
-                loginAcc.setCurrentJwt(jwt);
-                accountRepo.save(loginAcc);
+            loginAcc.setCurrentJwt(jwt);
+            accountRepo.save(loginAcc);
 
-                // when the account is Admin
-                if (loginAcc.getRole().equals(RoleEnum.ADMIN.name())) {
-                    staffInfo = staffRenderInfoRepo.getStaffInfoByUserName(account.getUsername());
+            // when the account is Admin
+            if (loginAcc.getRole().equals(RoleEnum.ADMIN.name())) {
+                staffInfo = staffRenderInfoRepo.getStaffInfoByUserName(account.getUsername());
 
-                    return new ApiResponse("success", staffInfo, jwt, HttpStatus.OK);
-                }
-                // when the account is Customer
-                else if (loginAcc.getRole().equals(RoleEnum.CUSTOMER.name())) {
-                    customerInfo = customerRenderInfoRepo.getCustomerInfoByUserName(account.getUsername());
+                return new ApiResponse("success", staffInfo, jwt, HttpStatus.OK);
+            }
+            // when the account is Customer
+            else if (loginAcc.getRole().equals(RoleEnum.CUSTOMER.name())) {
+                customerInfo = customerRenderInfoRepo.getCustomerInfoByUserName(account.getUsername());
 
-                    return new ApiResponse("success", customerInfo, jwt, HttpStatus.OK);
-                } else
-                    return new ApiResponse("failed", "This role is not existed", HttpStatus.BAD_REQUEST);
+                return new ApiResponse("success", customerInfo, jwt, HttpStatus.OK);
             } else
-                return new ApiResponse("failed", "Incorrect password or user name, please check again!", HttpStatus.UNAUTHORIZED);
-        } catch (BadCredentialsException e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name(), HttpStatus.UNAUTHORIZED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                return new ApiResponse("failed", "This role is not existed", HttpStatus.BAD_REQUEST);
+        } else
+            return new ApiResponse("failed", "Incorrect password or user name, please check again!", HttpStatus.UNAUTHORIZED);
     }
 
     @Value

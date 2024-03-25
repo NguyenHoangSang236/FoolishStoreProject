@@ -467,29 +467,29 @@ public class ValueRenderUtils {
 
 
     // create a query for cart items binding filter
-    public String cartItemFilterQuery(CartItemFilterDTO cartItemFilter, PaginationDTO pagination) {
-        String result = "select * from cart_item_info_for_ui where buying_status = 'NOT_BOUGHT_YET' and ";
-        String brand = cartItemFilter.getBrand();
-        String name = cartItemFilter.getName();
-        String[] status = cartItemFilter.getStatus();
+    public String cartItemFilterQuery(CartItemFilterDTO cartItemFilter, PaginationDTO pagination, Account account) {
+        String result = "select * from cart_item_info_for_ui where buying_status = 'NOT_BOUGHT_YET' and customer_id = " + account.getCustomer().getId() + " and";
+        String brand = cartItemFilter != null ? cartItemFilter.getBrand() : null;
+        String name =cartItemFilter != null ? cartItemFilter.getName() : null;
+        String[] status = cartItemFilter != null ? cartItemFilter.getStatus() : null;
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
         if (brand != null && !brand.isBlank()) {
-            result += "brand = '" + brand.toLowerCase() + "' and ";
+            result += " brand = '" + brand.toLowerCase() + "' and";
         }
 
         if (name != null && !name.isBlank()) {
-            result += "name = '" + brand.toLowerCase() + "' and ";
+            result += " name = '" + name.toLowerCase() + "' and";
         }
 
         if (status != null && status.length > 0) {
             if (Arrays.stream(status).anyMatch(elem -> elem.equals(CartEnum.DISCOUNT.name()))) {
-                result += "discount > 0 and ";
+                result += " discount > 0 and";
             }
 
             if (Arrays.stream(status).anyMatch(elem -> elem.equals(CartEnum.SELECTED.name()))) {
-                result += "select_status = 1 and ";
+                result += " select_status = 1 and";
             }
         }
 
@@ -607,7 +607,7 @@ public class ValueRenderUtils {
                         filterQuery = notificationFilterQuery((NotificationFilterDTO) filter, pagination, currentAccount);
                     }
                     case CART_ITEMS -> {
-                        filterQuery = cartItemFilterQuery((CartItemFilterDTO) filter, pagination);
+                        filterQuery = cartItemFilterQuery((CartItemFilterDTO) filter, pagination, currentAccount);
                     }
                     case COMMENT -> {
                         filterQuery = commentFilterQuery((CommentRequestDTO) filter, pagination);

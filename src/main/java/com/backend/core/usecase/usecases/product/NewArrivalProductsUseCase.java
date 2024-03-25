@@ -20,14 +20,8 @@ public class NewArrivalProductsUseCase extends UseCase<NewArrivalProductsUseCase
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            List<ProductRenderInfoDTO> productList = productRenderInfoRepo.get8NewArrivalProducts();
-
-            return new ApiResponse("success", productList, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<ProductRenderInfoDTO> productList = productRenderInfoRepo.get8NewArrivalProducts();
+        return new ApiResponse("success", productList, HttpStatus.OK);
     }
 
     @Value

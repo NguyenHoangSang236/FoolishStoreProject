@@ -35,7 +35,7 @@ public class SystemAuthenticationController {
 
 
     @PostMapping("/unauthen/systemAuthentication/login")
-    public CompletableFuture<ResponseEntity<ApiResponse>> loginIntoSystem(@RequestBody Account accountFromUI, HttpServletRequest request) throws URISyntaxException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> loginIntoSystem(@RequestBody Account accountFromUI) {
         return useCaseExecutor.execute(
                 loginUseCase,
                 new LoginUseCase.InputValue(accountFromUI),
@@ -54,7 +54,7 @@ public class SystemAuthenticationController {
     }
 
     @GetMapping("/authen/systemAuthentication/changePassword")
-    public CompletableFuture<ResponseEntity<ApiResponse>> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword, HttpServletRequest request) throws URISyntaxException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword, HttpServletRequest request) {
         return useCaseExecutor.execute(
                 changePasswordUseCase,
                 new ChangePasswordUseCase.InputValue(newPassword, oldPassword, request),
@@ -83,7 +83,7 @@ public class SystemAuthenticationController {
 
 
     @PostMapping("/unauthen/systemAuthentication/forgotPassword")
-    public CompletableFuture<ResponseEntity<ApiResponse>> forgotPassword(@Validated @RequestBody String accJson, BindingResult bindingResult) throws JsonProcessingException, URISyntaxException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> forgotPassword(@Validated @RequestBody String accJson) throws JsonProcessingException {
         ObjectMapper objMapper = new ObjectMapper();
         HashMap<String, Object> map = objMapper.readValue(accJson, new TypeReference<HashMap<String, Object>>() {
         });

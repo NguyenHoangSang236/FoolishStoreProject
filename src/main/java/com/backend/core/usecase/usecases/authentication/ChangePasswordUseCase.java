@@ -54,13 +54,9 @@ public class ChangePasswordUseCase extends UseCase<ChangePasswordUseCase.InputVa
             accountRepo.save(account);
 
             return new ApiResponse("success", "Changed password successfully", HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (BadCredentialsException e) {
             e.printStackTrace();
-
-            if (e instanceof BadCredentialsException) {
-                return new ApiResponse("failed", "Incorrect old password", HttpStatus.BAD_REQUEST);
-            } else
-                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.BAD_REQUEST);
+            return new ApiResponse("failed", "Incorrect old password", HttpStatus.BAD_REQUEST);
         }
     }
 
