@@ -23,7 +23,7 @@ public interface ProductManagementRepository extends JpaRepository<ProductManage
 
 
     @Query(value = "select pm.id from products_management pm join products p on pm.product_id = p.id where pm.color = :colorVal and pm.size = :sizeVal and product_id = :productIdVal", nativeQuery = true)
-    int getProductsManagementIdByProductIDAndColorAndSize(@Param("productIdVal") int productId, @Param("colorVal") String color, @Param("sizeVal") String size);
+    Integer getProductsManagementIdByProductIDAndColorAndSize(@Param("productIdVal") int productId, @Param("colorVal") String color, @Param("sizeVal") String size);
 
     @Query(value = "select pm.* from products_management pm join products p on pm.product_id = p.id where pm.color = :colorVal and pm.size = :sizeVal and product_id = :productIdVal", nativeQuery = true)
     ProductManagement getProductsManagementByProductIDAndColorAndSize(@Param("productIdVal") int productId, @Param("colorVal") String color, @Param("sizeVal") String size);

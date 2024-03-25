@@ -51,7 +51,7 @@ public class Cart {
     @JsonIgnore
     @Nullable
     @JsonManagedReference
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "invoice_id")
     Invoice invoice;
 
