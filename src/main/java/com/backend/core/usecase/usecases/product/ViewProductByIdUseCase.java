@@ -31,47 +31,41 @@ public class ViewProductByIdUseCase extends UseCase<ViewProductByIdUseCase.Input
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            int id = input.getProductId();
-            boolean isAuthen = input.isAuthen();
+        int id = input.getProductId();
+        boolean isAuthen = input.isAuthen();
 
-            List<Catalog> catalogList = catalogRepo.getCatalogsByProductId(id);
-            List<CategoryDTO> categoryList = CategoryDTO.getListFromCatalogList(catalogList);
+        List<Catalog> catalogList = catalogRepo.getCatalogsByProductId(id);
+        List<CategoryDTO> categoryList = CategoryDTO.getListFromCatalogList(catalogList);
 
-            // show full info of product
-            if(isAuthen) {
-                List<AuthenProductRenderInfoDTO> authenProductDetails = new ArrayList<>();
-                authenProductDetails = authenProductRenderInfoRepo.getAuthenProductFullDetails(id);
+        // show full info of product
+        if(isAuthen) {
+            List<AuthenProductRenderInfoDTO> authenProductDetails = new ArrayList<>();
+            authenProductDetails = authenProductRenderInfoRepo.getAuthenProductFullDetails(id);
 
-                for (AuthenProductRenderInfoDTO authenProductDetail : authenProductDetails) {
-                    authenProductDetail.setCategories(categoryList);
-                }
-
-                if (authenProductDetails.isEmpty()) {
-                    return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
-                }
-
-                return new ApiResponse("success", authenProductDetails, HttpStatus.OK);
+            for (AuthenProductRenderInfoDTO authenProductDetail : authenProductDetails) {
+                authenProductDetail.setCategories(categoryList);
             }
-            // show general info of product
-            else {
-                List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
-                productDetails = productRenderInfoRepo.getProductDetails(id);
 
-                for (ProductRenderInfoDTO productDetail : productDetails) {
-                    productDetail.setCategories(categoryList);
-                }
-
-                if (productDetails.isEmpty()) {
-                    return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
-                }
-
-                return new ApiResponse("success", productDetails, HttpStatus.OK);
+            if (authenProductDetails.isEmpty()) {
+                return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
             }
+
+            return new ApiResponse("success", authenProductDetails, HttpStatus.OK);
         }
-        catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+        // show general info of product
+        else {
+            List<ProductRenderInfoDTO> productDetails = new ArrayList<>();
+            productDetails = productRenderInfoRepo.getProductDetails(id);
+
+            for (ProductRenderInfoDTO productDetail : productDetails) {
+                productDetail.setCategories(categoryList);
+            }
+
+            if (productDetails.isEmpty()) {
+                return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
+            }
+
+            return new ApiResponse("success", productDetails, HttpStatus.OK);
         }
     }
 

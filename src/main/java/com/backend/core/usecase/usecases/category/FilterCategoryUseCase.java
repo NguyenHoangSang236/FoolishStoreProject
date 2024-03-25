@@ -20,13 +20,8 @@ public class FilterCategoryUseCase extends UseCase<FilterCategoryUseCase.InputVa
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            List<Catalog> categoryList = categoryRepo.getAllCatalogs();
-            return new ApiResponse("success", categoryList, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Catalog> categoryList = categoryRepo.getAllCatalogs();
+        return new ApiResponse("success", categoryList, HttpStatus.OK);
     }
 
     @Value

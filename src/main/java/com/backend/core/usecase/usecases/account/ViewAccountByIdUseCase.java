@@ -23,26 +23,21 @@ public class ViewAccountByIdUseCase extends UseCase<ViewAccountByIdUseCase.Input
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            int id = input.getId();
+        int id = input.getId();
 
-            if (id < 1) {
-                return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name(), HttpStatus.BAD_REQUEST);
-            }
-
-            CustomerRenderInfoDTO customerRenderInfo = customerRenderInfoRepo.getCustomerInfoByAccountId(id);
-            StaffRenderInfoDTO staffRenderInfo = staffRenderInfoRepo.getStaffInfoByAccountId(id);
-
-            if (customerRenderInfo != null) {
-                return new ApiResponse("success", customerRenderInfo, HttpStatus.OK);
-            } else if (staffRenderInfo != null) {
-                return new ApiResponse("success", staffRenderInfo, HttpStatus.OK);
-            } else
-                return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            log.error(e.toString());
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+        if (id < 1) {
+            return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name(), HttpStatus.BAD_REQUEST);
         }
+
+        CustomerRenderInfoDTO customerRenderInfo = customerRenderInfoRepo.getCustomerInfoByAccountId(id);
+        StaffRenderInfoDTO staffRenderInfo = staffRenderInfoRepo.getStaffInfoByAccountId(id);
+
+        if (customerRenderInfo != null) {
+            return new ApiResponse("success", customerRenderInfo, HttpStatus.OK);
+        } else if (staffRenderInfo != null) {
+            return new ApiResponse("success", staffRenderInfo, HttpStatus.OK);
+        } else
+            return new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name(), HttpStatus.BAD_REQUEST);
     }
 
     @Value

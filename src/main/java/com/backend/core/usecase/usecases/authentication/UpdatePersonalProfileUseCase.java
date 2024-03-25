@@ -29,17 +29,12 @@ public class UpdatePersonalProfileUseCase extends UseCase<UpdatePersonalProfileU
 
         int customerId = valueRenderUtils.getCustomerOrStaffIdFromRequest(request);
 
-        try {
-            Customer customer = customerRepo.getCustomerById(customerId);
-            customer.setCustomerInfoFromRenderInfo(customerInfo);
+        Customer customer = customerRepo.getCustomerById(customerId);
+        customer.setCustomerInfoFromRenderInfo(customerInfo);
 
-            customerRepo.save(customer);
+        customerRepo.save(customer);
 
-            return new ApiResponse("success", "Update profile successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ApiResponse("success", "Update profile successfully", HttpStatus.OK);
     }
 
     @Value

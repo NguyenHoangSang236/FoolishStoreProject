@@ -27,21 +27,16 @@ public class ProductSizeListUseCase extends UseCase<ProductSizeListUseCase.Input
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            int id = input.getProductId();
-            String color = input.getColor();
+        int id = input.getProductId();
+        String color = input.getColor();
 
-            // get size list of product
-            List<String> sizeList = productManagementRepo.getSizeListByProductIdAndColor(id, color);
+        // get size list of product
+        List<String> sizeList = productManagementRepo.getSizeListByProductIdAndColor(id, color);
 
-            if (!sizeList.isEmpty()) {
-                return new ApiResponse("success", sizeList, HttpStatus.OK);
-            } else {
-                return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!sizeList.isEmpty()) {
+            return new ApiResponse("success", sizeList, HttpStatus.OK);
+        } else {
+            return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
         }
     }
 

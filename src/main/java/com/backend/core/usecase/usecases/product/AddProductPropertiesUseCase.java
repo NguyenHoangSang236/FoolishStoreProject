@@ -32,79 +32,73 @@ public class AddProductPropertiesUseCase extends UseCase<AddProductPropertiesUse
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            Set<Map<String, String>> uniquePropSet = new HashSet<>();
-            Set<String> uniqueColorSet = new HashSet<>();
-            ProductDetailsRequestDTO request = input.getProductDetailsRequest();
-            List<ProductProperty> productProperties = request.getProperties();
-            List<ProductImage> productImages = request.getImages();
-            Product product = productRepo.getProductById(request.getProductId());
+        Set<Map<String, String>> uniquePropSet = new HashSet<>();
+        Set<String> uniqueColorSet = new HashSet<>();
+        ProductDetailsRequestDTO request = input.getProductDetailsRequest();
+        List<ProductProperty> productProperties = request.getProperties();
+        List<ProductImage> productImages = request.getImages();
+        Product product = productRepo.getProductById(request.getProductId());
 
-            if(product == null) {
-                return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
-            }
-
-            if (productProperties.size() != productImages.size()) {
-                return new ApiResponse("failed", "Amount of product properties does not match with amount of images", HttpStatus.BAD_REQUEST);
-            }
-
-            for (int i = 0; i < productProperties.size(); i++) {
-                ProductProperty property = productProperties.get(i);
-                ProductImage image = productImages.get(i);
-
-                // check existed product management
-                ProductManagement checkPm = productManagementRepo.getProductsManagementByProductIDAndColorAndSize(
-                        product.getId(),
-                        property.getColor(),
-                        property.getSize()
-                );
-
-                if (checkPm != null) {
-                    return new ApiResponse("failed", String.format("%s with size %s and color %s has already existed", product.getName(), property.getSize(), property.getColor()), HttpStatus.BAD_REQUEST);
-                }
-
-                // check existed product image
-                ProductImagesManagement checkPim = productImagesManagementRepo.getProductImagesByProductIdAndColor(product.getId(), image.getColor());
-
-                if (checkPim != null) {
-                    return new ApiResponse("failed", String.format("Image of %s with color %s has already existed", product.getName(), property.getColor()), HttpStatus.BAD_REQUEST);
-                }
-
-                Map<String, String> map = new HashMap<>();
-
-                map.put("size", property.getSize());
-                map.put("color", property.getColor());
-
-                // check if product property and image is unique or not
-                if(uniquePropSet.add(map) && uniqueColorSet.add(image.getColor())) {
-                    ProductManagement pm = ProductManagement
-                            .builder()
-                            .product(product)
-                            .size(property.getSize())
-                            .color(property.getColor())
-                            .availableQuantity(property.getAvailableQuantity())
-                            .importDate(property.getImportDate())
-                            .build();
-
-                    productManagementRepo.save(pm);
-
-                    ProductImagesManagement pim = ProductImagesManagement
-                            .builder()
-                            .product(product)
-                            .id(new ProductImagesManagementPrimaryKeys(product.getId(), image.getColor()))
-                            .build();
-                    pim.getImagesFromList(image.getImages());
-
-                    productImagesManagementRepo.save(pim);
-                }
-            }
-
-            return new ApiResponse("success", "Add new product's property successfully", HttpStatus.OK);
+        if(product == null) {
+            return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
         }
-        catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        if (productProperties.size() != productImages.size()) {
+            return new ApiResponse("failed", "Amount of product properties does not match with amount of images", HttpStatus.BAD_REQUEST);
         }
+
+        for (int i = 0; i < productProperties.size(); i++) {
+            ProductProperty property = productProperties.get(i);
+            ProductImage image = productImages.get(i);
+
+            // check existed product management
+            ProductManagement checkPm = productManagementRepo.getProductsManagementByProductIDAndColorAndSize(
+                    product.getId(),
+                    property.getColor(),
+                    property.getSize()
+            );
+
+            if (checkPm != null) {
+                return new ApiResponse("failed", String.format("%s with size %s and color %s has already existed", product.getName(), property.getSize(), property.getColor()), HttpStatus.BAD_REQUEST);
+            }
+
+            // check existed product image
+            ProductImagesManagement checkPim = productImagesManagementRepo.getProductImagesByProductIdAndColor(product.getId(), image.getColor());
+
+            if (checkPim != null) {
+                return new ApiResponse("failed", String.format("Image of %s with color %s has already existed", product.getName(), property.getColor()), HttpStatus.BAD_REQUEST);
+            }
+
+            Map<String, String> map = new HashMap<>();
+
+            map.put("size", property.getSize());
+            map.put("color", property.getColor());
+
+            // check if product property and image is unique or not
+            if(uniquePropSet.add(map) && uniqueColorSet.add(image.getColor())) {
+                ProductManagement pm = ProductManagement
+                        .builder()
+                        .product(product)
+                        .size(property.getSize())
+                        .color(property.getColor())
+                        .availableQuantity(property.getAvailableQuantity())
+                        .importDate(property.getImportDate())
+                        .build();
+
+                productManagementRepo.save(pm);
+
+                ProductImagesManagement pim = ProductImagesManagement
+                        .builder()
+                        .product(product)
+                        .id(new ProductImagesManagementPrimaryKeys(product.getId(), image.getColor()))
+                        .build();
+                pim.getImagesFromList(image.getImages());
+
+                productImagesManagementRepo.save(pim);
+            }
+        }
+
+        return new ApiResponse("success", "Add new product's property successfully", HttpStatus.OK);
     }
 
     @Value

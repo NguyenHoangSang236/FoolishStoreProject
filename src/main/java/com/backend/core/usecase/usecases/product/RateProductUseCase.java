@@ -22,40 +22,35 @@ public class RateProductUseCase extends UseCase<RateProductUseCase.InputValue, A
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            // convert param object to ProductRenderInfoDTO
-            ProductRenderInfoDTO request = input.getProductRenderInfo();
+        // convert param object to ProductRenderInfoDTO
+        ProductRenderInfoDTO request = input.getProductRenderInfo();
 
-            int productId = request.getProductId();
-            int rating = request.getOverallRating();
-            String color = request.getColor();
+        int productId = request.getProductId();
+        int rating = request.getOverallRating();
+        String color = request.getColor();
 
-            // rating only from 1-5
-            if (rating < 1 || rating > 5) {
-                return new ApiResponse("failed", "Rate from one to five stars only", HttpStatus.BAD_REQUEST);
-            }
-
-            List<ProductManagement> pmList = productManagementRepo.getProductsManagementListByProductIDAndColor(productId, color);
-
-            if (pmList.isEmpty()) {
-                return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
-            } else {
-                // save rating stars column in each data of product_management table
-                for (ProductManagement pm : pmList) {
-                    // add rating star in column
-                    pm.addRatingStars(rating);
-                    // get total rating star
-                    pm.setTotalRatingNumber();
-
-                    productManagementRepo.save(pm);
-                }
-            }
-
-            return new ApiResponse("success", "Thanks for your rating!", HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+        // rating only from 1-5
+        if (rating < 1 || rating > 5) {
+            return new ApiResponse("failed", "Rate from one to five stars only", HttpStatus.BAD_REQUEST);
         }
+
+        List<ProductManagement> pmList = productManagementRepo.getProductsManagementListByProductIDAndColor(productId, color);
+
+        if (pmList.isEmpty()) {
+            return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
+        } else {
+            // save rating stars column in each data of product_management table
+            for (ProductManagement pm : pmList) {
+                // add rating star in column
+                pm.addRatingStars(rating);
+                // get total rating star
+                pm.setTotalRatingNumber();
+
+                productManagementRepo.save(pm);
+            }
+        }
+
+        return new ApiResponse("success", "Thanks for your rating!", HttpStatus.OK);
     }
 
     @Value

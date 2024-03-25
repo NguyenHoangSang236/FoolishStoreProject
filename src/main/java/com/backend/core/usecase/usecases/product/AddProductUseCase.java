@@ -41,74 +41,57 @@ public class AddProductUseCase extends UseCase<AddProductUseCase.InputValue, Api
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            ProductDetailsRequestDTO request = input.getProductDetailsRequest();
-            String unqualifiedRequestMsg = messageForUnqualifiedAddingRequest(request);
+        ProductDetailsRequestDTO request = input.getProductDetailsRequest();
+        String unqualifiedRequestMsg = messageForUnqualifiedAddingRequest(request);
 
-            if (unqualifiedRequestMsg != null) {
-                return new ApiResponse("failed", unqualifiedRequestMsg, HttpStatus.BAD_REQUEST);
-            } else
-                return saveProductProcess(request);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        if (unqualifiedRequestMsg != null) {
+            return new ApiResponse("failed", unqualifiedRequestMsg, HttpStatus.BAD_REQUEST);
+        } else
+            return saveProductProcess(request);
     }
 
     public ApiResponse saveProductProcess(ProductDetailsRequestDTO request) {
-        try {
-            // save product first
-            Product product = new Product();
-            List<Catalog> categoryList = new ArrayList<>();
-            Product existedProduct = productRepo.getProductByFullName(request.getName().toLowerCase());
+        // save product first
+        Product product = new Product();
+        List<Catalog> categoryList = new ArrayList<>();
+        Product existedProduct = productRepo.getProductByFullName(request.getName().toLowerCase());
 
-            // if this product is existed and the API is for adding -> error
-            if (existedProduct != null) {
-                return new ApiResponse("failed", "This product has been existed", HttpStatus.BAD_REQUEST);
-            }
-
-            if (request.getImages().size() != request.getProperties().size()) {
-                return new ApiResponse("failed", "Amount of product properties does not match with amount of images", HttpStatus.BAD_REQUEST);
-            }
-
-            // build Product from ProductAddingRequestDTO
-            product.getProductFromProductDetailsRequest(request);
-            product.setCatalogs(categoryList);
-
-            productRepo.save(product);
-
-            // save product management, catalogs_with_products and product images later
-            return saveOtherTables(request, product);
+        // if this product is existed and the API is for adding -> error
+        if (existedProduct != null) {
+            return new ApiResponse("failed", "This product has been existed", HttpStatus.BAD_REQUEST);
         }
-        catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
+
+        if (request.getImages().size() != request.getProperties().size()) {
+            return new ApiResponse("failed", "Amount of product properties does not match with amount of images", HttpStatus.BAD_REQUEST);
         }
+
+        // build Product from ProductAddingRequestDTO
+        product.getProductFromProductDetailsRequest(request);
+        product.setCatalogs(categoryList);
+
+        productRepo.save(product);
+
+        // save product management, catalogs_with_products and product images later
+        return saveOtherTables(request, product);
     }
 
     public ApiResponse saveOtherTables(ProductDetailsRequestDTO request, Product product) {
-        try {
-            // save categories
-            for (Integer cateId : request.getCategoryIds()) {
-                Catalog category = catalogRepo.getCatalogById(cateId);
+        // save categories
+        for (Integer cateId : request.getCategoryIds()) {
+            Catalog category = catalogRepo.getCatalogById(cateId);
 
-                if (category == null) {
-                    return new ApiResponse("failed", "Category does not exist", HttpStatus.BAD_REQUEST);
-                }
-
-                customQueryRepo.insertCatalogWithProducts(cateId, product.getId());
+            if (category == null) {
+                return new ApiResponse("failed", "Category does not exist", HttpStatus.BAD_REQUEST);
             }
 
-            // save product properties and images
-            saveNewProductManagement(request.getProperties(), product);
-            saveProductImagesManagement(request.getImages(), product);
+            customQueryRepo.insertCatalogWithProducts(cateId, product.getId());
+        }
 
-            return new ApiResponse("success", "Add new product successfully", HttpStatus.OK);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        // save product properties and images
+        saveNewProductManagement(request.getProperties(), product);
+        saveProductImagesManagement(request.getImages(), product);
+
+        return new ApiResponse("success", "Add new product successfully", HttpStatus.OK);
     }
 
     // check if product adding request is qualified to proceed

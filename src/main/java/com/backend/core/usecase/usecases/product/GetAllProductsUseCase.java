@@ -27,16 +27,11 @@ public class GetAllProductsUseCase extends UseCase<GetAllProductsUseCase.InputVa
     public ApiResponse execute(InputValue input) {
         PaginationDTO pagination = input.getPagination();
 
-        try {
-            List<ProductRenderInfoDTO> productRenderList = productRenderInfoRepo.getAllProducts(
-                    valueRenderUtils.getStartLineForQueryPagination(pagination.getLimit(), pagination.getPage()),
-                    pagination.getLimit()
-            );
-            return new ApiResponse("success", productRenderList, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<ProductRenderInfoDTO> productRenderList = productRenderInfoRepo.getAllProducts(
+                valueRenderUtils.getStartLineForQueryPagination(pagination.getLimit(), pagination.getPage()),
+                pagination.getLimit()
+        );
+        return new ApiResponse("success", productRenderList, HttpStatus.OK);
     }
 
     @Value

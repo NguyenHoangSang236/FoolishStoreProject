@@ -18,15 +18,10 @@ public class LogoutUseCase extends UseCase<LogoutUseCase.InputValue, ApiResponse
 
     @Override
     public ApiResponse execute(InputValue input) {
-        try {
-            String jwt = jwtUtils.getJwtFromRequest(input.getRequest());
-            jwtUtils.expireJwt(jwt);
+        String jwt = jwtUtils.getJwtFromRequest(input.getRequest());
+        jwtUtils.expireJwt(jwt);
 
-            return new ApiResponse("success", "Logout successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ApiResponse("success", "Logout successfully", HttpStatus.OK);
     }
 
     @Value
