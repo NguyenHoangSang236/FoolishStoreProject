@@ -5,12 +5,10 @@ import com.backend.core.entity.api.PaginationDTO;
 import com.backend.core.infrastructure.business.product.dto.ProductRenderInfoDTO;
 import com.backend.core.infrastructure.business.product.repository.ProductRenderInfoRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.util.process.ValueRenderUtils;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

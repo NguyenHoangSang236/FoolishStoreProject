@@ -5,7 +5,6 @@ import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.account.dto.CustomerRenderInfoDTO;
 import com.backend.core.infrastructure.business.account.repository.CustomerRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;

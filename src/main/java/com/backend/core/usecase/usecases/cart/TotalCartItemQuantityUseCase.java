@@ -1,17 +1,14 @@
 package com.backend.core.usecase.usecases.cart;
 
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.entity.cart.gateway.CartItemFilterRequestDTO;
 import com.backend.core.infrastructure.business.cart.repository.CartRepository;
 import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
-import com.backend.core.usecase.statics.RenderTypeEnum;
 import com.backend.core.usecase.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -4,7 +4,6 @@ package com.backend.core.usecase.usecases.product;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.product.repository.ProductRenderInfoRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,5 +22,6 @@ public class TotalProductQuantityUseCase extends UseCase<TotalProductQuantityUse
     }
 
     @Value
-    public static class InputValue implements InputValues {}
+    public static class InputValue implements InputValues {
+    }
 }

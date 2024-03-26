@@ -134,7 +134,11 @@ public class CartCrudServiceImpl implements CrudService {
                 for (int id : selectedCartIdArr) {
                     Cart cart = cartRepo.getCartById(id);
 
-                    if (cart.getCustomer().getId() == customerId && cart.getBuyingStatus().equals(CartEnum.NOT_BOUGHT_YET.name())) {
+                    if (cart.getCustomer().getId() != customerId) {
+                        return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);
+                    }
+
+                    if (cart.getBuyingStatus().equals(CartEnum.NOT_BOUGHT_YET.name())) {
                         customQueryRepo.deleteCartById(id);
                     } else
                         return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name()), HttpStatus.UNAUTHORIZED);

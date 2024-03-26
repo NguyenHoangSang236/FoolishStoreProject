@@ -11,7 +11,6 @@ import com.backend.core.infrastructure.business.product.repository.ProductImages
 import com.backend.core.infrastructure.business.product.repository.ProductManagementRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

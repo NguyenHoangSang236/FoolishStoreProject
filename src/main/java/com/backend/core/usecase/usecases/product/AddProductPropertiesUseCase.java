@@ -12,7 +12,6 @@ import com.backend.core.infrastructure.business.product.repository.ProductImages
 import com.backend.core.infrastructure.business.product.repository.ProductManagementRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,7 +38,7 @@ public class AddProductPropertiesUseCase extends UseCase<AddProductPropertiesUse
         List<ProductImage> productImages = request.getImages();
         Product product = productRepo.getProductById(request.getProductId());
 
-        if(product == null) {
+        if (product == null) {
             return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
         }
 
@@ -75,7 +74,7 @@ public class AddProductPropertiesUseCase extends UseCase<AddProductPropertiesUse
             map.put("color", property.getColor());
 
             // check if product property and image is unique or not
-            if(uniquePropSet.add(map) && uniqueColorSet.add(image.getColor())) {
+            if (uniquePropSet.add(map) && uniqueColorSet.add(image.getColor())) {
                 ProductManagement pm = ProductManagement
                         .builder()
                         .product(product)

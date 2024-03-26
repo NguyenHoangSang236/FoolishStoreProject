@@ -48,7 +48,7 @@ public class ProductManagement implements Serializable {
     @Column(name = "size", nullable = false)
     private String size;
 
-    @Column(name = "available_quantity") 
+    @Column(name = "available_quantity")
     private int availableQuantity;
 
     @Column(name = "sold_quantity")
@@ -76,7 +76,7 @@ public class ProductManagement implements Serializable {
     private Date importDate;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "productManagement", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "productManagement")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Cart> carts;
 
