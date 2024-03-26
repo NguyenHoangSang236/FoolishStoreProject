@@ -15,7 +15,6 @@ import com.backend.core.infrastructure.business.product.repository.ProductManage
 import com.backend.core.infrastructure.business.product.repository.ProductRepository;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -130,8 +129,8 @@ public class AddProductUseCase extends UseCase<AddProductUseCase.InputValue, Api
     // save new data to product images management table
     public void saveProductImagesManagement(List<ProductImage> productImages, Product product) {
         try {
-            if(productImages != null) {
-                for(ProductImage img : productImages) {
+            if (productImages != null) {
+                for (ProductImage img : productImages) {
                     ProductImagesManagement pim = ProductImagesManagement
                             .builder()
                             .product(product)

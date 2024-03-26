@@ -5,10 +5,8 @@ import com.backend.core.entity.category.model.Catalog;
 import com.backend.core.entity.product.gateway.ProductDetailsRequestDTO;
 import com.backend.core.entity.product.model.Product;
 import com.backend.core.infrastructure.business.category.repository.CatalogRepository;
-import com.backend.core.infrastructure.business.product.repository.ProductImagesManagementRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,14 +39,13 @@ public class EditGeneralProductInfoUseCase extends UseCase<EditGeneralProductInf
 
                 if (catalog != null) {
                     catalogList.add(catalog);
-                }
-                else return new ApiResponse("failed", "Category with id = " + cateId + " does not exist", HttpStatus.BAD_REQUEST);
+                } else
+                    return new ApiResponse("failed", "Category with id = " + cateId + " does not exist", HttpStatus.BAD_REQUEST);
             }
 
-            if(selectedProduct == null) {
+            if (selectedProduct == null) {
                 return new ApiResponse("failed", "This product does not exist", HttpStatus.BAD_REQUEST);
-            }
-            else {
+            } else {
                 selectedProduct.setName(productDetailsRequest.getName());
                 selectedProduct.setBrand(productDetailsRequest.getBrand());
                 selectedProduct.setDescription(productDetailsRequest.getDescription());
@@ -72,17 +69,13 @@ public class EditGeneralProductInfoUseCase extends UseCase<EditGeneralProductInf
     public String messageForUnqualifiedAddingRequest(ProductDetailsRequestDTO product) {
         if (product.getProductId() <= 0) {
             return "Please input product's id";
-        }
-        else if (product.getName() == null || product.getName().isBlank()) {
+        } else if (product.getName() == null || product.getName().isBlank()) {
             return "Please input product's name";
-        }
-        else if (product.getOriginalPrice() > product.getSellingPrice()) {
+        } else if (product.getOriginalPrice() > product.getSellingPrice()) {
             return "Original price can not be higher than selling price";
-        }
-        else if (product.getBrand() == null || product.getBrand().isBlank()) {
+        } else if (product.getBrand() == null || product.getBrand().isBlank()) {
             return "Please input product's brand";
-        }
-        else if (product.getCategoryIds() == null || product.getCategoryIds().isEmpty()) {
+        } else if (product.getCategoryIds() == null || product.getCategoryIds().isEmpty()) {
             return "Please input category ids of product";
         } else return null;
     }

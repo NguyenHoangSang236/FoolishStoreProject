@@ -2,7 +2,6 @@ package com.backend.core.usecase.usecases.authentication;
 
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.util.process.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;

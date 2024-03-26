@@ -1,9 +1,7 @@
 package com.backend.core.infrastructure.business.cart.controller;
 
-import com.backend.core.entity.CrudController;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.api.ListRequestDTO;
-import com.backend.core.entity.api.PaginationDTO;
 import com.backend.core.entity.cart.gateway.AddressNameDTO;
 import com.backend.core.entity.cart.gateway.CartCheckoutDTO;
 import com.backend.core.entity.cart.gateway.CartItemDTO;
@@ -11,18 +9,11 @@ import com.backend.core.entity.cart.gateway.CartItemFilterRequestDTO;
 import com.backend.core.infrastructure.business.delivery.dto.AddressCodeDTO;
 import com.backend.core.infrastructure.config.api.ResponseMapper;
 import com.backend.core.usecase.UseCaseExecutor;
-import com.backend.core.usecase.service.CrudService;
-import com.backend.core.usecase.statics.RenderTypeEnum;
-import com.backend.core.usecase.usecases.cart.AddCartItemUseCase;
-import com.backend.core.usecase.usecases.cart.FilterCartUseCase;
-import com.backend.core.usecase.usecases.cart.TotalCartItemQuantityUseCase;
-import com.backend.core.usecase.usecases.cart.UpdateCartUseCase;
+import com.backend.core.usecase.usecases.cart.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,6 +32,10 @@ public class CartController {
     final TotalCartItemQuantityUseCase totalCartItemQuantityUseCase;
     final UpdateCartUseCase updateCartUseCase;
     final AddCartItemUseCase addCartItemUseCase;
+    final RemoveCartItemUseCase removeCartItemUseCase;
+    final GetGhnAddressCodeUseCase getGhnAddressCodeUseCase;
+    final GetGhnAvailableServiceListUseCase getGhnAvailableServiceListUseCase;
+    final CheckoutUseCase checkoutUseCase;
 
 
     @PostMapping("/remove")
@@ -48,8 +43,11 @@ public class CartController {
         ObjectMapper objectMapper = new ObjectMapper();
         ListRequestDTO requestDTO = objectMapper.readValue(json, ListRequestDTO.class);
 
-        return null;
-//        return crudService.removingResponseByRequest(requestDTO, httpRequest);
+        return useCaseExecutor.execute(
+                removeCartItemUseCase,
+                new RemoveCartItemUseCase.InputValue(requestDTO, httpRequest),
+                ResponseMapper::map
+        );
     }
 
 
@@ -94,7 +92,6 @@ public class CartController {
 
     @GetMapping("/totalCartItemQuantity")
     public CompletableFuture<ResponseEntity<ApiResponse>> getTotalCartItemQuantity(HttpServletRequest httpRequest) {
-
         return useCaseExecutor.execute(
                 totalCartItemQuantityUseCase,
                 new TotalCartItemQuantityUseCase.InputValue(httpRequest),
@@ -108,26 +105,35 @@ public class CartController {
         ObjectMapper objectMapper = new ObjectMapper();
         CartCheckoutDTO checkout = objectMapper.readValue(json, CartCheckoutDTO.class);
 
-        return null;
-//        return crudService.readingFromSingleRequest(checkout, httpRequest);
+        return useCaseExecutor.execute(
+                checkoutUseCase,
+                new CheckoutUseCase.InputValue(checkout, httpRequest),
+                ResponseMapper::map
+        );
     }
 
     @PostMapping("/getGnhAvailableServiceList")
-    public CompletableFuture<ResponseEntity<ApiResponse>> getGhnServiceList(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> getGhnServiceList(@RequestBody String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         AddressCodeDTO addressCode = objectMapper.readValue(json, AddressCodeDTO.class);
 
-        return null;
-//        return crudService.readingFromSingleRequest(addressCode, httpRequest);
+        return useCaseExecutor.execute(
+                getGhnAvailableServiceListUseCase,
+                new GetGhnAvailableServiceListUseCase.InputValue(addressCode),
+                ResponseMapper::map
+        );
     }
 
 
     @PostMapping("/getGhnAddressCode")
-    public CompletableFuture<ResponseEntity<ApiResponse>> getGhnAddressCode(@RequestBody String json, HttpServletRequest httpRequest) throws JsonProcessingException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> getGhnAddressCode(@RequestBody String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         AddressNameDTO addressName = objectMapper.readValue(json, AddressNameDTO.class);
 
-        return null;
-//        return crudService.readingFromSingleRequest(addressName, httpRequest);
+        return useCaseExecutor.execute(
+                getGhnAddressCodeUseCase,
+                new GetGhnAddressCodeUseCase.InputValue(addressName),
+                ResponseMapper::map
+        );
     }
 }

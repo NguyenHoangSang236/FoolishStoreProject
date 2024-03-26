@@ -4,7 +4,6 @@ import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.product.dto.ProductRenderInfoDTO;
 import com.backend.core.infrastructure.business.product.repository.ProductRenderInfoRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,5 +24,6 @@ public class HotDiscountProductsUseCase extends UseCase<HotDiscountProductsUseCa
     }
 
     @Value
-    public static class InputValue implements InputValues {}
+    public static class InputValue implements InputValues {
+    }
 }

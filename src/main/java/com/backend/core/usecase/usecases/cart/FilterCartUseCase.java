@@ -5,7 +5,6 @@ import com.backend.core.entity.cart.gateway.CartItemFilterRequestDTO;
 import com.backend.core.infrastructure.business.cart.dto.CartRenderInfoDTO;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.FilterTypeEnum;
 import com.backend.core.usecase.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;

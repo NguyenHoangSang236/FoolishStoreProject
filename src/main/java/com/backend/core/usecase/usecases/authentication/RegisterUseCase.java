@@ -6,7 +6,6 @@ import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.account.repository.AccountRepository;
 import com.backend.core.infrastructure.business.account.repository.CustomerRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.RoleEnum;
 import com.backend.core.usecase.statics.StringTypeEnum;
 import com.backend.core.usecase.util.handler.BindExceptionHandler;

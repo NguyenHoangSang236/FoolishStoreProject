@@ -17,7 +17,7 @@ public class ResponseMapper {
                 return ResponseEntity.internalServerError().body(response);
             case "BAD_REQUEST":
                 return ResponseEntity.badRequest().body(response);
-            case "UNAUTHORIZED, NO_CONTENT":
+            case "UNAUTHORIZED", "NO_CONTENT":
                 return new ResponseEntity<>(response, status);
             default:
                 return ResponseEntity.notFound().build();

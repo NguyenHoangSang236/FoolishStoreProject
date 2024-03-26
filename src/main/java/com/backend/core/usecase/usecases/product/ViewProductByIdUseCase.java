@@ -9,11 +9,9 @@ import com.backend.core.infrastructure.business.product.dto.ProductRenderInfoDTO
 import com.backend.core.infrastructure.business.product.repository.AuthenProductRenderInfoRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductRenderInfoRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -38,7 +36,7 @@ public class ViewProductByIdUseCase extends UseCase<ViewProductByIdUseCase.Input
         List<CategoryDTO> categoryList = CategoryDTO.getListFromCatalogList(catalogList);
 
         // show full info of product
-        if(isAuthen) {
+        if (isAuthen) {
             List<AuthenProductRenderInfoDTO> authenProductDetails = new ArrayList<>();
             authenProductDetails = authenProductRenderInfoRepo.getAuthenProductFullDetails(id);
 
@@ -70,7 +68,7 @@ public class ViewProductByIdUseCase extends UseCase<ViewProductByIdUseCase.Input
     }
 
     @Value
-    public static class InputValue implements InputValues  {
+    public static class InputValue implements InputValues {
         int productId;
         boolean isAuthen;
     }

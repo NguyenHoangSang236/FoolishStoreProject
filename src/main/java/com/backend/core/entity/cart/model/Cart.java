@@ -44,7 +44,7 @@ public class Cart {
     @JoinColumn(name = "customer_id")
     Customer customer;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "product_management_id")
     ProductManagement productManagement;
 

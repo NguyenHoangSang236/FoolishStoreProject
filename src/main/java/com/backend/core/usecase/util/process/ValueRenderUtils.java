@@ -351,7 +351,7 @@ public class ValueRenderUtils {
                 "                             JOIN catalog c ON c.id = cwp.catalog_id\n" +
                 "WHERE ";
         String[] catalogs = productFilter != null && productFilter.getCategories() != null ? productFilter.getCategories() : null;
-        int catalogsLength = productFilter != null && catalogs != null? catalogs.length : 0;
+        int catalogsLength = productFilter != null && catalogs != null ? catalogs.length : 0;
         String brand = productFilter != null ? productFilter.getBrand() : null;
         String name = productFilter != null ? productFilter.getName() : null;
         double price1 = productFilter != null ? productFilter.getMinPrice() : 0;
@@ -363,7 +363,7 @@ public class ValueRenderUtils {
             result += " piu.brand = '" + brand + "' and ";
         }
 
-        if(catalogsLength > 0) {
+        if (catalogsLength > 0) {
             result += "(";
 
             for (int i = 0; i < catalogsLength; i++) {
@@ -376,7 +376,6 @@ public class ValueRenderUtils {
 
             result += ") and ";
         }
-
 
 
         if (price1 >= 0 && price2 > 0) {
@@ -470,7 +469,7 @@ public class ValueRenderUtils {
     public String cartItemFilterQuery(CartItemFilterDTO cartItemFilter, PaginationDTO pagination, Account account) {
         String result = "select * from cart_item_info_for_ui where buying_status = 'NOT_BOUGHT_YET' and customer_id = " + account.getCustomer().getId() + " and";
         String brand = cartItemFilter != null ? cartItemFilter.getBrand() : null;
-        String name =cartItemFilter != null ? cartItemFilter.getName() : null;
+        String name = cartItemFilter != null ? cartItemFilter.getName() : null;
         String[] status = cartItemFilter != null ? cartItemFilter.getStatus() : null;
         int page = pagination.getPage();
         int limit = pagination.getLimit();
