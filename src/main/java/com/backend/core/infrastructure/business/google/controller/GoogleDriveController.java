@@ -8,6 +8,7 @@ import com.backend.core.usecase.service.GoogleDriveService;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,28 +20,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/authen/googleDrive", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-// @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
+@AllArgsConstructor
 public class GoogleDriveController {
     @Autowired
     GoogleDriveService googleDriveService;
-
     @Autowired
     GoogleDriveConfig googleDriveConfig;
-
     @Autowired
     CustomerRepository customerRepo;
-
     @Autowired
     ValueRenderUtils valueRenderUtils;
 
-
-    // Get all file on drive
-//    @GetMapping("/getAllFolders")
-//    public List<GoogleDriveFoldersDTO> getAllFolder() throws IOException, GeneralSecurityException {
-//
-////        List<GoogleDriveFileDTO> listFile = googleDriveService.getAllFile();
-//        return googleDriveService.getAllFolder();
-//    }
 
     //  Upload file to public
     @PostMapping(value = "/upLoadCustomerAvatar",
@@ -51,7 +41,7 @@ public class GoogleDriveController {
                                   @RequestParam("shared") String shared,
                                   HttpServletRequest request) {
         // Save to default folder if the user does not select a folder to save
-        if (driveFolderPath.equals("")) {
+        if (driveFolderPath.isEmpty()) {
             driveFolderPath = "Root";
         }
 
@@ -83,6 +73,15 @@ public class GoogleDriveController {
         }
     }
 
+
+// Get all file on drive
+//    @GetMapping("/getAllFolders")
+//    public List<GoogleDriveFoldersDTO> getAllFolder() throws IOException, GeneralSecurityException {
+//
+////        List<GoogleDriveFileDTO> listFile = googleDriveService.getAllFile();
+//        return googleDriveService.getAllFolder();
+//    }
+//
 //    // Delete file by id
 //    @GetMapping("/delete/file/{id}")
 //    public ModelAndView deleteFile(@PathVariable String id) throws Exception {
