@@ -1,4 +1,4 @@
-package com.backend.core.usecase.util.staticValues;
+package com.backend.core.infrastructure.config.constants;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

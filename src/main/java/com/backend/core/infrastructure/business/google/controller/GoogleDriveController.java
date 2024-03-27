@@ -3,74 +3,49 @@ package com.backend.core.infrastructure.business.google.controller;
 import com.backend.core.entity.account.model.Customer;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.account.repository.CustomerRepository;
+import com.backend.core.infrastructure.config.api.ResponseMapper;
+import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
 import com.backend.core.infrastructure.config.google_drive.GoogleDriveConfig;
+import com.backend.core.usecase.UseCaseExecutor;
 import com.backend.core.usecase.service.GoogleDriveService;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
+import com.backend.core.usecase.usecases.google.UploadImageUseCase;
 import com.backend.core.usecase.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.concurrent.CompletableFuture;
+
 
 @RestController
 @RequestMapping(value = "/authen/googleDrive", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @AllArgsConstructor
 public class GoogleDriveController {
-    @Autowired
-    GoogleDriveService googleDriveService;
-    @Autowired
-    GoogleDriveConfig googleDriveConfig;
-    @Autowired
-    CustomerRepository customerRepo;
-    @Autowired
-    ValueRenderUtils valueRenderUtils;
+    final UseCaseExecutor useCaseExecutor;
+    final UploadImageUseCase uploadImageUseCase;
 
 
     //  Upload file to public
     @PostMapping(value = "/upLoadCustomerAvatar",
             consumes = {"*/*"},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ApiResponse uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload,
-                                  @RequestParam("filePath") String driveFolderPath,
-                                  @RequestParam("shared") String shared,
-                                  HttpServletRequest request) {
-        // Save to default folder if the user does not select a folder to save
-        if (driveFolderPath.isEmpty()) {
-            driveFolderPath = "Root";
-        }
-
-        Customer customer = customerRepo.getCustomerById(valueRenderUtils.getCustomerOrStaffIdFromRequest(request));
-
-        // check if customer logged in or not
-        if (customer == null) {
-            return new ApiResponse("failed", "Login first!");
-        } else {
-            try {
-                // get gg drive fileId after successfully uploading
-                String fileId = googleDriveService.uploadFile(fileUpload, driveFolderPath, Boolean.parseBoolean(shared));
-
-                // delete the old file on gg drive if the ID is different from the default user image's one
-                if (!customer.getImage().equals("1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R")) {
-                    googleDriveService.deleteFile(customer.getImage());
-                }
-
-                // set new avatar image file id to customer
-                customer.setImage(fileId);
-                customerRepo.save(customer);
-
-//                return new ApiResponse("success", valueRenderUtils.getGoogleDriveUrlFromFileId(fileId));
-                return new ApiResponse("success", fileId);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
-            }
-        }
+    public CompletableFuture<ResponseEntity<ApiResponse>> uploadFileToGoogleDrive(@RequestParam("fileUpload") MultipartFile fileUpload,
+                                                        @RequestParam("filePath") String driveFolderPath,
+                                                        @RequestParam("shared") String shared,
+                                                        HttpServletRequest request) {
+        return useCaseExecutor.execute(
+                uploadImageUseCase,
+                new UploadImageUseCase.InputValue(fileUpload, driveFolderPath, shared, request),
+                ResponseMapper::map
+        );
     }
 
 

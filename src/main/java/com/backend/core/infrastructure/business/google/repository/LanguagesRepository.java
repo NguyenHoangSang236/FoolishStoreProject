@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface LanguagesRepository extends JpaRepository<Languages, Integer> {
     @Query(value = "select * from languages", nativeQuery = true)
-    List<Languages> getAccountByUserNameAndPassword();
+    List<Languages> getAvailableLanguageList();
 }
