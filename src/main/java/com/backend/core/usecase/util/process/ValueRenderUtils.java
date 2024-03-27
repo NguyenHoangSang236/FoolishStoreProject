@@ -237,12 +237,12 @@ public class ValueRenderUtils {
 
     //create a query for invoice binding filter
     public String invoiceFilterQuery(InvoiceFilterDTO invoiceFilter, PaginationDTO pagination, HttpServletRequest request) {
-        String paymentStatus = invoiceFilter.getPaymentStatus();
-        String adminAcceptance = invoiceFilter.getAdminAcceptance();
-        String orderStatus = invoiceFilter.getOrderStatus();
-        String paymentMethod = invoiceFilter.getPaymentMethod();
-        Date startInvoiceDate = invoiceFilter.getStartInvoiceDate();
-        Date endInvoiceDate = invoiceFilter.getEndInvoiceDate();
+        String paymentStatus = invoiceFilter != null ? invoiceFilter.getPaymentStatus() : null;
+        String adminAcceptance = invoiceFilter != null ? invoiceFilter.getAdminAcceptance() : null;
+        String orderStatus = invoiceFilter != null ? invoiceFilter.getOrderStatus() : null;
+        String paymentMethod = invoiceFilter != null ? invoiceFilter.getPaymentMethod() : null;
+        Date startInvoiceDate = invoiceFilter != null ? invoiceFilter.getStartInvoiceDate() : null;
+        Date endInvoiceDate = invoiceFilter != null ? invoiceFilter.getEndInvoiceDate() : null;
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
@@ -279,7 +279,9 @@ public class ValueRenderUtils {
         }
 
         // remove the final 'and' word in the query
-        result = result.substring(0, result.lastIndexOf("and"));
+        result = result.contains("and")
+                ? result.substring(0, result.lastIndexOf("and"))
+                : result.substring(0, result.lastIndexOf("where"));
 
         result += "order by id desc limit " + (limit * (page - 1)) + ", " + limit;
 
@@ -453,7 +455,7 @@ public class ValueRenderUtils {
         }
 
         // remove the final 'and' word in the query
-        result = accountFilter != null
+        result = result.contains("and")
                 ? result.substring(0, result.lastIndexOf("and"))
                 : result.substring(0, result.lastIndexOf("where"));
 
