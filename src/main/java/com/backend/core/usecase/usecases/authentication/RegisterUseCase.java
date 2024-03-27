@@ -5,6 +5,7 @@ import com.backend.core.entity.account.model.Customer;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.account.repository.AccountRepository;
 import com.backend.core.infrastructure.business.account.repository.CustomerRepository;
+import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
 import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.statics.RoleEnum;
 import com.backend.core.usecase.statics.StringTypeEnum;
@@ -43,7 +44,7 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
 
         accountFromUI.setRole(RoleEnum.CUSTOMER.name());
         Customer customer = accountFromUI.getCustomer();
-        customer.setImage("1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R");
+        customer.setImage(GlobalDefaultStaticVariables.defaultGgDriveIdUserAvatarImage);
 
         //check for null information
         if (bindingResult.hasErrors()) {

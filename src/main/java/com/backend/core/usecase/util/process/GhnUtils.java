@@ -13,7 +13,7 @@ import com.backend.core.infrastructure.business.delivery.controller.DeliveryRepo
 import com.backend.core.infrastructure.business.delivery.dto.AddressCodeDTO;
 import com.backend.core.infrastructure.business.product.repository.ProductRepository;
 import com.backend.core.usecase.statics.PaymentEnum;
-import com.backend.core.usecase.util.static_values.GlobalDefaultStaticVariables;
+import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
