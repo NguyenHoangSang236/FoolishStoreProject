@@ -326,9 +326,9 @@ public class ValueRenderUtils {
     // create a query for comments binding filter
     public String commentFilterQuery(CommentRequestDTO commentRequest, PaginationDTO pagination) {
         String result = "select * from comment_info_for_ui where ";
-        int productId = commentRequest.getProductId();
-        int replyOn = commentRequest.getReplyOn();
-        String productColor = commentRequest.getProductColor();
+        int productId = commentRequest != null ? commentRequest.getProductId() : 0;
+        int replyOn = commentRequest != null ? commentRequest.getReplyOn() : -1;
+        String productColor = commentRequest != null ? commentRequest.getProductColor() : null;
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
@@ -340,7 +340,14 @@ public class ValueRenderUtils {
             result += "product_id = " + productId + " and ";
         }
 
-        result += "reply_on = " + replyOn + " limit 0, " + limit * page;
+        if (replyOn >= 0) {
+            result += "reply_on = " + replyOn + " limit 0, " + limit * page  + " and ";
+        }
+
+        // remove the final 'and' word in the query
+        result =  result.substring(0, result.lastIndexOf(result.contains("and") ? "and" : "where")) ;
+
+        result += " limit "+ (limit * (page - 1)) + ", " + limit;
 
         return result;
     }
@@ -393,7 +400,7 @@ public class ValueRenderUtils {
         }
 
         // remove the final 'and' word in the query
-        result = productFilter != null && result.contains("and") ? result.substring(0, result.lastIndexOf("and")) : result.substring(0, result.lastIndexOf("WHERE"));
+        result = result.substring(0, result.lastIndexOf(result.contains("and") ? "and" : "WHERE"));
 
         result += " ORDER BY piu.id desc LIMIT " + (limit * (page - 1)) + ", " + limit;
 
@@ -455,9 +462,7 @@ public class ValueRenderUtils {
         }
 
         // remove the final 'and' word in the query
-        result = result.contains("and")
-                ? result.substring(0, result.lastIndexOf("and"))
-                : result.substring(0, result.lastIndexOf("where"));
+        result = result.substring(0, result.lastIndexOf(result.contains("and") ? "and" : "where"));
 
         if (page != 0 && limit != 0) {
             result += " ORDER BY id desc LIMIT " + (limit * (page - 1)) + ", " + limit;

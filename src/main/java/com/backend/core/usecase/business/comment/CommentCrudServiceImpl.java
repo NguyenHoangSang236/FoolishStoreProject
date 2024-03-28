@@ -12,7 +12,7 @@ import com.backend.core.entity.product.model.ProductManagement;
 import com.backend.core.infrastructure.business.account.repository.CustomerRepository;
 import com.backend.core.infrastructure.business.comment.dto.CommentRenderInfoDTO;
 import com.backend.core.infrastructure.business.comment.repository.CommentLikeRepository;
-import com.backend.core.infrastructure.business.comment.repository.CommentRenderInfoRepo;
+import com.backend.core.infrastructure.business.comment.repository.CommentRenderInfoRepository;
 import com.backend.core.infrastructure.business.comment.repository.CommentRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductManagementRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductRepository;
@@ -57,7 +57,7 @@ public class CommentCrudServiceImpl implements CrudService {
     ValueRenderUtils valueRenderUtils;
 
     @Autowired
-    private CommentRenderInfoRepo commentRenderInfoRepo;
+    private CommentRenderInfoRepository commentRenderInfoRepository;
 
 
     @Override
@@ -237,7 +237,7 @@ public class CommentCrudServiceImpl implements CrudService {
 
     // get original comment id that other comments reply on
     public int getOriginalCommentId(int commentId) {
-        CommentRenderInfoDTO commentRenderInfo = commentRenderInfoRepo.getCommentById(commentId);
+        CommentRenderInfoDTO commentRenderInfo = commentRenderInfoRepository.getCommentById(commentId);
 
         if (commentRenderInfo.getReplyOn() == 0) {
             return commentRenderInfo.getId();
