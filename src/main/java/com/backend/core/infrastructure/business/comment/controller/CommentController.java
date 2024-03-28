@@ -1,83 +1,102 @@
 package com.backend.core.infrastructure.business.comment.controller;
 
-import com.backend.core.entity.CrudController;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.comment.gateway.CommentFilterRequestDTO;
 import com.backend.core.entity.comment.gateway.CommentRequestDTO;
-import com.backend.core.usecase.service.CrudService;
+import com.backend.core.infrastructure.config.api.ResponseMapper;
+import com.backend.core.usecase.UseCaseExecutor;
+import com.backend.core.usecase.usecases.comment.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-// @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
-public class CommentController extends CrudController {
-    public CommentController(@Autowired @Qualifier("CommentCrudServiceImpl") CrudService commentCrudServiceImpl) {
-        super(commentCrudServiceImpl);
-        super.crudService = commentCrudServiceImpl;
-    }
+@AllArgsConstructor
+public class CommentController {
+    final UseCaseExecutor useCaseExecutor;
+    final AddNewCommentUseCase addNewCommentUseCase;
+    final UpdateCommentUseCase updateCommentUseCase;
+    final DeleteCommentByIdUseCase deleteCommentByIdUseCase;
+    final ReactCommentByIdUseCase reactCommentByIdUseCase;
+    final FilterCommentUseCase filterCommentUseCase;
+    final ViewCommentIdYouLikedUseCase viewCommentIdYouLikedUseCase;
 
 
     @PostMapping("/authen/comment/add")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @Override
-    public ResponseEntity<ApiResponse> addNewItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> addNewComment(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CommentRequestDTO commentRequest = objectMapper.readValue(json, CommentRequestDTO.class);
 
-        return crudService.singleCreationalResponse(commentRequest, httpRequest);
+        return useCaseExecutor.execute(
+                addNewCommentUseCase,
+                new AddNewCommentUseCase.InputValue(commentRequest, httpRequest),
+                ResponseMapper::map
+        );
     }
 
     @PostMapping("/authen/comment/update")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @Override
-    public ResponseEntity<ApiResponse> updateItem(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> updateComment(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CommentRequestDTO commentRequest = objectMapper.readValue(json, CommentRequestDTO.class);
 
-        return crudService.updatingResponseByRequest(commentRequest, httpRequest);
-    }
-
-    @Override
-    public ResponseEntity<ApiResponse> readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
+        return useCaseExecutor.execute(
+                updateCommentUseCase,
+                new UpdateCommentUseCase.InputValue(commentRequest, httpRequest),
+                ResponseMapper::map
+        );
     }
 
     @GetMapping("/authen/comment/delete_comment_id={id}")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @Override
-    public ResponseEntity<ApiResponse> deleteSelectedItemById(@PathVariable int id, HttpServletRequest httpRequest) {
-        return crudService.removingResponseById(id, httpRequest);
+    public CompletableFuture<ResponseEntity<ApiResponse>> deleteCommentById(@PathVariable int id, HttpServletRequest httpRequest) {
+        return useCaseExecutor.execute(
+                deleteCommentByIdUseCase,
+                new DeleteCommentByIdUseCase.InputValue(id, httpRequest),
+                ResponseMapper::map
+        );
     }
 
     @GetMapping("/authen/comment/react_comment_id={id}")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @Override
-    public ResponseEntity<ApiResponse> updateSelectedItemById(@PathVariable int id, HttpServletRequest httpRequest) throws IOException {
-        return crudService.updatingResponseById(id, httpRequest);
+    public CompletableFuture<ResponseEntity<ApiResponse>> reactCommentById(@PathVariable int id, HttpServletRequest httpRequest) throws IOException {
+        return useCaseExecutor.execute(
+                reactCommentByIdUseCase,
+                new ReactCommentByIdUseCase.InputValue(id, httpRequest),
+                ResponseMapper::map
+        );
     }
 
     @PostMapping("/authen/comment/commentsYouLiked")
-    @Override
-    public ResponseEntity<ApiResponse> getListOfItems(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> getCommentIdListThatYouLiked(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        CommentRequestDTO comment = objectMapper.readValue(json, CommentRequestDTO.class);
-        return crudService.readingFromSingleRequest(comment, httpRequest);
+        CommentRequestDTO commentRequest = objectMapper.readValue(json, CommentRequestDTO.class);
+
+        return useCaseExecutor.execute(
+                viewCommentIdYouLikedUseCase,
+                new ViewCommentIdYouLikedUseCase.InputValue(commentRequest, httpRequest),
+                ResponseMapper::map
+        );
     }
 
     @PostMapping("/unauthen/comment/commentList")
-    @Override
-    public ResponseEntity<ApiResponse> getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> filterComments(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CommentFilterRequestDTO commentFilterRequest = objectMapper.readValue(json, CommentFilterRequestDTO.class);
-        return crudService.readingFromSingleRequest(commentFilterRequest, httpRequest);
+
+        return useCaseExecutor.execute(
+                filterCommentUseCase,
+                new FilterCommentUseCase.InputValue(commentFilterRequest, httpRequest),
+                ResponseMapper::map
+        );
     }
 }
