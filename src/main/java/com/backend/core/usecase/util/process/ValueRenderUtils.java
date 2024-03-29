@@ -298,11 +298,13 @@ public class ValueRenderUtils {
         } else result = "select * from notification where topic = 'admin' and ";
 
         // from 00:00:00 of start date
-        Date startDate = resetDate(notiFilter.getStartDate());
-
+        Date startDate = notiFilter != null
+                ? resetDate(notiFilter.getStartDate())
+                : null;
         // to 23:59:59 of end date
-        Date endDate = new Date(resetDate(notiFilter.getEndDate()).getTime() + (1000 * 60 * 60 * 24) - 1000);
-
+        Date endDate = notiFilter != null
+                ? new Date(resetDate(notiFilter.getEndDate()).getTime() + (1000 * 60 * 60 * 24) - 1000)
+                : null;
         int page = pagination.getPage();
         int limit = pagination.getLimit();
 
