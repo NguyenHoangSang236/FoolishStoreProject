@@ -535,7 +535,7 @@ public class ValueRenderUtils {
             }
 
             if (refundDate != null) {
-                result += "date = '" + formatDateToString(refundDate, "yyyy-MM-dd") + "' and ";
+                result += "DATE(date) = '" + formatDateToString(refundDate, "yyyy-MM-dd") + "' and ";
             }
 
             if (invoiceId > 0) {
@@ -546,7 +546,7 @@ public class ValueRenderUtils {
                 result += "in_charge_admin_id = " + adminId + " and ";
             }
 
-            result = result.substring(0, result.lastIndexOf("and"));
+            result = result.substring(0, result.lastIndexOf(result.contains("and") ? "and" : "where"));
         } else {
             result = "select * from refund ";
         }

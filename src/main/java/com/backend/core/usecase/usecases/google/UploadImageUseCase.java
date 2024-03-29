@@ -21,8 +21,6 @@ public class UploadImageUseCase extends UseCase<UploadImageUseCase.InputValue, A
     @Autowired
     GoogleDriveService googleDriveService;
     @Autowired
-    GoogleDriveConfig googleDriveConfig;
-    @Autowired
     CustomerRepository customerRepo;
     @Autowired
     ValueRenderUtils valueRenderUtils;
