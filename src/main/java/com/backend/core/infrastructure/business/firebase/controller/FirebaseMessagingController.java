@@ -1,49 +1,49 @@
 package com.backend.core.infrastructure.business.firebase.controller;
 
+import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.notification.gateway.NotificationDTO;
-import com.backend.core.usecase.service.NotificationService;
+import com.backend.core.infrastructure.config.api.ResponseMapper;
+import com.backend.core.usecase.UseCaseExecutor;
+import com.backend.core.usecase.business.firebase.AddNewFcmTokenUseCase;
+import com.backend.core.usecase.business.firebase.SendMessageUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping(consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+@AllArgsConstructor
 public class FirebaseMessagingController {
-    @Autowired
-    NotificationService notificationService;
+    final UseCaseExecutor useCaseExecutor;
+    final SendMessageUseCase sendMessageUseCase;
+    final AddNewFcmTokenUseCase addNewFcmTokenUseCase;
+
 
     @PostMapping("/unauthen/firebase/sendMessage")
-    public ResponseEntity sendMessage(@RequestBody String json, HttpServletRequest httpRequest) throws IOException, FirebaseMessagingException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> sendMessage(@RequestBody String json) throws IOException, FirebaseMessagingException {
         ObjectMapper objectMapper = new ObjectMapper();
         NotificationDTO notification = objectMapper.readValue(json, NotificationDTO.class);
 
-        return notificationService.sendMessage(notification, httpRequest);
+        return useCaseExecutor.execute(
+                sendMessageUseCase,
+                new SendMessageUseCase.InputValue(notification),
+                ResponseMapper::map
+        );
     }
 
     @GetMapping("/authen/firebase/addNewFcmToken={token}")
-    public ResponseEntity addNewItem(@PathVariable(value = "token") String token, HttpServletRequest httpRequest) throws IOException {
-        return notificationService.addNewDeviceFcmToken(token, httpRequest);
-    }
-
-    @PostMapping("/unauthen/firebase/subscribeToTopic")
-    public ResponseEntity subscribeToTopic(@RequestBody String json, HttpServletRequest httpRequest) throws IOException, FirebaseMessagingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        NotificationDTO notification = objectMapper.readValue(json, NotificationDTO.class);
-
-        return notificationService.subscribeToTopic(notification, httpRequest);
-    }
-
-    @PostMapping("/unauthen/firebase/unsubscribeFromTopic")
-    public ResponseEntity unsubscribeFromTopic(@RequestBody String json, HttpServletRequest httpRequest) throws IOException, FirebaseMessagingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        NotificationDTO notification = objectMapper.readValue(json, NotificationDTO.class);
-
-        return notificationService.unsubscribeFromTopic(notification, httpRequest);
+    public CompletableFuture<ResponseEntity<ApiResponse>> addNewFcmToken(@PathVariable(value = "token") String token, HttpServletRequest httpRequest) {
+        return useCaseExecutor.execute(
+                addNewFcmTokenUseCase,
+                new AddNewFcmTokenUseCase.InputValue(token, httpRequest),
+                ResponseMapper::map
+        );
     }
 }

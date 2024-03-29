@@ -5,7 +5,7 @@ import com.backend.core.entity.comment.gateway.CommentFilterRequestDTO;
 import com.backend.core.entity.comment.gateway.CommentRequestDTO;
 import com.backend.core.infrastructure.config.api.ResponseMapper;
 import com.backend.core.usecase.UseCaseExecutor;
-import com.backend.core.usecase.usecases.comment.*;
+import com.backend.core.usecase.business.comment.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;

@@ -7,7 +7,7 @@ import com.backend.core.entity.invoice.gateway.OrderProcessDTO;
 import com.backend.core.entity.invoice.model.Invoice;
 import com.backend.core.infrastructure.config.api.ResponseMapper;
 import com.backend.core.usecase.UseCaseExecutor;
-import com.backend.core.usecase.usecases.invoice.*;
+import com.backend.core.usecase.business.invoice.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
