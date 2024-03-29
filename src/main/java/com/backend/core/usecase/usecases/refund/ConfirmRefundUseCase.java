@@ -1,4 +1,4 @@
-package com.backend.core.usecase.business.refund;
+package com.backend.core.usecase.usecases.refund;
 
 import com.backend.core.entity.account.model.Account;
 import com.backend.core.entity.api.ApiResponse;
@@ -9,69 +9,58 @@ import com.backend.core.entity.refund.gateway.RefundFilterRequestDTO;
 import com.backend.core.entity.refund.model.Refund;
 import com.backend.core.infrastructure.business.invoice.repository.InvoiceRepository;
 import com.backend.core.infrastructure.business.refund.repository.RefundRepository;
-import com.backend.core.infrastructure.config.database.CustomQueryRepository;
-import com.backend.core.usecase.service.CrudService;
+import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.service.GoogleDriveService;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
-import com.backend.core.usecase.statics.FilterTypeEnum;
 import com.backend.core.usecase.statics.RefundEnum;
 import com.backend.core.usecase.util.process.FirebaseUtils;
 import com.backend.core.usecase.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-@Service
-@Qualifier("RefundCrudServiceImpl")
-public class RefundCrudServiceImpl implements CrudService {
-    @Autowired
-    CustomQueryRepository customQueryRepo;
-
+@Component
+public class ConfirmRefundUseCase extends UseCase<ConfirmRefundUseCase.InputValue, ApiResponse> {
     @Autowired
     InvoiceRepository invoiceRepo;
-
-    @Autowired
-    RefundRepository refundRepo;
-
     @Autowired
     ValueRenderUtils valueRenderUtils;
-
     @Autowired
     GoogleDriveService googleDriveService;
-
+    @Autowired
+    RefundRepository refundRepo;
     @Autowired
     FirebaseUtils firebaseUtils;
 
 
     @Override
-    public ResponseEntity<ApiResponse> updatingResponseByRequest(Object paramObj, HttpServletRequest httpRequest) {
+    public ApiResponse execute(InputValue input) {
         try {
-            RefundConfirmDTO refundConfirm = (RefundConfirmDTO) paramObj;
+            RefundConfirmDTO refundConfirm = input.getRefundConfirmRequest();
 
             Invoice invoice = invoiceRepo.getInvoiceById(refundConfirm.getInvoiceId());
-            Account adminAcc = valueRenderUtils.getCurrentAccountFromRequest(httpRequest);
+            Account adminAcc = valueRenderUtils.getCurrentAccountFromRequest(input.getHttpRequest());
 
             // check invoice existence
             if (invoice == null) {
-                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.NO_DATA_ERROR.name()), HttpStatus.BAD_REQUEST);
+                return new ApiResponse("failed", ErrorTypeEnum.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST);
             }
 
             // check invoice is in refund list or not
             if (invoice.getRefund() == null) {
-                return new ResponseEntity<>(new ApiResponse("failed", "This invoice is not in refund list"), HttpStatus.BAD_REQUEST);
+                return new ApiResponse("failed", "This invoice is not in refund list", HttpStatus.BAD_REQUEST);
             }
 
             // check invoice refund status can be confirmed to refund or not
             if (invoice.getRefund().getStatus().equals(RefundEnum.REFUNDED.name())) {
-                return new ResponseEntity<>(new ApiResponse("failed", "This invoice has already been refunded"), HttpStatus.BAD_REQUEST);
+                return new ApiResponse("failed", "This invoice has already been refunded", HttpStatus.BAD_REQUEST);
             }
 
             // upload image to google drive and get the url
@@ -99,29 +88,17 @@ public class RefundCrudServiceImpl implements CrudService {
 
             firebaseUtils.sendMessage(notification);
 
-            return new ResponseEntity<>(new ApiResponse("success", "Refunded successfully"), HttpStatus.OK);
-        } catch (Exception e) {
+            return new ApiResponse("success", "Refunded successfully", HttpStatus.OK);
+        }
+        catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @Override
-    public ResponseEntity<ApiResponse> readingFromSingleRequest(Object paramObj, HttpServletRequest httpRequest) {
-        try {
-            if (paramObj instanceof RefundFilterRequestDTO refundFilterRequest) {
-
-                String filterQuery = valueRenderUtils.getFilterQuery(refundFilterRequest, FilterTypeEnum.REFUND, httpRequest, false);
-
-                List<Refund> refundList = customQueryRepo.getBindingFilteredList(filterQuery, Refund.class);
-
-                return new ResponseEntity<>(new ApiResponse("success", refundList), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name()), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @Value
+    public static class InputValue implements InputValues {
+        RefundConfirmDTO refundConfirmRequest;
+        HttpServletRequest httpRequest;
     }
 }
