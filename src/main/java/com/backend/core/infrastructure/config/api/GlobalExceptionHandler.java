@@ -2,6 +2,7 @@ package com.backend.core.infrastructure.config.api;
 
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,6 +23,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ResponseEntity<ApiResponse> handleBadCredentialsException(BadCredentialsException ex) {
         ex.printStackTrace();
         return new ResponseEntity<>(new ApiResponse("failed", ex.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = {FirebaseMessagingException.class})
+    ResponseEntity<ApiResponse> handleFirebaseMessagingException(FirebaseMessagingException ex) {
+        ex.printStackTrace();
+        return new ResponseEntity<>(new ApiResponse("failed", ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = {Exception.class})

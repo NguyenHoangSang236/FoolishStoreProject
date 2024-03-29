@@ -1,19 +1,11 @@
 package com.backend.core.infrastructure.business.google.controller;
 
-import com.backend.core.entity.account.model.Customer;
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.infrastructure.business.account.repository.CustomerRepository;
 import com.backend.core.infrastructure.config.api.ResponseMapper;
-import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
-import com.backend.core.infrastructure.config.google_drive.GoogleDriveConfig;
 import com.backend.core.usecase.UseCaseExecutor;
-import com.backend.core.usecase.service.GoogleDriveService;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
-import com.backend.core.usecase.usecases.google.UploadImageUseCase;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
+import com.backend.core.usecase.business.google.UploadImageUseCase;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,9 +30,9 @@ public class GoogleDriveController {
             consumes = {"*/*"},
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public CompletableFuture<ResponseEntity<ApiResponse>> uploadFileToGoogleDrive(@RequestParam("fileUpload") MultipartFile fileUpload,
-                                                        @RequestParam("filePath") String driveFolderPath,
-                                                        @RequestParam("shared") String shared,
-                                                        HttpServletRequest request) {
+                                                                                  @RequestParam("filePath") String driveFolderPath,
+                                                                                  @RequestParam("shared") String shared,
+                                                                                  HttpServletRequest request) {
         return useCaseExecutor.execute(
                 uploadImageUseCase,
                 new UploadImageUseCase.InputValue(fileUpload, driveFolderPath, shared, request),

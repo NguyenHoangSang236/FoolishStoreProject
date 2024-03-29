@@ -4,7 +4,7 @@ import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.product.gateway.ProductDetailsRequestDTO;
 import com.backend.core.infrastructure.config.api.ResponseMapper;
 import com.backend.core.usecase.UseCaseExecutor;
-import com.backend.core.usecase.usecases.product.*;
+import com.backend.core.usecase.business.product.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;

@@ -343,13 +343,13 @@ public class ValueRenderUtils {
         }
 
         if (replyOn >= 0) {
-            result += "reply_on = " + replyOn + " limit 0, " + limit * page  + " and ";
+            result += "reply_on = " + replyOn + " limit 0, " + limit * page + " and ";
         }
 
         // remove the final 'and' word in the query
-        result =  result.substring(0, result.lastIndexOf(result.contains("and") ? "and" : "where")) ;
+        result = result.substring(0, result.lastIndexOf(result.contains("and") ? "and" : "where"));
 
-        result += " limit "+ (limit * (page - 1)) + ", " + limit;
+        result += " limit " + (limit * (page - 1)) + ", " + limit;
 
         return result;
     }
