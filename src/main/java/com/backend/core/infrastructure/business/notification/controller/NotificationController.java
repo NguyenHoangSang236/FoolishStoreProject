@@ -1,64 +1,49 @@
 package com.backend.core.infrastructure.business.notification.controller;
 
-import com.backend.core.entity.CrudController;
+import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.notification.gateway.NotificationFilterRequestDTO;
-import com.backend.core.usecase.service.CrudService;
+import com.backend.core.infrastructure.config.api.ResponseMapper;
+import com.backend.core.usecase.UseCaseExecutor;
+import com.backend.core.usecase.usecases.notification.FilterNotificationUseCase;
+import com.backend.core.usecase.usecases.notification.SeenNotificationUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping(value = "/authen/notification", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
-// @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
-public class NotificationController extends CrudController {
-    public NotificationController(@Autowired @Qualifier("NotificationCrudServiceImpl") CrudService notificationCrudServiceImpl) {
-        super(notificationCrudServiceImpl);
-        super.crudService = notificationCrudServiceImpl;
-    }
+@AllArgsConstructor
+public class NotificationController {
+    final UseCaseExecutor useCaseExecutor;
+    final FilterNotificationUseCase filterNotificationUseCase;
+    final SeenNotificationUseCase seenNotificationUseCase;
 
-    @Override
-    public ResponseEntity addNewItem(String json, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
 
-    @Override
-    public ResponseEntity updateItem(String json, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity readSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity deleteSelectedItemById(int id, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
-
-    @Override
     @GetMapping("/seen_notification_id={id}")
-    public ResponseEntity updateSelectedItemById(@PathVariable("id") int id, HttpServletRequest httpRequest) throws IOException {
-        return crudService.updatingResponseById(id, httpRequest);
+    public CompletableFuture<ResponseEntity<ApiResponse>> seenNotification(@PathVariable("id") int id, HttpServletRequest httpRequest) {
+        return useCaseExecutor.execute(
+                seenNotificationUseCase,
+                new SeenNotificationUseCase.InputValue(id, httpRequest),
+                ResponseMapper::map
+        );
     }
 
-    @Override
-    public ResponseEntity getListOfItems(String json, HttpServletRequest httpRequest) throws IOException {
-        return null;
-    }
 
-    @Override
     @PostMapping("/filterNotifications")
-    public ResponseEntity getListOfItemsFromFilter(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> filterNotifications(@RequestBody String json, HttpServletRequest httpRequest) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         NotificationFilterRequestDTO filterRequest = objectMapper.readValue(json, NotificationFilterRequestDTO.class);
 
-        return crudService.readingFromSingleRequest(filterRequest, httpRequest);
+        return useCaseExecutor.execute(
+                filterNotificationUseCase,
+                new FilterNotificationUseCase.InputValue(filterRequest, httpRequest),
+                ResponseMapper::map
+        );
     }
 }
