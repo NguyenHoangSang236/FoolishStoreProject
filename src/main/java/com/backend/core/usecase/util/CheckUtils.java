@@ -39,6 +39,7 @@ public class CheckUtils {
         return PhoneNumberUtil.getInstance().isValidNumber(phoneNumber);
     }
 
+
     //check email is valid or not
     //    It allows numeric values from 0 to 9.
     //    Both uppercase and lowercase letters from a to z are allowed.
@@ -49,6 +50,7 @@ public class CheckUtils {
     public boolean isValidEmail(String email) {
         return patternMatches(email, "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
     }
+
 
     //check if there is any space in a String
     public boolean isStringWithSpace(String content) {
@@ -61,6 +63,7 @@ public class CheckUtils {
         }
         return false;
     }
+
 
     //check if the text has special sign
     public boolean hasSpecialSign(String input) {
@@ -75,6 +78,7 @@ public class CheckUtils {
         return false;
     }
 
+
     //check if String matches using Regex
     public boolean patternMatches(String content, String regexPattern) {
         return Pattern.compile(regexPattern)
@@ -82,10 +86,12 @@ public class CheckUtils {
                 .matches();
     }
 
+
     //check email has been used or not
     public boolean isUsedEmail(String email) {
         return customerRepo.getCustomerByEmail(email) != null;
     }
+
 
     // check string is in invoice enum or not
     public boolean isInvoiceEnumValueExist(String value) {
@@ -96,6 +102,7 @@ public class CheckUtils {
             return false;
         }
     }
+
 
     // check string is in invoice enum or not
     public boolean isAdminAcceptanceEnumValueExist(String value) {
