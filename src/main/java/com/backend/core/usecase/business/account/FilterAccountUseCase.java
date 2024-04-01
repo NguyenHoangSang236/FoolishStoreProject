@@ -7,9 +7,9 @@ import com.backend.core.infrastructure.business.account.dto.CustomerRenderInfoDT
 import com.backend.core.infrastructure.business.account.dto.StaffRenderInfoDTO;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.UseCase;
+import com.backend.core.usecase.business.invoice.QueryService;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.RoleEnum;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,14 +20,14 @@ import java.util.List;
 @Component
 public class FilterAccountUseCase extends UseCase<FilterAccountUseCase.InputValue, ApiResponse> {
     @Autowired
-    ValueRenderUtils valueRenderUtils;
+    QueryService queryService;
     @Autowired
     CustomQueryRepository customQueryRepo;
 
     @Override
     public ApiResponse execute(InputValue input) {
         AccountFilterRequestDTO accountFilterRequest = input.getAccountFilterRequest();
-        String filterQuery = valueRenderUtils.accountFilterQuery(
+        String filterQuery = queryService.accountFilterQuery(
                 (AccountFilterDTO) accountFilterRequest.getFilter(),
                 accountFilterRequest.getPagination()
         );

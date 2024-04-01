@@ -8,7 +8,7 @@ import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.FilterTypeEnum;
 import com.backend.core.usecase.statics.RoleEnum;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
+import com.backend.core.usecase.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,8 @@ public class FilterInvoiceUseCase extends UseCase<FilterInvoiceUseCase.InputValu
     @Autowired
     ValueRenderUtils valueRenderUtils;
     @Autowired
+    QueryService queryService;
+    @Autowired
     CustomQueryRepository customQueryRepo;
 
 
@@ -33,7 +35,7 @@ public class FilterInvoiceUseCase extends UseCase<FilterInvoiceUseCase.InputValu
 
             boolean isCustomer = valueRenderUtils.getCurrentAccountFromRequest(request).getRole().equals(RoleEnum.CUSTOMER.name());
 
-            String filterQuery = valueRenderUtils.getFilterQuery(invoiceFilterRequest, FilterTypeEnum.INVOICE, request, isCustomer);
+            String filterQuery = queryService.getFilterQuery(invoiceFilterRequest, FilterTypeEnum.INVOICE, request, isCustomer);
 
             // get list from query
             List<InvoiceRenderInfoDTO> invoiceRenderList = customQueryRepo.getBindingFilteredList(filterQuery, InvoiceRenderInfoDTO.class);
