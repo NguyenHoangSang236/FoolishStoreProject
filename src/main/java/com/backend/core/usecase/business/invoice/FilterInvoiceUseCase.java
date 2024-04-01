@@ -22,6 +22,8 @@ public class FilterInvoiceUseCase extends UseCase<FilterInvoiceUseCase.InputValu
     @Autowired
     ValueRenderUtils valueRenderUtils;
     @Autowired
+    QueryService queryService;
+    @Autowired
     CustomQueryRepository customQueryRepo;
 
 
@@ -33,7 +35,7 @@ public class FilterInvoiceUseCase extends UseCase<FilterInvoiceUseCase.InputValu
 
             boolean isCustomer = valueRenderUtils.getCurrentAccountFromRequest(request).getRole().equals(RoleEnum.CUSTOMER.name());
 
-            String filterQuery = valueRenderUtils.getFilterQuery(invoiceFilterRequest, FilterTypeEnum.INVOICE, request, isCustomer);
+            String filterQuery = queryService.getFilterQuery(invoiceFilterRequest, FilterTypeEnum.INVOICE, request, isCustomer);
 
             // get list from query
             List<InvoiceRenderInfoDTO> invoiceRenderList = customQueryRepo.getBindingFilteredList(filterQuery, InvoiceRenderInfoDTO.class);

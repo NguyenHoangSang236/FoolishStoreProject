@@ -5,8 +5,8 @@ import com.backend.core.entity.refund.gateway.RefundFilterRequestDTO;
 import com.backend.core.entity.refund.model.Refund;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.UseCase;
+import com.backend.core.usecase.business.invoice.QueryService;
 import com.backend.core.usecase.statics.FilterTypeEnum;
-import com.backend.core.usecase.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ import java.util.List;
 @Component
 public class FilterRefundUseCase extends UseCase<FilterRefundUseCase.InputValue, ApiResponse> {
     @Autowired
-    ValueRenderUtils valueRenderUtils;
+    QueryService queryService;
     @Autowired
     CustomQueryRepository customQueryRepo;
 
 
     @Override
     public ApiResponse execute(InputValue input) {
-        String filterQuery = valueRenderUtils.getFilterQuery(input.getRefundFilterRequest(), FilterTypeEnum.REFUND, input.getHttpRequest(), false);
+        String filterQuery = queryService.getFilterQuery(input.getRefundFilterRequest(), FilterTypeEnum.REFUND, input.getHttpRequest(), false);
         List<Refund> refundList = customQueryRepo.getBindingFilteredList(filterQuery, Refund.class);
 
         return new ApiResponse("success", refundList, HttpStatus.OK);

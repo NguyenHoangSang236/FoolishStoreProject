@@ -87,6 +87,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return !request.getRequestURI().contains("/authen");
     }
 
+
     public String convertObjectToJson(Object object) throws JsonProcessingException {
         if (object == null) {
             return null;
