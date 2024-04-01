@@ -12,8 +12,8 @@ import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.service.GoogleDriveService;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.RefundEnum;
-import com.backend.core.usecase.util.process.FirebaseUtils;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
+import com.backend.core.usecase.service.FirebaseService;
+import com.backend.core.usecase.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class ConfirmRefundUseCase extends UseCase<ConfirmRefundUseCase.InputValu
     @Autowired
     RefundRepository refundRepo;
     @Autowired
-    FirebaseUtils firebaseUtils;
+    FirebaseService firebaseService;
 
 
     @Override
@@ -84,7 +84,7 @@ public class ConfirmRefundUseCase extends UseCase<ConfirmRefundUseCase.InputValu
                     .topic(invoice.getCustomer().getAccount().getUsername())
                     .build();
 
-            firebaseUtils.sendMessage(notification);
+            firebaseService.sendMessage(notification);
 
             return new ApiResponse("success", "Refunded successfully", HttpStatus.OK);
         } catch (Exception e) {

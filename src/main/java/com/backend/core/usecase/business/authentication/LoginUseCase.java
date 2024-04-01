@@ -11,7 +11,7 @@ import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.statics.AccountStatusEnum;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.RoleEnum;
-import com.backend.core.usecase.util.process.JwtUtils;
+import com.backend.core.usecase.service.JwtService;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginUseCase extends UseCase<LoginUseCase.InputValue, ApiResponse> {
     @Autowired
-    JwtUtils jwtUtils;
+    JwtService jwtService;
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
@@ -54,7 +54,7 @@ public class LoginUseCase extends UseCase<LoginUseCase.InputValue, ApiResponse> 
 
             // check the status of the account is ALLOWED or BANNED
             if (loginAcc != null && loginAcc.getStatus().equals(AccountStatusEnum.ALLOWED.name())) {
-                jwt = jwtUtils.generateJwt(loginAcc);
+                jwt = jwtService.generateJwt(loginAcc);
 
                 loginAcc.setCurrentJwt(jwt);
                 accountRepo.save(loginAcc);

@@ -1,4 +1,4 @@
-package com.backend.core.usecase.util.handler;
+package com.backend.core.infrastructure.config.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;

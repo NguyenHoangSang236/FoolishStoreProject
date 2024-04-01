@@ -4,7 +4,7 @@ import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.category.model.Catalog;
 import com.backend.core.infrastructure.business.category.repository.CatalogRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
+import com.backend.core.usecase.util.ValueRenderUtils;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -15,10 +15,10 @@ import com.backend.core.infrastructure.business.invoice.repository.InvoiceReposi
 import com.backend.core.infrastructure.business.product.repository.ProductManagementRepository;
 import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.statics.*;
-import com.backend.core.usecase.util.process.CheckUtils;
-import com.backend.core.usecase.util.process.FirebaseUtils;
-import com.backend.core.usecase.util.process.GhnUtils;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
+import com.backend.core.usecase.util.CheckUtils;
+import com.backend.core.usecase.service.FirebaseService;
+import com.backend.core.usecase.service.GhnService;
+import com.backend.core.usecase.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +41,9 @@ public class ProcessOrderUseCase extends UseCase<ProcessOrderUseCase.InputValue,
     @Autowired
     CheckUtils checkUtils;
     @Autowired
-    FirebaseUtils firebaseUtils;
+    FirebaseService firebaseService;
     @Autowired
-    GhnUtils ghnUtils;
+    GhnService ghnService;
     @Autowired
     CartRepository cartRepo;
     @Autowired
@@ -202,12 +202,12 @@ public class ProcessOrderUseCase extends UseCase<ProcessOrderUseCase.InputValue,
                 .topic(topic)
                 .build();
 
-        firebaseUtils.sendMessage(notification);
+        firebaseService.sendMessage(notification);
     }
 
     public boolean createNewGhnShippingOrder(Invoice invoice) {
         try {
-            Delivery newDelivery = ghnUtils.getNewGhnShippingOrderCode(invoice);
+            Delivery newDelivery = ghnService.getNewGhnShippingOrderCode(invoice);
 
             if (newDelivery != null && !newDelivery.getShippingOrderCode().isBlank()) {
                 invoice.setDelivery(newDelivery);

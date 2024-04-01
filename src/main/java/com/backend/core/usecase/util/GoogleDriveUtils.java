@@ -1,4 +1,4 @@
-package com.backend.core.usecase.util.process;
+package com.backend.core.usecase.util;
 
 import com.backend.core.infrastructure.config.google_drive.GoogleDriveConfig;
 import com.google.api.client.auth.oauth2.TokenResponseException;

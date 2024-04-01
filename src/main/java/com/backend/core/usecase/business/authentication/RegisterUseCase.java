@@ -9,10 +9,10 @@ import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVaria
 import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.statics.RoleEnum;
 import com.backend.core.usecase.statics.StringTypeEnum;
-import com.backend.core.usecase.util.handler.BindExceptionHandler;
-import com.backend.core.usecase.util.process.CheckUtils;
-import com.backend.core.usecase.util.process.JwtUtils;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
+import com.backend.core.infrastructure.config.api.BindExceptionHandler;
+import com.backend.core.usecase.util.CheckUtils;
+import com.backend.core.usecase.service.JwtService;
+import com.backend.core.usecase.util.ValueRenderUtils;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
     @Autowired
     AccountRepository accountRepo;
     @Autowired
-    JwtUtils jwtUtils;
+    JwtService jwtService;
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
@@ -44,7 +44,7 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
 
         accountFromUI.setRole(RoleEnum.CUSTOMER.name());
         Customer customer = accountFromUI.getCustomer();
-        customer.setImage(GlobalDefaultStaticVariables.defaultGgDriveIdUserAvatarImage);
+        customer.setImage(GlobalDefaultStaticVariables.DEFAULT_GOOGLE_DRIVE_USER_AVATAR_IMAGE);
 
         //check for null information
         if (bindingResult.hasErrors()) {
@@ -87,7 +87,7 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
         else if (checkUtils.hasSpecialSign(customer.getName())) {
             return new ApiResponse("failed", "Full name can not have special signs !!", HttpStatus.BAD_REQUEST);
         } else {
-            String jwt = jwtUtils.generateJwt(accountFromUI);
+            String jwt = jwtService.generateJwt(accountFromUI);
             String newEncodedPassword = passwordEncoder.encode(accountFromUI.getPassword());
 
             accountFromUI.setPassword(newEncodedPassword);

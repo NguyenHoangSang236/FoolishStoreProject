@@ -1,7 +1,8 @@
-package com.backend.core.usecase.util.process;
+package com.backend.core.usecase.service;
 
 import com.backend.core.entity.account.model.Account;
 import com.backend.core.infrastructure.business.account.repository.AccountRepository;
+import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,9 +22,7 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
-public class JwtUtils {
-    private static final String SECRET_KEY = "bfe5592125967470d11815718f8af95ca5b1a4214926dfa028b290002ebcd158";
-
+public class JwtService {
     @Autowired
     AccountRepository accountRepo;
 
@@ -100,7 +99,7 @@ public class JwtUtils {
 
 
     public Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(GlobalDefaultStaticVariables.SECRET_SIGNING_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

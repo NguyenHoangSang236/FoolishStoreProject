@@ -1,4 +1,4 @@
-package com.backend.core.usecase.util.process;
+package com.backend.core.usecase.service;
 
 import com.backend.core.entity.account.model.Customer;
 import com.backend.core.entity.cart.gateway.AddressNameDTO;
@@ -14,6 +14,7 @@ import com.backend.core.infrastructure.business.delivery.dto.AddressCodeDTO;
 import com.backend.core.infrastructure.business.product.repository.ProductRepository;
 import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
 import com.backend.core.usecase.statics.PaymentEnum;
+import com.backend.core.usecase.util.NetworkUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
-public class GhnUtils {
+public class GhnService {
     @Autowired
     CartRenderInfoRepository cartRenderInfoRepo;
 
@@ -75,7 +76,7 @@ public class GhnUtils {
             requestMap.put("width", width);
             requestMap.put("length", length);
 
-            ResponseEntity<Map> shippingFeeResponse = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.shippingFeeUrl, requestMap);
+            ResponseEntity<Map> shippingFeeResponse = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.SHIPPING_FEE_URL, requestMap);
 
             if (shippingFeeResponse.getStatusCode().equals(HttpStatus.OK)) {
                 Map<String, Object> resMap = (Map<String, Object>) shippingFeeResponse.getBody().get("data");
@@ -87,7 +88,6 @@ public class GhnUtils {
             return shippingFee;
         } catch (Exception e) {
             e.printStackTrace();
-
             return 0;
         }
     }
@@ -132,7 +132,6 @@ public class GhnUtils {
             return null;
         } catch (Exception e) {
             e.printStackTrace();
-
             return null;
         }
     }
@@ -145,7 +144,7 @@ public class GhnUtils {
             requestMap.put("from_district", fromDistrictId);
             requestMap.put("to_district", toDistrictId);
 
-            ResponseEntity<Map> districtListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.availableServicesUrl, requestMap);
+            ResponseEntity<Map> districtListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.AVAILABLE_GHN_SERVICES_URL, requestMap);
 
             if (districtListRes.getStatusCode().equals(HttpStatus.OK)) {
                 // get 'data' field from request
@@ -155,7 +154,6 @@ public class GhnUtils {
             return null;
         } catch (Exception e) {
             e.printStackTrace();
-
             return null;
         }
     }
@@ -166,7 +164,7 @@ public class GhnUtils {
 
         try {
             // get response from GHN api
-            ResponseEntity<Map> provinceListRes = networkUtils.getGhnGetResponse(GlobalDefaultStaticVariables.provinceDataListUrl);
+            ResponseEntity<Map> provinceListRes = networkUtils.getGhnGetResponse(GlobalDefaultStaticVariables.PROVINCE_LIST_URL);
 
             if (provinceListRes.getStatusCode().equals(HttpStatus.OK)) {
                 // get 'data' field from request
@@ -186,7 +184,6 @@ public class GhnUtils {
             return selectedProvinceId;
         } catch (Exception e) {
             e.printStackTrace();
-
             return 0;
         }
     }
@@ -199,7 +196,7 @@ public class GhnUtils {
         try {
             // get response from GHN api
             requestMap.put("province_id", provinceId);
-            ResponseEntity<Map> districtListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.districtDataListUrl, requestMap);
+            ResponseEntity<Map> districtListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.DISTRICT_LIST_URL, requestMap);
 
             if (districtListRes.getStatusCode().equals(HttpStatus.OK)) {
                 // get 'data' field from request
@@ -219,7 +216,6 @@ public class GhnUtils {
             return selectedDistrictId;
         } catch (Exception e) {
             e.printStackTrace();
-
             return 0;
         }
     }
@@ -232,7 +228,7 @@ public class GhnUtils {
         try {
             // get response from GHN api
             requestMap.put("district_id", districtId);
-            ResponseEntity<Map> wardListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.wardDataListUrl, requestMap);
+            ResponseEntity<Map> wardListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.WARD_LIST_URL, requestMap);
 
             if (wardListRes.getStatusCode().equals(HttpStatus.OK)) {
                 // get 'data' field from request
@@ -252,7 +248,6 @@ public class GhnUtils {
             return selectedWardCode;
         } catch (Exception e) {
             e.printStackTrace();
-
             return "0";
         }
     }
@@ -321,7 +316,7 @@ public class GhnUtils {
 
             System.out.println(request);
 
-            ResponseEntity<Map> newOrderRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.createOrderUrl, request);
+            ResponseEntity<Map> newOrderRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.CREATE_ORDER_URL, request);
 
             if (newOrderRes.getStatusCode().equals(HttpStatus.OK)) {
                 Map response = (Map) newOrderRes.getBody().get("data");
@@ -343,7 +338,6 @@ public class GhnUtils {
             return delivery;
         } catch (Exception e) {
             e.printStackTrace();
-
             return null;
         }
     }
