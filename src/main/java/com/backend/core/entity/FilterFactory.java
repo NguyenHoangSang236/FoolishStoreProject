@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FilterFactory {
-    public static final FilterRequest getFilterRequest(FilterTypeEnum filterType) {
+    public static FilterRequest getFilterRequest(FilterTypeEnum filterType) {
         return switch (filterType) {
             case PRODUCT -> new ProductFilterRequestDTO();
             case INVOICE -> new InvoiceFilterRequestDTO();

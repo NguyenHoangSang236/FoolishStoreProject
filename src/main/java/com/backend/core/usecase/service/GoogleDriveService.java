@@ -2,8 +2,8 @@ package com.backend.core.usecase.service;
 
 import com.backend.core.entity.google.gateway.GoogleDriveFileDTO;
 import com.backend.core.entity.google.gateway.GoogleDriveFoldersDTO;
-import com.backend.core.usecase.util.process.GoogleDriveUtils;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
+import com.backend.core.usecase.util.GoogleDriveUtils;
+import com.backend.core.usecase.util.ValueRenderUtils;
 import com.google.api.services.drive.model.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

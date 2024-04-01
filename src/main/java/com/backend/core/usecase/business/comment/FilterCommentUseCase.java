@@ -5,8 +5,8 @@ import com.backend.core.entity.comment.gateway.CommentFilterRequestDTO;
 import com.backend.core.infrastructure.business.comment.dto.CommentRenderInfoDTO;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.UseCase;
+import com.backend.core.usecase.business.invoice.QueryService;
 import com.backend.core.usecase.statics.FilterTypeEnum;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +19,14 @@ import java.util.List;
 @Component
 public class FilterCommentUseCase extends UseCase<FilterCommentUseCase.InputValue, ApiResponse> {
     @Autowired
-    ValueRenderUtils valueRenderUtils;
+    QueryService queryService;
     @Autowired
     CustomQueryRepository customQueryRepo;
 
 
     @Override
     public ApiResponse execute(InputValue input) {
-        String filterQuery = valueRenderUtils.getFilterQuery(
+        String filterQuery = queryService.getFilterQuery(
                 input.getCommentFilterRequest(),
                 FilterTypeEnum.COMMENT,
                 input.getHttpRequest(),

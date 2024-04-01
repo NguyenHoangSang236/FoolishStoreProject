@@ -10,9 +10,9 @@ import com.backend.core.infrastructure.business.invoice.repository.InvoiceReposi
 import com.backend.core.infrastructure.business.product.repository.ProductManagementRepository;
 import com.backend.core.infrastructure.business.refund.repository.RefundRepository;
 import com.backend.core.usecase.UseCase;
+import com.backend.core.usecase.service.FirebaseService;
 import com.backend.core.usecase.statics.*;
-import com.backend.core.usecase.util.process.FirebaseUtils;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
+import com.backend.core.usecase.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class CancelOrderByIdUseCase extends UseCase<CancelOrderByIdUseCase.Input
     @Autowired
     ProductManagementRepository productManagementRepo;
     @Autowired
-    FirebaseUtils firebaseUtils;
+    FirebaseService firebaseService;
 
 
     @Override
@@ -122,7 +122,7 @@ public class CancelOrderByIdUseCase extends UseCase<CancelOrderByIdUseCase.Input
                 .topic(topic)
                 .build();
 
-        firebaseUtils.sendMessage(notification);
+        firebaseService.sendMessage(notification);
     }
 
     public void productQuantityProcess(String reason, Invoice invoice) {

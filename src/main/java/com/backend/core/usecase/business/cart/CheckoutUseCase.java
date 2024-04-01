@@ -6,8 +6,8 @@ import com.backend.core.infrastructure.business.cart.dto.CartCheckoutInfoDTO;
 import com.backend.core.infrastructure.business.cart.dto.CartRenderInfoDTO;
 import com.backend.core.infrastructure.business.cart.repository.CartRenderInfoRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.util.process.GhnUtils;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
+import com.backend.core.usecase.service.GhnService;
+import com.backend.core.usecase.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class CheckoutUseCase extends UseCase<CheckoutUseCase.InputValue, ApiResp
     @Autowired
     ValueRenderUtils valueRenderUtils;
     @Autowired
-    GhnUtils ghnUtils;
+    GhnService ghnService;
 
 
     @Override
@@ -36,7 +36,7 @@ public class CheckoutUseCase extends UseCase<CheckoutUseCase.InputValue, ApiResp
             return new ApiResponse("failed", "There is no selected cart item to proceed checkout", HttpStatus.BAD_REQUEST);
         }
 
-        double shippingFee = ghnUtils.calculateShippingFee(input.getCheckoutRequest(), selectedCartItemList);
+        double shippingFee = ghnService.calculateShippingFee(input.getCheckoutRequest(), selectedCartItemList);
 
         double subtotal = 0;
 

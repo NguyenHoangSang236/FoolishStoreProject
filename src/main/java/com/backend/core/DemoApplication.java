@@ -1,7 +1,7 @@
 package com.backend.core;
 
 import com.backend.core.infrastructure.config.api.GlobalExceptionHandler;
-import com.backend.core.usecase.util.handler.SourceCodeHandlerUtil;
+import com.backend.core.infrastructure.config.api.SourceCodeHandlerUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
