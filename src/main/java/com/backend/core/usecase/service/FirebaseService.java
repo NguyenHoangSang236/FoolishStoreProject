@@ -1,4 +1,4 @@
-package com.backend.core.usecase.util.process;
+package com.backend.core.usecase.service;
 
 import com.backend.core.entity.notification.gateway.NotificationDTO;
 import com.backend.core.entity.notification.model.Notification;
@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class FirebaseUtils {
+public class FirebaseService {
     @Autowired
     NotificationRepository notificationRepo;
 

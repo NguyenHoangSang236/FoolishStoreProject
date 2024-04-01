@@ -4,7 +4,7 @@ import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.delivery.dto.AddressCodeDTO;
 import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
-import com.backend.core.usecase.util.process.GhnUtils;
+import com.backend.core.usecase.service.GhnService;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import java.util.Map;
 @Component
 public class GetGhnAvailableServiceListUseCase extends UseCase<GetGhnAvailableServiceListUseCase.InputValue, ApiResponse> {
     @Autowired
-    GhnUtils ghnUtils;
+    GhnService ghnService;
 
 
     @Override
@@ -24,7 +24,7 @@ public class GetGhnAvailableServiceListUseCase extends UseCase<GetGhnAvailableSe
         AddressCodeDTO addressCode = input.getAddressCodeRequest();
 
         // get service map list from ids of districts from GHN api
-        List<Map> serviceMapList = ghnUtils.getAvailableServiceList(addressCode.getFromDistrictId(), addressCode.getToDistrictId());
+        List<Map> serviceMapList = ghnService.getAvailableServiceList(addressCode.getFromDistrictId(), addressCode.getToDistrictId());
 
         if (serviceMapList != null && !serviceMapList.isEmpty()) {
             return new ApiResponse("success", serviceMapList, HttpStatus.OK);

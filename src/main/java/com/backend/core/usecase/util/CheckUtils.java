@@ -1,7 +1,8 @@
-package com.backend.core.usecase.util.process;
+package com.backend.core.usecase.util;
 
 import com.backend.core.infrastructure.business.account.repository.AccountRepository;
 import com.backend.core.infrastructure.business.account.repository.CustomerRepository;
+import com.backend.core.usecase.service.JwtService;
 import com.backend.core.usecase.statics.AdminAcceptanceEnum;
 import com.backend.core.usecase.statics.InvoiceEnum;
 import com.backend.core.usecase.statics.StringTypeEnum;
@@ -18,7 +19,7 @@ public class CheckUtils {
     final CustomerRepository customerRepo;
     final AccountRepository accountRepo;
     final ValueRenderUtils valueRenderUtils;
-    final JwtUtils jwtUtils;
+    final JwtService jwtService;
 
 
     //check String has space or not

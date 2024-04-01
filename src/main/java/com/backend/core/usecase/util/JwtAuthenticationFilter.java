@@ -1,7 +1,8 @@
-package com.backend.core.usecase.util.process;
+package com.backend.core.usecase.util;
 
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.config.security.UserDetailsServiceImpl;
+import com.backend.core.usecase.service.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -23,7 +24,7 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
-    JwtUtils jwtUtils;
+    JwtService jwtService;
     @Autowired
     UserDetailsServiceImpl userDetailsServiceImpl;
 
@@ -42,10 +43,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // if header is not null and starts with word 'Bearer' -> proceed filter
             if (authHeader != null && authHeader.startsWith("Bearer")) {
                 // get jwt from header ('Bearer' length is 7 => get jwt after index 7 of header)
-                jwt = jwtUtils.getJwtFromRequest(request);
+                jwt = jwtService.getJwtFromRequest(request);
 
                 // get username from jwt
-                userName = jwtUtils.getUserNameFromJwt(jwt);
+                userName = jwtService.getUserNameFromJwt(jwt);
 
                 response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
                 response.setHeader("Access-Control-Allow-Credentials", "true");
@@ -58,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(userName);
 
                     // if jwt is valid -> proceed
-                    if (jwtUtils.isJwtValid(jwt, userDetails)) {
+                    if (jwtService.isJwtValid(jwt, userDetails)) {
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails.getUsername(),
                                 null,

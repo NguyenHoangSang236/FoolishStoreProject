@@ -19,9 +19,9 @@ import com.backend.core.infrastructure.business.online_payment.repository.Online
 import com.backend.core.infrastructure.business.product.repository.ProductManagementRepository;
 import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.statics.*;
-import com.backend.core.usecase.util.process.FirebaseUtils;
-import com.backend.core.usecase.util.process.GhnUtils;
-import com.backend.core.usecase.util.process.ValueRenderUtils;
+import com.backend.core.usecase.service.FirebaseService;
+import com.backend.core.usecase.service.GhnService;
+import com.backend.core.usecase.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +35,11 @@ public class AddNewOrderUseCase extends UseCase<AddNewOrderUseCase.InputValue, A
     @Autowired
     ValueRenderUtils valueRenderUtils;
     @Autowired
-    FirebaseUtils firebaseUtils;
+    FirebaseService firebaseService;
     @Autowired
     CartRenderInfoRepository cartRenderInfoRepo;
     @Autowired
-    GhnUtils ghnUtils;
+    GhnService ghnService;
     @Autowired
     InvoiceRepository invoiceRepo;
     @Autowired
@@ -70,7 +70,7 @@ public class AddNewOrderUseCase extends UseCase<AddNewOrderUseCase.InputValue, A
         List<CartRenderInfoDTO> selectedCartItemList = cartRenderInfoRepo.getSelectedCartItemListByCustomerId(customerId);
 
         String paymentMethod = cartCheckout.getPaymentMethod();
-        double shippingFee = ghnUtils.calculateShippingFee(cartCheckout, selectedCartItemList);
+        double shippingFee = ghnService.calculateShippingFee(cartCheckout, selectedCartItemList);
         double subtotal = 0;
         int newInvoiceId = 1;
         String address = cartCheckout.getAddress();
@@ -218,7 +218,7 @@ public class AddNewOrderUseCase extends UseCase<AddNewOrderUseCase.InputValue, A
                 .topic(topic)
                 .build();
 
-        firebaseUtils.sendMessage(notification);
+        firebaseService.sendMessage(notification);
     }
 
     @Value

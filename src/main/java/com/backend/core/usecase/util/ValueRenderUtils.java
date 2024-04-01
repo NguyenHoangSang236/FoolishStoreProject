@@ -1,4 +1,4 @@
-package com.backend.core.usecase.util.process;
+package com.backend.core.usecase.util;
 
 import com.backend.core.entity.FilterFactory;
 import com.backend.core.entity.FilterRequest;
@@ -14,6 +14,7 @@ import com.backend.core.entity.refund.gateway.RefundFilterDTO;
 import com.backend.core.infrastructure.business.account.repository.AccountRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductRenderInfoRepository;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
+import com.backend.core.usecase.service.JwtService;
 import com.backend.core.usecase.statics.CartEnum;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.FilterTypeEnum;
@@ -33,7 +34,7 @@ public class ValueRenderUtils {
     final CustomQueryRepository customQueryRepo;
     final ProductRenderInfoRepository productRenderInfoRepo;
     final AccountRepository accountRepo;
-    final JwtUtils jwtUtils;
+    final JwtService jwtService;
 
 
     //remove spaces at the beginning of the input text
@@ -98,45 +99,17 @@ public class ValueRenderUtils {
     }
 
 
-    //encode the password
-    public String encodePassword(String pass) {
-        char[] charArr = pass.toCharArray();
-        String result;
-
-        for (int i = 0; i < charArr.length; i++) {
-            charArr[i] = (char) (charArr[i] + 5);
-        }
-        result = charArr.toString();
-
-        return result;
-    }
-
-
-    //decode the password
-    public String decodePassword(String pass) {
-        char[] charArr = pass.toCharArray();
-        String result;
-
-        for (int i = 0; i < charArr.length; i++) {
-            charArr[i] = (char) (charArr[i] - 5);
-        }
-        result = String.valueOf(charArr);
-
-        return result;
-    }
-
-
     //format string to link
     public String stringToLink(String link) {
         String result = " ";
-        char[] linkCharrArr = link.toCharArray();
+        char[] linkCharArr = link.toCharArray();
 
-        for (int i = 0; i < linkCharrArr.length; i++) {
-            if (linkCharrArr[i] == ' ') {
-                linkCharrArr[i] = '_';
+        for (int i = 0; i < linkCharArr.length; i++) {
+            if (linkCharArr[i] == ' ') {
+                linkCharArr[i] = '_';
             }
         }
-        result = String.valueOf(linkCharrArr);
+        result = String.valueOf(linkCharArr);
 
         return result;
     }
@@ -145,14 +118,14 @@ public class ValueRenderUtils {
     //format link to string
     public String linkToString(String link) {
         String result = " ";
-        char[] linkCharrArr = link.toCharArray();
+        char[] linkCharArr = link.toCharArray();
 
-        for (int i = 0; i < linkCharrArr.length; i++) {
-            if (linkCharrArr[i] == '_') {
-                linkCharrArr[i] = ' ';
+        for (int i = 0; i < linkCharArr.length; i++) {
+            if (linkCharArr[i] == '_') {
+                linkCharArr[i] = ' ';
             }
         }
-        result = String.valueOf(linkCharrArr);
+        result = String.valueOf(linkCharArr);
 
         return result;
     }
@@ -181,20 +154,20 @@ public class ValueRenderUtils {
     public String getConvertedDataSize(long size) {
         long n = 1024;
         String s = "";
-        double kb = size / n;
+        double kb = (double) size / n;
         double mb = kb / n;
         double gb = mb / n;
         double tb = gb / n;
         if (size < n) {
             s = size + " Bytes";
-        } else if (size >= n && size < (n * n)) {
-            s = String.format("%.1f", Double.valueOf(kb)) + " KB";
-        } else if (size >= (n * n) && size < (n * n * n)) {
-            s = String.format("%.1f", Double.valueOf(mb)) + " MB";
-        } else if (size >= (n * n * n) && size < (n * n * n * n)) {
-            s = String.format("%.2f", Double.valueOf(gb)) + " GB";
-        } else if (size >= (n * n * n * n)) {
-            s = String.format("%.2f", Double.valueOf(tb)) + " TB";
+        } else if (size < n * n) {
+            s = String.format("%.1f", kb) + " KB";
+        } else if (size < n * n * n) {
+            s = String.format("%.1f", mb) + " MB";
+        } else if (size < n * n * n * n) {
+            s = String.format("%.2f", gb) + " GB";
+        } else {
+            s = String.format("%.2f", tb) + " TB";
         }
         return s;
     }
@@ -222,8 +195,8 @@ public class ValueRenderUtils {
     // get current account from request
     public Account getCurrentAccountFromRequest(HttpServletRequest request) {
         try {
-            String jwt = jwtUtils.getJwtFromRequest(request);
-            String userName = jwtUtils.getUserNameFromJwt(jwt);
+            String jwt = jwtService.getJwtFromRequest(request);
+            String userName = jwtService.getUserNameFromJwt(jwt);
 
             Account currentUser = accountRepo.getAccountByUserName(userName);
 
