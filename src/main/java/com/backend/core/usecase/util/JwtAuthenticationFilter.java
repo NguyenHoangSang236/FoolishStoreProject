@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
+    ) throws IOException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userName;
@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
                 response.setHeader("Access-Control-Allow-Credentials", "true");
-                response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+                response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, PATCH, HEAD, OPTIONS, DELETE");
                 response.setHeader("Access-Control-Max-Age", "3600");
                 response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
 
@@ -92,7 +92,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (object == null) {
             return null;
         }
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(object);
+        else {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(object);
+        }
     }
 }

@@ -76,7 +76,6 @@ public class GoogleDriveUtils {
             googleDriveConfig = GoogleDriveConfig.getGgDriveConfigInstance();
             googleDriveConfig.getInstance().files().delete(fileId).execute();
         } catch (Exception e) {
-            System.out.println(e);
             e.printStackTrace();
         }
     }
