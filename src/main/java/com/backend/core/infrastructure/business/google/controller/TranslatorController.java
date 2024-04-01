@@ -19,7 +19,6 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping(value = "/unauthen/translator", consumes = {"*/*"}, produces = {MediaType.APPLICATION_JSON_VALUE})
 @AllArgsConstructor
 public class TranslatorController {
-    ;
     final UseCaseExecutor useCaseExecutor;
     final TranslateUseCase translateUseCase;
     final ViewLanguageListUseCase viewLanguageListUseCase;

@@ -8,10 +8,10 @@ import com.backend.core.infrastructure.business.account.repository.AccountReposi
 import com.backend.core.infrastructure.business.account.repository.CustomerRenderInfoRepository;
 import com.backend.core.infrastructure.business.account.repository.StaffRenderInfoRepository;
 import com.backend.core.usecase.UseCase;
+import com.backend.core.usecase.service.JwtService;
 import com.backend.core.usecase.statics.AccountStatusEnum;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.RoleEnum;
-import com.backend.core.usecase.service.JwtService;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

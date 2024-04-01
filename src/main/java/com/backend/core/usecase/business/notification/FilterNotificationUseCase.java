@@ -5,8 +5,8 @@ import com.backend.core.entity.notification.gateway.NotificationFilterRequestDTO
 import com.backend.core.entity.notification.model.Notification;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.UseCase;
+import com.backend.core.usecase.business.invoice.QueryService;
 import com.backend.core.usecase.statics.FilterTypeEnum;
-import com.backend.core.usecase.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class FilterNotificationUseCase extends UseCase<FilterNotificationUseCase
     @Autowired
     CustomQueryRepository customQueryRepo;
     @Autowired
-    ValueRenderUtils valueRenderUtils;
+    QueryService queryService;
 
 
     @Override
@@ -28,7 +28,7 @@ public class FilterNotificationUseCase extends UseCase<FilterNotificationUseCase
         HttpServletRequest httpRequest = input.getHttpRequest();
         NotificationFilterRequestDTO filterRequest = input.getNotificationFilterRequest();
 
-        String filterQuery = valueRenderUtils.getFilterQuery(filterRequest, FilterTypeEnum.NOTIFICATION, httpRequest, true);
+        String filterQuery = queryService.getFilterQuery(filterRequest, FilterTypeEnum.NOTIFICATION, httpRequest, true);
         List<Notification> notiList = customQueryRepo.getBindingFilteredList(filterQuery, Notification.class);
 
         return new ApiResponse("success", notiList, HttpStatus.OK);

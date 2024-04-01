@@ -23,7 +23,7 @@ public class GlobalDefaultStaticVariables {
     public static final String DEFAULT_GOOGLE_DRIVE_USER_AVATAR_IMAGE = "1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R";
 
     public static final String CREDENTIALS_FILE_PATH = "src/main/resources/client_secret.json";
-    
+
     public static final String SERVICE_ACCOUNT_PRIVATE_JSON_KEY = "src/main/resources/service_account_private_key.json";
 
     public static final String APPLICATION_NAME = "FoolishFashionStore";
