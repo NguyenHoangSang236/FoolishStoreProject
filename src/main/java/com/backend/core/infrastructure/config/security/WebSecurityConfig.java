@@ -1,4 +1,4 @@
-package infrastructure.config.security;
+package com.backend.core.infrastructure.config.security;
 
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
@@ -11,9 +11,10 @@ import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,7 +26,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity()
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -35,31 +36,37 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf().disable()
-                .cors().configurationSource(corsConfigurationSource())
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers("/unauthen/**", "/error", "/wsNotificationEndPoint/**").permitAll()
-                .anyRequest().authenticated()
-//                .anyRequest().permitAll()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(
+                        request -> {
+                            request.requestMatchers("/unauthen/**", "/error", "/wsNotificationEndPoint/**").permitAll();
+                            request.anyRequest().authenticated();
+                        }
+                )
+                .sessionManagement(
+                        sessionManagement -> {
+                            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                        }
+                )
                 .userDetailsService(userDetailsService)
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
-                .authenticationEntryPoint((request, response, authException) -> {
-                    ApiResponse apiResponse = new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
+                .exceptionHandling(
+                        exception -> {
+                            exception.authenticationEntryPoint(
+                                    (request, response, authException) -> {
+                                        ApiResponse apiResponse = new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
 
-                    String jsonErrorResponse = new ObjectMapper().writeValueAsString(apiResponse);
+                                        String jsonErrorResponse = new ObjectMapper().writeValueAsString(apiResponse);
 
-                    response.setContentType("application/json");
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    response.getWriter().write(jsonErrorResponse);
-                })
-        ;
+                                        response.setContentType("application/json");
+                                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                                        response.getWriter().write(jsonErrorResponse);
+                                    }
+                            );
+                        }
+                );
 
         return httpSecurity.build();
     }
