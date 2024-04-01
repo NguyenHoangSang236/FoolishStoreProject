@@ -18,6 +18,7 @@ import com.backend.core.usecase.statics.CartEnum;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.FilterTypeEnum;
 import com.backend.core.usecase.statics.RoleEnum;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,6 @@ public class ValueRenderUtils {
     final ProductRenderInfoRepository productRenderInfoRepo;
     final AccountRepository accountRepo;
     final JwtUtils jwtUtils;
-    FilterFactory filterFactory;
 
 
     //remove spaces at the beginning of the input text
@@ -678,5 +678,21 @@ public class ValueRenderUtils {
         calendar.set(Calendar.MILLISECOND, 0);
 
         return calendar.getTime();
+    }
+
+
+    // parse object to json string
+    public String parseObjectToString(Object object) {
+        return new Gson().toJson(object);
+    }
+
+
+    // parse json string to object
+    public <T> T parseJsonStringToObject(String json, Class<T> objectClass) {
+        try {
+            return new Gson().fromJson(json, objectClass);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
