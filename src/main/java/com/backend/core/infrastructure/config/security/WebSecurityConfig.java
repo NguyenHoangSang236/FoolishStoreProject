@@ -80,10 +80,12 @@ public class WebSecurityConfig {
         return handler;
     }
 
+
     @Bean
     public CookieSameSiteSupplier cookieSameSiteSupplier() {
         return CookieSameSiteSupplier.ofNone();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

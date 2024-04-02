@@ -30,6 +30,6 @@ public class GlobalDefaultStaticVariables {
 
     public static final String SECRET_SIGNING_KEY = "bfe5592125967470d11815718f8af95ca5b1a4214926dfa028b290002ebcd158";
 
-    public final static String COMMENT_ENDPOINT = "/websocket";
+    public static final String COMMENT_ENDPOINT = "/websocket";
 
 }

@@ -19,7 +19,7 @@ public class CommentWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         for (WebSocketSession webSocketSession : webSocketSessions) {
             log.info("Session:" + session.getId());
             log.info("Message payload:" + message.getPayload());
