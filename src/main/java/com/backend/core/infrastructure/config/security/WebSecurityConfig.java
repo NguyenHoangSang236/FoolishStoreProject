@@ -40,8 +40,9 @@ public class WebSecurityConfig {
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(
                         request -> {
-                            request.requestMatchers("/unauthen/**", "/error", "/websocket/**", "/websocket").permitAll();
-                            request.anyRequest().authenticated();
+//                            request.requestMatchers("/unauthen/**", "/error", "/topic/**", "/app/**", "/ws", "/ws/**").permitAll();
+//                            request.anyRequest().authenticated();
+                            request.anyRequest().permitAll();
                         }
                 )
                 .sessionManagement(
