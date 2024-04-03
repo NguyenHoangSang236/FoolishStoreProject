@@ -1,7 +1,6 @@
 package com.backend.core.infrastructure.config.security;
 
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.util.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
@@ -15,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -39,12 +39,14 @@ public class WebSecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(
-                        request -> {
-                            request.requestMatchers("/authen/**").authenticated()
-                                    .anyRequest().permitAll();
-                        }
-                )
+//                .anonymous(AnonymousConfigurer::disable)
+//                .formLogin(AbstractHttpConfigurer::disable)
+//                .httpBasic(AbstractHttpConfigurer::disable)
+//                .logout(LogoutConfigurer::disable)
+//                .authorizeHttpRequests(
+//                        (request) -> request.requestMatchers("/authen/**").authenticated()
+//                                .anyRequest().permitAll()
+//                )
                 .sessionManagement(
                         sessionManagement -> {
                             sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -52,7 +54,7 @@ public class WebSecurityConfig {
                 )
                 .userDetailsService(userDetailsService)
                 .authenticationProvider(authenticationProvider)
-                .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(
                         exception -> {
                             exception.authenticationEntryPoint(
@@ -72,6 +74,12 @@ public class WebSecurityConfig {
                 );
 
         return httpSecurity.build();
+    }
+
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/unauthen/**", "/error");
     }
 
 
