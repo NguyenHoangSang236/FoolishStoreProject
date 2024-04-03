@@ -33,6 +33,7 @@ public class DemoApplication {
         app.run(args);
     }
 
+
     @Bean
     public WebMvcConfigurer customCorsConfigurer() {
         return new WebMvcConfigurer() {

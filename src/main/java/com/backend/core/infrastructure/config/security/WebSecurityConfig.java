@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,7 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity()
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -40,8 +41,8 @@ public class WebSecurityConfig {
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(
                         request -> {
-                            request.requestMatchers("/unauthen/**", "/error", "/wsNotificationEndPoint/**").permitAll();
-                            request.anyRequest().authenticated();
+                            request.requestMatchers("/authen/**").authenticated()
+                                    .anyRequest().permitAll();
                         }
                 )
                 .sessionManagement(
@@ -51,18 +52,20 @@ public class WebSecurityConfig {
                 )
                 .userDetailsService(userDetailsService)
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(
                         exception -> {
                             exception.authenticationEntryPoint(
                                     (request, response, authException) -> {
-                                        ApiResponse apiResponse = new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
+                                        if (authException != null) {
+                                            ApiResponse apiResponse = new ApiResponse("failed", authException.getMessage(), HttpStatus.UNAUTHORIZED);
 
-                                        String jsonErrorResponse = new ObjectMapper().writeValueAsString(apiResponse);
+                                            String jsonErrorResponse = new ObjectMapper().writeValueAsString(apiResponse);
 
-                                        response.setContentType("application/json");
-                                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                                        response.getWriter().write(jsonErrorResponse);
+                                            response.setContentType("application/json");
+                                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                            response.getWriter().write(jsonErrorResponse);
+                                        }
                                     }
                             );
                         }
@@ -80,10 +83,12 @@ public class WebSecurityConfig {
         return handler;
     }
 
+
     @Bean
     public CookieSameSiteSupplier cookieSameSiteSupplier() {
         return CookieSameSiteSupplier.ofNone();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
