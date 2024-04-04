@@ -66,7 +66,7 @@ public class CategoryController {
     }
 
     @GetMapping("/unauthen/category/allCategories")
-    public CompletableFuture<ResponseEntity<ApiResponse>> getListOfItems() throws IOException {
+    public CompletableFuture<ResponseEntity<ApiResponse>> getAllCategoryList() throws IOException {
         return useCaseExecutor.execute(
                 filterCategoryUseCase,
                 new FilterCategoryUseCase.InputValue(),
