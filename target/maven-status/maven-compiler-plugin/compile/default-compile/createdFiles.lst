@@ -31,6 +31,7 @@ com\backend\core\usecase\business\category\AddCategoryUseCase.class
 com\backend\core\usecase\business\cart\UpdateCartUseCase.class
 com\backend\core\usecase\statics\CurrencyEnum.class
 com\backend\core\infrastructure\business\cart\repository\CartRenderInfoRepository.class
+com\backend\core\infrastructure\config\websocket\Message$MessageType.class
 com\backend\core\entity\delivery\gateway\DeliveryFilterRequestDTO.class
 com\backend\core\entity\account\gateway\AccountFilterDTO.class
 com\backend\core\infrastructure\business\comment\repository\CommentLikeRepository.class
@@ -108,6 +109,7 @@ com\backend\core\infrastructure\business\account\repository\CustomerRepository.c
 com\backend\core\usecase\business\product\AddProductUseCase.class
 com\backend\core\usecase\business\product\NewArrivalProductsUseCase.class
 com\backend\core\infrastructure\config\web\WebConfig.class
+com\backend\core\infrastructure\config\websocket\MessageController.class
 com\backend\core\entity\cart\model\Cart.class
 com\backend\core\infrastructure\business\comment\dto\CommentRenderInfoDTO.class
 com\backend\core\infrastructure\business\category\controller\CategoryController.class
@@ -162,6 +164,7 @@ com\backend\core\usecase\business\invoice\ViewInvoiceByIdUseCase.class
 com\backend\core\infrastructure\config\security\UserDetailsServiceImpl.class
 com\backend\core\infrastructure\config\api\CustomResponseBodyAdviceAdapter.class
 com\backend\core\infrastructure\business\cart\controller\CartController.class
+com\backend\core\infrastructure\config\websocket\WebSocketEventListener.class
 com\backend\core\entity\delivery\gateway\DeliveryActionOnOrderDTO.class
 com\backend\core\usecase\business\invoice\ProcessOrderUseCase.class
 com\backend\core\entity\account\model\Customer.class
@@ -221,6 +224,7 @@ com\backend\core\entity\notification\gateway\NotificationDTO$NotificationDTOBuil
 com\backend\core\usecase\business\google\UploadImageUseCase.class
 com\backend\core\usecase\business\product\ViewProductByIdUseCase.class
 com\backend\core\infrastructure\business\account\dto\StaffRenderInfoDTO.class
+com\backend\core\infrastructure\config\websocket\Message.class
 com\backend\core\usecase\business\account\UpdateAccountUseCase$InputValue.class
 com\backend\core\usecase\business\cart\TotalCartItemQuantityUseCase$InputValue.class
 com\backend\core\entity\api\PaginationDTO.class
@@ -264,6 +268,7 @@ com\backend\core\infrastructure\business\firebase\controller\FirebaseMessagingCo
 com\backend\core\infrastructure\config\firebase\FirebaseProperties.class
 com\backend\core\entity\account\model\Staff.class
 com\backend\core\infrastructure\business\cart\dto\CartCheckoutInfoDTO.class
+com\backend\core\infrastructure\config\websocket\WebSocketConfig.class
 com\backend\core\infrastructure\config\api\CustomRequestBodyAdviceAdapter.class
 com\backend\core\usecase\statics\RefundEnum.class
 com\backend\core\infrastructure\business\account\controller\AccountController.class
