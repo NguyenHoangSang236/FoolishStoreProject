@@ -5,7 +5,7 @@ import com.backend.core.entity.product.gateway.ProductFilterRequestDTO;
 import com.backend.core.infrastructure.business.product.dto.ProductRenderInfoDTO;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.business.invoice.QueryService;
+import com.backend.core.usecase.service.QueryService;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.FilterTypeEnum;
 import jakarta.servlet.http.HttpServletRequest;

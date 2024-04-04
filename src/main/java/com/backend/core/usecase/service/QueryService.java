@@ -1,4 +1,4 @@
-package com.backend.core.usecase.business.invoice;
+package com.backend.core.usecase.service;
 
 import com.backend.core.entity.FilterFactory;
 import com.backend.core.entity.FilterRequest;
@@ -49,7 +49,7 @@ public class QueryService {
             int page = filterRequest.getPagination().getPage();
             int limit = filterRequest.getPagination().getLimit();
 
-            Account currentAccount = valueRenderUtils.getCurrentAccountFromRequest(request);
+            Account currentAccount = authen ? valueRenderUtils.getCurrentAccountFromRequest(request) : null;
 
             try {
                 switch (filterType) {
@@ -60,9 +60,11 @@ public class QueryService {
                         filterQuery = productFilterQuery((ProductFilterDTO) filter, pagination);
                     }
                     case NOTIFICATION -> {
+                        assert currentAccount != null;
                         filterQuery = notificationFilterQuery((NotificationFilterDTO) filter, pagination, currentAccount);
                     }
                     case CART_ITEMS -> {
+                        assert currentAccount != null;
                         filterQuery = cartItemFilterQuery((CartItemFilterDTO) filter, pagination, currentAccount);
                     }
                     case COMMENT -> {
@@ -195,7 +197,7 @@ public class QueryService {
         }
 
         if (replyOn >= 0) {
-            result += "reply_on = " + replyOn + " limit 0, " + limit * page + " and ";
+            result += "reply_on = " + replyOn;
         }
 
         // remove the final 'and' word in the query

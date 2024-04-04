@@ -1,5 +1,6 @@
 package com.backend.core.infrastructure.config.web;
 
+import com.backend.core.infrastructure.config.logging.CustomUrlFilter;
 import lombok.NonNull;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +44,7 @@ public class WebConfig {
         CustomUrlFilter customURLFilter = new CustomUrlFilter();
 
         registrationBean.setFilter(customURLFilter);
-//        registrationBean.setOrder(2);
+        registrationBean.setOrder(2);
 
         return registrationBean;
     }

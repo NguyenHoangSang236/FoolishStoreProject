@@ -32,4 +32,5 @@ public class GlobalDefaultStaticVariables {
 
     public static final String COMMENT_ENDPOINT = "/websocket";
 
+    public static final String REQUEST_ID = "request_id";
 }

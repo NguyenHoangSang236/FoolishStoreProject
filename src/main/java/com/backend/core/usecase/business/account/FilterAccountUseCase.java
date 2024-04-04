@@ -7,7 +7,7 @@ import com.backend.core.infrastructure.business.account.dto.CustomerRenderInfoDT
 import com.backend.core.infrastructure.business.account.dto.StaffRenderInfoDTO;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.business.invoice.QueryService;
+import com.backend.core.usecase.service.QueryService;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.RoleEnum;
 import lombok.Value;
