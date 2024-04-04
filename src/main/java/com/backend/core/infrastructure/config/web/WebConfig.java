@@ -43,7 +43,7 @@ public class WebConfig {
         CustomUrlFilter customURLFilter = new CustomUrlFilter();
 
         registrationBean.setFilter(customURLFilter);
-        registrationBean.setOrder(2);
+//        registrationBean.setOrder(2);
 
         return registrationBean;
     }

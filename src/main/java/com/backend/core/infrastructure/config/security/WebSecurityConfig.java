@@ -1,7 +1,6 @@
 package com.backend.core.infrastructure.config.security;
 
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.util.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
@@ -10,10 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,7 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity()
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -38,12 +39,14 @@ public class WebSecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(
-                        request -> {
-                            request.requestMatchers("/unauthen/**", "/error", "/wsNotificationEndPoint/**").permitAll();
-                            request.anyRequest().authenticated();
-                        }
-                )
+//                .anonymous(AnonymousConfigurer::disable)
+//                .formLogin(AbstractHttpConfigurer::disable)
+//                .httpBasic(AbstractHttpConfigurer::disable)
+//                .logout(LogoutConfigurer::disable)
+//                .authorizeHttpRequests(
+//                        (request) -> request.requestMatchers("/authen/**").authenticated()
+//                                .anyRequest().permitAll()
+//                )
                 .sessionManagement(
                         sessionManagement -> {
                             sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -56,19 +59,27 @@ public class WebSecurityConfig {
                         exception -> {
                             exception.authenticationEntryPoint(
                                     (request, response, authException) -> {
-                                        ApiResponse apiResponse = new ApiResponse("failed", ErrorTypeEnum.UNAUTHORIZED.name());
+                                        if (authException != null) {
+                                            ApiResponse apiResponse = new ApiResponse("failed", authException.getMessage(), HttpStatus.UNAUTHORIZED);
 
-                                        String jsonErrorResponse = new ObjectMapper().writeValueAsString(apiResponse);
+                                            String jsonErrorResponse = new ObjectMapper().writeValueAsString(apiResponse);
 
-                                        response.setContentType("application/json");
-                                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                                        response.getWriter().write(jsonErrorResponse);
+                                            response.setContentType("application/json");
+                                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                            response.getWriter().write(jsonErrorResponse);
+                                        }
                                     }
                             );
                         }
                 );
 
         return httpSecurity.build();
+    }
+
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/unauthen/**", "/error");
     }
 
 
@@ -80,10 +91,12 @@ public class WebSecurityConfig {
         return handler;
     }
 
+
     @Bean
     public CookieSameSiteSupplier cookieSameSiteSupplier() {
         return CookieSameSiteSupplier.ofNone();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
