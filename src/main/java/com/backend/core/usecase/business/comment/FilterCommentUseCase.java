@@ -5,7 +5,7 @@ import com.backend.core.entity.comment.gateway.CommentFilterRequestDTO;
 import com.backend.core.infrastructure.business.comment.dto.CommentRenderInfoDTO;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.UseCase;
-import com.backend.core.usecase.business.invoice.QueryService;
+import com.backend.core.usecase.service.QueryService;
 import com.backend.core.usecase.statics.FilterTypeEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;

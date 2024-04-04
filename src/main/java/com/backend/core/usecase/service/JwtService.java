@@ -67,7 +67,14 @@ public class JwtService {
 
 
     public String getJwtFromRequest(HttpServletRequest request) {
-        return request.getHeader("Authorization").substring(7);
+        String jwtToken = request.getHeader("Authorization");
+
+        if (jwtToken == null) {
+            return null;
+        }
+        else {
+            return  request.getHeader("Authorization").substring(7);
+        }
     }
 
 

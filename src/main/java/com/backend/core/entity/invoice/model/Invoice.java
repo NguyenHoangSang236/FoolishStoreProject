@@ -85,7 +85,7 @@ public class Invoice {
     String address;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "invoice", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "invoice", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     List<InvoicesWithProducts> invoicesWithProducts;
 
     @OneToOne(mappedBy = "invoice")

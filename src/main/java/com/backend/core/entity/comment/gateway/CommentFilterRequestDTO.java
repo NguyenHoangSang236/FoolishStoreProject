@@ -5,24 +5,19 @@ import com.backend.core.entity.api.PaginationDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.LinkedHashMap;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentFilterRequestDTO implements FilterRequest {
     @JsonProperty("filter")
     CommentRequestDTO filter;
 
     @JsonProperty("pagination")
     PaginationDTO pagination;
-
-
-    public CommentFilterRequestDTO() {
-    }
-
-    public CommentFilterRequestDTO(CommentRequestDTO filter, PaginationDTO pagination) {
-        this.filter = filter;
-        this.pagination = pagination;
-    }
 
 
     @Override
@@ -45,5 +40,14 @@ public class CommentFilterRequestDTO implements FilterRequest {
     @Override
     public void setPagination(PaginationDTO pagination) {
         this.pagination = pagination;
+    }
+
+
+    @Override
+    public String toString() {
+        return "CommentFilterRequestDTO{" +
+                "filter=" + filter +
+                ", pagination=" + pagination +
+                '}';
     }
 }

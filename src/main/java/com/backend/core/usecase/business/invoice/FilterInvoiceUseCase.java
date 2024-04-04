@@ -5,6 +5,7 @@ import com.backend.core.entity.invoice.gateway.InvoiceFilterRequestDTO;
 import com.backend.core.infrastructure.business.invoice.dto.InvoiceRenderInfoDTO;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.UseCase;
+import com.backend.core.usecase.service.QueryService;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
 import com.backend.core.usecase.statics.FilterTypeEnum;
 import com.backend.core.usecase.statics.RoleEnum;

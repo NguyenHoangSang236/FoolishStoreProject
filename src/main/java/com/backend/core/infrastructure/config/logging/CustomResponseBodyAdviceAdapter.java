@@ -1,7 +1,11 @@
-package com.backend.core.infrastructure.config.api;
+package com.backend.core.infrastructure.config.logging;
 
-import com.backend.core.usecase.service.LoggingService;
+import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
+import com.backend.core.usecase.util.ValueRenderUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -14,9 +18,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 @ControllerAdvice
+@Slf4j
 public class CustomResponseBodyAdviceAdapter implements ResponseBodyAdvice<Object> {
     @Autowired
-    LoggingService loggingService;
+    ValueRenderUtils valueRenderUtils;
 
 
     @Override
@@ -33,7 +38,7 @@ public class CustomResponseBodyAdviceAdapter implements ResponseBodyAdvice<Objec
                                   @NonNull ServerHttpRequest request,
                                   @NonNull ServerHttpResponse response) {
         if (request instanceof ServletServerHttpRequest && response instanceof ServletServerHttpResponse) {
-            loggingService.logResponse(
+            logResponse(
                     ((ServletServerHttpRequest) request).getServletRequest(),
                     ((ServletServerHttpResponse) response).getServletResponse(),
                     body
@@ -41,5 +46,16 @@ public class CustomResponseBodyAdviceAdapter implements ResponseBodyAdvice<Objec
         }
 
         return body;
+    }
+
+    public void logResponse(HttpServletRequest request, HttpServletResponse response, Object body) {
+        Object requestId = request.getAttribute(GlobalDefaultStaticVariables.REQUEST_ID);
+
+        String data = "\n\n------------------------LOGGING RESPONSE-----------------------------------\n" +
+                "[REQUEST-ID]: " + requestId.toString() + "\n" +
+                "[BODY RESPONSE]: " + valueRenderUtils.parseObjectToString(body) +
+                "\n------------------------END LOGGING RESPONSE-----------------------------------\n";
+
+        log.info(data);
     }
 }
