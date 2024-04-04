@@ -1,13 +1,17 @@
 package com.backend.core.usecase.util;
 
 import com.backend.core.entity.account.model.Account;
+import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.account.repository.AccountRepository;
 import com.backend.core.infrastructure.business.product.repository.ProductRenderInfoRepository;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.service.JwtService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -260,7 +264,16 @@ public class ValueRenderUtils {
 
     // parse object to json string
     public String parseObjectToString(Object object) {
-        return new Gson().toJson(object);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.writeValueAsString(object);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            ApiResponse res = new ApiResponse("failed", "Error at JSON parsing", HttpStatus.INTERNAL_SERVER_ERROR);
+            return res.toString();
+        }
+
     }
 
 

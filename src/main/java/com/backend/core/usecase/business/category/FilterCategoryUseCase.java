@@ -20,6 +20,10 @@ public class FilterCategoryUseCase extends UseCase<FilterCategoryUseCase.InputVa
     @Override
     public ApiResponse execute(InputValue input) {
         List<Catalog> categoryList = categoryRepo.getAllCatalogs();
+
+        System.out.println("###");
+        System.out.println(categoryList);
+
         return new ApiResponse("success", categoryList, HttpStatus.OK);
     }
 
