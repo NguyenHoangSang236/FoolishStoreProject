@@ -1,4 +1,4 @@
-package com.backend.core.usecase.util;
+package com.backend.core.infrastructure.config.security;
 
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.config.security.UserDetailsServiceImpl;
@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     JwtService jwtService;

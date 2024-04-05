@@ -1,11 +1,15 @@
 package com.backend.core.infrastructure.config.web;
 
+import com.backend.core.infrastructure.config.logging.CustomInterceptor;
 import com.backend.core.infrastructure.config.logging.CustomUrlFilter;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -13,6 +17,10 @@ public class WebConfig {
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
+            @Autowired
+            CustomInterceptor customInterceptor;
+
+
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
@@ -20,6 +28,11 @@ public class WebConfig {
                         .allowedHeaders("*")
                         .allowCredentials(true)
                         .allowedMethods("*");
+            }
+
+            @Override
+            public void addInterceptors(InterceptorRegistry registry) {
+                registry.addInterceptor(customInterceptor);
             }
         };
     }
@@ -32,7 +45,8 @@ public class WebConfig {
 //        filter.setIncludePayload(true);
 //        filter.setMaxPayloadLength(10000);
 //        filter.setIncludeHeaders(true);
-//        filter.setAfterMessagePrefix("REQUEST DATA: ");
+//        filter.setBeforeMessagePrefix("\n------------------------LOGGING REQUEST-----------------------------------\n");
+//        filter.setBeforeMessageSuffix("\n\n------------------------END LOGGING REQUEST-----------------------------------\n");
 //
 //        return filter;
 //    }
