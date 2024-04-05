@@ -89,19 +89,5 @@ public class Account implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
-    @Override
-    public String toString() {
-        return "Account{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
-                ", status='" + status + '\'' +
-                ", currentJwt='" + currentJwt + '\'' +
-                ", customer=" + customer.getName() +
-                ", deviceFcmTokens=" + deviceFcmTokens +
-                '}';
-    }
 }
 

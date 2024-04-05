@@ -197,7 +197,7 @@ public class QueryService {
         }
 
         if (replyOn >= 0) {
-            result += "reply_on = " + replyOn;
+            result += "reply_on = " + replyOn + " and ";
         }
 
         // remove the final 'and' word in the query
