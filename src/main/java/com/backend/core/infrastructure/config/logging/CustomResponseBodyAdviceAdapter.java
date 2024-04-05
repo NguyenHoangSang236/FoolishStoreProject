@@ -1,6 +1,7 @@
 package com.backend.core.infrastructure.config.logging;
 
 import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
+import com.backend.core.usecase.service.LoggingService;
 import com.backend.core.usecase.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +23,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 public class CustomResponseBodyAdviceAdapter implements ResponseBodyAdvice<Object> {
     @Autowired
     ValueRenderUtils valueRenderUtils;
+    @Autowired
+    LoggingService loggingService;
 
 
     @Override
@@ -38,7 +41,7 @@ public class CustomResponseBodyAdviceAdapter implements ResponseBodyAdvice<Objec
                                   @NonNull ServerHttpRequest request,
                                   @NonNull ServerHttpResponse response) {
         if (request instanceof ServletServerHttpRequest && response instanceof ServletServerHttpResponse) {
-            logResponse(
+            loggingService.logResponse(
                     ((ServletServerHttpRequest) request).getServletRequest(),
                     ((ServletServerHttpResponse) response).getServletResponse(),
                     body
@@ -46,16 +49,5 @@ public class CustomResponseBodyAdviceAdapter implements ResponseBodyAdvice<Objec
         }
 
         return body;
-    }
-
-    public void logResponse(HttpServletRequest request, HttpServletResponse response, Object body) {
-        Object requestId = request.getAttribute(GlobalDefaultStaticVariables.REQUEST_ID);
-
-        String data = "\n\n------------------------LOGGING RESPONSE-----------------------------------\n" +
-                "[REQUEST-ID]: " + requestId.toString() + "\n" +
-                "[BODY RESPONSE]: " + valueRenderUtils.parseObjectToString(body) +
-                "\n------------------------END LOGGING RESPONSE-----------------------------------\n";
-
-        log.info(data);
     }
 }

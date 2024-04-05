@@ -1,7 +1,6 @@
 package com.backend.core.infrastructure.config.security;
 
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.usecase.util.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import jakarta.servlet.http.HttpServletResponse;
