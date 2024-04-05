@@ -6,9 +6,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 @Controller
 public class MessageController {
     @MessageMapping("/chat.sendMessage")

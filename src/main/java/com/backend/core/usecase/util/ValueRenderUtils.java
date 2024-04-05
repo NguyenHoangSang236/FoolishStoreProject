@@ -6,7 +6,6 @@ import com.backend.core.infrastructure.business.account.repository.AccountReposi
 import com.backend.core.infrastructure.business.product.repository.ProductRenderInfoRepository;
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.service.JwtService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
@@ -267,8 +266,7 @@ public class ValueRenderUtils {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.writeValueAsString(object);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             ApiResponse res = new ApiResponse("failed", "Error at JSON parsing", HttpStatus.INTERNAL_SERVER_ERROR);
             return res.toString();

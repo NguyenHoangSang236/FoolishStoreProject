@@ -1,8 +1,6 @@
 package com.backend.core.infrastructure.config.logging;
 
-import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
 import com.backend.core.usecase.service.LoggingService;
-import com.backend.core.usecase.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -13,13 +11,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter;
 
-import javax.annotation.Nullable;
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
 
 @ControllerAdvice
 @Slf4j
