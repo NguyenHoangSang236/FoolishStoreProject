@@ -71,9 +71,8 @@ public class JwtService {
 
         if (jwtToken == null) {
             return null;
-        }
-        else {
-            return  request.getHeader("Authorization").substring(7);
+        } else {
+            return request.getHeader("Authorization").substring(7);
         }
     }
 

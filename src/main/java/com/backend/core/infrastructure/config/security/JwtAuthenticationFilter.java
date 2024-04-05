@@ -1,7 +1,6 @@
 package com.backend.core.infrastructure.config.security;
 
 import com.backend.core.entity.api.ApiResponse;
-import com.backend.core.infrastructure.config.security.UserDetailsServiceImpl;
 import com.backend.core.usecase.service.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -93,8 +92,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public String convertObjectToJson(Object object) throws JsonProcessingException {
         if (object == null) {
             return null;
-        }
-        else {
+        } else {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.writeValueAsString(object);
         }

@@ -1,10 +1,7 @@
 package com.backend.core.infrastructure.config.logging;
 
-import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
 import com.backend.core.usecase.service.LoggingService;
 import com.backend.core.usecase.util.ValueRenderUtils;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

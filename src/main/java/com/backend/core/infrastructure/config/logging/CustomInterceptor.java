@@ -1,6 +1,5 @@
 package com.backend.core.infrastructure.config.logging;
 
-import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
 import com.backend.core.usecase.service.LoggingService;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,11 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
 
 @Component
 @Slf4j

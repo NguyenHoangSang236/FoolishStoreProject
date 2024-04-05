@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -18,7 +17,6 @@ import java.util.Enumeration;
 public class LoggingService {
     @Autowired
     ValueRenderUtils valueRenderUtils;
-
 
 
     public void logResponse(HttpServletRequest request, HttpServletResponse response, Object body) {
@@ -32,8 +30,7 @@ public class LoggingService {
                     "\n------------------------END LOGGING RESPONSE-----------------------------------\n";
 
             log.info(data);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -73,8 +70,7 @@ public class LoggingService {
             data.append("------------------------END LOGGING REQUEST-----------------------------------\n\n");
 
             log.info(data.toString());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
