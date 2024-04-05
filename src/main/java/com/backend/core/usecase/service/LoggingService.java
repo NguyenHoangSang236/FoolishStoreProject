@@ -50,7 +50,7 @@ public class LoggingService {
                     .append("[METHOD]: ").append(request.getMethod()).append("\n")
                     .append("[PATH]: ").append(request.getRequestURI()).append("\n")
                     .append("[QUERIES]: ").append(request.getQueryString()).append("\n")
-                    .append("[PAYLOAD]: ").append(body.toString()).append("\n");
+                    .append("[PAYLOAD]: ").append(body != null ? body.toString() : null).append("\n");
 
             Enumeration<String> payloadNames = request.getHeaderNames();
             while (payloadNames.hasMoreElements()) {
