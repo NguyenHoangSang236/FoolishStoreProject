@@ -14,6 +14,8 @@ public class Message {
     private MessageType type;
     private String content;
     private String sender;
+    private String productId;
+    private String productColor;
 
     public enum MessageType {
         CHAT,

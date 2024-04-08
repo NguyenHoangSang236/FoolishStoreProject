@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.Objects;
+
 @Component
 @Slf4j
 public class WebSocketEventListener {
-
-
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
@@ -26,7 +26,9 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        String username = (String) headerAccessor.getSessionAttributes().get("username");
+        String username = (String) Objects.requireNonNull(headerAccessor.getSessionAttributes()).get("username");
+        String productId = (String) Objects.requireNonNull(headerAccessor.getSessionAttributes()).get("productId");
+        String productColor = (String) Objects.requireNonNull(headerAccessor.getSessionAttributes()).get("productColor");
         if (username != null) {
             log.info("User Disconnected : " + username);
 
@@ -34,7 +36,7 @@ public class WebSocketEventListener {
             chatMessage.setType(Message.MessageType.LEAVE);
             chatMessage.setSender(username);
 
-            messagingTemplate.convertAndSend("/topic/public", chatMessage);
+            messagingTemplate.convertAndSend("/comment/product_id=" + productId + "&product_color=" + productColor, chatMessage);
         }
     }
 }
