@@ -1,15 +1,13 @@
 package com.backend.core.infrastructure.config.websocket;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Message {
     private MessageType type;
     private String content;
@@ -18,9 +16,10 @@ public class Message {
     private String productColor;
 
     public enum MessageType {
-        CHAT,
+        TYPING_COMMENT,
         JOIN,
-        LEAVE
+        LEAVE,
+        POST_COMMENT,
     }
 
 }
