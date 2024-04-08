@@ -37,7 +37,7 @@ function onConnected() {
     stompClient.subscribe('/comment/319/yellow', onMessageReceived);
 
     // Tell your username to the server
-    stompClient.send("/commentWebSocket/addUser", {}, JSON.stringify({sender: username, type: 'JOIN'})
+    stompClient.send("/commentWebSocket/addUser/319/yellow", {}, JSON.stringify({sender: username, type: 'JOIN'})
     )
 
     connectingElement.classList.add('hidden');
@@ -57,10 +57,10 @@ function sendMessage(event) {
         var chatMessage = {
             sender: username,
             content: messageInput.value,
-            type: 'CHAT'
+            type: 'POST_COMMENT'
         };
 
-        stompClient.send("/commentWebSocket/postComment", {}, JSON.stringify(chatMessage));
+        stompClient.send("/commentWebSocket/postComment/319/yellow", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
     }
     event.preventDefault();
