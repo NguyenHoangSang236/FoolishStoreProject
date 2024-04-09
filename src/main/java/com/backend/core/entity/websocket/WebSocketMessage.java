@@ -1,4 +1,4 @@
-package com.backend.core.infrastructure.config.websocket;
+package com.backend.core.entity.websocket;
 
 
 import lombok.*;
@@ -8,12 +8,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Message {
+public class WebSocketMessage {
     private MessageType type;
-    private String content;
+    private Object content;
     private String sender;
-    private String productId;
-    private String productColor;
 
     public enum MessageType {
         TYPING_COMMENT,
