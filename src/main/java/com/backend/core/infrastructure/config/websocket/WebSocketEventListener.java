@@ -31,7 +31,7 @@ public class WebSocketEventListener {
         String productId = (String) Objects.requireNonNull(headerAccessor.getSessionAttributes()).get("productId");
         String productColor = (String) Objects.requireNonNull(headerAccessor.getSessionAttributes()).get("productColor");
         if (username != null) {
-            log.info("User Disconnected : " + username);
+            log.info("User Disconnected from chanel " + productId + "/" + productColor + ": " + username);
 
             WebSocketMessage chatWebSocketMessage = new WebSocketMessage();
             chatWebSocketMessage.setType(WebSocketMessage.MessageType.LEAVE);

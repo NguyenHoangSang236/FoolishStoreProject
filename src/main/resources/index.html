@@ -6,9 +6,9 @@
 <body>
 <h2>Demo WebSocket Chat Room</h2>
 <input id="textMessage" type="text"/>
-<input onclick="sendMessage()" value="Send Message" type="button"/> <br/><br/>
+<input onclick="sendMessage()" type="button" value="Send Message"/> <br/><br/>
 
-<textarea id="textAreaMessage" rows="10" cols="50"></textarea>
+<textarea cols="50" id="textAreaMessage" rows="10"></textarea>
 
 <script type="text/javascript">
     var websocket = new WebSocket("ws://localhost:8080/websocket");
