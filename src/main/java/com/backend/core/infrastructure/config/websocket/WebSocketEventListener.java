@@ -1,5 +1,6 @@
 package com.backend.core.infrastructure.config.websocket;
 
+import com.backend.core.entity.websocket.WebSocketMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -32,11 +33,11 @@ public class WebSocketEventListener {
         if (username != null) {
             log.info("User Disconnected : " + username);
 
-            Message chatMessage = new Message();
-            chatMessage.setType(Message.MessageType.LEAVE);
-            chatMessage.setSender(username);
+            WebSocketMessage chatWebSocketMessage = new WebSocketMessage();
+            chatWebSocketMessage.setType(WebSocketMessage.MessageType.LEAVE);
+            chatWebSocketMessage.setSender(username);
 
-            messagingTemplate.convertAndSend("/comment/product_id=" + productId + "&product_color=" + productColor, chatMessage);
+            messagingTemplate.convertAndSend("/comment/product_id=" + productId + "&product_color=" + productColor, chatWebSocketMessage);
         }
     }
 }

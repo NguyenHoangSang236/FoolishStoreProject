@@ -37,8 +37,7 @@ function onConnected() {
     stompClient.subscribe('/comment/319/yellow', onMessageReceived);
 
     // Tell your username to the server
-    stompClient.send("/commentWebSocket/addUser/319/yellow", {}, JSON.stringify({sender: username, type: 'JOIN'})
-    )
+    stompClient.send("/commentWebSocket/addUser/319/yellow", {}, JSON.stringify({sender: username, type: 'JOIN'}))
 
     connectingElement.classList.add('hidden');
 }
@@ -75,7 +74,12 @@ function onMessageReceived(payload) {
     if(message.type === 'JOIN') {
         messageElement.classList.add('event-message');
         message.content = message.sender + ' joined!';
-    } else if (message.type === 'LEAVE') {
+    }
+    else if(message.type === 'TYPING_COMMENT') {
+        messageElement.classList.add('event-message');
+        message.content = message.sender + ' typing!';
+    }
+    else if (message.type === 'LEAVE') {
         messageElement.classList.add('event-message');
         message.content = message.sender + ' left!';
     } else {
