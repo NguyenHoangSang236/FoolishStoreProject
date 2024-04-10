@@ -18,6 +18,8 @@ public class WebSocketMessage {
         JOIN,
         LEAVE,
         POST_COMMENT,
+        LIKE_COMMENT,
+        UNLIKE_COMMENT,
     }
 
 }

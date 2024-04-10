@@ -12,18 +12,23 @@ import org.springframework.stereotype.Controller;
 import java.util.Objects;
 
 @Controller
-public class MessageController {
+public class WebSocketController {
     @Autowired
     private SimpMessageSendingOperations messagingTemplate;
 
 
     @MessageMapping("/postComment/{productId}/{color}")
-    public void sendMessage(@Payload WebSocketMessage chatWebSocketMessage, @DestinationVariable String productId, @DestinationVariable String color) {
+    public void postComment(@Payload WebSocketMessage chatWebSocketMessage,
+                            @DestinationVariable String productId,
+                            @DestinationVariable String color) {
         messagingTemplate.convertAndSend("/comment/" + productId + "/" + color, chatWebSocketMessage);
     }
 
     @MessageMapping("/addUser/{productId}/{color}")
-    public void addUser(@Payload WebSocketMessage chatWebSocketMessage, @DestinationVariable String productId, @DestinationVariable String color, SimpMessageHeaderAccessor headerAccessor) {
+    public void addUser(@Payload WebSocketMessage chatWebSocketMessage,
+                        @DestinationVariable String productId,
+                        @DestinationVariable String color,
+                        SimpMessageHeaderAccessor headerAccessor) {
         Objects.requireNonNull(headerAccessor.getSessionAttributes()).put("username", chatWebSocketMessage.getSender());
         Objects.requireNonNull(headerAccessor.getSessionAttributes()).put("productId", productId);
         Objects.requireNonNull(headerAccessor.getSessionAttributes()).put("productColor", color);
@@ -32,7 +37,18 @@ public class MessageController {
     }
 
     @MessageMapping("/typingComment/{productId}/{color}")
-    public void typingDetect(@Payload WebSocketMessage chatWebSocketMessage, @DestinationVariable String productId, @DestinationVariable String color, SimpMessageHeaderAccessor headerAccessor) {
+    public void typingDetect(@Payload WebSocketMessage chatWebSocketMessage,
+                             @DestinationVariable String productId,
+                             @DestinationVariable String color) {
         messagingTemplate.convertAndSend("/comment/" + productId + "/" + color, chatWebSocketMessage);
+    }
+
+    @MessageMapping("/likeComment/{productId}/{color}/{customerId}/{commentId}")
+    public void likeComment(@Payload WebSocketMessage chatWebSocketMessage,
+                            @DestinationVariable String productId,
+                            @DestinationVariable String color,
+                            @DestinationVariable String customerId,
+                            @DestinationVariable String commentId) {
+        messagingTemplate.convertAndSend("/comment/" + productId + "/" + color + "/" + customerId + "/" + commentId, chatWebSocketMessage);
     }
 }
