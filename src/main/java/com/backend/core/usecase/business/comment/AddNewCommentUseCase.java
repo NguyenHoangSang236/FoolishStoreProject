@@ -1,10 +1,12 @@
 package com.backend.core.usecase.business.comment;
 
+import com.backend.core.entity.account.model.Account;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.comment.gateway.CommentRequestDTO;
 import com.backend.core.entity.comment.model.Comment;
 import com.backend.core.entity.product.model.Product;
 import com.backend.core.entity.product.model.ProductManagement;
+import com.backend.core.entity.websocket.WebSocketMessage;
 import com.backend.core.infrastructure.business.account.repository.CustomerRepository;
 import com.backend.core.infrastructure.business.comment.dto.CommentRenderInfoDTO;
 import com.backend.core.infrastructure.business.comment.repository.CommentRenderInfoRepository;
@@ -18,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -37,6 +40,8 @@ public class AddNewCommentUseCase extends UseCase<AddNewCommentUseCase.InputValu
     CommentRenderInfoRepository commentRenderInfoRepository;
     @Autowired
     CommentRepository commentRepo;
+    @Autowired
+    private SimpMessageSendingOperations messagingOperation;
 
 
     @Override
@@ -73,6 +78,19 @@ public class AddNewCommentUseCase extends UseCase<AddNewCommentUseCase.InputValu
             comment.replyComment();
             commentRepo.save(comment);
         }
+
+        Account currentAccount = valueRenderUtils.getCurrentAccountFromRequest(input.getHttpRequest());
+        CommentRenderInfoDTO renderComment = new CommentRenderInfoDTO();
+        renderComment.getDataFromComment(newComment);
+
+        WebSocketMessage msg = WebSocketMessage
+                .builder()
+                .sender(currentAccount.getUsername())
+                .type(WebSocketMessage.MessageType.POST_COMMENT)
+                .content(renderComment)
+                .build();
+
+        messagingOperation.convertAndSend("/comment/" + request.getProductId() + "/" + request.getProductColor(), msg);
 
         return new ApiResponse("success", "Add new comment successfully", HttpStatus.OK);
     }

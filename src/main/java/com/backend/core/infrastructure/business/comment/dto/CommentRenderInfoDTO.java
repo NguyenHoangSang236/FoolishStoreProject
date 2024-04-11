@@ -1,5 +1,6 @@
 package com.backend.core.infrastructure.business.comment.dto;
 
+import com.backend.core.entity.comment.model.Comment;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -51,4 +52,19 @@ public class CommentRenderInfoDTO {
 
     @Column(name = "reply_quantity")
     int replyQuantity;
+
+
+    public void getDataFromComment(Comment comment) {
+        this.id = comment.getId();
+        this.likeQuantity = comment.getLikeQuantity();
+        this.replyQuantity = comment.getReplyQuantity();
+        this.replyOn = comment.getReplyOn();
+        this.customerId = comment.getCustomer().getId();
+        this.avatar = comment.getCustomer().getImage();
+        this.commentDate = comment.getCommentDate();
+        this.productId = comment.getProduct().getId();
+        this.productColor = comment.getProductColor();
+        this.name = comment.getCustomer().getName();
+        this.commentContent = comment.getCommentContent();
+    }
 }
