@@ -13,8 +13,8 @@ public class CommentDataRSocketController {
     CommentRepository commentRepository;
 
     @MessageMapping("currentCommentData")
-    public Comment currentCommentData(int commentId) {
-        return commentRepository.getCommentById(commentId);
+    public String currentCommentData(String commentId) {
+        return commentId;
     }
 
     @MessageMapping("addCommentData")
