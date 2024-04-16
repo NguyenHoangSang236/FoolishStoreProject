@@ -32,7 +32,6 @@ com\backend\core\usecase\business\category\AddCategoryUseCase.class
 com\backend\core\usecase\business\cart\UpdateCartUseCase.class
 com\backend\core\usecase\statics\CurrencyEnum.class
 com\backend\core\infrastructure\business\cart\repository\CartRenderInfoRepository.class
-com\backend\core\infrastructure\config\websocket\Message$MessageType.class
 com\backend\core\entity\delivery\gateway\DeliveryFilterRequestDTO.class
 com\backend\core\entity\account\gateway\AccountFilterDTO.class
 com\backend\core\infrastructure\business\comment\repository\CommentLikeRepository.class
@@ -87,8 +86,10 @@ com\backend\core\entity\invoice\model\OnlinePaymentAccount.class
 com\backend\core\entity\comment\model\Comment.class
 com\backend\core\infrastructure\business\online_payment\dto\OnlinePaymentInfoDTO.class
 com\backend\core\entity\invoice\gateway\InvoiceFilterRequestDTO.class
+com\backend\core\entity\websocket\WebSocketMessage.class
 com\backend\core\usecase\business\notification\FilterNotificationUseCase$InputValue.class
 com\backend\core\infrastructure\config\security\WebSecurityConfig.class
+com\backend\core\infrastructure\business\websocket\WebSocketController.class
 com\backend\core\usecase\business\comment\AddNewCommentUseCase$InputValue.class
 com\backend\core\usecase\statics\InvoiceEnum.class
 com\backend\core\usecase\service\GoogleDriveService.class
@@ -110,7 +111,6 @@ com\backend\core\infrastructure\business\account\repository\CustomerRepository.c
 com\backend\core\usecase\business\product\AddProductUseCase.class
 com\backend\core\usecase\business\product\NewArrivalProductsUseCase.class
 com\backend\core\infrastructure\config\web\WebConfig.class
-com\backend\core\infrastructure\config\websocket\MessageController.class
 com\backend\core\entity\cart\model\Cart.class
 com\backend\core\infrastructure\business\comment\dto\CommentRenderInfoDTO.class
 com\backend\core\infrastructure\business\category\controller\CategoryController.class
@@ -206,6 +206,7 @@ com\backend\core\usecase\statics\AccountStatusEnum.class
 com\backend\core\usecase\statics\RenderTypeEnum.class
 com\backend\core\entity\product\model\ProductImportManagement.class
 com\backend\core\entity\product\model\ProductManagement.class
+com\backend\core\entity\websocket\WebSocketMessage$WebSocketMessageBuilder.class
 com\backend\core\infrastructure\config\api\ResponseMapper.class
 com\backend\core\usecase\service\QueryService$1.class
 com\backend\core\infrastructure\config\api\SourceCodeHandlerUtil.class
@@ -224,7 +225,6 @@ com\backend\core\entity\notification\gateway\NotificationDTO$NotificationDTOBuil
 com\backend\core\usecase\business\google\UploadImageUseCase.class
 com\backend\core\usecase\business\product\ViewProductByIdUseCase.class
 com\backend\core\infrastructure\business\account\dto\StaffRenderInfoDTO.class
-com\backend\core\infrastructure\config\websocket\Message.class
 com\backend\core\usecase\business\account\UpdateAccountUseCase$InputValue.class
 com\backend\core\usecase\business\cart\TotalCartItemQuantityUseCase$InputValue.class
 com\backend\core\entity\api\PaginationDTO.class
@@ -282,6 +282,7 @@ com\backend\core\infrastructure\business\product\dto\AuthenProductRenderInfoDTO.
 com\backend\core\infrastructure\business\product\controller\ShopController.class
 com\backend\core\entity\comment\gateway\CommentFilterRequestDTO.class
 com\backend\core\usecase\business\category\UpdateCategoryUseCase.class
+com\backend\core\entity\websocket\WebSocketMessage$MessageType.class
 com\backend\core\infrastructure\config\logging\CustomUrlFilter.class
 com\backend\core\usecase\business\account\FilterAccountUseCase.class
 com\backend\core\infrastructure\business\invoice\controller\InvoiceController.class
