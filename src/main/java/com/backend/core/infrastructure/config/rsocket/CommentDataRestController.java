@@ -1,5 +1,6 @@
 package com.backend.core.infrastructure.config.rsocket;
 
+import com.backend.core.infrastructure.business.comment.dto.CommentRenderInfoDTO;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.rsocket.RSocketRequester;
@@ -13,8 +14,8 @@ public class CommentDataRestController {
     RSocketRequester rSocketRequester;
 
     @GetMapping(value = "/unauthen/comment/test_rsocket_comment_id={id}")
-    public Publisher<String> current(@PathVariable("id") int commentId) {
-        return rSocketRequester.route("currentCommentData").data(commentId).retrieveMono(String.class);
+    public Publisher<CommentRenderInfoDTO> current(@PathVariable("id") int commentId) {
+        return rSocketRequester.route("currentCommentData").data(commentId).retrieveMono(CommentRenderInfoDTO.class);
     }
 
 //    @GetMapping(value = "/unauthen/comment/test_rsocket_add_comment")
