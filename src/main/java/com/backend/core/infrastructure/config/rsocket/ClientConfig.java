@@ -1,20 +1,29 @@
 package com.backend.core.infrastructure.config.rsocket;
 
+import com.backend.core.infrastructure.business.comment.dto.CommentRenderInfoDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.messaging.rsocket.MetadataExtractor;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
+import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.util.pattern.PathPatternRouteMatcher;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.Map;
 
 @Configuration
 public class ClientConfig {
+    public static final String FOO_HEADER = "foo-header";
+    public static final MimeType FOO_MYME_TYPE = MimeType.valueOf("application/json");
+
+
     @Bean
     public RSocketRequester getRSocketRequester(){
         RSocketRequester.Builder builder = RSocketRequester.builder();
@@ -37,6 +46,7 @@ public class ClientConfig {
                 .encoders(encoders -> encoders.add(new Jackson2JsonEncoder()))
                 .decoders(decoders -> decoders.add(new Jackson2JsonDecoder()))
                 .routeMatcher(new PathPatternRouteMatcher())
+                .metadataExtractorRegistry(r -> r.metadataToExtract(FOO_MYME_TYPE, CommentRenderInfoDTO.class, FOO_HEADER))
                 .build();
     }
 

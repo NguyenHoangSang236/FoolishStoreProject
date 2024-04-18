@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CommentDataRestController {
-    @Autowired
-    RSocketRequester rSocketRequester;
+    private final RSocketRequester rSocketRequester;
+
+    public CommentDataRestController(RSocketRequester rSocketRequester) {
+        this.rSocketRequester = rSocketRequester;
+    }
 
     @GetMapping(value = "/unauthen/comment/test_rsocket_comment_id={id}")
     public Publisher<CommentRenderInfoDTO> current(@PathVariable("id") int commentId) {
