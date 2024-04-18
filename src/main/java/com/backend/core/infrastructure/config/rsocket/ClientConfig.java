@@ -1,28 +1,24 @@
 package com.backend.core.infrastructure.config.rsocket;
 
 import com.backend.core.infrastructure.business.comment.dto.CommentRenderInfoDTO;
+import io.rsocket.SocketAcceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
-import org.springframework.messaging.rsocket.MetadataExtractor;
+import org.springframework.messaging.rsocket.DefaultMetadataExtractor;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.messaging.rsocket.annotation.support.RSocketMessageHandler;
-import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.util.pattern.PathPatternRouteMatcher;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.Map;
 
 @Configuration
 public class ClientConfig {
     public static final String FOO_HEADER = "foo-header";
-    public static final MimeType FOO_MYME_TYPE = MimeType.valueOf("application/json");
-
 
     @Bean
     public RSocketRequester getRSocketRequester(){
@@ -30,9 +26,9 @@ public class ClientConfig {
 
         return builder
                 .rsocketConnector(
-                        rSocketConnector -> rSocketConnector.reconnect(
-                                Retry.fixedDelay(2, Duration.ofSeconds(2))
-                        )
+                        rSocketConnector -> rSocketConnector
+                                .reconnect(Retry.fixedDelay(2, Duration.ofSeconds(2)))
+                                .acceptor(socketAcceptor())
                 )
                 .rsocketStrategies(rsocketStrategies())
                 .dataMimeType(MimeTypeUtils.APPLICATION_JSON)
@@ -46,15 +42,24 @@ public class ClientConfig {
                 .encoders(encoders -> encoders.add(new Jackson2JsonEncoder()))
                 .decoders(decoders -> decoders.add(new Jackson2JsonDecoder()))
                 .routeMatcher(new PathPatternRouteMatcher())
-                .metadataExtractorRegistry(r -> r.metadataToExtract(FOO_MYME_TYPE, CommentRenderInfoDTO.class, FOO_HEADER))
+                .metadataExtractorRegistry(r -> r.metadataToExtract(
+                        MimeTypeUtils.APPLICATION_JSON,
+                        Integer.class,
+                        (data, outputMap) -> outputMap.put("commentId", data.toString()))
+                )
                 .build();
     }
 
     @Bean
-    public RSocketMessageHandler rsocketMessageHandler() {
-        RSocketMessageHandler handler = new RSocketMessageHandler();
-        handler.setRouteMatcher(new PathPatternRouteMatcher());
-        return handler;
+    public SocketAcceptor socketAcceptor() {
+        return RSocketMessageHandler.responder(rsocketStrategies(), new CommentRenderInfoDTO());
     }
 
+    @Bean
+    public DefaultMetadataExtractor defaultMetadataExtractor() {
+        DefaultMetadataExtractor extractor = new DefaultMetadataExtractor(new Jackson2JsonDecoder());
+        extractor.metadataToExtract(MimeTypeUtils.APPLICATION_JSON, CommentRenderInfoDTO.class, "foo");
+
+        return extractor;
+    }
 }

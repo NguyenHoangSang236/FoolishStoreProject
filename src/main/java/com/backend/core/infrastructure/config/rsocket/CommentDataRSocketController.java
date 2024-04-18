@@ -18,8 +18,8 @@ public class CommentDataRSocketController {
     CommentRepository commentRepository;
 
     @MessageMapping("currentCommentData")
-    public CommentRenderInfoDTO currentCommentData(String commentId) throws JsonProcessingException {
-        CommentRenderInfoDTO commentRender = commentRenderInfoRepo.getCommentById(Integer.parseInt(commentId));
+    public CommentRenderInfoDTO currentCommentData(int commentId) throws JsonProcessingException {
+        CommentRenderInfoDTO commentRender = commentRenderInfoRepo.getCommentById(commentId);
 
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        String commentJson = objectMapper.writeValueAsString(commentRender);
