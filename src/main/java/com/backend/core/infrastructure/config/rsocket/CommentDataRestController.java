@@ -20,7 +20,7 @@ public class CommentDataRestController {
     public Publisher<CommentRenderInfoDTO> current(@PathVariable("id") int commentId) {
         return rSocketRequester
                 .route("currentCommentData")
-                .metadata(commentId, MimeTypeUtils.APPLICATION_JSON)
+                .data(commentId)
                 .retrieveMono(CommentRenderInfoDTO.class);
     }
 

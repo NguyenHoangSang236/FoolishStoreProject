@@ -5,6 +5,7 @@ import com.backend.core.infrastructure.business.comment.dto.CommentRenderInfoDTO
 import com.backend.core.infrastructure.business.comment.repository.CommentRenderInfoRepository;
 import com.backend.core.infrastructure.business.comment.repository.CommentRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -21,8 +22,8 @@ public class CommentDataRSocketController {
     public CommentRenderInfoDTO currentCommentData(int commentId) throws JsonProcessingException {
         CommentRenderInfoDTO commentRender = commentRenderInfoRepo.getCommentById(commentId);
 
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String commentJson = objectMapper.writeValueAsString(commentRender);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String commentJson = objectMapper.writeValueAsString(commentRender);
 
         return commentRender;
     }

@@ -28,11 +28,10 @@ public class ClientConfig {
                 .rsocketConnector(
                         rSocketConnector -> rSocketConnector
                                 .reconnect(Retry.fixedDelay(2, Duration.ofSeconds(2)))
-                                .acceptor(socketAcceptor())
                 )
                 .rsocketStrategies(rsocketStrategies())
                 .dataMimeType(MimeTypeUtils.APPLICATION_JSON)
-                .metadataMimeType(MimeTypeUtils.APPLICATION_JSON)
+//                .metadataMimeType(MimeTypeUtils.APPLICATION_JSON)
                 .tcp("localhost", 7000);
     }
 
@@ -42,24 +41,6 @@ public class ClientConfig {
                 .encoders(encoders -> encoders.add(new Jackson2JsonEncoder()))
                 .decoders(decoders -> decoders.add(new Jackson2JsonDecoder()))
                 .routeMatcher(new PathPatternRouteMatcher())
-                .metadataExtractorRegistry(r -> r.metadataToExtract(
-                        MimeTypeUtils.APPLICATION_JSON,
-                        Integer.class,
-                        (data, outputMap) -> outputMap.put("commentId", data.toString()))
-                )
                 .build();
-    }
-
-    @Bean
-    public SocketAcceptor socketAcceptor() {
-        return RSocketMessageHandler.responder(rsocketStrategies(), new CommentRenderInfoDTO());
-    }
-
-    @Bean
-    public DefaultMetadataExtractor defaultMetadataExtractor() {
-        DefaultMetadataExtractor extractor = new DefaultMetadataExtractor(new Jackson2JsonDecoder());
-        extractor.metadataToExtract(MimeTypeUtils.APPLICATION_JSON, CommentRenderInfoDTO.class, "foo");
-
-        return extractor;
     }
 }
