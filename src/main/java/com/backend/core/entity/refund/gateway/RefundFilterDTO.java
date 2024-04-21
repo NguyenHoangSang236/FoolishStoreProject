@@ -6,13 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefundFilterDTO {
+public class RefundFilterDTO implements Serializable {
     @JsonProperty("refundDate")
     Date refundDate;
 

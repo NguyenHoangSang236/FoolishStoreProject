@@ -4,12 +4,14 @@ import com.backend.core.usecase.UseCase;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ApiResponse implements UseCase.OutputValues {
+public class ApiResponse implements UseCase.OutputValues, Serializable {
     private String result;
     private Object content;
     private String message;

@@ -8,13 +8,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartItemDTO {
+public class CartItemDTO implements Serializable {
     @NotEmpty
     @JsonProperty("productId")
     int productId;

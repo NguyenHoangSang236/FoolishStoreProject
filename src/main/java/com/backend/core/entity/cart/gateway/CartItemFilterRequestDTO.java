@@ -7,11 +7,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 @Getter
 @Setter
-public class CartItemFilterRequestDTO implements FilterRequest {
+public class CartItemFilterRequestDTO implements FilterRequest, Serializable {
     @JsonProperty("filter")
     CartItemFilterDTO filter;
 

@@ -6,10 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 @Component
-public class ProductFilterRequestDTO implements FilterRequest {
+public class ProductFilterRequestDTO implements FilterRequest, Serializable {
     @JsonProperty("filter")
     ProductFilterDTO filter;
 

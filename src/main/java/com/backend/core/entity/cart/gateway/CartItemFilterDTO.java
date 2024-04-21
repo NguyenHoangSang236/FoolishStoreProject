@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
 @Getter
 @Setter
-public class CartItemFilterDTO {
+public class CartItemFilterDTO implements Serializable {
     @JsonProperty("status")
     String[] status;
 

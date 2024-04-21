@@ -17,6 +17,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "invoice")
-public class Invoice {
+public class Invoice implements Serializable {
     @Id
     @Column(name = "ID", unique = true)
     int id;

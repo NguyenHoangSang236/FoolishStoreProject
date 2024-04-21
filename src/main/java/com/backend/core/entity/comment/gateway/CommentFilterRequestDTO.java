@@ -8,11 +8,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentFilterRequestDTO implements FilterRequest {
+public class CommentFilterRequestDTO implements FilterRequest, Serializable {
     @JsonProperty("filter")
     CommentRequestDTO filter;
 

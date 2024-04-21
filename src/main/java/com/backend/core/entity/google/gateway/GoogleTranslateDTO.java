@@ -3,11 +3,12 @@ package com.backend.core.entity.google.gateway;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @Setter
-public class GoogleTranslateDTO {
+public class GoogleTranslateDTO implements Serializable {
     String text;
     String sourceLanguageCode;
 

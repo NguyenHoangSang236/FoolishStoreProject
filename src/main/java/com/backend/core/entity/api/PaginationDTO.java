@@ -3,9 +3,11 @@ package com.backend.core.entity.api;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
-public class PaginationDTO {
+public class PaginationDTO implements Serializable {
     int page;
     int limit;
     String type;

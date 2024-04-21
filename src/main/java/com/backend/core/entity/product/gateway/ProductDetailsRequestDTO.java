@@ -6,13 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProductDetailsRequestDTO {
+public class ProductDetailsRequestDTO implements Serializable {
     @JsonProperty("productId")
     int productId;
 
