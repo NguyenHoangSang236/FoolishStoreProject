@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
@@ -21,7 +22,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
-public class ProductImagesManagement {
+public class ProductImagesManagement implements Serializable {
     @EmbeddedId
     ProductImagesManagementPrimaryKeys id;
 

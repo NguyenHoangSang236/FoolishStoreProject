@@ -3,12 +3,14 @@ package com.backend.core.entity.websocket;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WebSocketMessage {
+public class WebSocketMessage implements Serializable {
     private MessageType type;
     private Object content;
     private String sender;

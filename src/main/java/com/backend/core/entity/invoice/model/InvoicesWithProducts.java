@@ -5,6 +5,7 @@ import com.backend.core.entity.product.model.ProductManagement;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -16,7 +17,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "invoices_with_products")
-public class InvoicesWithProducts {
+public class InvoicesWithProducts implements Serializable {
     @EmbeddedId
     InvoicesWithProductsPrimaryKeys id;
 

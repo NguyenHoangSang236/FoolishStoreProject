@@ -9,12 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 @Component
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountFilterRequestDTO implements FilterRequest {
+public class AccountFilterRequestDTO implements FilterRequest, Serializable {
     @JsonProperty("filter")
     AccountFilterDTO filter;
 

@@ -7,6 +7,7 @@ import com.backend.core.infrastructure.business.product.repository.ProductRender
 import com.backend.core.infrastructure.config.database.CustomQueryRepository;
 import com.backend.core.usecase.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -277,7 +278,7 @@ public class ValueRenderUtils {
     // parse json string to object
     public <T> T parseJsonStringToObject(String json, Class<T> objectClass) {
         try {
-            return new ObjectMapper().convertValue(json, objectClass);
+            return new Gson().fromJson(json, objectClass);
         } catch (Exception e) {
             return null;
         }

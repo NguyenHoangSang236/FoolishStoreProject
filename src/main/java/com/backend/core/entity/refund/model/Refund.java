@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -22,7 +23,7 @@ import java.util.Date;
 @Table(name = "refund")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Refund {
+public class Refund implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)

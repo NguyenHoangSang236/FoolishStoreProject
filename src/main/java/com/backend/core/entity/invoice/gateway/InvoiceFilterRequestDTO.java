@@ -8,12 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
-public class InvoiceFilterRequestDTO implements FilterRequest {
+public class InvoiceFilterRequestDTO implements FilterRequest, Serializable {
     @JsonProperty("filter")
     InvoiceFilterDTO filter;
 

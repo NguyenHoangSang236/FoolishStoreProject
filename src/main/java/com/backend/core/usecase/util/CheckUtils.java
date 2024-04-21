@@ -6,6 +6,8 @@ import com.backend.core.usecase.service.JwtService;
 import com.backend.core.usecase.statics.AdminAcceptanceEnum;
 import com.backend.core.usecase.statics.InvoiceEnum;
 import com.backend.core.usecase.statics.StringTypeEnum;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,14 @@ public class CheckUtils {
         } else if (type == StringTypeEnum.HAS_SPACE) {
             return !isStringWithSpace(content);
         } else return true;
+    }
+
+
+    //check phone number is valid or not
+    public boolean isValidPhoneNumber(String number) {
+        Phonenumber.PhoneNumber phoneNumber = new Phonenumber.PhoneNumber();
+
+        return PhoneNumberUtil.getInstance().isValidNumber(phoneNumber);
     }
 
 

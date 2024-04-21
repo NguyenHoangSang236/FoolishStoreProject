@@ -8,12 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 @Component
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefundFilterRequestDTO implements FilterRequest {
+public class RefundFilterRequestDTO implements FilterRequest, Serializable {
     @JsonProperty("filter")
     RefundFilterDTO filter;
 
