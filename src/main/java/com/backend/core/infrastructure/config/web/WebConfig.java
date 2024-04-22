@@ -27,7 +27,8 @@ public class WebConfig {
                         .allowedOrigins("*")
                         .allowedHeaders("*")
                         .allowCredentials(true)
-                        .allowedMethods("*");
+                        .allowedMethods("*")
+                        .allowedMethods("GET", "POST", "DELETE", "PUT", "PATCH", "HEAD", "OPTIONS");
             }
 
             @Override

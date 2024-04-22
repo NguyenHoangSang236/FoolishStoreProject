@@ -5,10 +5,7 @@ import com.backend.core.infrastructure.config.api.SourceCodeHandlerUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -31,16 +28,5 @@ public class DemoApplication {
         SpringApplication app = new SpringApplication(DemoApplication.class);
         app.setDefaultProperties(Collections.singletonMap("server.port", "8080"));
         app.run(args);
-    }
-
-
-    @Bean
-    public WebMvcConfigurer customCorsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
-            }
-        };
     }
 }
