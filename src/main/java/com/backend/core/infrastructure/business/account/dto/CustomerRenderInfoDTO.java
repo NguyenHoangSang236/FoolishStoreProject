@@ -9,13 +9,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "customer_info_for_ui")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerRenderInfoDTO {
+public class CustomerRenderInfoDTO implements Serializable {
     @Id
     @Column(name = "id", unique = true)
     int id;

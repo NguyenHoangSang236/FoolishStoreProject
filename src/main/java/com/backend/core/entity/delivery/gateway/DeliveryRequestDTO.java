@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
-public class DeliveryRequestDTO {
+public class DeliveryRequestDTO implements Serializable {
     @JsonProperty("shipping_order_code")
     String shippingOrderCode;
 

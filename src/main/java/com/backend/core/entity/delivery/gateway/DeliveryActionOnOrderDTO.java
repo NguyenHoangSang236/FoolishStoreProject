@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeliveryActionOnOrderDTO {
+public class DeliveryActionOnOrderDTO implements Serializable {
     @JsonProperty(value = "id")
     int id;
 
