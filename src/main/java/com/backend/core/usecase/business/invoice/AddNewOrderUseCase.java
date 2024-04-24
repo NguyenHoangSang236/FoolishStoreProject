@@ -63,7 +63,7 @@ public class AddNewOrderUseCase extends UseCase<AddNewOrderUseCase.InputValue, A
 
         CartCheckoutDTO cartCheckout = input.getCartCheckout();
 
-        if (cartCheckout.getAddress().equals(null) || cartCheckout.getAddress().isBlank()) {
+        if (cartCheckout.getAddress() == null || cartCheckout.getAddress().isBlank()) {
             return new ApiResponse("failed", "Please input address", HttpStatus.BAD_REQUEST);
         }
 
