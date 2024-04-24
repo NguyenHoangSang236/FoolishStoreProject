@@ -23,7 +23,7 @@ public class CustomInterceptor implements HandlerInterceptor {
 
         if (DispatcherType.REQUEST.name().equals(request.getDispatcherType().name())
                 && request.getMethod().equals(HttpMethod.GET.name())) {
-            loggingService.logRequest(request, null);
+            loggingService.logHttpServletRequest(request, null);
         }
 
         return true;

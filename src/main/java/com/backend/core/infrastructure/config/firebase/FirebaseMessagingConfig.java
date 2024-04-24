@@ -3,6 +3,7 @@ package com.backend.core.infrastructure.config.firebase;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,7 +46,7 @@ public class FirebaseMessagingConfig {
     }
 
     @Bean
-    com.google.firebase.messaging.FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
-        return com.google.firebase.messaging.FirebaseMessaging.getInstance(firebaseApp);
+    FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
+        return FirebaseMessaging.getInstance(firebaseApp);
     }
 }

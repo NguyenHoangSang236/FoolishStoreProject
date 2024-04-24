@@ -36,7 +36,7 @@ public class CartItemDTO implements Serializable {
     @JsonProperty("quantity")
     int quantity;
 
-    @JsonProperty("select_status")
+    @JsonProperty("selectStatus")
     int selectStatus;
 
     @Override

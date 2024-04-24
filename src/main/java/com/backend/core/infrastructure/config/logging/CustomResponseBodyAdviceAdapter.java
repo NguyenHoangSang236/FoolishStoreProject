@@ -38,7 +38,7 @@ public class CustomResponseBodyAdviceAdapter implements ResponseBodyAdvice<Objec
                                   @NonNull ServerHttpRequest request,
                                   @NonNull ServerHttpResponse response) {
         if (request instanceof ServletServerHttpRequest && response instanceof ServletServerHttpResponse) {
-            loggingService.logResponse(
+            loggingService.logHttpServletResponse(
                     ((ServletServerHttpRequest) request).getServletRequest(),
                     ((ServletServerHttpResponse) response).getServletResponse(),
                     body
