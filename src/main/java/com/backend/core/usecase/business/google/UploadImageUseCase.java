@@ -59,10 +59,10 @@ public class UploadImageUseCase extends UseCase<UploadImageUseCase.InputValue, A
                 customerRepo.save(customer);
 
 //                return new ApiResponse("success", valueRenderUtils.getGoogleDriveUrlFromFileId(fileId));
-                return new ApiResponse("success", fileId);
+                return new ApiResponse("success", fileId, HttpStatus.OK);
             } catch (Exception e) {
                 e.printStackTrace();
-                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name());
+                return new ApiResponse("failed", ErrorTypeEnum.TECHNICAL_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
