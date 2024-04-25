@@ -76,7 +76,7 @@ public class GhnService {
             requestMap.put("width", width);
             requestMap.put("length", length);
 
-            ResponseEntity<Map> shippingFeeResponse = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.SHIPPING_FEE_URL, requestMap);
+            ResponseEntity<Map> shippingFeeResponse = networkUtils.getGhnResponse(GlobalDefaultStaticVariables.GHN_SHIPPING_FEE_URL, requestMap);
 
             if (shippingFeeResponse.getStatusCode().equals(HttpStatus.OK)) {
                 Map<String, Object> resMap = (Map<String, Object>) shippingFeeResponse.getBody().get("data");
@@ -144,7 +144,7 @@ public class GhnService {
             requestMap.put("from_district", fromDistrictId);
             requestMap.put("to_district", toDistrictId);
 
-            ResponseEntity<Map> districtListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.AVAILABLE_GHN_SERVICES_URL, requestMap);
+            ResponseEntity<Map> districtListRes = networkUtils.getGhnResponse(GlobalDefaultStaticVariables.GHN_AVAILABLE_GHN_SERVICES_URL, requestMap);
 
             if (districtListRes.getStatusCode().equals(HttpStatus.OK)) {
                 // get 'data' field from request
@@ -164,7 +164,7 @@ public class GhnService {
 
         try {
             // get response from GHN api
-            ResponseEntity<Map> provinceListRes = networkUtils.getGhnGetResponse(GlobalDefaultStaticVariables.PROVINCE_LIST_URL);
+            ResponseEntity<Map> provinceListRes = networkUtils.getGhnResponse(GlobalDefaultStaticVariables.PROVINCE_LIST_URL, null);
 
             if (provinceListRes.getStatusCode().equals(HttpStatus.OK)) {
                 // get 'data' field from request
@@ -196,7 +196,7 @@ public class GhnService {
         try {
             // get response from GHN api
             requestMap.put("province_id", provinceId);
-            ResponseEntity<Map> districtListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.DISTRICT_LIST_URL, requestMap);
+            ResponseEntity<Map> districtListRes = networkUtils.getGhnResponse(GlobalDefaultStaticVariables.DISTRICT_LIST_URL, requestMap);
 
             if (districtListRes.getStatusCode().equals(HttpStatus.OK)) {
                 // get 'data' field from request
@@ -228,7 +228,7 @@ public class GhnService {
         try {
             // get response from GHN api
             requestMap.put("district_id", districtId);
-            ResponseEntity<Map> wardListRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.WARD_LIST_URL, requestMap);
+            ResponseEntity<Map> wardListRes = networkUtils.getGhnResponse(GlobalDefaultStaticVariables.WARD_LIST_URL, requestMap);
 
             if (wardListRes.getStatusCode().equals(HttpStatus.OK)) {
                 // get 'data' field from request
@@ -316,7 +316,7 @@ public class GhnService {
 
             System.out.println(request);
 
-            ResponseEntity<Map> newOrderRes = networkUtils.getGhnPostResponse(GlobalDefaultStaticVariables.CREATE_ORDER_URL, request);
+            ResponseEntity<Map> newOrderRes = networkUtils.getGhnResponse(GlobalDefaultStaticVariables.GHN_CREATE_ORDER_URL, request);
 
             if (newOrderRes.getStatusCode().equals(HttpStatus.OK)) {
                 Map response = (Map) newOrderRes.getBody().get("data");

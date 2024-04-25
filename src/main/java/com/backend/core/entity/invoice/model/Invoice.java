@@ -109,7 +109,7 @@ public class Invoice implements Serializable {
     private Refund refund;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_account_id")
+    @JoinColumn(name = "receiver_account_id", columnDefinition = "")
     private OnlinePaymentAccount receiverPaymentAccount;
 
     @JsonBackReference

@@ -43,7 +43,7 @@ public class UpdateCartUseCase extends UseCase<UpdateCartUseCase.InputValue, Api
                     // parse json string without any double quotation marks to an object
 
                     ObjectMapper objectMapper = new ObjectMapper();
-                    CartItemDTO cartItemDTO = objectMapper.readValue(obj.toString(), CartItemDTO.class);
+                    CartItemDTO cartItemDTO = objectMapper.convertValue(obj, CartItemDTO.class);
 
                     if (cartItemDTO.getQuantity() < 1) {
                         return new ApiResponse("failed", "Cart item quantity must be higher than 0", HttpStatus.BAD_REQUEST);

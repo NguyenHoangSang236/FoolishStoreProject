@@ -6,19 +6,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class GlobalDefaultStaticVariables {
-    public static final String SHIPPING_ORDER_DETAILS_BY_CLIENT_CODE_URL = "/v2/shipping-order/detail-by-client-code";
 
-    public static final String SHIPPING_FEE_URL = "/v2/shipping-order/fee";
-
-    public static final String AVAILABLE_GHN_SERVICES_URL = "/v2/shipping-order/available-services";
 
     public static final String PROVINCE_LIST_URL = "/master-data/province";
 
     public static final String DISTRICT_LIST_URL = "/master-data/district";
 
     public static final String WARD_LIST_URL = "/master-data/ward?district_id";
-
-    public static final String CREATE_ORDER_URL = "/v2/shipping-order/create";
 
     public static final String DEFAULT_GOOGLE_DRIVE_USER_AVATAR_IMAGE = "1tVXpd6cg_yKMnd7KQ_qqmtdvSG8tXa8R";
 
@@ -33,4 +27,18 @@ public class GlobalDefaultStaticVariables {
     public static final String COMMENT_ENDPOINT = "/websocket";
 
     public static final String REQUEST_ID = "request_id";
+
+    public static final String GHN_REQUEST_TOKEN = "10a16ebf-7fa0-11ee-8bfa-8a2dda8ec551";
+
+    public static final String GHN_SHOP_ID = "190298";
+
+    public static final String GHN_API_DOMAIN = "https://dev-online-gateway.ghn.vn/shiip/public-api";
+
+    public static final String GHN_CREATE_ORDER_URL = "/v2/shipping-order/create";
+
+    public static final String GHN_SHIPPING_FEE_URL = "/v2/shipping-order/fee";
+
+    public static final String GHN_AVAILABLE_GHN_SERVICES_URL = "/v2/shipping-order/available-services";
+
+    public static final String GHN_SHIPPING_ORDER_DETAILS_BY_CLIENT_CODE_URL = "/v2/shipping-order/detail-by-client-code";
 }
