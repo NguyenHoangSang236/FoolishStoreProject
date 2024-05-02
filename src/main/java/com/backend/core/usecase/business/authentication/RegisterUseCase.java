@@ -6,7 +6,7 @@ import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.account.repository.AccountRepository;
 import com.backend.core.infrastructure.business.account.repository.CustomerRepository;
 import com.backend.core.infrastructure.config.api.BindExceptionHandler;
-import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
+import com.backend.core.infrastructure.config.constants.ConstantValue;
 import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.service.JwtService;
 import com.backend.core.usecase.statics.RoleEnum;
@@ -44,7 +44,7 @@ public class RegisterUseCase extends UseCase<RegisterUseCase.InputValue, ApiResp
 
         accountFromUI.setRole(RoleEnum.CUSTOMER.name());
         Customer customer = accountFromUI.getCustomer();
-        customer.setImage(GlobalDefaultStaticVariables.DEFAULT_GOOGLE_DRIVE_USER_AVATAR_IMAGE);
+        customer.setImage(ConstantValue.DEFAULT_GOOGLE_DRIVE_USER_AVATAR_IMAGE);
 
         //check for null information
         if (bindingResult.hasErrors()) {

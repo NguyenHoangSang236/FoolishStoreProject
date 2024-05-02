@@ -16,9 +16,9 @@ public class FirebaseService {
     @Autowired
     NotificationRepository notificationRepo;
 
+
     public String sendMessage(NotificationDTO notification) {
         try {
-            // todo: fix FirebaseApp with name [DEFAULT] doesn't exist bug
             final FirebaseMessaging fcm = FirebaseMessaging.getInstance();
 
             // build standard firebase payload from DTO

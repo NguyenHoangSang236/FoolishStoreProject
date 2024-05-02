@@ -2,7 +2,7 @@ package com.backend.core.usecase.service;
 
 import com.backend.core.entity.account.model.Account;
 import com.backend.core.infrastructure.business.account.repository.AccountRepository;
-import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
+import com.backend.core.infrastructure.config.constants.ConstantValue;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -105,7 +105,7 @@ public class JwtService {
 
 
     public Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(GlobalDefaultStaticVariables.SECRET_SIGNING_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(ConstantValue.SECRET_SIGNING_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

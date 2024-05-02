@@ -3,7 +3,7 @@ package com.backend.core.usecase.business.google;
 import com.backend.core.entity.account.model.Customer;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.infrastructure.business.account.repository.CustomerRepository;
-import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
+import com.backend.core.infrastructure.config.constants.ConstantValue;
 import com.backend.core.usecase.UseCase;
 import com.backend.core.usecase.service.GoogleDriveService;
 import com.backend.core.usecase.statics.ErrorTypeEnum;
@@ -50,7 +50,7 @@ public class UploadImageUseCase extends UseCase<UploadImageUseCase.InputValue, A
                 String fileId = googleDriveService.uploadFile(fileUpload, driveFolderPath, Boolean.parseBoolean(shared));
 
                 // delete the old file on gg drive if the ID is different from the default user image's one
-                if (!customer.getImage().equals(GlobalDefaultStaticVariables.DEFAULT_GOOGLE_DRIVE_USER_AVATAR_IMAGE)) {
+                if (!customer.getImage().equals(ConstantValue.DEFAULT_GOOGLE_DRIVE_USER_AVATAR_IMAGE)) {
                     googleDriveService.deleteFile(customer.getImage());
                 }
 

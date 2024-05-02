@@ -1,6 +1,6 @@
 package com.backend.core.infrastructure.config.google_drive;
 
-import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
+import com.backend.core.infrastructure.config.constants.ConstantValue;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -42,13 +42,13 @@ public class GoogleDriveConfig {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, googleCredential())
-                .setApplicationName(GlobalDefaultStaticVariables.APPLICATION_NAME)
+                .setApplicationName(ConstantValue.APPLICATION_NAME)
                 .build();
     }
 
 
     private GoogleCredential googleCredential() throws IOException {
-        FileInputStream keyFile = new FileInputStream(GlobalDefaultStaticVariables.SERVICE_ACCOUNT_PRIVATE_JSON_KEY);
+        FileInputStream keyFile = new FileInputStream(ConstantValue.SERVICE_ACCOUNT_PRIVATE_JSON_KEY);
         this.googleCredential = GoogleCredential.fromStream(keyFile).createScoped(Collections.singleton("https://www.googleapis.com/auth/drive"));
         return this.googleCredential;
     }

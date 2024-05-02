@@ -1,6 +1,6 @@
 package com.backend.core.infrastructure.config.logging;
 
-import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
+import com.backend.core.infrastructure.config.constants.ConstantValue;
 import jakarta.servlet.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,7 +19,7 @@ public class CustomUrlFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         // generate request ID
         String requestId = UUID.randomUUID().toString();
-        servletRequest.setAttribute(GlobalDefaultStaticVariables.REQUEST_ID, requestId);
+        servletRequest.setAttribute(ConstantValue.REQUEST_ID, requestId);
 
         // filter request and response
         filterChain.doFilter(servletRequest, servletResponse);
