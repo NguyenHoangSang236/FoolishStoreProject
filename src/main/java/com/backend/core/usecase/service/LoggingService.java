@@ -1,6 +1,6 @@
 package com.backend.core.usecase.service;
 
-import com.backend.core.infrastructure.config.constants.GlobalDefaultStaticVariables;
+import com.backend.core.infrastructure.config.constants.ConstantValue;
 import com.backend.core.usecase.util.ValueRenderUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +24,7 @@ public class LoggingService {
 
     public void logHttpServletRequest(HttpServletRequest request, Object body) {
         try {
-            Object requestId = request.getAttribute(GlobalDefaultStaticVariables.REQUEST_ID);
+            Object requestId = request.getAttribute(ConstantValue.REQUEST_ID);
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss  dd-MM-yyyy");
             Date requestTime = new Date();
@@ -64,7 +64,7 @@ public class LoggingService {
 
     public void logHttpServletResponse(HttpServletRequest request, HttpServletResponse response, Object body) {
         try {
-            Object requestId = request.getAttribute(GlobalDefaultStaticVariables.REQUEST_ID);
+            Object requestId = request.getAttribute(ConstantValue.REQUEST_ID);
 
             String data = "\n\n------------------------LOGGING RESPONSE-----------------------------------\n" +
                     "[REQUEST-ID]: " + requestId.toString() + "\n" +
@@ -100,7 +100,7 @@ public class LoggingService {
 
             log.info(data.toString());
 
-            Object requestId = response.getHeaders().get(GlobalDefaultStaticVariables.REQUEST_ID);
+            Object requestId = response.getHeaders().get(ConstantValue.REQUEST_ID);
 
             String resData = "\n\n------------------------LOGGING THIRD-PARTY RESPONSE-----------------------------------\n" +
                     "[BODY RESPONSE]: " + valueRenderUtils.parseObjectToString(response.getBody()) +

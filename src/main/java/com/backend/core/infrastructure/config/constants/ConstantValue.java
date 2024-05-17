@@ -5,8 +5,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GlobalDefaultStaticVariables {
+public class ConstantValue {
+    public static final String MAILCHIMP_API_KEY = "fa25aea365883f1a5613dccd5768e535-us18";
 
+    public static final String MAILCHIMP_TRANSACTIONAL_API_KEY = "md-J4bwuTAMhA0YqRhuP1M7wQ";
+
+    public static final String MAILCHIMP_AUDIENCE_ID = "8fd18 ef427";
 
     public static final String PROVINCE_LIST_URL = "/master-data/province";
 
