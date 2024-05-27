@@ -3,6 +3,7 @@ package com.backend.core.entity.product.model;
 import com.backend.core.entity.cart.model.Cart;
 import com.backend.core.entity.invoice.model.InvoicesWithProducts;
 import com.backend.core.usecase.service.CalculationService;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -72,6 +73,7 @@ public class ProductManagement implements Serializable {
     @Column(name = "overall_rating")
     private int overallRating;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     @Column(name = "import_date")
     private Date importDate;
 

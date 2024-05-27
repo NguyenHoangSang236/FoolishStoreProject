@@ -1,5 +1,6 @@
 package com.backend.core.infrastructure.business.invoice.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class InvoiceRenderInfoDTO {
     @Column(name = "Customer_ID")
     int customerId;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     @Column(name = "Invoice_Date")
     Date invoiceDate;
 

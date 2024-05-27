@@ -1,5 +1,6 @@
 package com.backend.core.entity.invoice.gateway;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class InvoiceFilterDTO implements Serializable {
     @JsonProperty("orderStatus")
     String orderStatus;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     @JsonProperty("startInvoiceDate")
     Date startInvoiceDate;
 
