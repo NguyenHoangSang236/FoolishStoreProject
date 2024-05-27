@@ -1,5 +1,6 @@
 package com.backend.core.entity.notification.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -38,6 +39,7 @@ public class Notification implements Serializable {
     @Column(name = "seen")
     boolean seen;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     @Column(name = "notification_date")
     Date notificationDate;
 }

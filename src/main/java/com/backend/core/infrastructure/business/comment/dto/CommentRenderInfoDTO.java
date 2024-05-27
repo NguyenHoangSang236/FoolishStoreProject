@@ -1,6 +1,7 @@
 package com.backend.core.infrastructure.business.comment.dto;
 
 import com.backend.core.entity.comment.model.Comment;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -44,6 +45,7 @@ public class CommentRenderInfoDTO {
     @Column(name = "like_quantity")
     int likeQuantity;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     @Column(name = "comment_date")
     Date commentDate;
 

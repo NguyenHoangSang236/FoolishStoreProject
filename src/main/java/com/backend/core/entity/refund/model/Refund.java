@@ -2,6 +2,7 @@ package com.backend.core.entity.refund.model;
 
 import com.backend.core.entity.account.model.Staff;
 import com.backend.core.entity.invoice.model.Invoice;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -32,6 +33,7 @@ public class Refund implements Serializable {
     @Column(name = "refund_money")
     double refundMoney;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     @Column(name = "date")
     Date date;
 

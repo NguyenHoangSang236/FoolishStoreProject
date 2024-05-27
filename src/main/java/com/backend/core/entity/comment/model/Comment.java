@@ -2,6 +2,7 @@ package com.backend.core.entity.comment.model;
 
 import com.backend.core.entity.account.model.Customer;
 import com.backend.core.entity.product.model.Product;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -47,6 +48,7 @@ public class Comment implements Serializable {
     @Column(name = "Comment_Content", columnDefinition = "text")
     String commentContent;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     @Column(name = "Comment_Date")
     Date commentDate;
 

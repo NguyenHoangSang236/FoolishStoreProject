@@ -1,5 +1,6 @@
 package com.backend.core.entity.product.gateway;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class ProductProperty implements Serializable {
     @JsonProperty("availableQuantity")
     int availableQuantity;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     @JsonProperty("importDate")
     Date importDate;
 }
