@@ -99,10 +99,9 @@ public class QueryService {
         Date endInvoiceDate = invoiceFilter != null ? invoiceFilter.getEndInvoiceDate() : null;
         int page = pagination.getPage();
         int limit = pagination.getLimit();
+        Account currentAcc = valueRenderUtils.getCurrentAccountFromRequest(request);
 
         String result = "select * from invoice where ";
-
-        Account currentAcc = valueRenderUtils.getCurrentAccountFromRequest(request);
 
         if (currentAcc.getRole().equals(RoleEnum.CUSTOMER.name())) {
             result += "Customer_ID = " + currentAcc.getCustomer().getId() + " and ";

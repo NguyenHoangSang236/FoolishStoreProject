@@ -1,5 +1,6 @@
 package com.backend.core.usecase.business.invoice;
 
+import com.backend.core.entity.account.model.Staff;
 import com.backend.core.entity.api.ApiResponse;
 import com.backend.core.entity.cart.gateway.CartCheckoutDTO;
 import com.backend.core.entity.cart.model.Cart;
@@ -10,6 +11,7 @@ import com.backend.core.entity.invoice.model.OnlinePaymentAccount;
 import com.backend.core.entity.notification.gateway.NotificationDTO;
 import com.backend.core.entity.product.model.ProductManagement;
 import com.backend.core.infrastructure.business.account.repository.CustomerRepository;
+import com.backend.core.infrastructure.business.account.repository.StaffRepository;
 import com.backend.core.infrastructure.business.cart.dto.CartRenderInfoDTO;
 import com.backend.core.infrastructure.business.cart.repository.CartRenderInfoRepository;
 import com.backend.core.infrastructure.business.cart.repository.CartRepository;
@@ -40,6 +42,8 @@ public class AddNewOrderUseCase extends UseCase<AddNewOrderUseCase.InputValue, A
     CartRenderInfoRepository cartRenderInfoRepo;
     @Autowired
     GhnService ghnService;
+    @Autowired
+    StaffRepository staffRepo;
     @Autowired
     InvoiceRepository invoiceRepo;
     @Autowired
@@ -160,6 +164,8 @@ public class AddNewOrderUseCase extends UseCase<AddNewOrderUseCase.InputValue, A
                 invoiceTotalPrice += item.getTotalPrice();
 
                 Cart tblCart = cartRepo.getCartById(item.getId());
+                Staff defaultStaff = staffRepo.getStaffById(0);
+                newInvoice.setStaff(defaultStaff);
 
                 // set cart item from Cart table to buying_status = BOUGHT and select_status = 0
                 tblCart.setSelectStatus(1);

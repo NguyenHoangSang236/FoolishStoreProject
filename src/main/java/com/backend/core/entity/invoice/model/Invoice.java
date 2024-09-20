@@ -8,6 +8,7 @@ import com.backend.core.entity.product.model.ProductManagement;
 import com.backend.core.entity.refund.model.Refund;
 import com.backend.core.usecase.statics.InvoiceEnum;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -35,6 +36,7 @@ public class Invoice implements Serializable {
     @Column(name = "ID", unique = true)
     int id;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     @Column(name = "invoice_date")
     Date invoiceDate;
 
@@ -99,7 +101,8 @@ public class Invoice implements Serializable {
     private Customer customer;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @Nullable
     @JoinColumn(name = "admin_in_charge_id")
     private Staff staff;
 
